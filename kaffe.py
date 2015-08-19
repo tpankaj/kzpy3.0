@@ -166,13 +166,13 @@ def do_it3(layer,net,iter_n):
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
 
-        pb = ProgressBar(iter_n)
+        #pb = ProgressBar(iter_n)
         for i in range(iter_n):
             make_step(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
-            pb.animate(i+1)
-        print((model_folders[MODEL_NUM],n))#,labels[n]))
+            #pb.animate(i+1)
+        print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
         vis = deprocess(net, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
         #mi(img,opj(img_path,str(n)+'.png'))
@@ -190,7 +190,8 @@ src = net.blobs['data']
 src.reshape(1,3,227,227)
 print(np.shape(net.blobs['data'].data))
 
-
-do_it3('conv5',net,100)
+for l in ['conv2','conv3','conv4','conv5']:
+    do_it3(l,net,100)
+#do_it3('conv3',net,100)
 
 
