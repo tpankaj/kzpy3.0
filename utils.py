@@ -5,9 +5,7 @@
 # despite the import from kzpy if I want to use printing fully
 #from __future__ import division  # 1/2 == 0.5, not 0
 ############################
-# hiMac 333
-#
-#
+
 from kzpy3 import *
 
 def kzpy_utils_test():
