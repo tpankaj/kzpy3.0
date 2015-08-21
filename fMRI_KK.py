@@ -1,9 +1,8 @@
 from kzpy3.vis import *
-
+'''
 def load_subject(subject,kay_data_path):
 
     mat = scipy.io.loadmat(opj(kay_data_path,subject+'aux.mat'))
-    mat.keys()
     roi = mat['roi'+subject]
     voxIdx = mat['voxIdx'+subject]
     snr = mat['snr'+subject]
@@ -25,9 +24,11 @@ def load_grayscale_photos_512(kay_data_path):
 	pass
 
 def load_texture_energy_512(kay_data_path):
-	pass
+	mat = scipy.io.loadmat(opj(kay_data_path,))
+    roi = mat['roi'+subject]
 
 
 def get_correlation_RF(data,voxel_num,texture_energy_images,exclude_images):
 	pass
 
+'''
