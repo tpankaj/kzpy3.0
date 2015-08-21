@@ -1,6 +1,6 @@
-from kzpy3.vis import *
+from kzpy3.utils import *
 from kzpy3.progress import *
-plt.ion()
+#plt.ion()
 
 from cStringIO import StringIO
 import scipy.ndimage as nd
