@@ -73,8 +73,6 @@ def select_keys(dic,str_list):
     return key_list
 
 
-
-
 def unix(command_line_str, print_stdout=True, print_stderr=False):
     command_line_str = command_line_str.replace('~',home_path)
     p = subprocess.Popen(command_line_str.split(), stdout=subprocess.PIPE)
@@ -85,3 +83,32 @@ def unix(command_line_str, print_stdout=True, print_stderr=False):
         print(stderr)
     return stdout,stderr
 
+
+def d2s_spacer(args,spacer=' '):
+    lst = []
+    for e in args:
+        lst.append(str(e))
+    return spacer.join(lst)
+def d2s(*args):
+    '''
+    e.g.,
+    
+    d2s('I','like',1,'or',[2,3,4])
+    
+    yields
+    
+    'I like 1 or [2, 3, 4]'
+    
+    '''
+    return d2s_spacer(args)
+def d2c(*args):
+    return d2s_spacer(args,spacer=',')
+def d2p(*args):
+    return d2s_spacer(args,spacer='.')
+   
+
+def psave(dic,data_path_key,path):
+    save_obj(dic[data_path_key],opj(path,data_path_key))
+    
+def pload(dic,data_path_key,path):
+    dic[data_path_key] = load_obj(opj(path,data_path_key))

@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt  # the Python plotting package
 
 PP,FF = plt.rcParams,'figure.figsize'
 
+
 def kzpy_vis_test():
     img_dic = get_some_images()
     ppff = PP[FF]
@@ -19,6 +20,7 @@ def kzpy_vis_test():
     plt.figure('hist')
     plt.hist(np.random.randn(10000),bins=100)
     True
+
 
 def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
         img_title = '', img_xlabel = 'x', img_ylabel = 'y', cmap = 'gray', toolBar = False ):
@@ -60,6 +62,36 @@ def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
         plt.title(img_title)
 
 
+def mp(args,figure_num=1, subplot_array=[1,1,1],
+       title='', xlabel='', ylabel='', xlim=[], ylim=[], toolBar=False):
+
+    if toolBar == False:
+        plt.rcParams['toolbar'] = 'None'
+    else:
+        plt.rcParams['toolbar'] = 'toolbar2'
+
+    f = plt.figure(figure_num)
+
+    if False:
+        f.subplots_adjust(bottom=0.05)
+        f.subplots_adjust(top=0.95)
+        f.subplots_adjust(wspace=0.1)
+        f.subplots_adjust(hspace=0.1)
+        f.subplots_adjust(left=0.05)
+        f.subplots_adjust(right=0.95)
+
+    f.add_subplot(subplot_array[0],subplot_array[1],subplot_array[2])
+    imgplot = plt.plot(*args)
+    if len(title) > 0:# != 'no title':
+        plt.title(title)
+    else:
+        plt.title(str(subplot_array[2]))
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    if len(xlim)==2:
+        plt.xlim(xlim)    
+    if len(ylim)==2:
+        plt.ylim(ylim)
 
 
 def yb_color_modulation_of_grayscale_image(img,y,b,opt_lower_contrast=True):
