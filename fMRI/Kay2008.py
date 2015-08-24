@@ -214,10 +214,11 @@ def sum_and_coverage_info(use_rois,roi,selected_normalized_rfs,GRAPHICS = False)
 
 
 
-def make_p_image(stim_num,data,selected_normalized_rfs):
+def make_p_image(stim_num,data,use_rois,roi,selected_normalized_rfs,sum_of_normalized_rfs):
     p = np.zeros((128,128))
     for i in selected_normalized_rfs.keys():
-        p += selected_normalized_rfs[i] * data[i,stim_num]
+        if roi[i] in use_rois:
+            p += selected_normalized_rfs[i] * data[i,stim_num]
     p /= sum_of_normalized_rfs
     return p
 
