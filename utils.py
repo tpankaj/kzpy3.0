@@ -107,6 +107,15 @@ def d2p(*args):
     return d2s_spacer(args,spacer='.')
    
 
+def save_obj(obj, name ):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+        
+def load_obj(name ):
+    with open(name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+    
+
 def psave(dic,data_path_key,path):
     save_obj(dic[data_path_key],opj(path,data_path_key))
     

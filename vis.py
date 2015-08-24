@@ -22,6 +22,20 @@ def kzpy_vis_test():
     True
 
 
+
+# - These allow for real-time display updating
+from cStringIO import StringIO
+import scipy.ndimage as nd
+import PIL.Image
+from IPython.display import clear_output, Image, display
+def showarray(a, fmt='jpeg'):
+    a = np.uint8(np.clip(255.0*z2o(a), 0, 255))
+    f = StringIO()
+    PIL.Image.fromarray(a).save(f, fmt)
+    display(Image(data=f.getvalue()))
+
+
+
 def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
         img_title = '', img_xlabel = 'x', img_ylabel = 'y', cmap = 'gray', toolBar = False ):
     """My Imagesc, displays a matrix as grayscale image
