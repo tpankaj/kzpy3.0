@@ -182,7 +182,7 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/8/20/bvlc_googlenet/'+layer.replace('/','-'))
+    img_path = opj(home_path,'scratch/2015/8/20/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
@@ -213,47 +213,42 @@ def do_it3(layer,net,iter_n,start=0):
         #mi(img,opj(img_path,str(n)+'.png'))
         imsave(opj(img_path,str(n)+'.png'),img)
 
-def do_it4(layer,net,iter_n):
+inception_layers = ['inception_3a/1x1',
+        'inception_3a/3x3',
+        'inception_3a/5x5',
+        'inception_3a/output',
+        'inception_3b/1x1',
+        'inception_3b/3x3',
+        'inception_3b/5x5',
+        'inception_3b/output',
+        'inception_4a/1x1',
+        'inception_4a/3x3',
+        'inception_4a/5x5',
+        'inception_4a/output',
+        'inception_4b/1x1',
+        'inception_4b/3x3',
+        'inception_4b/5x5',
+        'inception_4c/1x1',
+        'inception_4c/3x3',
+        'inception_4c/5x5',
+        'inception_4c/output',
+        'inception_4d/1x1',
+        'inception_4d/3x3',
+        'inception_4d/5x5',
+        'inception_4d/output',
+        'inception_4e/1x1',
+        'inception_4e/3x3',
+        'inception_4e/5x5',
+        'inception_4e/output',
+        'inception_5a/1x1',
+        'inception_5a/3x3',
+        'inception_5a/5x5',
+        'inception_5a/output',
+        'inception_5b/1x1',
+        'inception_5b/3x3',
+        'inception_5b/5x5',
+        'inception_5b/output']
 
-    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
-    transformer.set_transpose('data', (2,0,1))
-    transformer.set_mean('data', np.load(opj(home_path,'caffe/python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
-    transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
-    transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
-
-    layer_shape=list(np.shape(net.blobs[layer].data));
-    layer_shape[0] = 1
-    layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/8/19/bvlc_reference_caffenet/'+layer)
-    unix('mkdir -p ' + img_path)
-    for n in range(start,layer_shape[1]):#(num_nodes):
-        mask7 = np.zeros(layer_shape)
-        #n = np.random.randint(1000)
-        xy = np.int(layer_shape[2]/2)
-        mask7[0,n,xy,xy] = 1.0
-        def objective_kz7(dst):
-            dst.diff[:] = dst.data * mask7
-
-        try:
-            cimg = caffe.io.load_image(opj(img_path,str(n)+'.png'))
-            net.blobs['data'].reshape(1,3,227,227)
-            net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
-        except:
-            net.blobs['data'].data[0][0,:,:] = 255*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
-            net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-            net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-
-        #pb = ProgressBar(iter_n)
-        for i in range(iter_n):
-            make_step(net,end=layer,objective=objective_kz7)
-            src = net.blobs['data']
-            #vis = deprocess(net, src.data[0])
-            #pb.animate(i+1)
-        print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
-        vis = deprocess(net, src.data[0])
-        img = np.uint8(np.clip(vis, 0, 255))
-        #mi(img,opj(img_path,str(n)+'.png'))
-        imsave(opj(img_path,str(n)+'.png'),img)
 
 
 
@@ -267,7 +262,7 @@ src = net.blobs['data']
 src.reshape(1,3,227,227)
 print(np.shape(net.blobs['data'].data))
 
-for l in ['inception_5b/5x5']:
+for l in ['prob']:
     do_it3(l,net,1000,0)
 #do_it3('conv3',net,100)
 
