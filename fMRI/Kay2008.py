@@ -2,15 +2,7 @@ from kzpy3.vis import *
 from kzpy3.progress import *
 
 
-CS = [] # - Comment String
-def CS_(comment,section='',print_latest=True):
-    str = '# - '
-    if len(section) > 0:
-        str = str + section + ': '
-    str = str + comment
-    CS.append(str)
-    if print_latest:
-        print(CS[-1])
+
 
 
 def load_subject(subject,kay_data_subject_path):

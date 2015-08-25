@@ -12,6 +12,16 @@ def kzpy_utils_test():
     print('home_path = ' + home_path)
     print('Done.')
 
+
+
+def CS_(comment,section=''):
+    str = '# - '
+    if len(section) > 0:
+        str = str + section + ': '
+    str = str + comment
+    print(str)
+
+
 def zeroToOneRange(m):
     min_n = 1.0*np.min(m)
     return (1.0*m-min_n)/(1.0*np.max(m)-min_n)
