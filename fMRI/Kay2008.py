@@ -13,7 +13,7 @@ def CS_(comment,section='',print_latest=True):
         print(CS[-1])
 
 
-def load_subject(subject,kay_data_path):
+def load_subject(subject,kay_data_subject_path):
     mat = scipy.io.loadmat(opj(kay_data_subject_path,subject+'aux.mat'))
     roi = mat['roi'+subject]
     voxIdx = mat['voxIdx'+subject]
@@ -55,7 +55,8 @@ def hp512_to_hp128(hp512):
     hp128 = np.zeros((np.shape(hp512)[0],128,128))
     for i in range(np.shape(hp512)[0]):
         hp128[i,:,:] = scipy.misc.imresize(hp512[i,:,:],[128,128])
-        pb.animate(i+1)
+        if np.mod(i,100)==0:
+                pb.animate(i+1)
     return hp128
 
 
@@ -126,7 +127,8 @@ def map_correlation_RFs(correlation_RFs, data,hp128,use_rois,use_images):
         if roi[i] in use_rois:
             correlation_RFs[i] = mask * get_correlation_RF(data,i,hp128,use_images)
             showarray(correlation_RFs[i])
-            pb.animate(i+1)
+            if np.mod(i,100)==0:
+                pb.animate(i+1)
             clear_output(wait=True)
             
             
@@ -257,7 +259,8 @@ def get_rf_stats(correlation_rfs,good_voxels):
             peak_correlations[v] = peak_correlation
             peak_xys[v] = peak
             normalized_rfs[v] = normalized_rf
-            pb.animate(ctr+1)
+            if np.mod(ctr,100)==0:
+                pb.animate(ctr+1)
             ctr += 1
     return normalized_rfs,contiguity_proportions,peak_correlations,peak_xys
 
