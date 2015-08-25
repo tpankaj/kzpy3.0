@@ -182,7 +182,7 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/8/20/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    img_path = opj(home_path,'scratch/2015/8/24/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
@@ -262,8 +262,12 @@ src = net.blobs['data']
 src.reshape(1,3,227,227)
 print(np.shape(net.blobs['data'].data))
 
-for l in ['prob']:
-    do_it3(l,net,1000,0)
+for i in range(100000):
+    for l in ['prob']:
+        try:
+           do_it3(l,net,100,0)
+        except:
+            print('Exception')
 #do_it3('conv3',net,100)
 
 
