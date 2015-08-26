@@ -1,5 +1,7 @@
 ## General (from caffe .gitignore)
 
+.DS_Store
+
 # Compiled Object files
 *.slo
 *.lo
