@@ -13,7 +13,12 @@ def kzpy_utils_test():
     print('Done.')
 
 
-
+def copy_list_of_arrays(lst):
+    nl = []
+    for l in lst:
+        nl.append(l.copy())
+    return nl
+    
 def nps(x):
     return np.shape(x)
 
@@ -118,6 +123,8 @@ def d2c(*args):
     return d2s_spacer(args,spacer=',')
 def d2p(*args):
     return d2s_spacer(args,spacer='.')
+def d2n(*args):
+    return d2s_spacer(args,spacer='')
    
 
 def save_obj(obj, name ):
