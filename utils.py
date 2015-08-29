@@ -14,6 +14,9 @@ def kzpy_utils_test():
 
 
 
+def nps(x):
+    return np.shape(x)
+
 def CS_(comment,section=''):
     str = '# - '
     if len(section) > 0:
