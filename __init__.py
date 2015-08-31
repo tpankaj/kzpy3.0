@@ -25,7 +25,7 @@ imread = scipy.misc.imread
 imsave = scipy.misc.imsave
 opj = os.path.join
 gg = glob.glob
-
+shape = np.shape
 
 
 
