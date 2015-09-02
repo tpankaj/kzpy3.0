@@ -31,6 +31,7 @@ random = np.random.random
 randn = np.random.randn
 zeros = np.zeros
 ones = np.ones
+imresize = scipy.misc.imresize
 
 
 
