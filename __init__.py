@@ -26,6 +26,11 @@ imsave = scipy.misc.imsave
 opj = os.path.join
 gg = glob.glob
 shape = np.shape
+randint = np.random.randint
+random = np.random.random
+randn = np.random.randn
+zeros = np.zeros
+ones = np.ones
 
 
 
