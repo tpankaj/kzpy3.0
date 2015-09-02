@@ -32,6 +32,6 @@ randn = np.random.randn
 zeros = np.zeros
 ones = np.ones
 imresize = scipy.misc.imresize
-
+reshape = np.reshape
 
 
