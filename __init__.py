@@ -33,5 +33,5 @@ zeros = np.zeros
 ones = np.ones
 imresize = scipy.misc.imresize
 reshape = np.reshape
-
+mod = np.mod
 
