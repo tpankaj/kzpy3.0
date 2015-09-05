@@ -9,6 +9,33 @@ import theano.tensor as T
 from theano.tensor.signal import downsample
 from theano.tensor.nnet import conv
 
+def load_data(dataset_with_path):
+    print '... loading data'
+    f = gzip.open(dataset_with_path, 'rb')
+    train_set, valid_set, test_set = cPickle.load(f)
+    f.close()
+    def shared_dataset(data_xy, borrow=True):
+        data_x, data_y_ = data_xy
+        data_y = np.zeros((shape(data_y_)[0],10))
+        for i in range(len(data_y_)):
+            data_y[i,data_y_[i]] = 1
+        print(data_y[0,:10])
+        shared_x = theano.shared(np.asarray(data_x,
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow)
+        shared_y = theano.shared(np.asarray(data_y,
+                                               dtype=theano.config.floatX),
+                                 borrow=borrow)
+        return shared_x, shared_y
+
+    test_set_x, test_set_y = shared_dataset(test_set)
+    valid_set_x, valid_set_y = shared_dataset(valid_set)
+    train_set_x, train_set_y = shared_dataset(train_set)
+
+    rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),
+            (test_set_x, test_set_y)]
+    return rval
+
 
 class InnerProductLayer(object):
     def __init__(self, rng, input, n_in, n_out, activation=T.tanh):
