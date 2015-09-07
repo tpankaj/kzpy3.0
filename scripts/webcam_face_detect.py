@@ -1,6 +1,14 @@
 #! //anaconda/bin/python
 # python webcam_face_detect.py #haarcascade_frontalface_default.xml
 
+from kzpy3.face_detect import *
+
+visualize_face_detect_from_video()
+
+
+
+
+'''
 import cv2
 import sys
 import numpy as np
@@ -60,3 +68,4 @@ while True:
 # When everything is done, release the capture
 video_capture.release()
 cv2.destroyAllWindows()
+''';
