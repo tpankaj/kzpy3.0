@@ -141,3 +141,18 @@ def psave(dic,data_path_key,path):
     
 def pload(dic,data_path_key,path):
     dic[data_path_key] = load_obj(opj(path,data_path_key))
+
+
+def txt_file_to_list_of_strings(path_and_filename):
+    f = open(path_and_filename,"r") #opens file with name of "test.txt"
+    str_lst = []
+    for line in f:
+        str_lst.append(line.strip('\n'))
+    return str_lst
+
+def list_of_strings_to_txt_file(path_and_filename,str_lst):
+    f = open(path_and_filename,"w")
+    for s in str_lst:
+        f.write(s+'\n')
+    f.close()
+
