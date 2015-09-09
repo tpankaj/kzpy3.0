@@ -280,4 +280,4 @@ if True:
     print(np.shape(net.blobs['data'].data))
 
     for l in ['prob']:
-        do_it3(l,net,2000,9)
+        do_it3(l,net,2000,130)
