@@ -43,6 +43,6 @@ py/											<Google drive>
 
 kzpy3/										<github>
 	caf/										
-		python_layers/								
+		layers/								
 			pyloss.py
 
