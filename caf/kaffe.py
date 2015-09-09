@@ -18,7 +18,7 @@ def showarray(a, fmt='jpeg'):
     PIL.Image.fromarray(a).save(f, fmt)
     display(Image(data=f.getvalue()))
 
-model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet']
+model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet','finetune_BarryLyndon_8Sept2015']
 
 def get_net(MODEL_NUM = 2):
     model_folder = model_folders[MODEL_NUM]
@@ -182,7 +182,7 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/8/24/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    img_path = opj(home_path,'scratch/2015/9/8/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
@@ -253,21 +253,31 @@ inception_layers = ['inception_3a/1x1',
 
 
 #############################
+if False:
+    MODEL_NUM = 0
+    net = get_net(MODEL_NUM)
 
-MODEL_NUM = 0
-net = get_net(MODEL_NUM)
+    print(np.shape(net.blobs['data'].data))
+    src = net.blobs['data']
+    src.reshape(1,3,227,227)
+    print(np.shape(net.blobs['data'].data))
 
-print(np.shape(net.blobs['data'].data))
-src = net.blobs['data']
-src.reshape(1,3,227,227)
-print(np.shape(net.blobs['data'].data))
+    for i in range(100000):
+        for l in ['prob']:
+            try:
+               do_it3(l,net,100,0)
+            except:
+                print('Exception')
+    #do_it3('conv3',net,100)
 
-for i in range(100000):
+
+if True:
+    MODEL_NUM = 3
+    net = get_net(MODEL_NUM)
+    print(np.shape(net.blobs['data'].data))
+    src = net.blobs['data']
+    src.reshape(1,3,227,227)
+    print(np.shape(net.blobs['data'].data))
+
     for l in ['prob']:
-        try:
-           do_it3(l,net,100,0)
-        except:
-            print('Exception')
-#do_it3('conv3',net,100)
-
-
+        do_it3(l,net,2000,130)
