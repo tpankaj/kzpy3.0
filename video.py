@@ -3,6 +3,10 @@ from kzpy3.utils import *
 import cv2
 
 def video_to_frames(video_path,video_filename,desired_output_width,frames_per_folder=1000):
+	'''
+	desired_output_width:
+		we assume video is in landscape orientation.
+	'''
     video_fpath = opj(video_path,video_filename)
     video_frames_fpath = opj(video_path,'frames')
     cap = cv2.VideoCapture(video_fpath)
