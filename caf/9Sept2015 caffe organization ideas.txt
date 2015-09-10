@@ -44,5 +44,5 @@ py/											<Google drive>
 kzpy3/										<github>
 	caf/										
 		layers/								
-			pyloss.py
+			layer_examples.py
 
