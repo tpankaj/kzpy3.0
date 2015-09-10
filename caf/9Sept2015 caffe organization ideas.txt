@@ -46,3 +46,14 @@ kzpy3/										<github>
 		layers/								
 			layer_examples.py
 
+
+
+I want to be able to control cluster learning by editing local files (solver, train_val) and syncing with git.
+
+
+train.py
+train_gpu.py
+train_from_scratch_gpu.py
+rcaf.sh
+
+I guess I don't want to use the models folder for training, only for finished models, to avoid clutter.
