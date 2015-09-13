@@ -13,8 +13,10 @@ import numpy as np
 caffe.set_device(0)
 caffe.set_mode_gpu()
 # We create a solver that fine-tunes from a previously trained network.
-solver = caffe.SGDSolver('/global/home/users/karlz/scratch/models_caffe/finetune_BarryLyndon_8Sept2015/solver.prototxt')
+#solver = caffe.SGDSolver('/global/home/users/karlz/scratch/models_caffe/finetune_BarryLyndon_8Sept2015/solver.prototxt')
 #solver.net.copy_from('/global/home/users/karlz/scratch/models_caffe/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
+solver = caffe.SGDSolver(opjh('caffe/current_model/solver.prototxt')
+solver.net.copy_from('caffe/current_model/model_from_scratch_rot_conv_iter_100.caffemodel')
 # For reference, we also create a solver that does no finetuning.
 #scratch_solver = caffe.SGDSolver('models/finetune_flickr_style/solver.prototxt')
 
