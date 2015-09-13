@@ -37,8 +37,8 @@ def rotate_average_filters(filters_rot):
 
 for it in range(niter):
     for k in ['conv1', 'conv2', 'conv3', 'conv4']:
-        rotate_average_filters(net.params[k][0].data)
-        
+        rotate_average_filters(solver.net.params[k][0].data)
+
     solver.step(1)  # SGD by Caffe
     train_loss.append([it,solver.net.blobs['loss'].data])
     if it % 10 == 0:
