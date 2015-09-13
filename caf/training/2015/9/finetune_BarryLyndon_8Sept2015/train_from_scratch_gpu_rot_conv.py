@@ -21,18 +21,18 @@ niter = 500000
 train_loss = []
 accuracy_lst = []
 
-def rotate_average_filters(filters_rot):
+def rotate_average_filters(filters):
     for i in range(len(filters)):
-        f = filters_rot[i,:,:,:].transpose((1,2,0))
+        f = filters[i,:,:,:].transpose((1,2,0))
         f = np.rot90(f,mod(i,4))
-        filters_rot[i,:,:,:] = f.transpose((2,0,1))
+        filters[i,:,:,:] = f.transpose((2,0,1))
     for i in range(0,len(filters),4):
-        f = filters_rot[i,:,:,:]
+        f = filters[i,:,:,:]
         for j in range(1,4):
-            f += filters_rot[i+j,:,:,:]
+            f += filters[i+j,:,:,:]
         f /= 4.0
         for j in range(4):
-            filters_rot[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),j).transpose((2,0,1))
+            filters[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),j).transpose((2,0,1))
 
 
 for it in range(niter):
