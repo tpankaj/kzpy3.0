@@ -1,3 +1,4 @@
+from kzpy3.utils import *
 import os
 os.chdir('..')
 import sys
@@ -41,17 +42,18 @@ for it in range(niter):
 
     solver.step(1)  # SGD by Caffe
     train_loss.append([it,solver.net.blobs['loss'].data])
-    if it % 10 == 0:
-        print 'iter %d, finetune_loss=%f' % (it, train_loss[it][1])
-    if it % 100 == 0:    
-        test_iters = 10
-        accuracy = 0
-        for it in np.arange(test_iters):
-            solver.test_nets[0].forward()
-            accuracy += solver.test_nets[0].blobs['accuracy'].data
-        accuracy /= test_iters
-        accuracy_lst.append([it,accuracy])
-        print '*** Accuracy for fine-tuning:', accuracy          
+    if False:
+        if it % 1000 == 0:
+            print 'iter %d, finetune_loss=%f' % (it, train_loss[it][1])
+        if it % 1000 == 0:    
+            test_iters = 10
+            accuracy = 0
+            for it in np.arange(test_iters):
+                solver.test_nets[0].forward()
+                accuracy += solver.test_nets[0].blobs['accuracy'].data
+            accuracy /= test_iters
+            accuracy_lst.append([it,accuracy])
+            print '*** Accuracy for fine-tuning:', accuracy          
 print 'done'
 
 
