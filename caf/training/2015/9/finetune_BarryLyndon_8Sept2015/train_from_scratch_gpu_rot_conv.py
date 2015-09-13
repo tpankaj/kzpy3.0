@@ -24,7 +24,7 @@ accuracy_lst = []
 def rotate_average_filters(filters):
     for i in range(len(filters)):
         f = filters[i,:,:,:].transpose((1,2,0))
-        f = np.rot90(f,mod(i,4))
+        f = np.rot90(f,np.mod(i,4))
         filters[i,:,:,:] = f.transpose((2,0,1))
     for i in range(0,len(filters),4):
         f = filters[i,:,:,:]
