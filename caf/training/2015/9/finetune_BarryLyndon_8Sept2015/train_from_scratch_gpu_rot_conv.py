@@ -32,7 +32,7 @@ def rotate_average_filters(filters):
             f += filters[i+j,:,:,:]
         f /= 4.0
         for j in range(4):
-            filters[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),j).transpose((2,0,1))
+            filters[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),-j).transpose((2,0,1))
 
 
 for it in range(niter):
