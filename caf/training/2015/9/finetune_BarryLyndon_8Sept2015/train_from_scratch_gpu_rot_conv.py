@@ -37,10 +37,14 @@ def rotate_average_filters(filters):
         for j in range(4):
             filters[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),-j).transpose((2,0,1))
 
+def average_biases(filters):
+    for i in range(0,len(filters),4):
+            filters[i:(i+4)] = filters[i:(i+4)].mean()
 
 for it in range(niter):
     for k in ['conv1', 'conv2', 'conv3', 'conv4']:
         rotate_average_filters(solver.net.params[k][0].data)
+        average_biases(solver.net.params[k][1].data)
 
     solver.step(1)  # SGD by Caffe
     train_loss.append([it,solver.net.blobs['loss'].data])
