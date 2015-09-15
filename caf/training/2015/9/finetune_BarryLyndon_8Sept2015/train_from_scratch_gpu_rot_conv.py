@@ -37,9 +37,9 @@ def rotate_average_filters(filters):
         for j in range(4):
             filters[i+j,:,:,:] = np.rot90(f.transpose((1,2,0)),-j).transpose((2,0,1))
 
-def average_biases(filters):
-    for i in range(0,len(filters),4):
-            filters[i:(i+4)] = filters[i:(i+4)].mean()
+def average_biases(biases):
+    for i in range(0,len(biases),4):
+            biases[i:(i+4)] = biases[i:(i+4)].mean()
 
 for it in range(niter):
     for k in ['conv1', 'conv2', 'conv3', 'conv4']:
