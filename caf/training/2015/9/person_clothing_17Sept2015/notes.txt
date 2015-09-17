@@ -6,3 +6,15 @@ I0917 11:05:45.031268 24804 solver.cpp:189] Iteration 28600, loss = 0.174446
 I0917 12:29:46.223680 31332 solver.cpp:189] Iteration 0, loss = 7.36798
 I0917 12:49:50.695200 31332 solver.cpp:189] Iteration 100, loss = 6.84288
 100 iterations in ~20 minutes with image resizing within caffe
+
+I0917 12:49:50.695200 31332 solver.cpp:189] Iteration 100, loss = 6.84288
+I0917 13:05:04.328654 31332 solver.cpp:189] Iteration 200, loss = 6.82504
+100 iterations in ~15 minutes with image resizing within caffe
+
+
+I0917 13:18:51.232166 31332 solver.cpp:189] Iteration 300, loss = 6.80337
+I0917 13:31:37.153866 31332 solver.cpp:189] Iteration 400, loss = 6.82383
+100 iterations in ~13 minutes with image resizing within caffe
+
+
+
