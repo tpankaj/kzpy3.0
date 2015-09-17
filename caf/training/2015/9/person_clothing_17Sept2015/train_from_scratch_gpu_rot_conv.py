@@ -42,24 +42,14 @@ def average_biases(biases):
             biases[i:(i+4)] = biases[i:(i+4)].mean()
 
 for it in range(niter):
-    for k in ['conv1', 'conv2', 'conv3']:
-        rotate_average_filters(solver.net.params[k][0].data)
-        average_biases(solver.net.params[k][1].data)
-
-    solver.step(1)  # SGD by Caffe
-    train_loss.append([it,solver.net.blobs['loss'].data])
     if False:
-        if it % 1000 == 0:
-            print 'iter %d, finetune_loss=%f' % (it, train_loss[it][1])
-        if it % 1000 == 0:    
-            test_iters = 10
-            accuracy = 0
-            for it in np.arange(test_iters):
-                solver.test_nets[0].forward()
-                accuracy += solver.test_nets[0].blobs['accuracy'].data
-            accuracy /= test_iters
-            accuracy_lst.append([it,accuracy])
-            print '*** Accuracy for fine-tuning:', accuracy          
+        for k in ['conv1', 'conv2', 'conv3']:
+            rotate_average_filters(solver.net.params[k][0].data)
+            average_biases(solver.net.params[k][1].data)
+    try:
+        solver.step(1)  # SGD by Caffe
+    except:
+        pass
 print 'done'
 
 
