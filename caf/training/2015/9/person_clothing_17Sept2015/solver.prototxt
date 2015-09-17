@@ -1,4 +1,4 @@
-net: "~/caffe/models/person_clothing_17Sept2015/train_val.prototxt"
+net: "/global/home/users/karlz/caffe/models/person_clothing_17Sept2015/train_val.prototxt"
 test_iter: 1000
 test_interval: 1000
 base_lr: 0.01
@@ -10,5 +10,5 @@ max_iter: 450000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 1000
-snapshot_prefix: "~/caffe/models/person_clothing_17Sept2015/model"
+snapshot_prefix: "/global/home/users/karlz/caffe/models/person_clothing_17Sept2015/model"
 solver_mode: GPU

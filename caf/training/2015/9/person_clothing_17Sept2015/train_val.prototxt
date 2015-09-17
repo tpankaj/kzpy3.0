@@ -10,10 +10,10 @@ layer {
   transform_param {
     mirror: true
     crop_size: 227
-    mean_file: "~/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "/global/home/users/karlz/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
   }
   image_data_param {
-    source: "~/caffe/models/person_clothing_17Sept2015/train.txt"
+    source: "/global/home/users/karlz/caffe/models/person_clothing_17Sept2015/train.txt"
     batch_size: 256
     new_height: 256
     new_width: 256
@@ -30,10 +30,10 @@ layer {
   transform_param {
     mirror: false
     crop_size: 227
-    mean_file: "~/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "/global/home/users/karlz/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
   }
   image_data_param {
-    source: "~/caffe/models/person_clothing_17Sept2015/test.txt"
+    source: "/global/home/users/karlz/caffe/models/person_clothing_17Sept2015/test.txt"
     batch_size: 50
     new_height: 256
     new_width: 256
