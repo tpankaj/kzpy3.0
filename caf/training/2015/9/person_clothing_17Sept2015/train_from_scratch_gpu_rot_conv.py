@@ -1,6 +1,6 @@
 from kzpy3.utils import *
 import os
-os.chdir('..')
+#os.chdir('..')
 import sys
 sys.path.insert(0, './python')
 
@@ -16,7 +16,7 @@ caffe.set_mode_gpu()
 #solver = caffe.SGDSolver('/global/home/users/karlz/scratch/models_caffe/finetune_BarryLyndon_8Sept2015/solver.prototxt')
 #solver.net.copy_from('/global/home/users/karlz/scratch/models_caffe/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
-#solver.net.copy_from(opjh('caffe/models/person_clothing_17Sept2015/model_from_scratch_rot_conv_iter_100.caffemodel'))
+#solver.net.copy_from(opjh('caffe/models/person_clothing_17Sept2015/model_iter_1000.caffemodel'))
 # For reference, we also create a solver that does no finetuning.
 #scratch_solver = caffe.SGDSolver('models/finetune_flickr_style/solver.prototxt')
 
