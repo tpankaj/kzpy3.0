@@ -1,7 +1,7 @@
-name: "CaffeNet"
+name: "person_clothing_17Sept2015"
 layer {
   name: "data"
-  type: "Data"
+  type: "ImageData"
   top: "data"
   top: "label"
   include {
@@ -10,25 +10,18 @@ layer {
   transform_param {
     mirror: true
     crop_size: 227
-    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "~/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: true
-#  }
-  data_param {
-    source: "examples/imagenet/ilsvrc12_train_lmdb"
+  image_data_param {
+    source: "~/caffe/models/person_clothing_17Sept2015/train.txt"
     batch_size: 256
-    backend: LMDB
+    new_height: 256
+    new_width: 256
   }
 }
 layer {
   name: "data"
-  type: "Data"
+  type: "ImageData"
   top: "data"
   top: "label"
   include {
@@ -37,20 +30,13 @@ layer {
   transform_param {
     mirror: false
     crop_size: 227
-    mean_file: "data/ilsvrc12/imagenet_mean.binaryproto"
+    mean_file: "~/caffe/data/ilsvrc12/imagenet_mean.binaryproto"
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: true
-#  }
-  data_param {
-    source: "examples/imagenet/ilsvrc12_val_lmdb"
+  image_data_param {
+    source: "~/caffe/models/person_clothing_17Sept2015/test.txt"
     batch_size: 50
-    backend: LMDB
+    new_height: 256
+    new_width: 256
   }
 }
 layer {
