@@ -163,3 +163,15 @@ def rebin(a, shape):
     '''
     sh = shape[0],a.shape[0]//shape[0],shape[1],a.shape[1]//shape[1]
     return a.reshape(sh).mean(-1).mean(1)
+
+def dict_to_sorted_list(d):
+    l = []
+    ks = sorted(d.keys(),key=natural_keys)
+    for k in ks:
+        l.append(d[k])
+    return l
+
+
+
+
+

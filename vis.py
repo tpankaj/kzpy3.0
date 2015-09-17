@@ -233,3 +233,6 @@ def load_img_folder_to_dict(img_folder):
     for f in img_fns:
         imgs[f.split('/')[-1]] = imread(f)
     return imgs
+
+def load_img_folder_to_list(img_folder):
+    return dict_to_sorted_list(load_img_folder_to_dict(img_folder))
