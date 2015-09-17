@@ -150,8 +150,8 @@ def txt_file_to_list_of_strings(path_and_filename):
         str_lst.append(line.strip('\n'))
     return str_lst
 
-def list_of_strings_to_txt_file(path_and_filename,str_lst):
-    f = open(path_and_filename,"w")
+def list_of_strings_to_txt_file(path_and_filename,str_lst,write_mode="w"):
+    f = open(path_and_filename,write_mode)
     for s in str_lst:
         f.write(s+'\n')
     f.close()
