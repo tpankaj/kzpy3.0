@@ -9,6 +9,6 @@ display: 20
 max_iter: 450000
 momentum: 0.9
 weight_decay: 0.0005
-snapshot: 1000
+snapshot: 201
 snapshot_prefix: "/global/home/users/karlz/caffe/models/person_clothing_17Sept2015/model"
 solver_mode: GPU
