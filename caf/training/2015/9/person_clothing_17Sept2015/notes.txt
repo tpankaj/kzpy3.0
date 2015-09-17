@@ -1,0 +1,8 @@
+I0917 10:52:24.812410 24804 solver.cpp:189] Iteration 28500, loss = 0.205567
+I0917 11:05:45.031268 24804 solver.cpp:189] Iteration 28600, loss = 0.174446
+100 iterations in ~13 minutes without image resizing within caffe
+
+
+I0917 12:29:46.223680 31332 solver.cpp:189] Iteration 0, loss = 7.36798
+I0917 12:49:50.695200 31332 solver.cpp:189] Iteration 100, loss = 6.84288
+100 iterations in ~20 minutes with image resizing within caffe
