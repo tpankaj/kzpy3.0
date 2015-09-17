@@ -50,6 +50,12 @@ def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
             mi(np.random.rand(256,256),99,[1,1,1],'random matrix')
 
     """
+    if type(image_matrix) == list:
+        if np.array(subplot_array).max() < 2:
+            subplot_array = [1,len(image_matrix),0]
+        for i in range(len(image_matrix)):
+            mi(image_matrix[i],figure_num,[subplot_array[0],subplot_array[1],i+1],img_title,img_xlabel,img_ylabel,cmap,toolBar)
+        return        
     if toolBar == False:
         plt.rcParams['toolbar'] = 'None'
     else:
