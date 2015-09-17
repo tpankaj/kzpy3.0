@@ -38,24 +38,47 @@ def showarray(a, fmt='jpeg'):
     display(Image(data=f.getvalue()))
 
 
+######################
+#
+def mi(
+    image_matrix,
+    figure_num = 1,
+    subplot_array = [1,1,1],
+    img_title = '',
+    img_xlabel = 'x',
+    img_ylabel = 'y',
+    cmap = 'gray',
+    toolBar = False ):
+    """
+    My Imagesc, displays a matrix as grayscale image if 2d, or color if 3d.
+    Can take different inputs -- e.g.,
 
-def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
-        img_title = '', img_xlabel = 'x', img_ylabel = 'y', cmap = 'gray', toolBar = False ):
-    """My Imagesc, displays a matrix as grayscale image
+        from matrix:
 
-        e.g.,
-
-            from kzpy import *
-            from kzpy.img import *
+            from kzpy3.vis import *
             mi(np.random.rand(256,256),99,[1,1,1],'random matrix')
 
+        from path:
+            mi(opjh('Desktop','conv1'),1,[5,5,0])
+
+        from list:
+            l = load_img_folder_to_list(opjh('Desktop','conv5'))
+            mi(l,2,[4,3,0])
+
+        from dict:
+            mi(load_img_folder_to_dict(opjh('Desktop','conv5')),1,[3,4,0])
     """
+    if type(image_matrix) == str:
+        mi(load_img_folder_to_dict(image_matrix),figure_num,subplot_array,img_title,img_xlabel,img_ylabel,cmap,toolBar)
+        return
+
     if type(image_matrix) == list:
         if np.array(subplot_array).max() < 2:
             subplot_array = [1,len(image_matrix),0]
         for i in range(len(image_matrix)):
             mi(image_matrix[i],figure_num,[subplot_array[0],subplot_array[1],i+1],img_title,img_xlabel,img_ylabel,cmap,toolBar)
         return
+
     if type(image_matrix) == dict:
         if np.array(subplot_array).max() < 2:
             subplot_array = [1,len(image_matrix),0]
@@ -93,6 +116,15 @@ def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
     plt.axis('off')
     if len(img_title) > 0:# != 'no title':
         plt.title(img_title)
+#
+######################
+
+
+
+
+
+
+
 
 
 def mp(args,figure_num=1, subplot_array=[1,1,1],

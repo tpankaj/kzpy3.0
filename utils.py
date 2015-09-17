@@ -99,8 +99,8 @@ def unix(command_line_str, print_stdout=True, print_stderr=False):
         print(stdout)
     if print_stderr:
         print(stderr)
-    return stdout,stderr
-
+#    return stdout,stderr
+    return stdout.split('\n')
 
 def d2s_spacer(args,spacer=' '):
     lst = []
