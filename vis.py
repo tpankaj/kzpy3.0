@@ -55,7 +55,17 @@ def mi( image_matrix, figure_num = 1, subplot_array = [1,1,1], \
             subplot_array = [1,len(image_matrix),0]
         for i in range(len(image_matrix)):
             mi(image_matrix[i],figure_num,[subplot_array[0],subplot_array[1],i+1],img_title,img_xlabel,img_ylabel,cmap,toolBar)
+        return
+    if type(image_matrix) == dict:
+        if np.array(subplot_array).max() < 2:
+            subplot_array = [1,len(image_matrix),0]
+        i = 0
+        img_keys = sorted(image_matrix.keys(),key=natural_keys)
+        for k in img_keys:
+            mi(image_matrix[k],figure_num,[subplot_array[0],subplot_array[1],i+1],img_title,img_xlabel,img_ylabel,cmap,toolBar)
+            i += 1
         return        
+
     if toolBar == False:
         plt.rcParams['toolbar'] = 'None'
     else:
@@ -211,3 +221,15 @@ plt.scatter(array_dg[:, 0], array_dg[:, 1], c=colors, cmap=rvb)
 plt.colorbar()
 plt.show()
 '''
+
+
+
+
+
+def load_img_folder_to_dict(img_folder):
+    '''Assume that *.* selects only images.'''
+    img_fns = gg(opj(img_folder,'*.*'))
+    imgs = {}
+    for f in img_fns:
+        imgs[f.split('/')[-1]] = imread(f)
+    return imgs
