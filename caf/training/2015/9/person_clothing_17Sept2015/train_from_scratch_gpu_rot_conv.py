@@ -42,7 +42,7 @@ def average_biases(biases):
             biases[i:(i+4)] = biases[i:(i+4)].mean()
 
 for it in range(niter):
-    if False:
+    if True:
         for k in ['conv1', 'conv2', 'conv3']:
             rotate_average_filters(solver.net.params[k][0].data)
             average_biases(solver.net.params[k][1].data)
