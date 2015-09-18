@@ -17,6 +17,7 @@ layer {
     batch_size: 256
     new_height: 256
     new_width: 256
+    shuffle: true
   }
 }
 layer {
@@ -37,6 +38,7 @@ layer {
     batch_size: 50
     new_height: 256
     new_width: 256
+    shuffle: true
   }
 }
 layer {
