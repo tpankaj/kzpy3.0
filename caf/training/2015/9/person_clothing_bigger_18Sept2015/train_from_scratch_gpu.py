@@ -4,7 +4,7 @@ import caffe
 
 
 model_to_load = False
-cms = gg(opjh('caffe/models/person_clothing_bigger_17Sept2015/*.caffemodel'))
+cms = gg(opjh('caffe/models/person_clothing_bigger_18Sept2015/*.caffemodel'))
 if len(cms) > 0:
     ctimes = []
     for c in cms:
@@ -22,7 +22,7 @@ if len(cms) > 0:
 
 caffe.set_device(0)
 caffe.set_mode_gpu()
-solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_bigger_17Sept2015/solver.prototxt'))
+solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_bigger_18Sept2015/solver.prototxt'))
 
 if model_to_load:
     solver.net.copy_from(model_to_load)
