@@ -6,13 +6,13 @@ sys.path.insert(0, './python')
 import caffe
 import numpy as np
 
-#caffe.set_device(0)
-#caffe.set_mode_gpu()
+caffe.set_device(0)
+caffe.set_mode_gpu()
 solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
 cms = gg(opjh('caffe/models/person_clothing_17Sept2015/*.caffemodel'))
 cms = sorted(cms,key=natural_keys)
 last_iter = int(cms[-1].split('model_iter_')[-1].split('.')[0])
-model_to_load = last_iter(d2n('model_iter_',last_iter,'.caffemodel'))
+model_to_load = d2n('model_iter_',last_iter,'.caffemodel')
 model_to_load = opjh('caffe/models/person_clothing_17Sept2015',model_to_load)
 print(model_to_load)
 exit()
