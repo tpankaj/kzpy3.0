@@ -6,15 +6,21 @@ sys.path.insert(0, './python')
 import caffe
 import numpy as np
 
-caffe.set_device(0)
-caffe.set_mode_gpu()
+#caffe.set_device(0)
+#caffe.set_mode_gpu()
 solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
 cms = gg(opjh('caffe/models/person_clothing_17Sept2015/*.caffemodel'))
+ctimes = []
+for c in cms:
+    ctimes.append(os.path.getctime(c))
 cms = sorted(cms,key=natural_keys)
-last_iter = int(cms[-1].split('model_iter_')[-1].split('.')[0])
-model_to_load = d2n('model_iter_',last_iter,'.caffemodel')
-model_to_load = opjh('caffe/models/person_clothing_17Sept2015',model_to_load)
+ctimes = []
+for c in cms:
+    ctimes.append(os.path.getctime(c))
+sorted_indicies = np.argsort(np.array(ctimes))
+model_to_load = cms[sorted_indicies[-1]]
 print(d2s('***** model to load =',model_to_load))
+exit
 solver.net.copy_from(model_to_load)
 #!mv model_iter_* model_iters
 niter = 500000
