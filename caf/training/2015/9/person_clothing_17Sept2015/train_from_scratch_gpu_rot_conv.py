@@ -10,13 +10,20 @@ import numpy as np
 #### %matplotlib inline
 
 # losses will also be stored in the log
-caffe.set_device(0)
-caffe.set_mode_gpu()
+#caffe.set_device(0)
+#caffe.set_mode_gpu()
 # We create a solver that fine-tunes from a previously trained network.
 #solver = caffe.SGDSolver('/global/home/users/karlz/scratch/models_caffe/finetune_BarryLyndon_8Sept2015/solver.prototxt')
 #solver.net.copy_from('/global/home/users/karlz/scratch/models_caffe/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
-solver.net.copy_from(opjh('caffe/models/person_clothing_17Sept2015/model_iter_600.caffemodel'))
+cms = gg(opjh('caffe/models/person_clothing_17Sept2015/*.caffemodel'))
+cms = sorted(cms,key=natural_keys)
+last_iter = int(cms[-1].split('model_iter_')[-1].split('.')[0])
+model_to_load = last_iter(d2n('model_iter_',last_iter,'.caffemodel'))
+model_to_load = opjh('caffe/models/person_clothing_17Sept2015',model_to_load)
+print(model_to_load)
+exit()
+#solver.net.copy_from(model_to_load)
 # For reference, we also create a solver that does no finetuning.
 #scratch_solver = caffe.SGDSolver('models/finetune_flickr_style/solver.prototxt')
 
