@@ -6,8 +6,8 @@ sys.path.insert(0, './python')
 import caffe
 import numpy as np
 
-#caffe.set_device(0)
-#caffe.set_mode_gpu()
+caffe.set_device(0)
+caffe.set_mode_gpu()
 solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
 cms = gg(opjh('caffe/models/person_clothing_17Sept2015/*.caffemodel'))
 cms = sorted(cms,key=natural_keys)
