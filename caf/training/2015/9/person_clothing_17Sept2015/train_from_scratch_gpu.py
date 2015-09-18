@@ -14,7 +14,7 @@ cms = sorted(cms,key=natural_keys)
 last_iter = int(cms[-1].split('model_iter_')[-1].split('.')[0])
 model_to_load = d2n('model_iter_',last_iter,'.caffemodel')
 model_to_load = opjh('caffe/models/person_clothing_17Sept2015',model_to_load)
-print(d2s('***** model to load =',model_to_load)
+print(d2s('***** model to load =',model_to_load))
 solver.net.copy_from(model_to_load)
 
 niter = 500000
