@@ -1,14 +1,9 @@
 from kzpy3.utils import *
-import os
-import sys
-sys.path.insert(0, './python')
-
+#sys.path.insert(0, './python')
 import caffe
-import numpy as np
 
-#caffe.set_device(0)
-#caffe.set_mode_gpu()
-solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
+
+
 cms = gg(opjh('caffe/models/person_clothing_17Sept2015/*.caffemodel'))
 ctimes = []
 for c in cms:
@@ -20,9 +15,15 @@ for c in cms:
 sorted_indicies = np.argsort(np.array(ctimes))
 model_to_load = cms[sorted_indicies[-1]]
 print(d2s('***** model to load =',model_to_load))
-exit
+
+
+
+
+caffe.set_device(0)
+caffe.set_mode_gpu()
+solver = caffe.SGDSolver(opjh('caffe/models/person_clothing_17Sept2015/solver.prototxt'))
 solver.net.copy_from(model_to_load)
-#!mv model_iter_* model_iters
+
 niter = 500000
 train_loss = []
 accuracy_lst = []
