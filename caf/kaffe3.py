@@ -379,7 +379,7 @@ if True:
     src.reshape(1,3,227,227)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['inception_5a/3x3']:#['inception_4e/output']:#['fc8']:
+    for l in ['inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
         do_it3(l,net,2000,0)
 
 
