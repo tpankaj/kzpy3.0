@@ -1,4 +1,4 @@
-from kzpy3.vis import *
+from kzpy3.utils import *
 from kzpy3.progress import *
 #plt.ion()
 
@@ -325,7 +325,7 @@ if True:
     img = imread(opjh('caffe/examples/images/cat.jpg'))
     img = img[:,:,:3]
     img = imresize(img,(224,224,3))
-    mi(img)
+    #mi(img)
 
     net.blobs['data'].data[0,0,:,:] =img[:,:,2]
     net.blobs['data'].data[0,1,:,:] =img[:,:,1]
