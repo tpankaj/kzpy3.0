@@ -21,7 +21,8 @@ def showarray(a, fmt='jpeg'):
     display(Image(data=f.getvalue()))
 
 model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet',
-'finetune_BarryLyndon_8Sept2015','VGG_ILSVRC_16_layers','person_clothing_bigger_18Sept2015']
+'finetune_BarryLyndon_8Sept2015','VGG_ILSVRC_16_layers','person_clothing_bigger_18Sept2015',
+'bvlc_googlenet_person']
 
 def get_net(MODEL_NUM = 2):
     model_folder = model_folders[MODEL_NUM]
@@ -370,7 +371,7 @@ inception_layers = ['inception_3a/1x1',
 
 #############################
 if True:
-    MODEL_NUM = 5
+    MODEL_NUM = 6
     net = get_net(MODEL_NUM)
 
     print(np.shape(net.blobs['data'].data))
@@ -378,7 +379,7 @@ if True:
     src.reshape(1,3,227,227)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['fc8']:
+    for l in ['inception_4e/output']:#['fc8']:
         do_it3(l,net,1000,0)
 
 
