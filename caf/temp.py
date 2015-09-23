@@ -38,27 +38,48 @@ for current_model in ['person_clothing_bigger_18Sept2015']:#['bvlc_googlenet_per
 	PP[FF]=4,2
 	plt.figure(d2n(current_model,''': loss'''))
 
+	if current_model == 'bvlc_googlenet_person':
+		st = 'Train net output #0: loss1/loss1 = '
+		train_loss = []
+		for n in ns:
+		    if st in n:
+		        train_loss.append(float(n.split(st)[1].split()[0]))
+		plot(train_loss[1:],'.');
 
-	st = 'Train net output #0: loss1/loss1 = '
-	train_loss = []
-	for n in ns:
-	    if st in n:
-	        train_loss.append(float(n.split(st)[1].split()[0]))
-	plot(train_loss[1:],'.');
+		st = 'Train net output #1: loss2/loss1 = '
+		train_loss = []
+		for n in ns:
+		    if st in n:
+		        train_loss.append(float(n.split(st)[1].split()[0]))
+		plot(train_loss[1:],'.');
 
-	st = 'Train net output #1: loss2/loss1 = '
-	train_loss = []
-	for n in ns:
-	    if st in n:
-	        train_loss.append(float(n.split(st)[1].split()[0]))
-	plot(train_loss[1:],'.');
+		st = 'Train net output #2: loss3/loss3 = '
+		train_loss = []
+		for n in ns:
+		    if st in n:
+		        train_loss.append(float(n.split(st)[1].split()[0]))
+		plot(train_loss[1:],'.');
 
-	st = 'Train net output #2: loss3/loss3 = '
-	train_loss = []
-	for n in ns:
-	    if st in n:
-	        train_loss.append(float(n.split(st)[1].split()[0]))
-	plot(train_loss[1:],'.');
+	if current_model == 'person_clothing_bigger_18Sept2015':
+		ns = txt_file_to_list_of_strings(opjh('caffe/models/person_clothing_17Sept2015/slurm-434496.out'))
+		ns += txt_file_to_list_of_strings(opjh('caffe/models/person_clothing_17Sept2015/slurm-434524.out'))
+		ns += txt_file_to_list_of_strings(opjh('caffe/models/person_clothing_17Sept2015/slurm-434874.out'))
+		st = 'Train net output #0: loss = '
+		train_loss = []
+		for n in ns:
+		    if st in n:
+		        train_loss.append(float(n.split(st)[1].split()[0]))
+		plot(train_loss,'.');
+
+		ns = txt_file_to_list_of_strings(opjh('caffe/models/person_clothing_bigger_18Sept2015/slurm-434550.out'))
+		ns += txt_file_to_list_of_strings(opjh('caffe/models/person_clothing_bigger_18Sept2015/slurm-434875.out'))
+
+		st = 'Train net output #0: loss = '
+		train_loss = []
+		for n in ns:
+		    if st in n:
+		        train_loss.append(float(n.split(st)[1].split()[0]))
+		plot(train_loss,'.');	
 
 
 
