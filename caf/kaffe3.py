@@ -188,7 +188,7 @@ def do_it5(MODEL_NUM,layer,net,iter_n,start=0):
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
-                if home_path not == cluster_home_path:
+                if home_path != cluster_home_path:
                 pb.animate(i+1)
             if not valid:
                 print('make_step not valid.')
@@ -343,7 +343,7 @@ if True:
     activations = {}
     for k in net.blobs.keys():
         activations[k] = net.blobs[k].data.copy()
-    lay = 'conv2/3x3'# 'inception_3a/output' #'inception_5b/output' # 'prob' # 'inception_5b/5x5'  #'inception_4e/output'#'prob' #'inception_3a/1x1'
+    lay = 'prob' #'conv2/3x3'# 'inception_3a/output' #'inception_5b/output' #  'inception_5b/5x5'  #'inception_4e/output'#'prob' #'inception_3a/1x1'
     a = activations[lay]/(10.0*activations[lay].max())
     #a[0,4,45,45] = 1
     for l in [lay]:#['conv1/7x7_s2']:#['conv1/7x7_s2']:#inception_layers: #['fc6']:
