@@ -380,7 +380,7 @@ if True:
     print(np.shape(net.blobs['data'].data))
 
     for l in ['inception_4e/output']:#['fc8']:
-        do_it3(l,net,1000,0)
+        do_it3(l,net,2000,0)
 
 
 
