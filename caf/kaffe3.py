@@ -189,7 +189,7 @@ def do_it5(MODEL_NUM,layer,net,iter_n,start=0):
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
                 if home_path != cluster_home_path:
-                pb.animate(i+1)
+                    pb.animate(i+1)
             if not valid:
                 print('make_step not valid.')
                 break
