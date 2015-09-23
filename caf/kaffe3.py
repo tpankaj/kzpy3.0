@@ -354,7 +354,7 @@ if True:
     src.reshape(1,3,227,227)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['fc8']:
+    for l in ['conv4']:
         do_it3(l,net,1000,0)
 
 
