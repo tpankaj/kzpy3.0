@@ -62,7 +62,31 @@ except:
 def objective_L2(dst):
     dst.diff[:] = dst.data 
 
+
 def make_step(net, step_size=1.5, end='inception_4c/output', 
+              jitter=32, clip=True, objective=objective_L2):
+    '''Basic gradient ascent step.'''
+
+    src = net.blobs['data'] # input image is stored in Net's 'data' blob
+    dst = net.blobs[end]
+
+    ox, oy = np.random.randint(-jitter, jitter+1, 2)
+    src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
+            
+    net.forward(end=end)
+    objective(dst)  # specify the optimization objective
+    net.backward(start=end)
+    g = src.diff[0]
+    # apply normalized ascent step to the input image
+    src.data[:] += step_size/np.abs(g).mean() * g
+
+    src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+            
+    if clip:
+        bias = net.transformer.mean['data']
+        src.data[:] = np.clip(src.data, -bias, 255-bias)    
+
+def make_step2(net, step_size=1.5, end='inception_4c/output', 
               jitter=32, clip=True, objective=objective_L2):
     '''Basic gradient ascent step.'''
 
@@ -281,7 +305,7 @@ def do_it6(MODEL_NUM,layer,net,iter_n,mask7,start=0):
         print(d2s('\tstart =',time.ctime()))
         save_time = time.time()
         for i in range(iter_n):
-            valid = make_step(net,end=layer,objective=objective_kz7)
+            valid = make_step2(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
