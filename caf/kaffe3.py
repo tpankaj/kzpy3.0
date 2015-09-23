@@ -9,8 +9,9 @@ from IPython.display import clear_output, Image, display
 from google.protobuf import text_format
 import caffe
 
-# caffe.set_mode_gpu()
-# caffe.set_device(0) # select GPU device if multiple devices exist
+if home_path == '/global/home/users/karlz':
+    caffe.set_mode_gpu()
+    caffe.set_device(0) # select GPU device if multiple devices exist
 
 def showarray(a, fmt='jpeg'):
     a = np.uint8(np.clip(a, 0, 255))
