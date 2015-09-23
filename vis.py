@@ -69,7 +69,7 @@ def mi(
             mi(load_img_folder_to_dict(opjh('Desktop','conv5')),1,[3,4,0])
     """
     if type(image_matrix) == str:
-        mi(load_img_folder_to_dict(image_matrix),figure_num,subplot_array,img_title,img_xlabel,img_ylabel,cmap,toolBar)
+        mi(load_img_folder_to_dict(image_matrix),image_matrix,subplot_array,img_title,img_xlabel,img_ylabel,cmap,toolBar)
         return
 
     if type(image_matrix) == list:
