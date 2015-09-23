@@ -14,8 +14,8 @@ current_model = 'person_clothing_bigger_18Sept2015'
 
 CS_('''training loss''')
 if current_model == 'person_clothing_bigger_18Sept2015':
-	ns = txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-435348.out'))
-	ns += txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-435350.out'))
+	ns = txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-434550.out'))
+	ns += txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-434875.out'))
 if current_model == 'bvlc_googlenet_person':
 	ns = txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435348.out'))
 	ns += txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435350.out'))
