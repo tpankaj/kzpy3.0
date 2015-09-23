@@ -9,7 +9,8 @@ from IPython.display import clear_output, Image, display
 from google.protobuf import text_format
 import caffe
 
-if home_path == '/global/home/users/karlz':
+cluster_home_path = '/global/home/users/karlz'
+if home_path == cluster_home_path:
     caffe.set_mode_gpu()
     caffe.set_device(0) # select GPU device if multiple devices exist
 
@@ -180,12 +181,14 @@ def do_it5(MODEL_NUM,layer,net,iter_n,start=0):
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
 
         pb = ProgressBar(iter_n)
-        print(d2s(model_folders[MODEL_NUM],':',layer,'node',n))
+        print(d2s(model_folders[MODEL_NUM],':',layer,', node =',n))
+        print(d2s('\tstart =',time.ctime()))
         for i in range(iter_n):
             valid = make_step(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
+                if home_path not == cluster_home_path:
                 pb.animate(i+1)
             if not valid:
                 print('make_step not valid.')
@@ -230,21 +233,26 @@ def do_it6(MODEL_NUM,layer,net,iter_n,mask7,start=0):
 
         pb = ProgressBar(iter_n)
         print(d2c(model_folders[MODEL_NUM],layer,'node',n))
+        print(d2s('\tstart =',time.ctime()))
         save_time = time.time()
         for i in range(iter_n):
             valid = make_step(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
-                pb.animate(i+1)
+                if home_path not == cluster_home_path:
+                    pb.animate(i+1)
             if not valid:
                 print('make_step not valid.')
                 break
-            if time.time()-save_time > 15:
-                vis = deprocess(net, src.data[0])
-                img = np.uint8(np.clip(vis, 0, 255))
-                imsave(opj(img_path,str(n)+'.png'),img)
-                save_time = time.time()
+            
+            if home_path not == cluster_home_path:
+                if time.time()-save_time > 15:
+                    vis = deprocess(net, src.data[0])
+                    img = np.uint8(np.clip(vis, 0, 255))
+                    imsave(opj(img_path,str(n)+'.png'),img)
+                    save_time = time.time()
+        print(d2s('\tend =',time.ctime()))
         print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
         vis = deprocess(net, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
