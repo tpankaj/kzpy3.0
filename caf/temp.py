@@ -106,11 +106,12 @@ def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, pad
 CS_('''Latest weights.''')
 if current_model == 'person_clothing_bigger_18Sept2015':
 	filters_b = net.params['conv1'][0].data.copy()
+	PP[FF] = 8,8
 if current_model == 'bvlc_googlenet_person':
 	filters_b = net.params['conv1/7x7_s2'][0].data.copy()
+	PP[FF] = 4,4
 
 
-PP[FF] = 4,4
 vis_square(filters_b.transpose(0, 2, 3, 1)[:,:,:,:],d2n(current_model,''': latest weights.'''),[1,2,1])
 f = filters_b.copy()
 
