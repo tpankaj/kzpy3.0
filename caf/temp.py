@@ -3,6 +3,7 @@ from kzpy3.vis import *
 CS_('''
 *** Look at the progress of training person_clothing_bigger_18Sept2015 ***
 This network has conv1 four times bigger and conv2 two times bigger
+''')
 
 def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, padval=0):
     data -= data.min()
@@ -17,7 +18,7 @@ def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, pad
     mi(data,fig_name,subplot_array)
     return data
 
-''')
+
 
 
  
