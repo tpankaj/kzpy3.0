@@ -7,7 +7,8 @@ This network has conv1 four times bigger and conv2 two times bigger
 ''')
 
 
-current_model = 'person_clothing_bigger_18Sept2015'
+#current_model = 'person_clothing_bigger_18Sept2015'
+current_model = 'bvlc_googlenet_person'
 
 
 
