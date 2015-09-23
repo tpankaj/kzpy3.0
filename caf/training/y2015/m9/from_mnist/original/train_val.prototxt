@@ -39,7 +39,7 @@ layer {
   top: "conv1"
   convolution_param {
     num_output: 20
-    kernel_size: 5
+    kernel_size: 3
     weight_filler {
       type: "xavier"
     }
