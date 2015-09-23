@@ -99,7 +99,7 @@ for current_model in ['person_clothing_bigger_18Sept2015']:#['bvlc_googlenet_per
 
 
 
-	return
+if False:
 
 
 
