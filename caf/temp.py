@@ -15,8 +15,9 @@ This network has conv1 four times bigger and conv2 two times bigger
 CS_('''training loss''')
 ns = txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435348.out'))
 ns += txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435350.out'))
+PP[FF]=4,2
 plt.figure('loss')
-PP[FF]=8,4
+
 
 st = 'Train net output #0: loss1/loss1 = '
 train_loss = []
@@ -98,7 +99,7 @@ def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, pad
 
 CS_('''Latest weights.''')
 filters_b = net.params['conv1/7x7_s2'][0].data.copy()
-PP[FF] = 8,8
+PP[FF] = 4,4
 vis_square(filters_b.transpose(0, 2, 3, 1)[:,:,:,:],'''Latest weights.''',[1,2,1])
 f = filters_b.copy()
 
