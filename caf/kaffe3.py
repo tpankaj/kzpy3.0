@@ -240,13 +240,13 @@ def do_it6(MODEL_NUM,layer,net,iter_n,mask7,start=0):
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
-                if home_path not == cluster_home_path:
+                if home_path != cluster_home_path:
                     pb.animate(i+1)
             if not valid:
                 print('make_step not valid.')
                 break
             
-            if home_path not == cluster_home_path:
+            if home_path != cluster_home_path:
                 if time.time()-save_time > 15:
                     vis = deprocess(net, src.data[0])
                     img = np.uint8(np.clip(vis, 0, 255))
