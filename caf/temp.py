@@ -13,10 +13,10 @@ This network has conv1 four times bigger and conv2 two times bigger
 
 
 CS_('''training loss''')
-ns = txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435348.out'))
-ns += txt_file_to_list_of_strings(opjh('caffe/models/bvlc_googlenet_person/slurm-435350.out'))
+ns = txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-435348.out'))
+ns += txt_file_to_list_of_strings(opjh('caffe/models/'+current_model+'/slurm-435350.out'))
 PP[FF]=4,2
-plt.figure('loss')
+plt.figure(d2n(current_model,''': loss'''))
 
 
 st = 'Train net output #0: loss1/loss1 = '
@@ -55,7 +55,7 @@ import caffe
 caffe.set_mode_cpu()
 
 model_to_load = False
-cms = gg(opjh('caffe/models/bvlc_googlenet_person/*.caffemodel'))
+cms = gg(opjh('caffe/models/'+current_model+'/*.caffemodel'))
 if len(cms) > 0:
     ctimes = []
     for c in cms:
@@ -69,7 +69,7 @@ if len(cms) > 0:
     print(d2s('***** model to load =',model_to_load))
 
 
-net = caffe.Net(opjh('caffe/models/bvlc_googlenet_person/deploy.prototxt'),model_to_load, caffe.TEST)
+net = caffe.Net(opjh('caffe/models/'+current_model+'/deploy.prototxt'),model_to_load, caffe.TEST)
 
 #net = caffe.Net(opjh('caffe/models/bvlc_reference_caffenet/deploy.prototxt'),
 #                opjh('caffe/models/bvlc_reference_caffenet/model.caffemodel' ), #'caffe/models/bvlc_reference_caffenet/model.caffemodel'),
@@ -100,10 +100,10 @@ def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, pad
 CS_('''Latest weights.''')
 filters_b = net.params['conv1/7x7_s2'][0].data.copy()
 PP[FF] = 4,4
-vis_square(filters_b.transpose(0, 2, 3, 1)[:,:,:,:],'''Latest weights.''',[1,2,1])
+vis_square(filters_b.transpose(0, 2, 3, 1)[:,:,:,:],d2n(current_model,''': latest weights.'''),[1,2,1])
 f = filters_b.copy()
 
 for i in range(shape(f)[0]):
     f[i,:,:,:] = z2o(f[i,:,:,:])
-vis_square(f.transpose(0, 2, 3, 1),'''Latest weights.''',[1,2,2]);
+vis_square(f.transpose(0, 2, 3, 1),d2n(current_model,''': latest weights.'''),[1,2,2]);
 model_to_load
