@@ -69,35 +69,6 @@ def make_step(net, step_size=1.5, end='inception_4c/output',
     src = net.blobs['data'] # input image is stored in Net's 'data' blob
 
     dst = net.blobs[end]
-    ox, oy = np.random.randint(-jitter, jitter+1, 2)
-    src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
-    net.forward(end=end)
-
-    objective(dst)  # specify the optimization objective
-    net.backward(start=end)
-    g = src.diff[0]
-    # apply normalized ascent step to the input image
-    denom = np.abs(g).mean()
-    if denom:
-        src.data[:] += step_size/denom * g
-    else:
-        print(d2s('Warnging: denom =',denom))
-        return False
-
-    src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
-            
-    if clip:
-        bias = net.transformer.mean['data']
-        src.data[:] = np.clip(src.data, -bias, 255-bias)
-    return True  
-
-def make_step2(net, step_size=1.5, end='inception_4c/output', 
-              jitter=32, clip=True, objective=objective_L2):
-    '''Basic gradient ascent step.'''
-
-    src = net.blobs['data'] # input image is stored in Net's 'data' blob
-
-    dst = net.blobs[end]
     ox, oy = 0,0 #np.random.randint(-jitter, jitter+1, 2)
     src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
     net.forward(end=end)
@@ -169,7 +140,7 @@ def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, pad
     return data
 
 
-def do_it3(layer,net,iter_n,start=0):
+def do_it5(MODEL_NUM,layer,net,iter_n,start=0):
 
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2,0,1))
@@ -180,31 +151,48 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/9/23/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    if layer == "conv1/7x7_s2": # special case where net.forward changes layer shape
+        layer_shape = (1,64,114,114)
+    if layer == "conv2/3x3": # special case where net.forward changes layer shape
+        layer_shape = (1,192,57,57)
+
+    img_path = opj(home_path,'scratch/2015/9/22/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+
     unix('mkdir -p ' + img_path)
+
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
-        #n = np.random.randint(1000)
+        
         mask7[:,n] = 1.0
         def objective_kz7(dst):
             dst.diff[:] = dst.data * mask7
 
         try:
             cimg = caffe.io.load_image(opj(img_path,str(n)+'.png'))
-            net.blobs['data'].reshape(1,3,227,227)
-            net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
+            if model_folders[MODEL_NUM] == 'VGG_ILSVRC_16_layers':
+                net.blobs['data'].reshape(1,3,224,224)
+                net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
+            else:
+                net.blobs['data'].reshape(1,3,227,227)
+                net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
         except:
             net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
 
         pb = ProgressBar(iter_n)
+        print(d2s(model_folders[MODEL_NUM],':',layer,', node =',n))
+        print(d2s('\tstart =',time.ctime()))
         for i in range(iter_n):
-            make_step(net,end=layer,objective=objective_kz7)
+            valid = make_step(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
-                pb.animate(i+1)
+                if home_path != cluster_home_path:
+                    pb.animate(i+1)
+            if not valid:
+                print('make_step not valid.')
+                break
         print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
         vis = deprocess(net, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
@@ -248,7 +236,7 @@ def do_it6(MODEL_NUM,layer,net,iter_n,mask7,start=0):
         print(d2s('\tstart =',time.ctime()))
         save_time = time.time()
         for i in range(iter_n):
-            valid = make_step2(net,end=layer,objective=objective_kz7)
+            valid = make_step(net,end=layer,objective=objective_kz7)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
@@ -312,7 +300,7 @@ inception_layers = ['inception_3a/1x1',
 
 
 #############################
-if True:
+if False:
     MODEL_NUM = 5
     net = get_net(MODEL_NUM)
 
@@ -322,7 +310,7 @@ if True:
     print(np.shape(net.blobs['data'].data))
 
     for i in range(100000):
-        for l in ['conv4']:
+        for l in ['fc8']:
             try:
                do_it3(l,net,1000,0)
             except:
