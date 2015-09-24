@@ -94,9 +94,8 @@ class SimpleLayer3(caffe.Layer):
             top[0].data[i,:,-n2:,:] += bottom[0].data[randint(100),:,:n2,:]
             tp = top[0].data[i,:,:,:]
             tp[tp>mx] = mx
-        if np.random.random(1) > 0.5:
-            tp = mx - tp
-        top[0].data[i,:,:,:] = tp
+            if np.random.random(1)[0] > 0.5:
+                top[0].data[i,:,:,:] = mx-tp
 
             #top[0].data[i,:,:,:] += np.random.random(shape(bottom[0].data[r,:,:,:]))
     def backward(self, top, propagate_down, bottom):

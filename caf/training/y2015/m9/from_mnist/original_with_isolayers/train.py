@@ -1,0 +1,77 @@
+'''
+20 Sept. 2015
+Do this:
+from kzpy3.caf.training.y2015.m9.from_mnist.original_with_isolayers.train import *
+
+%matplotlib osx
+
+t=1+1000+2000+20000
+d = solver.net.blobs['data'].data
+i1 = solver.net.blobs['iconv5'].data
+i2 = solver.net.blobs['iconv6'].data
+i3 = solver.net.blobs['iconv7'].data
+i4 = solver.net.blobs['iconv8'].data
+i5 = solver.net.blobs['iconv9'].data
+for n in range(10):
+ii1 = i1[n,:].transpose(1,2,0)
+ii2 = i2[n,:].transpose(1,2,0)
+ii3 = i3[n,:].transpose(1,2,0)
+ii4 = i4[n,:].transpose(1,2,0)
+ii5 = i5[n,:].transpose(1,2,0)
+dd=dd = d[n,0,:,:]
+mi(dd,t,[6,10,n+1],img_title=d2s(int(solver.net.blobs['label'].data[n])))
+mi(ii1,t,[6,10,n+11])
+mi(ii2,t,[6,10,n+21])
+mi(ii3,t,[6,10,n+31])
+mi(ii4,t,[6,10,n+41])
+mi(ii5,t,[6,10,n+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
+
+
+
+'''
+
+from kzpy3.vis import *
+import caffe
+
+os.chdir(home_path) # this is for the sake of the train_val.prototxt
+
+global solver
+global net
+
+def setup_solver():
+	global solver
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2015/m9/from_mnist/original_with_isolayers/solver.prototxt"))
+	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
+		print(l)
+	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
+		print(l)
+
+def train():
+	solver.step(5000)
+
+
+def look_at_numbers():
+	solver.step(1)
+	mi(solver.net.blobs['data'].data[:8, 0].transpose(1, 0, 2).reshape(28, 8*28),'train')
+	print solver.net.blobs['label'].data[:8]
+	mi(solver.test_nets[0].blobs['data'].data[:8, 0].transpose(1, 0, 2).reshape(28, 8*28), 'test')
+	print solver.test_nets[0].blobs['label'].data[:8]
+
+
+def restore():
+	solver.restore(opjh('scratch/2015/9/20/caffe/models/from_mnist/original_with_isolayers/model_iter_5000.solverstate'))
+
+
+def deploy(img_name = opjh('caffe/examples/images/7.jpg')):
+	global net
+	net = caffe.Net(opjh('kzpy3/caf/training/y2015/m9/from_mnist/original_with_isolayers/deploy.prototxt'),opjh('scratch/2015/9/20/caffe/models/from_mnist/original_with_isolayers/model_iter_5000.caffemodel'),caffe.TEST)
+	net.blobs['data'].reshape(1,1,28,28)
+	img = scipy.misc.imread(img_name)
+	img = img[:,:,0] # this network wants grayscale images, no color channel.
+	net.blobs['data'].data[...] = img
+	out = net.forward()
+	print("Predicted class is #{}.".format(out['prob'].argmax()))
+	mi(img,img_name)
+
+if __name__ == '__main__':
+	setup_solver()
