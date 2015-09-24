@@ -30,7 +30,7 @@ mi(ii5,t,[6,10,n+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 
 '''
 
-from kzpy3.vis import *
+from kzpy3.utils import *
 import caffe
 
 if home_path == '/global/home/users/karlz':
