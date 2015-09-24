@@ -370,7 +370,7 @@ inception_layers = ['inception_3a/1x1',
 
 
 #############################
-if True:
+if False:
     MODEL_NUM = 6
     net = get_net(MODEL_NUM)
 
@@ -380,6 +380,18 @@ if True:
     print(np.shape(net.blobs['data'].data))
 
     for l in ['inception_4a/5x5']:#['inception_4e/output']:#['fc8']:
+        do_it3(l,net,2000,0)
+
+if True:
+    MODEL_NUM = 5
+    net = get_net(MODEL_NUM)
+
+    print(np.shape(net.blobs['data'].data))
+    src = net.blobs['data']
+    src.reshape(1,3,227,227)
+    print(np.shape(net.blobs['data'].data))
+
+    for l in ['fc6']:
         do_it3(l,net,2000,0)
 
 
