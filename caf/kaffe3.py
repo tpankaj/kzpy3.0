@@ -370,7 +370,7 @@ inception_layers = ['inception_3a/1x1',
 
 
 #############################
-if False:
+if True:
     MODEL_NUM = 6
     net = get_net(MODEL_NUM)
 
@@ -382,7 +382,7 @@ if False:
     for l in ['inception_4a/5x5']:#['inception_4e/output']:#['fc8']:
         do_it3(l,net,2000,0)
 
-if True:
+if False:
     MODEL_NUM = 5
     net = get_net(MODEL_NUM)
 

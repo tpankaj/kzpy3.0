@@ -44,7 +44,7 @@ class SimpleLayer1(caffe.Layer):
 
 
 class SimpleLayer2(caffe.Layer):
-    """A layer that sometimes reverses contrast."""
+    """A layer that adds distractors."""
 
     def setup(self, bottom, top):
         pass
@@ -54,19 +54,9 @@ class SimpleLayer2(caffe.Layer):
     
     def forward(self, bottom, top):
         tp = zeros((1,1,28,28))
-        n = 18
-        n2 = 16
+        n = 12
+        n2 = 10
         for i in range(100):
-            '''
-            tp[0,0,:,:] = bottom[0].data[i,:,:,:] - 0.5
-            mx = tp.max()
-            tp[0,0,:,:n] += bottom[0].data[randint(100),:,:,-n:]
-            tp[0,0,:,-n:] += bottom[0].data[randint(100),:,:,:n]
-            tp[0,0,:n2,:] += bottom[0].data[randint(100),:,-n2:,:]
-            tp[0,0,-n2:,:] += bottom[0].data[randint(100),:,:n2,:]
-            tp[tp>mx]=mx
-            top[0,0].data[i,0,:,:] = tp
-            '''
             top[0].data[i,:,:,:] = bottom[0].data[i,:,:,:] - 0.5
             mx = top[0].data[i,:,:,:].max()
             top[0].data[i,:,:,:n] += bottom[0].data[randint(100),:,:,-n:]
@@ -76,6 +66,37 @@ class SimpleLayer2(caffe.Layer):
             tp = top[0].data[i,:,:,:]
             tp[tp>mx] = mx
 
+
+            #top[0].data[i,:,:,:] += np.random.random(shape(bottom[0].data[r,:,:,:]))
+    def backward(self, top, propagate_down, bottom):
+        bottom[0].diff[...] = 1.0 * top[0].diff # don't know what this should be, but perhaps it doesn't matter for a data layer
+
+
+class SimpleLayer3(caffe.Layer):
+    """A layer that addds distractcors, sometimes reverses contrast."""
+
+    def setup(self, bottom, top):
+        pass
+
+    def reshape(self, bottom, top):
+        top[0].reshape(*bottom[0].data.shape)
+    
+    def forward(self, bottom, top):
+        tp = zeros((1,1,28,28))
+        n = 12
+        n2 = 10
+        for i in range(100):
+            top[0].data[i,:,:,:] = bottom[0].data[i,:,:,:] - 0.5
+            mx = top[0].data[i,:,:,:].max()
+            top[0].data[i,:,:,:n] += bottom[0].data[randint(100),:,:,-n:]
+            top[0].data[i,:,:,-n:] += bottom[0].data[randint(100),:,:,:n]
+            top[0].data[i,:,:n2,:] += bottom[0].data[randint(100),:,-n2:,:]
+            top[0].data[i,:,-n2:,:] += bottom[0].data[randint(100),:,:n2,:]
+            tp = top[0].data[i,:,:,:]
+            tp[tp>mx] = mx
+        if np.random.random(1) > 0.5:
+            tp = mx - tp
+        top[0].data[i,:,:,:] = tp
 
             #top[0].data[i,:,:,:] += np.random.random(shape(bottom[0].data[r,:,:,:]))
     def backward(self, top, propagate_down, bottom):
