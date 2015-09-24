@@ -181,7 +181,7 @@ if True:
     activations = {}
     for k in net.blobs.keys():
         activations[k] = net.blobs[k].data.copy()
-    lay = 'inception_5b/output' #'fc7'#'inception_4a/5x5'  #'conv1/7x7_s2'# 'conv2/3x3'# 'inception_4e/output' # 'prob' #'inception_5b/output' #  'inception_4e/output'#'prob' #'inception_3a/1x1'
+    lay = 'conv1/7x7_s2' #'fc7'#'inception_4a/5x5'  #'conv1/7x7_s2'# 'conv2/3x3'# 'inception_4e/output' # 'prob' #'inception_5b/output' #  'inception_4e/output'#'prob' #'inception_3a/1x1'
     a = activations[lay]/(10.0*activations[lay].max())
     #a[0,4,45,45] = 1
     for l in [lay]:#['conv1/7x7_s2']:#inception_layers: #['fc6']:

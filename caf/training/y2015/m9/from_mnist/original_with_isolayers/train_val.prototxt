@@ -33,35 +33,9 @@ layer {
   }
 }
 layer {
-  type: 'Python'
-  name: 'pydata'
-  bottom: 'data'
-  top: 'pydata'
-  python_param {
-    module: 'kz_layers0'
-    layer: 'SimpleLayer2'
-  }
-  include {
-    phase: TRAIN
-  }
-}
-layer {
-  type: 'Python'
-  name: 'pydata'
-  bottom: 'data'
-  top: 'pydata'
-  python_param {
-    module: 'kz_layers0'
-    layer: 'SimpleLayer2'
-  }
-  include {
-    phase: TEST
-  }
-}
-layer {
   name: "iconv1"
   type: "Convolution"
-  bottom: "pydata"
+  bottom: "data"
   top: "iconv1"
   convolution_param {
     num_output: 3
