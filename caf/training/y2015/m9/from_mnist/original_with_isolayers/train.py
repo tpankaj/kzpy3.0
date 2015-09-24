@@ -45,9 +45,8 @@ global net
 def all():
 	global solver
 	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2015/m9/from_mnist/original_with_isolayers/solver.prototxt"))
-	print('here1')
 	solver.step(100000)
-	perint('here2')
+
 
 def setup_solver():
 	global solver
