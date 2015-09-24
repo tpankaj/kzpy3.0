@@ -5,8 +5,8 @@ from kzpy3.caf.training.y2015.m9.from_mnist.original_with_isolayers.train import
 
 %matplotlib osx
 
-t=1+1000+2000+20000
-d = solver.net.blobs['data'].data
+t=100
+d = solver.net.blobs['pydata'].data
 i1 = solver.net.blobs['iconv5'].data
 i2 = solver.net.blobs['iconv6'].data
 i3 = solver.net.blobs['iconv7'].data
@@ -33,10 +33,21 @@ mi(ii5,t,[6,10,n+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 from kzpy3.vis import *
 import caffe
 
+if home_path == '/global/home/users/karlz':
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
+
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 global solver
 global net
+
+def all():
+	global solver
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2015/m9/from_mnist/original_with_isolayers/solver.prototxt"))
+	print('here1')
+	solver.step(1)
+	perint('here2')
 
 def setup_solver():
 	global solver
@@ -74,4 +85,4 @@ def deploy(img_name = opjh('caffe/examples/images/7.jpg')):
 	mi(img,img_name)
 
 if __name__ == '__main__':
-	setup_solver()
+	all()
