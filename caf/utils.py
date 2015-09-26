@@ -35,7 +35,8 @@ def get_net(model_name):
     model.force_backward = True
     open('tmp.prototxt', 'w').write(str(model))
     net = caffe.Classifier('tmp.prototxt', param_fn,
-                           mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
+                            mean = np.float32([114.0,114.0,114.0]),
+                           #mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
                            channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
     print model_name
     for n in net.blobs.keys():
@@ -52,6 +53,80 @@ def deprocess(net, img):
 
 
 
+##########################################################
+#
+def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,opt_name=None):
+    
+    objectives = []
+    for l in layers:
+        objectives.append(objective_dic[l])
+
+    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
+    transformer.set_transpose('data', (2,0,1))
+    transformer.set_mean('data', np.load(opj(home_path,'caffe/python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
+    transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
+    transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
+    '''
+    layer_shape=list(np.shape(net.blobs[layer].data));
+    layer_shape[0] = 1
+    layer_shape = tuple(layer_shape)
+    if layer == "conv1/7x7_s2": # special case where net.forward changes layer shape
+        layer_shape = (1,64,114,114)
+    if layer == "conv2/3x3": # special case where net.forward changes layer shape
+        layer_shape = (1,192,57,57)
+    '''
+    
+    #img_path = opj(home_path,'scratch/2015/9/24/'+model_name)#+'/'+layer.replace('/','-'))
+    #img_path = opj(output_path,model_name)#+'/'+layer.replace('/','-'))
+    
+    unix('mkdir -p ' + img_path)
+    if opt_name:
+        img_path = opj(img_path,opt_name)
+    else:
+        img_path += '/'+'-'.join(layers).replace('/','-')# 'layer' #'/'+layer.replace('/','-')
+
+
+    net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
+    net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
+    net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
+
+    pb = ProgressBar(iter_n)
+    print(d2c(model_name,' '.join(layers)))
+    print(d2s('\tstart =',time.ctime()))
+    save_time = time.time()
+    n = 0
+    for i in range(iter_n):
+        for layer,objective in zip(layers,objectives):
+            valid = make_step2(net,end=layer,objective=objective)
+            src = net.blobs['data']
+            grayscale = src.data[0].mean(axis=0)
+            src.data[0][0,:,:] = grayscale
+            src.data[0][1,:,:] = grayscale
+            src.data[0][2,:,:] = grayscale
+
+            src.data[0] = 200*z2o(zscore(src.data[0],2.5))-100
+            #print(shape(src.data[0]))
+            vis = deprocess(net, src.data[0])
+            if np.mod(i,10.0)==0:
+                if home_path != cluster_home_path:
+                    pb.animate(i+1)
+            if not valid:
+                print('make_step not valid.')
+                break
+            
+            if home_path != cluster_home_path:
+                if time.time()-save_time > 15:
+                    vis = deprocess(net, src.data[0])
+                    img = np.uint8(255*z2o(zscore(vis,2.5)))
+                    imsave(opj(img_path+'.png'),img)
+                    save_time = time.time()
+    print(d2s('\tend =',time.ctime()))
+    print((model_name,layer,n))#,labels[n]))
+    vis = deprocess(net, src.data[0])
+    img = np.uint8(np.clip(vis, 0, 255))
+    imsave(opj(img_path+'.png'),img)
+#
+##########################################################
 
 
 
@@ -129,7 +204,7 @@ def make_step2(
     net,
     step_size=1.5,
     end='', 
-    jitter=2,
+    jitter=1,
     clip=True,
     objective=objective_L2):
     '''Basic gradient ascent step.'''

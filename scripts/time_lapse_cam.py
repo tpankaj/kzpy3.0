@@ -27,10 +27,11 @@ while True:
 
     # Capture frame-by-frame
     ret, frame = video_capture.read()
-    rgbframe = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('Video', np.fliplr(scipy.misc.imresize(frame,25)))
 
     if time.time()-last_time > sleeptime:
+        rgbframe = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        cv2.imshow('Video', np.fliplr(scipy.misc.imresize(frame,100)))
+
         last_time = time.time()
         fname = opj(path,d2p(np.int(np.floor(time.time())),'jpg'))
         print fname

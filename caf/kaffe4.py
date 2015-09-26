@@ -1,114 +1,84 @@
 from kzpy3.caf.utils import *
 
+#model_name = 'VGG_ILSVRC_16_layers'
+#model_name = 'bvlc_googlenet'
+model_name = 'bvlc_reference_caffenet'
 
-##########################################################
-#
-def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n):
+net = get_net(model_name)
+print(np.shape(net.blobs['data'].data))
+img_name = 'wood.jpg'
+img = imread(opjh('caffe/examples/images',img_name))
+img = img[:,:,:3]
+
+if model_name == 'VGG_ILSVRC_16_layers':
+    net.blobs['data'].reshape(1,3,224,224)
+    img = imresize(img,(224,224,3))
+else:
+    net.blobs['data'].reshape(1,3,227,227)
+    img = imresize(img,(227,227,3))
+print(np.shape(net.blobs['data'].data))
+
+net.blobs['data'].data[0,0,:,:] =img[:,:,2]
+net.blobs['data'].data[0,1,:,:] =img[:,:,1]
+net.blobs['data'].data[0,2,:,:] =img[:,:,0]
+
+net.forward();
+activations = {}
+for k in net.blobs.keys():
+    activations[k] = net.blobs[k].data.copy()
+    if len(shape(activations[k])) == 4:
+        a = activations[k].mean(axis=2)
+        b = a.mean(axis=2)
+        for x in range(shape(activations[k])[2]):
+            for y in range(shape(activations[k])[3]):
+                activations[k][:,:,x,y]=b
     
-    objectives = []
-    for l in layers:
-        objectives.append(objective_dic[l])
+objective_dic = get_objective_dic(model_name,activations)
 
-    transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
-    transformer.set_transpose('data', (2,0,1))
-    transformer.set_mean('data', np.load(opj(home_path,'caffe/python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
-    transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
-    transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
-    '''
-    layer_shape=list(np.shape(net.blobs[layer].data));
-    layer_shape[0] = 1
-    layer_shape = tuple(layer_shape)
-    if layer == "conv1/7x7_s2": # special case where net.forward changes layer shape
-        layer_shape = (1,64,114,114)
-    if layer == "conv2/3x3": # special case where net.forward changes layer shape
-        layer_shape = (1,192,57,57)
-    '''
-    img_path = opj(home_path,'scratch/2015/9/24/'+model_name)#+'/'+layer.replace('/','-'))
-    
-    unix('mkdir -p ' + img_path)
-    img_path += '/'+'-'.join(layers).replace('/','-')# 'layer' #'/'+layer.replace('/','-')
+ml = sorted(objective_dic.keys(),key=natural_keys)
+print(ml)
 
+'''
+Layer catelogue
 
-    net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
-    net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-    net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
+bvlc_googlenet:
+    ['conv1', 'conv2', 'conv3', 'conv4', 'conv5', 'fc6', 'fc7', 'fc8', 'prob']
 
-    pb = ProgressBar(iter_n)
-    print(d2c(model_name,' '.join(layers)))
-    print(d2s('\tstart =',time.ctime()))
-    save_time = time.time()
-    n = 0
-    for i in range(iter_n):
-        for layer,objective in zip(layers,objectives):
-            valid = make_step2(net,end=layer,objective=objective)
-            src = net.blobs['data']
-            k = 3
-            #src.data[0,:,:k,:]=0
-            #src.data[0,:,:,:k]=0
-            #src.data[0,:,-k:,:]=0
-            #src.data[0,:,:,-k:]=0
-            src.data[0] = 200*z2o(zscore(src.data[0],2.5))-100
-            #print((src.data.max(),src.data.min()))
-            vis = deprocess(net, src.data[0])
-            if np.mod(i,10.0)==0:
-                if home_path != cluster_home_path:
-                    pb.animate(i+1)
-            if not valid:
-                print('make_step not valid.')
-                break
-            
-            if home_path != cluster_home_path:
-                if time.time()-save_time > 15:
-                    vis = deprocess(net, src.data[0])
-                    img = np.uint8(255*z2o(zscore(vis,2.5)))
-                    #img = np.uint8(np.clip(vis, 0, 255))
-                    imsave(opj(img_path+'.png'),img)
-                    save_time = time.time()
-    print(d2s('\tend =',time.ctime()))
-    print((model_name,layer,n))#,labels[n]))
-    vis = deprocess(net, src.data[0])
-    img = np.uint8(np.clip(vis, 0, 255))
-    #mi(img,opj(img_path,str(n)+'.png'))
-    imsave(opj(img_path+'.png'),img)
-#
-##########################################################
+VGG_ILSVRC_16_layers:
+    ['conv1_1', 'conv1_2', 'conv2_1', 'conv2_2', 'conv3_1', 'conv3_2', 'conv3_3',
+     'conv4_1', 'conv4_2', 'conv4_3', 'conv5_1', 'conv5_2', 'conv5_3', 'fc6', 'fc7', 'fc8', 'prob']
 
-##########################################################
-#
-if True:
-    MODEL_NUM = 0
-    model_name = model_folders[MODEL_NUM]
-    net = get_net(model_name)
-    print(np.shape(net.blobs['data'].data))
-    
-    img = imread(opjh('caffe/examples/images/cat.jpg'))
-    img = img[:,:,:3]
+bvlc_googlenet:
+    ['conv1/7x7_s2', 'conv2/3x3', 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5',
+    'inception_3a/output', 'inception_3b/1x1', 'inception_3b/3x3', 'inception_3b/5x5',
+    'inception_3b/output', 'inception_4a/1x1', 'inception_4a/3x3', 'inception_4a/5x5',
+    'inception_4a/output', 'inception_4b/1x1', 'inception_4b/3x3', 'inception_4b/5x5',
+    'inception_4b/output',
+    'inception_4c/1x1', 'inception_4c/3x3', 'inception_4c/5x5', 'inception_4c/output',
+    'inception_4d/1x1', 'inception_4d/3x3', 'inception_4d/5x5', 'inception_4d/output',
+    'inception_4e/1x1', 'inception_4e/3x3', 'inception_4e/5x5', 'inception_4e/output',
+    'inception_5a/1x1', 'inception_5a/3x3', 'inception_5a/5x5', 'inception_5a/output',
+    'inception_5b/1x1', 'inception_5b/3x3', 'inception_5b/5x5', 'inception_5b/output', 'prob']
+'''
 
-    if model_name == 'VGG_ILSVRC_16_layers':
-        net.blobs['data'].reshape(1,3,224,224)
-        img = imresize(img,(224,224,3))
-    else:
-        net.blobs['data'].reshape(1,3,227,227)
-        img = imresize(img,(227,227,3))
-    print(np.shape(net.blobs['data'].data))
+inception_outputs = ['conv1/7x7_s2', 'conv2/3x3', 
+    'inception_3a/output', 
+    'inception_3b/output', 
+    'inception_4a/output', 
+    'inception_4c/output',
+    'inception_4d/output',
+    'inception_4e/output',
+    'inception_5a/output',
+    'inception_5b/output']
+VGG_convs = ['conv1_1', 'conv1_2', 'conv2_1', 'conv2_2', 'conv3_1', 'conv3_2', 'conv3_3',
+     'conv4_1', 'conv4_2', 'conv4_3', 'conv5_1', 'conv5_2', 'conv5_3']
 
-    net.blobs['data'].data[0,0,:,:] =img[:,:,2]
-    net.blobs['data'].data[0,1,:,:] =img[:,:,1]
-    net.blobs['data'].data[0,2,:,:] =img[:,:,0]
-
-    net.forward();
-    activations = {}
-    for k in net.blobs.keys():
-        activations[k] = net.blobs[k].data.copy()
-
-    objective_dic = get_objective_dic(model_name,activations)
-
-    ml = objective_dic.keys()
-
-    if __name__ == '__main__':
-        backprop_diffs_to_data(
-            model_name,
-            [ml[0],ml[1],ml[2],ml[3]],
-            objective_dic,
-            net,1000)
+if __name__ == '__main__':
+    backprop_diffs_to_data(
+        model_name,
+        ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
+        objective_dic,
+        net,1000,
+        opjh('scratch/2015/9/26',model_name),
+        '.'.join([img_name,'all']))# 'to 10')
 
