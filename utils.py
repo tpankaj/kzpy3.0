@@ -173,5 +173,11 @@ def dict_to_sorted_list(d):
 
 
 
+def zscore(m,thresh=99999):
+    z = m - np.mean(m)
+    z /= np.std(m)
+    z[z < -thresh] = -thresh
+    z[z > thresh] = thresh
+    return z
 
 

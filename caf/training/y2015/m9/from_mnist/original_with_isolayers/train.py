@@ -5,26 +5,27 @@ from kzpy3.caf.training.y2015.m9.from_mnist.original_with_isolayers.train import
 
 %matplotlib osx
 
-t=100
+t=15500
 d = solver.net.blobs['pydata'].data
 i1 = solver.net.blobs['iconv5'].data
 i2 = solver.net.blobs['iconv6'].data
 i3 = solver.net.blobs['iconv7'].data
 i4 = solver.net.blobs['iconv8'].data
 i5 = solver.net.blobs['iconv9'].data
-for n in range(10):
+for m in range(10):
+n = m +10
 ii1 = i1[n,:].transpose(1,2,0)
 ii2 = i2[n,:].transpose(1,2,0)
 ii3 = i3[n,:].transpose(1,2,0)
 ii4 = i4[n,:].transpose(1,2,0)
 ii5 = i5[n,:].transpose(1,2,0)
 dd=dd = d[n,0,:,:]
-mi(dd,t,[6,10,n+1],img_title=d2s(int(solver.net.blobs['label'].data[n])))
-mi(ii1,t,[6,10,n+11])
-mi(ii2,t,[6,10,n+21])
-mi(ii3,t,[6,10,n+31])
-mi(ii4,t,[6,10,n+41])
-mi(ii5,t,[6,10,n+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
+mi(dd,t,[6,10,m+1],img_title=d2s(int(solver.net.blobs['label'].data[n])))
+mi(ii1,t,[6,10,m+11])
+mi(ii2,t,[6,10,m+21])
+mi(ii3,t,[6,10,m+31])
+mi(ii4,t,[6,10,m+41])
+mi(ii5,t,[6,10,m+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 
 
 
