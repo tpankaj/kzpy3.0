@@ -1,10 +1,11 @@
 from kzpy3.utils import *
 import imghdr
 import hashlib
+from PIL import Image
 
 img_dic = {}
 
-
+'''
 things_to_ignore_in_root = ['/.','/Library/','Applications',
                             'nltk','bptt','Music','Movies','kzpy3','p_images',
                             'caffenet-yos','caffe','scratch','1March2014 RF paper','analysis.matlab3',
@@ -22,8 +23,8 @@ things_to_ignore_in_root = ['/.','/Library/','Applications',
                            '24Mar2015 Eyelink workshop and other notes_files',
                            'documents-export-2015-07-21'
                            ]
-
-
+'''
+things_to_ignore_in_root = ['/.']
 def get_img_hash_dict(
 
 	path_to_walk = home_path,
@@ -31,7 +32,9 @@ def get_img_hash_dict(
 	quiet = True,
 	collect_images = False,
 	img_dirs = {},
-	things_to_ignore_in_root=things_to_ignore_in_root
+	things_to_ignore_in_root=things_to_ignore_in_root,
+	min_width = 1000,
+	min_height = 1000
 	): # first there is the process of looking at the directories with at least one image.
 
 	duplicates = []
@@ -61,8 +64,7 @@ def get_img_hash_dict(
 	                            checksum = hashlib.md5(open(opj(root,file), 'rb').read()).digest()
 	                            if quiet == False:
 	                                print(d2s(opj(root,file),':',checksum))
-	                            if not img_dic.has_key(checksum):
-	                                img_dic[checksum] = []
+	                            
 	                            else:
 	                                if quiet == False:
 	                                    print((d2s('Duplicate found: ',opj(root,file))))
@@ -70,7 +72,14 @@ def get_img_hash_dict(
 	                            dic = {}
 	                            dic['file'] = opj(root,file)
 	                            dic['type'] = img_type
-	                            img_dic[checksum].append(dic)
+	                            im = Image.open(dic['file'])
+	                            width,height = im.size
+	                            if width >= min_width:
+	                            	if height >= min_height:
+	                            		if not img_dic.has_key(checksum):
+	                                		img_dic[checksum] = []
+		                            	dic['dim'] = im.size
+		                            	img_dic[checksum].append(dic)
 	                        else:
 	                            break
 	                        
