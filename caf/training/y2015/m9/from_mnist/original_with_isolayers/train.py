@@ -10,24 +10,24 @@ from kzpy3.vis import *
 t=1
 d = solver.net.blobs['pydata'].data
 i1 = solver.net.blobs['ic1_out2'].data
-i2 = solver.net.blobs['ic3_out2'].data
-i3 = solver.net.blobs['ic6_out2'].data
-i4 = solver.net.blobs['ic9_out2'].data
-i5 = solver.net.blobs['ic12_out2'].data
+i2 = solver.net.blobs['ic2_out2'].data
+i3 = solver.net.blobs['ic3_out2'].data
+i4 = solver.net.blobs['ic11_out2'].data
+i5 = solver.net.blobs['ic12_out1'].data
 for m in range(10):
 n = m +10
 ii1 = i1[n,:].transpose(1,2,0)
 ii2 = i2[n,:].transpose(1,2,0)
 ii3 = i3[n,:].transpose(1,2,0)
 ii4 = i4[n,:].transpose(1,2,0)
-ii5 = i5[n,:].transpose(1,2,0)
+ii5 = i5[n,-3:].transpose(1,2,0)
 dd=dd = d[n,0,:,:]
 mi(dd,t,[6,10,m+1],img_title=d2s(int(solver.net.blobs['label'].data[n])))
 mi(ii1,t,[6,10,m+11])
-mi(ii2,t,[6,10,m+21],img_title=d2s(solver.net.blobs['ip'].data[n,:].argmax()))
-mi(ii3,t,[6,10,m+31],img_title=d2s(solver.net.blobs['ip'].data[n,:].argmax()))
-mi(ii4,t,[6,10,m+41],img_title=d2s(solver.net.blobs['ip'].data[n,:].argmax()))
-mi(ii5,t,[6,10,m+51],img_title=d2s(solver.net.blobs['ip'].data[n,:].argmax()))
+mi(ii2,t,[6,10,m+21],img_title=d2s(solver.net.blobs['ip1'].data[n,:].argmax()))
+mi(ii3,t,[6,10,m+31],img_title=d2s(solver.net.blobs['ip1'].data[n,:].argmax()))
+mi(ii4,t,[6,10,m+41],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
+mi(ii5,t,[6,10,m+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 
 
 

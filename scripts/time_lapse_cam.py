@@ -5,17 +5,12 @@ import sys
 import numpy as np
 import scipy.misc
 
-haarPath = '/usr/local/Cellar/opencv/2.4.12/share/OpenCV/haarcascades'
-
 if len(sys.argv) > 1:
     sleeptime = int(sys.argv[1])
 else:
     sleeptime = 10
 print(d2s('sleeptime =',sleeptime))
 
-#face_cascade = cv2.CascadeClassifier(haarPath+'/haarcascade_frontalface_default.xml')#cascPath)
-#eye_cascade = cv2.CascadeClassifier(haarPath+'/haarcascade_eye.xml')
-#body_cascade = cv2.CascadeClassifier(haarPath+'/haarcascade_fullbody.xml')
 video_capture = cv2.VideoCapture(0)
 d = datetime.date.today()
 path = opj(home_path,'scratch',str(d.year),str(d.today().month),str(d.today().day),'timelapse.'+str(np.int(np.floor(time.time()))))

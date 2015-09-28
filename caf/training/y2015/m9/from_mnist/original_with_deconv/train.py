@@ -7,6 +7,35 @@ This module allows for training and deploy-testing of mnist network.
 
 Next steps:
 1) change to work with RGB images of look_at_numbers, using python layer for data layer.
+
+
+
+
+
+
+from kzpy3.vis import *
+%matplotlib osx
+
+t=1
+d = solver.net.blobs['pydata'].data
+i1 = solver.net.blobs['pydata_deconv4'].data
+for m in range(10):
+n = m +10
+ii1 = i1[n,0,:,:]
+ii2 = i1[n,1,:,:]
+dd=dd = d[n,0,:,:]
+mi(dd,t,[6,10,m+1],img_title=d2s(int(solver.net.blobs['label'].data[n])))
+mi(ii1,t,[6,10,m+11],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
+mi(ii2,t,[6,10,m+21],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
+
+
+
+
+
+
+
+
+
 '''
 
 from kzpy3.vis import *
@@ -67,7 +96,7 @@ def filters():
 		mi(f[i,0,:,:],'conv1',[5,5,i+1])
 	f = solver.net.params['deconv1'][0].data.copy()
 	for i in range(50):
-    	mi(f[i,0,:,:],'deconv1',[7,8,i+1])
+		mi(f[i,0,:,:],'deconv1',[7,8,i+1])
 
 def vis_square(data, fig_name='vis_square',subplot_array=[1,1,1], padsize=1, padval=0):
     data -= data.min()

@@ -1,8 +1,5 @@
 from kzpy3.vis import *
-from kzpy3.progress import *
-
-
-
+from kzpy3.misc.progress import *
 
 
 def load_subject(subject,kay_data_subject_path):

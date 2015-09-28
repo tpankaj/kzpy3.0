@@ -17,7 +17,10 @@ things_to_ignore_in_root = ['/.','/Library/','Applications',
                             '12July2015 S7_2015 mapping initial report',
                             'deepdream-master','analysis.python','python-cogstats-master','py/2015/','19July2015 p-imaging results',
                             'SFO to Seattle','9Jan2015 fixation vs brain activity','/py/','15June2015 attend surface analysis images','13April2015 Google Faculty Award preparation folder','13March2015 VS298 visual stability presentation.key',
-                           'deep-visualization-toolbox','py-2015-8 bkp'
+                           'deep-visualization-toolbox','py-2015-8 bkp',
+                           '18June2015 images for scanning',
+                           '24Mar2015 Eyelink workshop and other notes_files',
+                           'documents-export-2015-07-21'
                            ]
 
 

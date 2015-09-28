@@ -1,8 +1,8 @@
 from kzpy3.caf.utils import *
 
-#model_name = 'VGG_ILSVRC_16_layers'
+model_name = 'VGG_ILSVRC_16_layers'
 #model_name = 'bvlc_googlenet'
-model_name = 'bvlc_reference_caffenet'
+#model_name = 'bvlc_reference_caffenet'
 
 net = get_net(model_name)
 print(np.shape(net.blobs['data'].data))
@@ -24,6 +24,7 @@ net.blobs['data'].data[0,2,:,:] =img[:,:,0]
 
 net.forward();
 activations = {}
+
 for k in net.blobs.keys():
     activations[k] = net.blobs[k].data.copy()
     if len(shape(activations[k])) == 4:
@@ -32,6 +33,7 @@ for k in net.blobs.keys():
         for x in range(shape(activations[k])[2]):
             for y in range(shape(activations[k])[3]):
                 activations[k][:,:,x,y]=b
+
     
 objective_dic = get_objective_dic(model_name,activations)
 
@@ -76,7 +78,7 @@ VGG_convs = ['conv1_1', 'conv1_2', 'conv2_1', 'conv2_2', 'conv3_1', 'conv3_2', '
 if __name__ == '__main__':
     backprop_diffs_to_data(
         model_name,
-        ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
+        ['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
         objective_dic,
         net,1000,
         opjh('scratch/2015/9/26',model_name),

@@ -68,7 +68,7 @@ layer {
 	  bottom: "pydata"
 	  top: "ic1_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -88,7 +88,7 @@ layer {
 	  bottom: "ic1_hid1"
 	  top: "ic1_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -107,7 +107,7 @@ layer {
 	  bottom: "ic1_hid2"
 	  top: "ic1_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -156,7 +156,7 @@ layer {
 	  bottom: "ic2_in"
 	  top: "ic2_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -176,7 +176,7 @@ layer {
 	  bottom: "ic2_hid1"
 	  top: "ic2_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -195,7 +195,7 @@ layer {
 	  bottom: "ic2_hid2"
 	  top: "ic2_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -246,7 +246,7 @@ layer {
 	  bottom: "ic3_in"
 	  top: "ic3_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -266,7 +266,7 @@ layer {
 	  bottom: "ic3_hid1"
 	  top: "ic3_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -285,7 +285,7 @@ layer {
 	  bottom: "ic3_hid2"
 	  top: "ic3_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -337,7 +337,7 @@ layer {
 	  bottom: "ic4_in"
 	  top: "ic4_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -357,7 +357,7 @@ layer {
 	  bottom: "ic4_hid1"
 	  top: "ic4_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -376,7 +376,7 @@ layer {
 	  bottom: "ic4_hid2"
 	  top: "ic4_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -429,7 +429,7 @@ layer {
 	  bottom: "ic5_in"
 	  top: "ic5_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -449,7 +449,7 @@ layer {
 	  bottom: "ic5_hid1"
 	  top: "ic5_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -468,7 +468,7 @@ layer {
 	  bottom: "ic5_hid2"
 	  top: "ic5_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -522,7 +522,7 @@ layer {
 	  bottom: "ic6_in"
 	  top: "ic6_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -542,7 +542,7 @@ layer {
 	  bottom: "ic6_hid1"
 	  top: "ic6_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -561,7 +561,7 @@ layer {
 	  bottom: "ic6_hid2"
 	  top: "ic6_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -616,7 +616,7 @@ layer {
 	  bottom: "ic7_in"
 	  top: "ic7_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -636,7 +636,7 @@ layer {
 	  bottom: "ic7_hid1"
 	  top: "ic7_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -655,7 +655,7 @@ layer {
 	  bottom: "ic7_hid2"
 	  top: "ic7_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -711,7 +711,7 @@ layer {
 	  bottom: "ic8_in"
 	  top: "ic8_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -731,7 +731,7 @@ layer {
 	  bottom: "ic8_hid1"
 	  top: "ic8_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -750,7 +750,7 @@ layer {
 	  bottom: "ic8_hid2"
 	  top: "ic8_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -807,7 +807,7 @@ layer {
 	  bottom: "ic9_in"
 	  top: "ic9_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -827,7 +827,7 @@ layer {
 	  bottom: "ic9_hid1"
 	  top: "ic9_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -846,7 +846,7 @@ layer {
 	  bottom: "ic9_hid2"
 	  top: "ic9_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -904,7 +904,7 @@ layer {
 	  bottom: "ic10_in"
 	  top: "ic10_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -924,7 +924,7 @@ layer {
 	  bottom: "ic10_hid1"
 	  top: "ic10_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -943,7 +943,7 @@ layer {
 	  bottom: "ic10_hid2"
 	  top: "ic10_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -1002,7 +1002,7 @@ layer {
 	  bottom: "ic11_in"
 	  top: "ic11_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -1022,7 +1022,7 @@ layer {
 	  bottom: "ic11_hid1"
 	  top: "ic11_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -1041,7 +1041,7 @@ layer {
 	  bottom: "ic11_hid2"
 	  top: "ic11_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -1101,7 +1101,7 @@ layer {
 	  bottom: "ic12_in"
 	  top: "ic12_hid1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 3
 	    pad: 1
 	    weight_filler {
@@ -1121,7 +1121,7 @@ layer {
 	  bottom: "ic12_hid1"
 	  top: "ic12_hid2"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"
@@ -1140,7 +1140,7 @@ layer {
 	  bottom: "ic12_hid2"
 	  top: "ic12_out1"
 	  convolution_param {
-	    num_output: 24
+	    num_output: 128
 	    kernel_size: 1
 	    weight_filler {
 	      type: "xavier"

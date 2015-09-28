@@ -1,5 +1,5 @@
 from kzpy3.utils import *
-from kzpy3.progress import *
+from kzpy3.misc.progress import *
 
 from cStringIO import StringIO
 import scipy.ndimage as nd
