@@ -1,8 +1,8 @@
 from kzpy3.caf.utils import *
 
-model_name = 'VGG_ILSVRC_16_layers'
+#model_name = 'VGG_ILSVRC_16_layers'
 #model_name = 'bvlc_googlenet'
-#model_name = 'bvlc_reference_caffenet'
+model_name = 'bvlc_reference_caffenet'
 
 inception_outputs = ['conv1/7x7_s2', 'conv2/3x3', 
     'inception_3a/output', 
@@ -39,15 +39,21 @@ net.blobs['data'].data[0,2,:,:] =img[:,:,0]
 net.forward();
 activations = {}
 
-for k in net.blobs.keys():
-    activations[k] = net.blobs[k].data.copy()
-    if False:#len(shape(activations[k])) == 4:
-        a = activations[k].mean(axis=2)
-        b = a.mean(axis=2)
-        print(shape(b))
-        for x in range(shape(activations[k])[2]):
-            for y in range(shape(activations[k])[3]):
-                activations[k][0,:,x,y]= b
+if False:
+    for k in net.blobs.keys():
+        activations[k] = net.blobs[k].data.copy()
+        if len(shape(activations[k])) == 4:
+            a = activations[k].mean(axis=2)
+            b = a.mean(axis=2)
+            print(shape(b))
+            for x in range(shape(activations[k])[2]):
+                for y in range(shape(activations[k])[3]):
+                    activations[k][0,:,x,y]= b
+if True:
+    for k in net.blobs.keys():
+        activations[k] = net.blobs[k].data.copy()
+        activations[k][:]= 0
+
 if False:
     for l in VGG_convs:#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1']:
         for i in range(len(activations[l][0,:,0,0])):
@@ -56,7 +62,7 @@ if False:
             tmp = np.reshape(tmp,tmp_shape[0]*tmp_shape[1])
             np.random.shuffle(tmp)
             activations[l][0,i,:,:] = np.reshape(tmp,(tmp_shape[0],tmp_shape[1]))
-activations['prob'][0,0]=1   
+activations['conv1'][0,0,:,:]=1   
 objective_dic = get_objective_dic(model_name,activations)
 
 ml = sorted(objective_dic.keys(),key=natural_keys)
@@ -89,9 +95,9 @@ bvlc_googlenet:
 if __name__ == '__main__':
     backprop_diffs_to_data(
         model_name,
-        ['prob'],#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
+        ['conv1'],#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
         objective_dic,
         net,2000,
-        opjh('scratch/2015/9/30',model_name),
-        '.'.join([img_name,'prob']))# 'to 10')
+        opjh('scratch/2015/10/7',model_name),
+        'conv-0') #.'.join([img_name,'prob']))# 'to 10')
 

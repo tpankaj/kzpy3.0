@@ -230,7 +230,7 @@ def make_step2(
     net,
     step_size=1.5,
     end='', 
-    jitter=32,
+    jitter=1,
     clip=True,
     objective=objective_L2):
     '''Basic gradient ascent step.'''
@@ -554,7 +554,7 @@ def get_objective_dic(model_name,activations):
         lay16 = 'prob'
         a16 = activations[lay16]/(10.0*activations[lay16].max())
         def obj16(dst):
-            dst.diff[:] = dst.data * a16#a16#
+            dst.diff[:] = a16#dst.data * a16#
         objective_dic[lay16] = obj16
 
     if model_name == 'bvlc_reference_caffenet':
@@ -565,7 +565,7 @@ def get_objective_dic(model_name,activations):
         lay0 = 'conv1'
         a0 = activations[lay0]/(10.0*activations[lay0].max())
         def obj0(dst):
-            dst.diff[:] = a0 #dst.data * a0
+            dst.diff[:] = dst.data * a0#a0#
         objective_dic[lay0] = obj0
         lay1 = 'conv2'
         a1 = activations[lay1]/(10.0*activations[lay1].max())
@@ -585,7 +585,7 @@ def get_objective_dic(model_name,activations):
         lay4 = 'conv5'
         a4 = activations[lay4]/(10.0*activations[lay4].max())
         def obj4(dst):
-            dst.diff[:] = a4
+            dst.diff[:] = a4#
         objective_dic[lay4] = obj4
         lay5 = 'fc6'
         a5 = activations[lay5]/(10.0*activations[lay5].max())
