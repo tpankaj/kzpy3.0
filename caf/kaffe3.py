@@ -1,5 +1,5 @@
 from kzpy3.utils import *
-from kzpy3.progress import *
+from kzpy3.misc.progress import *
 #plt.ion()
 
 from cStringIO import StringIO
@@ -237,7 +237,7 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/9/23/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    img_path = opj(home_path,'scratch/2015/9/30/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
@@ -379,7 +379,7 @@ if True:
     src.reshape(1,3,227,227)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['inception_4a/5x5']:#['inception_4e/output']:#['fc8']:
+    for l in ['prob']:#['inception_4e/output']:#['fc8']:
         do_it3(l,net,2000,0)
 
 if False:
@@ -421,7 +421,7 @@ if False:
     activations = {}
     for k in net.blobs.keys():
         activations[k] = net.blobs[k].data.copy()
-    lay = 'inception_4e/output' # 'prob' #'conv2/3x3'# 'inception_3a/output' #'inception_5b/output' #  'inception_5b/5x5'  #'inception_4e/output'#'prob' #'inception_3a/1x1'
+    lay = 'prob' # 'prob' #'conv2/3x3'# 'inception_3a/output' #'inception_5b/output' #  'inception_5b/5x5'  #'inception_4e/output'#'prob' #'inception_3a/1x1'
     a = activations[lay]/(10.0*activations[lay].max())
     #a[0,4,45,45] = 1
     for l in [lay]:#['conv1/7x7_s2']:#['conv1/7x7_s2']:#inception_layers: #['fc6']:

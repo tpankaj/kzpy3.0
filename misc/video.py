@@ -37,3 +37,15 @@ def video_to_frames(video_path,video_filename,desired_output_width,frames_per_fo
     print(d2s('Saved',ctr,'frames in',fctr,'folders in ',np.int(time.time()-start_time),'seconds'))
     cap.release()
     #cv2.destroyAllWindows()
+
+def frame_to_video(img_folder):
+    video = cv2.VideoWriter('video.avi',-1,1,(1280,720))
+    img_filenames = sorted(gg(opj(img_folder,'*.*')),key=natural_keys)
+    for i in range(0,100,4):
+        print(d2n(i,') ',img_filenames[i]))
+        img = cv2.imread(img_filenames[i])
+        video.write(img)
+    cv2.destroyAllWindows()
+    video.release()
+
+

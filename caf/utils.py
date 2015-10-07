@@ -98,15 +98,16 @@ def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,o
     for i in range(iter_n):
         for layer,objective in zip(layers,objectives):
             valid = make_step2(net,end=layer,objective=objective)
+            #valid=True;make_step(net,end=layer,objective=objective)
             src = net.blobs['data']
-            grayscale = src.data[0].mean(axis=0)
-            src.data[0][0,:,:] = grayscale
-            src.data[0][1,:,:] = grayscale
-            src.data[0][2,:,:] = grayscale
+            #grayscale = src.data[0].mean(axis=0)
+            #src.data[0][0,:,:] = grayscale
+            #src.data[0][1,:,:] = grayscale
+            #src.data[0][2,:,:] = grayscale
 
             src.data[0] = 200*z2o(zscore(src.data[0],2.5))-100
-            #print(shape(src.data[0]))
-            vis = deprocess(net, src.data[0])
+
+            #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
                 if home_path != cluster_home_path:
                     pb.animate(i+1)
@@ -200,11 +201,36 @@ def print_def_code(the_layers):
 def objective_L2(dst):
     dst.diff[:] = dst.data 
 
+"""
+def make_step(net, step_size=1.5, end='inception_4c/output', 
+              jitter=32, clip=True, objective=objective_L2):
+    '''Basic gradient ascent step.'''
+
+    src = net.blobs['data'] # input image is stored in Net's 'data' blob
+    dst = net.blobs[end]
+
+    ox, oy = np.random.randint(-jitter, jitter+1, 2)
+    src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
+            
+    net.forward(end=end)
+    objective(dst)  # specify the optimization objective
+    net.backward(start=end)
+    g = src.diff[0]
+    # apply normalized ascent step to the input image
+    src.data[:] += step_size/np.abs(g).mean() * g
+
+    src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+            
+    if clip:
+        bias = net.transformer.mean['data']
+        src.data[:] = np.clip(src.data, -bias, 255-bias)    
+"""
+
 def make_step2(
     net,
     step_size=1.5,
     end='', 
-    jitter=1,
+    jitter=32,
     clip=True,
     objective=objective_L2):
     '''Basic gradient ascent step.'''
@@ -220,13 +246,14 @@ def make_step2(
     net.backward(start=end)
     g = src.diff[0]
     # apply normalized ascent step to the input image
+    
     denom = np.abs(g).mean()
     if denom:
         src.data[:] += step_size/denom * g
     else:
         print(d2s('Warnging: denom =',denom))
         return False
-
+    
     src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
             
     if clip:
@@ -527,7 +554,7 @@ def get_objective_dic(model_name,activations):
         lay16 = 'prob'
         a16 = activations[lay16]/(10.0*activations[lay16].max())
         def obj16(dst):
-            dst.diff[:] = a16
+            dst.diff[:] = dst.data * a16#a16#
         objective_dic[lay16] = obj16
 
     if model_name == 'bvlc_reference_caffenet':
@@ -538,7 +565,7 @@ def get_objective_dic(model_name,activations):
         lay0 = 'conv1'
         a0 = activations[lay0]/(10.0*activations[lay0].max())
         def obj0(dst):
-            dst.diff[:] = a0
+            dst.diff[:] = a0 #dst.data * a0
         objective_dic[lay0] = obj0
         lay1 = 'conv2'
         a1 = activations[lay1]/(10.0*activations[lay1].max())
@@ -548,7 +575,7 @@ def get_objective_dic(model_name,activations):
         lay2 = 'conv3'
         a2 = activations[lay2]/(10.0*activations[lay2].max())
         def obj2(dst):
-            dst.diff[:] = a2
+            dst.diff[:] = a2#dst.data * a2
         objective_dic[lay2] = obj2
         lay3 = 'conv4'
         a3 = activations[lay3]/(10.0*activations[lay3].max())
