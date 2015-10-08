@@ -12,8 +12,14 @@ cgd = d2s('ln -s',opjh('Google_Drive',d2n(y,'-',m)),'current_GD')
 
 rmcu = d2s('rm',opjh('current'))
 rmcdg = d2s('rm',opjh('current_GD'))
-unix(rmcu,print_stdout=False, print_stderr=False,print_cmd=True)
-unix(rmcdg,print_stdout=False, print_stderr=False,print_cmd=True)
+try:
+	unix(rmcu,print_stdout=False, print_stderr=False,print_cmd=True)
+except:
+	pass
+try:
+	unix(rmcdg,print_stdout=False, print_stderr=False,print_cmd=True)
+except:
+	pass
 unix(mkcu,print_stdout=False, print_stderr=False,print_cmd=True)
 unix(mkcgd,print_stdout=False, print_stderr=False,print_cmd=True)
 unix(cu,print_stdout=False, print_stderr=False,print_cmd=True)
