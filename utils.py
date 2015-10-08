@@ -127,6 +127,9 @@ def d2p(*args):
     return d2s_spacer(args,spacer='.')
 def d2n(*args):
     return d2s_spacer(args,spacer='')
+def d2f(*args):
+    return d2s_spacer(args[1:],spacer=args[0])
+
    
 
 def save_obj(obj, name ):
@@ -175,11 +178,12 @@ def dict_to_sorted_list(d):
 
 
 
-def zscore(m,thresh=99999):
+def zscore(m,thresh=np.nan):
     z = m - np.mean(m)
     z /= np.std(m)
-    z[z < -thresh] = -thresh
-    z[z > thresh] = thresh
+    if not np.isnan(thresh):
+        z[z < -thresh] = -thresh
+        z[z > thresh] = thresh
     return z
 
 
