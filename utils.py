@@ -91,10 +91,12 @@ def select_keys(dic,str_list):
     return key_list
 
 
-def unix(command_line_str, print_stdout=True, print_stderr=False):
+def unix(command_line_str, print_stdout=True, print_stderr=False,print_cmd=False):
     command_line_str = command_line_str.replace('~',home_path)
     p = subprocess.Popen(command_line_str.split(), stdout=subprocess.PIPE)
     stdout,stderr = p.communicate()
+    if print_cmd:
+        print(command_line_str)
     if print_stdout:
         print(stdout)
     if print_stderr:
