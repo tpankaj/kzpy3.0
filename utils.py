@@ -70,15 +70,15 @@ def natural_keys(text):
     '''
     return [ atoi(c) for c in re.split('(\d+)', text) ]
 
-def str_contains(str,str_list):
+def str_contains(st,str_list):
     for s in str_list:
-        if not s in str:
+        if not s in st:
             return False
     return True
 
-def str_contains_one(str,str_list):
+def str_contains_one(st,str_list):
     for s in str_list:
-        if s in str:
+        if s in st:
             return True
     return False
 
@@ -119,6 +119,8 @@ def d2s(*args):
     
     'I like 1 or [2, 3, 4]'
     
+    d2c(1,2,3) => '1,2,3'
+    d2f('/',1,2,3) => '1/2/3'
     '''
     return d2s_spacer(args)
 def d2c(*args):

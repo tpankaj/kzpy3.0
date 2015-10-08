@@ -95,6 +95,7 @@ def mi(
         plt.rcParams['toolbar'] = 'toolbar2'
 
     f = plt.figure(figure_num)
+    plt.clf()
 
     if True:
         f.subplots_adjust(bottom=0.05)
