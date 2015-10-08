@@ -66,9 +66,20 @@ def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,o
     transformer.set_mean('data', np.load(opj(home_path,'caffe/python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
     transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
     transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
+    '''
+    layer_shape=list(np.shape(net.blobs[layer].data));
+    layer_shape[0] = 1
+    layer_shape = tuple(layer_shape)
+    if layer == "conv1/7x7_s2": # special case where net.forward changes layer shape
+        layer_shape = (1,64,114,114)
+    if layer == "conv2/3x3": # special case where net.forward changes layer shape
+        layer_shape = (1,192,57,57)
+    '''
+    
+    #img_path = opj(home_path,'scratch/2015/9/24/'+model_name)#+'/'+layer.replace('/','-'))
+    #img_path = opj(output_path,model_name)#+'/'+layer.replace('/','-'))
     
     unix('mkdir -p ' + img_path)
-
     if opt_name:
         img_path = opj(img_path,opt_name)
     else:
@@ -87,6 +98,7 @@ def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,o
     for i in range(iter_n):
         for layer,objective in zip(layers,objectives):
             valid = make_step2(net,end=layer,objective=objective)
+            #valid=True;make_step(net,end=layer,objective=objective)
             src = net.blobs['data']
             #grayscale = src.data[0].mean(axis=0)
             #src.data[0][0,:,:] = grayscale
@@ -95,6 +107,7 @@ def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,o
 
             src.data[0] = 200*z2o(zscore(src.data[0],2.5))-100
 
+            #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
                 if home_path != cluster_home_path:
                     pb.animate(i+1)
