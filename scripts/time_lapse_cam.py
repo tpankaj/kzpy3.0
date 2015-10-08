@@ -11,6 +11,11 @@ else:
     sleeptime = 10
 print(d2s('sleeptime =',sleeptime))
 
+if len(sys.argv) > 2:
+    show_frame = int(sys.argv[2])
+else:
+    show_frame = 1
+
 video_capture = cv2.VideoCapture(0)
 d = datetime.date.today()
 path = opj(home_path,'scratch',str(d.year),str(d.today().month),str(d.today().day),'timelapse.'+str(np.int(np.floor(time.time()))))
@@ -25,7 +30,8 @@ while True:
 
     if time.time()-last_time > sleeptime:
         rgbframe = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        cv2.imshow('Video', np.fliplr(scipy.misc.imresize(frame,100)))
+        if show_frame:
+            cv2.imshow('Video', np.fliplr(scipy.misc.imresize(frame,100)))
 
         last_time = time.time()
         fname = opj(path,d2p(np.int(np.floor(time.time())),'jpg'))
