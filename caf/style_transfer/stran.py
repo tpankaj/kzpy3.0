@@ -27,9 +27,9 @@ class StyleTransfer(object):
         self.args = args
 
         # Load Images and Reshape Caffe input to content image
-        self.raw_style_img = caffe.io.load_image('/Users/karlzipser/Desktop/np.jpg')#opjh('Pictures/bay2.png'))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#
+        self.raw_style_img = caffe.io.load_image('/Users/karlzipser/Desktop/npsq2.jpg')#opjh('Pictures/bay2.png'))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#
             #os.path.join(args.data_folder, args.style_file))
-        self.raw_content_img = imresize(caffe.io.load_image('/Users/karlzipser/Desktop/david-full-front.jpg'),100)#opjh('Pictures/bay2.png')),25)
+        self.raw_content_img = np.random.random((256,256,3))#imresize(caffe.io.load_image('/Users/karlzipser/Desktop/david-full-front.jpg'),100)#opjh('Pictures/bay2.png')),25)
         #np.random.random((141,250,3)) #(324, 484,3)) #np.shape(self.raw_style_img))# (256,256,3))#(1296, 1936,3))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#caffe.io.load_image(
             #os.path.join(args.data_folder, args.content_file))
 
