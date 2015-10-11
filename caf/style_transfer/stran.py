@@ -27,9 +27,9 @@ class StyleTransfer(object):
         self.args = args
 
         # Load Images and Reshape Caffe input to content image
-        self.raw_style_img = caffe.io.load_image('/Users/karlzipser/Desktop/npsq2.jpg')#opjh('Pictures/bay2.png'))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#
+        self.raw_style_img = caffe.io.load_image('/Users/karlzipser/Desktop/cat_360.jpg')#npsq2_512.jpg')#'/Users/karlzipser/Desktop/starry_night_sq.jpg')#opjh('Pictures/bay2.png'))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#
             #os.path.join(args.data_folder, args.style_file))
-        self.raw_content_img = np.random.random((256,256,3))#imresize(caffe.io.load_image('/Users/karlzipser/Desktop/david-full-front.jpg'),100)#opjh('Pictures/bay2.png')),25)
+        self.raw_content_img = caffe.io.load_image('/Users/karlzipser/Desktop/cat_360.jpg')#npsq2_512.jpg')#np.random.random((512,512,3)) #imresize(caffe.io.load_image('/Users/karlzipser/Desktop/npsq2.jpg'),(512,512,3))#np.random.random((4*256,4*256,3))#+0.5*imresize(caffe.io.load_image('/Users/karlzipser/Desktop/npsq2lr.jpg'),[256,256,3]) #np.random.random((256,256,3))#imresize(caffe.io.load_image('/Users/karlzipser/Desktop/david-full-front.jpg'),100)#opjh('Pictures/bay2.png')),25)
         #np.random.random((141,250,3)) #(324, 484,3)) #np.shape(self.raw_style_img))# (256,256,3))#(1296, 1936,3))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#caffe.io.load_image(
             #os.path.join(args.data_folder, args.content_file))
 
@@ -49,7 +49,7 @@ class StyleTransfer(object):
                         'conv4_1',
                         'conv5_1']
             style_ws = [0.2 * args.sc_ratio] * 5
-            content_ls = ['conv4_2']
+            content_ls = ['conv5_4']#['conv4_2']#
             content_ws = [1.0]
         elif args.network == 'bvlc_googlenet':
             style_ls = ["conv1/7x7_s2",
@@ -174,18 +174,22 @@ class StyleTransfer(object):
         Calls lbfgs optimizer to minimize the cost function
         """
         x0 = self.transformer.preprocess(
-            'data', self.raw_content_img).copy()[np.newaxis, :]
+            'data', np.random.random(np.shape(self.raw_content_img)),#self.raw_content_img
+            ).copy()[np.newaxis, :]
         n, k, h, w = x0.shape
 
         pb = ProgressBar(self.args.n_itr)
         self.it_count = 0
-
+        self.imgpath = opjh(d2n('Desktop/',np.int(time.time()),'.png'))
 
         def f(x):
             self.it_count += 1
             pb.animate(self.it_count)
             x = x.reshape(n, k, h, w)
-            self.save_image(x,opjh('Desktop/temp9.png'))
+
+            #x = 200*z2o(zscore(x,2.5))-100
+
+            self.save_image(x,self.imgpath)
             return self.cost(x).ravel()
 
         def fp(x):

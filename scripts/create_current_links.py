@@ -21,6 +21,6 @@ try:
 except:
 	pass
 unix(mkcu,print_stdout=False, print_stderr=False,print_cmd=True)
-unix(mkcgd,print_stdout=False, print_stderr=False,print_cmd=True)
+#unix(mkcgd,print_stdout=False, print_stderr=False,print_cmd=True)
 unix(cu,print_stdout=False, print_stderr=False,print_cmd=True)
 unix(cgd,print_stdout=False, print_stderr=False,print_cmd=True)

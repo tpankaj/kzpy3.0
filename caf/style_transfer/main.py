@@ -2,6 +2,7 @@ from kzpy3.caf.style_transfer.stran import *
 
 """
 python kzpy3/caf/style_transfer/main.py
+
 """
 
 def build_net(model_path, net_fn, param_fn, args, data_mean=None):
@@ -94,7 +95,7 @@ if __name__ == '__main__':
                         help="Name of network, vgg or bvlc_googlenet")
     parser.add_argument('--caffe_root', type=str, default='laptop',
                         help='caffe_root, if computer or cluster, do nothing')
-    parser.add_argument('--n_itr', type=int, default=1000,
+    parser.add_argument('--n_itr', type=int, default=10000,
                         help='Number of iterations to run descent')
     parser.add_argument('--data_folder', type=str, default='data/',
                         help='Folder containing the data')
