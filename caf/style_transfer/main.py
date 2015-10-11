@@ -1,7 +1,7 @@
 from kzpy3.caf.style_transfer.stran import *
 
 """
-python kzpy3/caf/style_transfer/main.py
+python ~/kzpy3/caf/style_transfer/main.py
 
 """
 
@@ -88,35 +88,25 @@ def fn_gen(d, ext='jpg'):
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser('Invert a sum of layer matching costs')
-    parser.add_argument('--gpu', type=int, default=-1,
-                        help="Index of gpu, gpu=-1")
-    parser.add_argument('--network', type=str, default='vgg',
-                        help="Name of network, vgg or bvlc_googlenet")
-    parser.add_argument('--caffe_root', type=str, default='laptop',
-                        help='caffe_root, if computer or cluster, do nothing')
-    parser.add_argument('--n_itr', type=int, default=10000,
-                        help='Number of iterations to run descent')
-    parser.add_argument('--data_folder', type=str, default='data/',
-                        help='Folder containing the data')
-    parser.add_argument('--output_dir', type=str, default='output/',
-                        help='Directory to save images')
-    parser.add_argument('--content_file', type=str,
-                        default='content/bridge.jpg',
-                        help='Filename for content image')
-    parser.add_argument('--style_file', type=str,
-                        default='style/starry_night.jpg',
-                        help='Filename for style image')
-    parser.add_argument('--sc_ratio', type=float, default=4.,
-                        help='Ratio of style weight to content weight')
-    parser.add_argument('--img_scale', type=int, default=1,
-                        help='Ratio to scale size of input. Try 1 or 2')
-    args = parser.parse_args()
+    parser = ArgumentParser('Invert a sum of layer matching costs. Karl version.\n')
 
-    if args.caffe_root == 'cluster':
-        args.caffe_root = '/global/home/users/agan/caffe'
-    elif args.caffe_root == 'laptop':
-        args.caffe_root = '/Users/karlzipser/caffe'
+    parser_info = [
+        ['--gpu',           int,    -1,                         "Index of gpu, gpu=-1"],
+        ['--network',       str,    'bvlc_googlenet',           "Name of network, vgg or bvlc_googlenet or bvlc_reference_caffenet"],#'',
+        ['--caffe_root',    str,    'laptop',                   'caffe_root, if computer or cluster, do nothing'],
+        ['--n_itr',         int,    10000,                      'Number of iterations to run descent'],
+        ['--data_folder',   str,    opjh('Desktop'),            'Folder containing the data'],
+        ['--output_dir',    str,    opjh('Desktop'),            'Directory to save images'],
+        ['--content_file',  str,    opjh('Desktop/cat.jpg'),    'Filename for content image'],
+        ['--style_file',    str,    opjh('Desktop/cat.jpg'),  'Filename for style image'],
+        ['--sc_ratio',      float,  1.,                         'Ratio of style weight to content weight'],
+        ['--img_scale',     int,    1,                          'Ratio to scale size of input. Try 1 or 2']]
+
+    for p_i in parser_info:
+        parser.add_argument(p_i[0], type=p_i[1], default=p_i[2],help=p_i[2])
+
+    args = parser.parse_args()
+    args.caffe_root = opjh('caffe')
 
     print 'The network is ' + args.network
     if args.network == 'vgg':
@@ -126,8 +116,12 @@ if __name__ == '__main__':
         param_fn = 'VGG_ILSVRC_19_layers.caffemodel'
     elif args.network == 'bvlc_googlenet':
         model_folder = 'models/bvlc_googlenet'
-        net_fn = 'deploy.prototxt'
+        net_fn = 'deploy_headless.prototxt'
         param_fn = 'bvlc_googlenet.caffemodel'
+    elif args.network == 'bvlc_reference_caffenet':
+        model_folder = 'models/bvlc_reference_caffenet'
+        net_fn = 'deploy_headless.prototxt'
+        param_fn = 'bvlc_reference_caffenet.caffemodel'
     else:
         raise ValueError('Unrecognized network')
     model_path = os.path.join(args.caffe_root, model_folder)
@@ -145,24 +139,10 @@ if __name__ == '__main__':
 
     net, transformer = build_net(
         model_path, net_fn, param_fn, args)
-    style_files = ['starry_night.jpg']
-    '''
-    style_files = ['starry_night.jpg',
-                   'legos.jpg', 'scream.jpg',
-                   'seated_nude.jpg', 'wave.jpg',
-                   'grainstacks.jpg', 'household_object.jpg',
-                   'kq_swift.jpg', 'vasily.jpg']
-    '''
-    style_files = [os.path.join('style', fn) for fn in style_files]
-    sc_ratios = [args.sc_ratio]
 
-    options = list(itertools.product(style_files, sc_ratios))
-    for style_file, sc_ratio in options:
-        args.style_file = style_file
-        args.sc_ratio = sc_ratio
-        st = StyleTransfer(net, transformer, args)
-        x, _ = st.lbfgs_cost_optimizer()
-        fn = fn_gen({'content': args.content_file.replace('.jpg', ''),
-                     'ratio_x100': int(args.sc_ratio * 100),
-                     'style': args.style_file.replace('.jpg', '')})
-        st.save_image(x, fn)
+    st = StyleTransfer(net, transformer, args)
+    x, _ = st.lbfgs_cost_optimizer()
+    fn = fn_gen({'content': args.content_file.replace('.jpg', ''),
+                 'ratio_x100': int(args.sc_ratio * 100),
+                 'style': args.style_file.replace('.jpg', '')})
+    st.save_image(x, fn)

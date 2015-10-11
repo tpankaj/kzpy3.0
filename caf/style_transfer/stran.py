@@ -27,11 +27,15 @@ class StyleTransfer(object):
         self.args = args
 
         # Load Images and Reshape Caffe input to content image
+        '''
         self.raw_style_img = caffe.io.load_image('/Users/karlzipser/Desktop/cat_360.jpg')#npsq2_512.jpg')#'/Users/karlzipser/Desktop/starry_night_sq.jpg')#opjh('Pictures/bay2.png'))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#
             #os.path.join(args.data_folder, args.style_file))
         self.raw_content_img = caffe.io.load_image('/Users/karlzipser/Desktop/cat_360.jpg')#npsq2_512.jpg')#np.random.random((512,512,3)) #imresize(caffe.io.load_image('/Users/karlzipser/Desktop/npsq2.jpg'),(512,512,3))#np.random.random((4*256,4*256,3))#+0.5*imresize(caffe.io.load_image('/Users/karlzipser/Desktop/npsq2lr.jpg'),[256,256,3]) #np.random.random((256,256,3))#imresize(caffe.io.load_image('/Users/karlzipser/Desktop/david-full-front.jpg'),100)#opjh('Pictures/bay2.png')),25)
         #np.random.random((141,250,3)) #(324, 484,3)) #np.shape(self.raw_style_img))# (256,256,3))#(1296, 1936,3))#caffe.io.load_image('/Users/karlzipser/caffe/examples/images/cat.jpg')#caffe.io.load_image(
             #os.path.join(args.data_folder, args.content_file))
+        '''
+        self.raw_style_img = caffe.io.load_image(os.path.join(args.data_folder, args.style_file))
+        self.raw_content_img = caffe.io.load_image(os.path.join(args.data_folder, args.content_file))
 
         h, w, k = self.raw_content_img.shape
         print 'The dimensions of the content image is ' + str((h, w))
@@ -49,7 +53,16 @@ class StyleTransfer(object):
                         'conv4_1',
                         'conv5_1']
             style_ws = [0.2 * args.sc_ratio] * 5
-            content_ls = ['conv5_4']#['conv4_2']#
+            content_ls = ['conv4_1','conv4_2','conv4_3','conv4_4']
+            content_ws = [1.0]
+        elif args.network == 'bvlc_reference_caffenet':
+            style_ls = ['conv1',
+                        'conv2',
+                        'conv3',
+                        'conv4',
+                        'conv5']
+            style_ws = [0.2 * args.sc_ratio] * 5
+            content_ls = ['conv4','conv5']
             content_ws = [1.0]
         elif args.network == 'bvlc_googlenet':
             style_ls = ["conv1/7x7_s2",
@@ -60,9 +73,9 @@ class StyleTransfer(object):
                         "inception_4b/1x1",
                         "inception_4c/1x1",
                         "inception_4d/1x1"]
-            style_ws = [0.125 * args.sc_ratio] * 8
-            content_ls = ["conv1/7x7_s2"]
-            content_ws = [1.]
+            style_ws = [0.2 * args.sc_ratio] * 5
+            content_ls = ["inception_4d/output"]#"inception_3a/3x3","inception_3b/3x3","inception_3c/3x3"]
+            content_ws = [1.0]
         else:
             raise ValueError('Invalid Network')
 
@@ -169,6 +182,30 @@ class StyleTransfer(object):
             grad += cost.grad(img)
         return grad
 
+
+
+
+    '''
+        src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
+        net.forward(end=end)
+
+        objective(dst)  # specify the optimization objective
+        net.backward(start=end)
+        g = src.diff[0]
+        # apply normalized ascent step to the input image
+        
+        denom = np.abs(g).mean()
+        if denom:
+            src.data[:] += step_size/denom * g
+        else:
+            print(d2s('Warnging: denom =',denom))
+            return False
+        
+        src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+    '''
+
+
+
     def lbfgs_cost_optimizer(self):
         """
         Calls lbfgs optimizer to minimize the cost function
@@ -183,13 +220,18 @@ class StyleTransfer(object):
         self.imgpath = opjh(d2n('Desktop/',np.int(time.time()),'.png'))
 
         def f(x):
+            #jitter = 1
+            #ox, oy = np.random.randint(-jitter, jitter+1, 2)
             self.it_count += 1
             pb.animate(self.it_count)
+            #y = reshape(x,(360,360,3))
+            #y = np.roll(np.roll(y, ox, -1), oy, -2)
             x = x.reshape(n, k, h, w)
 
             #x = 200*z2o(zscore(x,2.5))-100
 
             self.save_image(x,self.imgpath)
+            
             return self.cost(x).ravel()
 
         def fp(x):
@@ -200,8 +242,19 @@ class StyleTransfer(object):
         bnds = [(-104, 130) for _ in x0.ravel()]
         print 'Optimization starting'
         start = timeit.default_timer()
-        out = fmin_l_bfgs_b(f, x0.flatten(), fprime=fp,
-                            maxfun=self.args.n_itr, bounds=bnds)
+        out = fmin_l_bfgs_b(f, x0.flatten(), fprime=fp, maxfun=self.args.n_itr, bounds=bnds, factr = 0)
+        #out = fmin_l_bfgs_b(f, x.flatten(), fprime=fp, maxfun=self.args.n_itr, bounds=bnds, factr = 0)
+        #ox,oy = 0,0
+        for i in range(self.args.n_itr):
+            x = out[0].reshape(n, k, h, w)
+            #jitter = 0#14
+            #y = reshape(x,(360,360,3))
+            #y = np.roll(np.roll(y, -ox, -1), -oy, -2)
+            #ox, oy = np.random.randint(-jitter, jitter+1, 2)
+            #y = np.roll(np.roll(y, ox, -1), oy, -2)
+            #x = y.reshape(n, k, h, w)
+            out = fmin_l_bfgs_b(f, x.flatten(), fprime=fp, maxfun=1, bounds=bnds, factr = 0)
+
         end = timeit.default_timer()
         print("Took {0:.0f} seconds".format(end - start))
 
