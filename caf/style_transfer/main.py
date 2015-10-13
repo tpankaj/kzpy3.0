@@ -85,14 +85,36 @@ def fn_gen(d, ext='jpg'):
     fn = fn.replace('.', "")
     return fn + '.' + ext
     
-
+"""
+bvlc_googlenet
+bvlc_googlenet.caffemodel
+deploy_headless.prototxt
+style_ls = [
+    "conv1/7x7_s2",
+    "conv2/3x3",
+    "inception_3a/1x1",
+    "inception_3b/1x1",
+    "inception_4a/1x1",
+    "inception_4b/1x1",
+    "inception_4c/1x1",
+    "inception_4d/1x1"]
+style_ws = [0.2 * args.sc_ratio] * 5
+content_ls = [
+    "inception_5b/1x1",
+    "inception_5b/3x3",
+    "inception_5b/5x5"]
+content_ws = [1.0]
+content_file = opjh('Desktop/cat.jpg')
+style_file = opjh('Desktop/cat.jpg')
+sc_ratio
+"""
 
 if __name__ == '__main__':
     parser = ArgumentParser('Invert a sum of layer matching costs. Karl version.\n')
 
     parser_info = [
         ['--gpu',           int,    -1,                         "Index of gpu, gpu=-1"],
-        ['--network',       str,    'bvlc_googlenet',           "Name of network, vgg or bvlc_googlenet or bvlc_reference_caffenet"],#'',
+        ['--network',       str,    'vgg',           "Name of network, vgg or bvlc_googlenet or bvlc_reference_caffenet"],#'',
         ['--caffe_root',    str,    'laptop',                   'caffe_root, if computer or cluster, do nothing'],
         ['--n_itr',         int,    10000,                      'Number of iterations to run descent'],
         ['--data_folder',   str,    opjh('Desktop'),            'Folder containing the data'],

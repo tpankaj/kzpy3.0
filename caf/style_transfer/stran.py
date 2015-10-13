@@ -50,10 +50,9 @@ class StyleTransfer(object):
             style_ls = ['conv1_1',
                         'conv2_1',
                         'conv3_1',
-                        'conv4_1',
-                        'conv5_1']
+                        'conv4_1']
             style_ws = [0.2 * args.sc_ratio] * 5
-            content_ls = ['conv4_1','conv4_2','conv4_3','conv4_4']
+            content_ls = ['conv5_1','conv5_2','conv5_3','conv5_4']
             content_ws = [1.0]
         elif args.network == 'bvlc_reference_caffenet':
             style_ls = ['conv1',
@@ -74,7 +73,7 @@ class StyleTransfer(object):
                         "inception_4c/1x1",
                         "inception_4d/1x1"]
             style_ws = [0.2 * args.sc_ratio] * 5
-            content_ls = ["inception_4d/output"]#"inception_3a/3x3","inception_3b/3x3","inception_3c/3x3"]
+            content_ls = ["inception_5b/1x1","inception_5b/3x3","inception_5b/5x5"]#"inception_3a/3x3","inception_3b/3x3","inception_3c/3x3"]
             content_ws = [1.0]
         else:
             raise ValueError('Invalid Network')
