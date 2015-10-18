@@ -6,7 +6,7 @@ model_name = 'VGG_ILSVRC_16_layers'
 
 net = get_net(model_name)
 print(np.shape(net.blobs['data'].data))
-img_name = 'wood.jpg'
+img_name = 'cat.jpg'
 img = imread(opjh('caffe/examples/images',img_name))
 img = img[:,:,:3]
 
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         model_name,
         ['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
         objective_dic,
-        net,1000,
-        opjh('scratch/2015/9/26',model_name),
+        net,100,
+        opjh('scratch/2015/10/17',model_name),
         '.'.join([img_name,'all']))# 'to 10')
 

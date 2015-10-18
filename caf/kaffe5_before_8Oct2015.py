@@ -2,7 +2,8 @@ from kzpy3.caf.utils import *
 
 #model_name = 'VGG_ILSVRC_16_layers'
 #model_name = 'bvlc_googlenet'
-model_name = 'bvlc_reference_caffenet'
+model_name = 'bvlc_googlenet_person'
+#model_name = 'bvlc_reference_caffenet'
 
 inception_outputs = ['conv1/7x7_s2', 'conv2/3x3', 
     'inception_3a/output', 
@@ -21,7 +22,7 @@ VGG_convs = ['conv1_1', 'conv1_2', 'conv2_1', 'conv2_2', 'conv3_1', 'conv3_2', '
 net = get_net(model_name)
 print(np.shape(net.blobs['data'].data))
 img_name = 'cat.jpg'
-img = imread(opjh('caffe/examples/images',img_name))
+img = imread(opjh('Desktop/528.png'))#'caffe/examples/images',img_name))# 
 img = img[:,:,:3]
 
 if model_name == 'VGG_ILSVRC_16_layers':
@@ -39,17 +40,17 @@ net.blobs['data'].data[0,2,:,:] =img[:,:,0]
 net.forward();
 activations = {}
 
-if False:
+if True:
     for k in net.blobs.keys():
         activations[k] = net.blobs[k].data.copy()
-        if len(shape(activations[k])) == 4:
+        if False:#len(shape(activations[k])) == 4:
             a = activations[k].mean(axis=2)
             b = a.mean(axis=2)
             print(shape(b))
             for x in range(shape(activations[k])[2]):
                 for y in range(shape(activations[k])[3]):
                     activations[k][0,:,x,y]= b
-if True:
+if False:
     for k in net.blobs.keys():
         activations[k] = net.blobs[k].data.copy()
         activations[k][:]= 0
@@ -62,7 +63,7 @@ if False:
             tmp = np.reshape(tmp,tmp_shape[0]*tmp_shape[1])
             np.random.shuffle(tmp)
             activations[l][0,i,:,:] = np.reshape(tmp,(tmp_shape[0],tmp_shape[1]))
-activations['conv1'][0,0,:,:]=1   
+#activations['conv1'][0,0,:,:]=1   
 objective_dic = get_objective_dic(model_name,activations)
 
 ml = sorted(objective_dic.keys(),key=natural_keys)
@@ -95,9 +96,15 @@ bvlc_googlenet:
 if __name__ == '__main__':
     backprop_diffs_to_data(
         model_name,
-        ['conv1'],#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
+        ['conv1/7x7_s2', 'conv2/3x3',#'inception_3a/1x1', 'inception_3b/1x1','inception_4a/1x1',
+            'inception_4b/1x1'],
+        #'inception_4c/1x1',
+        #'inception_4d/1x1',
+       # 'inception_4e/1x1',
+        #'inception_5a/1x1',
+        #'inception_5b/1x1'],#'inception_4a/1x1', 'inception_4a/3x3', 'inception_4a/5x5','inception_4b/1x1', 'inception_4b/3x3', 'inception_4b/5x5','inception_5a/1x1', 'inception_5a/3x3', 'inception_5a/5x5','inception_5b/1x1', 'inception_5b/3x3', 'inception_5b/5x5'],#'inception_3b/1x1', 'inception_3b/3x3', 'inception_3b/5x5',#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
         objective_dic,
-        net,2000,
-        opjh('scratch/2015/10/7',model_name),
-        'conv-0') #.'.join([img_name,'prob']))# 'to 10')
+        net,5000,
+        opjh('scratch/2015/10/17',model_name),
+        'prob') #.'.join([img_name,'prob']))# 'to 10')
 
