@@ -1,7 +1,18 @@
 from kzpy3.caf.kaffe.utils_3 import *
 
 
-
+"""
+input photo
+network
+layersoutput folder
+randomize initial data
+diff weights
+act weights
+jitters
+initial activation source
+    e.g., from input photo, or from selective mask
+activation_scale_factor
+"""
 
 
 
