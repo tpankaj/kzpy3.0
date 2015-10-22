@@ -181,7 +181,7 @@ MULTI_feat(work_path, work_path, to_do, TR_s, n_TRs, n_delete_TRs, run_one_in_bk
 from kzpy3.fMRI.data.preprocess import *
 import kzpy3.fMRI.data.preprocess;reload(kzpy3.fMRI.data.preprocess);from kzpy3.fMRI.data.preprocess import *
 to_do = [	['S1_2015',[[2015,7,10,0,'pp_a0']]]] # Note, different format from above.
-add_sessions(to_do,opjh('Desktop'),print_only=True)
+add_sessions(to_do,opjh('Desktop'),print_only=False)
 
 """
 
@@ -590,20 +590,21 @@ def add_session_paths(subject,year,month,day,session,pp,Research_path,print_only
 		ln_str3 = 'ln -s ../' + relative_path3 + ' ./fsl/'
 		os.system(ln_str3)
 
+		mb6_even,mb6_odd,mb6,t1,fm = list_dcm_folders(ses_str+'/dcm') 
+		print('\t\t\tdmc mb6_even:'+str(len(mb6_even)))
+		print('\t\t\tdmc mb6_odd:'+str(len(mb6_odd)))
+		print('\t\t\tdmc mb6:'+str(len(mb6)))
+		print('\t\t\tdmc t1:'+str(len(t1)))
+		print('\t\t\tdmc fm:'+str(len(fm)))
+		
+		mb6_lst = sort_nii_files(ses_str+'/nii')
+		print('\t\t\tnii:'+str(len(mb6_lst)))
+		
+		ignore,feat_lst = dir_as_dic_and_list(ses_str+'/fsl/'+pp)
+		print('\t\t\tfeat:'+str(len(feat_lst)))
+
 	os.chdir(wd)
 	
-	mb6_even,mb6_odd,mb6,t1,fm = list_dcm_folders(ses_str+'/dcm') 
-	print('\t\t\tdmc mb6_even:'+str(len(mb6_even)))
-	print('\t\t\tdmc mb6_odd:'+str(len(mb6_odd)))
-	print('\t\t\tdmc mb6:'+str(len(mb6)))
-	print('\t\t\tdmc t1:'+str(len(t1)))
-	print('\t\t\tdmc fm:'+str(len(fm)))
-	
-	mb6_lst = sort_nii_files(ses_str+'/nii')
-	print('\t\t\tnii:'+str(len(mb6_lst)))
-	
-	ignore,feat_lst = kzpy.utils.dir_as_dic_and_list(ses_str+'/fsl/'+pp)
-	print('\t\t\tfeat:'+str(len(feat_lst)))
 
 
 
