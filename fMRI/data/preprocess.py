@@ -4,14 +4,14 @@ import kzpy3.fMRI.data.feat_design
 """
 21 October 2015
 
+This module provides the code to preprocess fMRI data. There are several stages in this process.
+
 Part I: Basic preprocessing
 
 Basic preprocssing goals:
 
-This module provides the code to preprocess fMRI data. There are several stages in this process.
-
 The BIC fMRI scanner produces data files in dicom format. These are exported using a program called
-Osirix on the transfer Mac at the BIC. Each fMRI run is put into a separate folder of  dicom files.
+Osirix on the transfer Mac at the BIC. Each fMRI run is put into a separate folder of dicom files.
 For example, a typical run folder and contents are:
 
 	mb_bold_mb6_20mm_AP_PSN_8
@@ -26,7 +26,7 @@ There will be several of these folders for each scanning session.
 
 These files will be processed in a sequence of steps, taking them into Nifti format (where an
 entire run is in a single 4 dimensional space-time file). Subsequently these are further processed
-by FSL to generate more refined versions. Thus, preprocessing involves generating a lot of intermediate
+by FSL to generate more refined versions. Thus, preprocessing involves generating intermediate
 stages of data files. I organize these in 'Research' hierarchies.
 
 
@@ -43,8 +43,8 @@ The main directory structure is:
 
 Research
 	data
-		experiments [ignore this for now]
-		protocols [ignore this for now]
+		experiments
+		protocols
 		subjects
 			S1_2015 [for example]
 				2015 [year]
@@ -59,8 +59,8 @@ Research
 					mat
 					nii
 					stats
-	other [ignore this for now]
-	stimuli [ignore this for now]
+	other
+	stimuli
 
 The dcm subdirectory will not contain files, but will be a symbolic link to a dcm directory in the following:
 
@@ -72,37 +72,42 @@ Research-data-subjects-S1_2015-2015-7-10-0-dcm
 				  7
 				    10
 				       0
-					dcm
-						AAHScout_32ch_5
-						AAHScout_32ch_MPR_6
-						mb_bold_mb6_20mm_AP_PSN_7
-							IM-0007-0001.dcm
-							IM-0007-0002.dcm
-							IM-0007-0003.dcm
-							. . .
+							dcm
+								AAHScout_32ch_5
+								AAHScout_32ch_MPR_6
+								mb_bold_mb6_20mm_AP_PSN_7
+									IM-0007-0001.dcm
+									IM-0007-0002.dcm
+									IM-0007-0003.dcm
+									. . .
 
-						. . .
+								. . .
 
-There are some things to note. First, the name of the hierarchy containing the actual data files
+There are some things to note. First, the name of the Research- hierarchy containing the actual data files
 indicates the contents. This makes it easy to select subsets of data as needed.
 Second, the directory structure exactly mirrors the structure of the main Research
 hierarchy. Third, as much as possible, names are used either to indicate classes of content, or
 the content, without redundancies. Thus, under subjects/S1_2015, the subject number will not
 be repeated (e.g., the dicom folder is "dcm", not "S1_2015_dcm").
 
+In detail, here are preprocessing steps accomplished by this module:
+
 1) The first preprocessing step is simply to move the folders from whatever transfer folder they were put in when
-taken from the scanner into a Research folder of the appropriate name. I will refer to this as "Research-".This is done with:
+taken from the scanner, into a Research folder of the appropriate name. I will refer to this as "Research-".
+This is done with the function
 
 	dcm_to_Research_folders(start_path, end_path, subject, year, month, day, session)
 
-2) The second preprocessing step takes take the dicom files their Research- folder and transform 
-them into Nifti files and place these into another Research- folder. This requires an application 
+2) The second preprocessing step reads the dicom files their Research- folder and transforms 
+them into Nifti files and places these into another Research- folder. This requires an external application 
 called "dcm2nii64" from the site http://www.mccauslandcenter.sc.edu/mricro/mricron/dcm2nii.html . 
-I assume this to be ~/Desktop/Research/data/protocols/mricron/dcm2nii64 . The function:
+I assume application file to be ~/Desktop/Research/data/protocols/mricron/dcm2nii64 . The function:
 	
 	MULTI_dcm2nii(start_path, end_path,to_do,use_PSN)
 
 is used to accomplish this transformation.
+
+		[22 Oct. 2015]
 
 3) The third preprocessing step is to apply the FSL application FEAT to the .nii files. The function:
 	
@@ -115,7 +120,7 @@ with sample parameter settings:
 		to_do = [['S1_2015',2015,7,10,0,'align_to_middle_run_of_session','pp_a0']]
 		run_one_in_bkg = True
 
-handles this. Unlike the previous two steps, this is a complex, parameter laden process. The to_do list
+handles this. Unlike the previous two steps, this is a complex and parameter laden process. The to_do list
 is a list of sessions, with each sublist specifying:
 	subject
 	session year
@@ -125,13 +130,13 @@ is a list of sessions, with each sublist specifying:
 	alignment specifier
 	alignment name
 
-FEAT must be run for each .nii file. A key question is to what should the .nii
+FEAT must be run for each .nii file in this process. A key question is to what should the .nii
 file be motion-corrected to? This is important to enable the various .nii files from the same an other sessions
 to be compared. One option for the alignment specifier is 'align_to_middle_run_of_session'. This causes the align_to_middle_run_of_session
 run of the session to be sent to FEAT first, and subsequently processing the remaining runs aligned to it. I use the
-alignment name 'pp_a0' for this. The reference volume information is saved in the FEAT log under Initalisation,
-with a call to /usr/local/fsl/bin/fslmaths. Another option is to align to a specified mean_func file in some pre-existing .feat folder.
-For this condition I use the alignment name 'pp_b0'. Thus, one approach is to have one session aligned to its middle run (pp_a0) and 
+alignment name 'pp_a0' for this. The reference volume information is saved in the FEAT log "report_log.html" under 'Initalisation',
+with a call to /usr/local/fsl/bin/fslmaths. Another option is to align to a specified mean_func.nii.gz file in some pre-existing .feat folder.
+For this condition I use the alignment name 'pp_b0'. Thus, one approach is to have one session aligned to its middle run (pp_a0) and another is
 to have other sessions aligned to this same middle run (pp_b0). The alignment name in fact is a place holder which allows for different
 parameter settings of FEAT processing to be stored in parallel. Thus, I may later have other preprocessing names with the 'pp_' prefix.
 
@@ -143,9 +148,55 @@ but continues to run (presumably without slice time correction).
 
 Part II: Data Organization
 
-After finishing steps 1-3 above, the data will be in analysis-ready form. The goal of Part II is to do book-keeping work_path,
+After finishing steps 1-3 above, the data will be in analysis-ready form. The goal of Part II is to do book-keeping,
 linking data files into the Research hierarchy so that it is easily accessible.
 
+4) A simple step is to take sessions with data in Research- folders and link the relevant
+data directories into the main Research hierarchy. This is accomplished with the 
+	
+	add_sessions(to_do,Research_path,print_only)
+
+function. Note that the to_do argument requires a different structure from that above, something
+which I should perhaps address to avoid confusion. Note that Research_path refers to the folder
+containing the Research folders (e.g., opjh('Desktop')).
+
+5) The next step is to prepare a text file for each session (info/session_info.txt), that allows for binding between runs and particular
+experiments and tasks. This is done with the function
+
+	add_sessions_info(to_do,Research_path)
+
+Where does the information about binding come from? Currently it is coded in the name of a .mat
+file in the mat folder of the session, for example:
+
+	mat/201507100902_subjS1_2015_run1_expZM01.mat
+
+Prior to June 2015 I did not use this system, so coded matfiles will need to be generated for earlier
+data. The add_sessions_info can work on multiple sessions as specified in the to_do list.
+
+Note, the information in info/session_info.txt generated here may not be complete, depending on 
+the experiment. This is because not all information is coded in the matfile name. Specifically,
+attention task is omited. Thus, for some experiments, these files will contain blanks in the form 
+of underscore characters. These need to be manually edited before proceeding.
+
+6) The next step is to use the [edited] info/session_info.txt files to generate symbolic links that bind 
+data to experiments. This is done with the function
+
+	link_func_runs(subject,year,month,day,session,mc_version,Research_path)
+
+which creates an intermediate representation under the func_runs directory in the session directory.
+This contains numbered runs with links to the .feat folder and the .mat file. Then, links are created 
+under Research/data/experiments which mirror the func_runs directory under Research/data/subjects.
+
+In other words, step 6 allows us to access the data from the primary point of view of experiments and tasks,
+rather than from the primary point of view of subjects and dates. The intention is that once preprocessing is complete, further analysis 
+will access the data through the Research/data/expriments path rather than the Research/data/subjects path.
+
+Only the relevant Research-...-fsl... folders need to be kept on working diskspace as long as the 
+preprocessing is acceptable. Research-...-dcm and Research-...-nii folders can be kept on archive disks,
+for example. At later stages, even the Research-...-fsl... folders may not be necessary for ongoing analysis, but that is outside
+the scope of this preprocessing module.
+
+_____
 
 
 Here is an example log used to preprocess data collected from S1_2015 on 7/10/2015:
@@ -169,7 +220,7 @@ MULTI_dcm2nii(start_path, end_path,to_do, True)
 ####### MULTI_feat ########
 # 10/21/2015
 from kzpy3.fMRI.data.preprocess import *
-import kzpy3.fMRI.data.preprocess;reload(kzpy3.fMRI.data.preprocess);from kzpy3.fMRI.data.preprocess import *
+#import kzpy3.fMRI.data.preprocess;reload(kzpy3.fMRI.data.preprocess);from kzpy3.fMRI.data.preprocess import *
 work_path = opjh('Desktop')
 TR_s, n_TRs, n_delete_TRs, = 0.9,300,6
 to_do = [['S1_2015',2015,7,10,0,'align_to_middle_run_of_session','pp_a0']]
@@ -183,6 +234,7 @@ import kzpy3.fMRI.data.preprocess;reload(kzpy3.fMRI.data.preprocess);from kzpy3.
 to_do = [	['S1_2015',[[2015,7,10,0,'pp_a0']]]] # Note, different format from above.
 add_sessions(to_do,opjh('Desktop'),print_only=False)
 
+add_sessions_info(to_do,opjh('Desktop'))
 """
 
 ############################## Part I: Basic preprocessing ##############################
@@ -353,10 +405,13 @@ The to_do list is a list of sessions, with each sublist specifying:
 #
 
 
-# Step four: add session folders to main Research folder 	
+	
 
 
 def add_sessions(to_do,Research_path,print_only=True):
+	"""
+	### Preprocessing step four: add session folders to main Research folder 
+	"""
 	print('add_sessions:')
 	for t in to_do:
 		subject = t[0]
@@ -370,9 +425,12 @@ def add_sessions(to_do,Research_path,print_only=True):
 			print('\t\t'+str(year)+' '+str(month)+' '+str(day)+' '+str(session)+' '+pp)
 			add_session_paths(subject,year,month,day,session,pp,Research_path,print_only)
 
-# Step five: get session information into main Research folder 	
 
 def add_sessions_info(to_do,Research_path):
+	"""
+	### Preprocessing step five: get session information into main Research folder
+	"""
+
 	print('add_sessions:')
 	for t in to_do:
 		subject = t[0]
@@ -389,14 +447,16 @@ def add_sessions_info(to_do,Research_path):
 
 
 
-# Step six: after manually editing the session_info.txt file for a given session,
-# use this to create the runs folders for the session, which bind the mat files
-# and the feat folders (and other stuff, if we have it),
-# as well as linking the experiments runs to these.
 
 def link_func_runs(subject,year,month,day,session,mc_version,Research_path):
 	session_info_dic = get_session_info(subject,year,month,day,session,Research_path)
 
+	"""
+	### Preprocessing step six: after manually editing the session_info.txt file for a given session,
+	use this to create the runs folders for the session, which bind the mat files
+	and the feat folders (and other stuff, if we have it),
+	as well as linking the experiments runs to these.
+	"""
 	nii_name = session_info_dic['nii_name']
 	mat_name = session_info_dic['mat_name']
 	experiment = session_info_dic['experiment']
@@ -616,11 +676,11 @@ def add_session_info(subject,year,month,day,session,Research_path):
 	
 	mb6 = sort_nii_files(ses_str + '/nii')
 
-	ignore,mat = kzpy.utils.dir_as_dic_and_list(ses_str + '/mat')
+	ignore,mat = dir_as_dic_and_list(ses_str + '/mat')
 	print((len(mb6),len(mat)))
 	if len(mb6) != len(mat):
 		print('ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-		system.exit('if len(mb6) != len(mat):')
+		os.system.exit('if len(mb6) != len(mat):')
 
 	info_str_lst = ['nii_name\tmat_name\tsub_experiment\tcondition\texperiment\n']
 	for i in range(len(mb6)):
