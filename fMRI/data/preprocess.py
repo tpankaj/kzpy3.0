@@ -552,7 +552,7 @@ def add_session_paths(subject,year,month,day,session,pp,Research_path,print_only
 	chunk_prefix = Research_path + '/Research-'
 	ses_str = ses_prefix+ses_str0
 	chunk_str = chunk_prefix+chunk_str0
-	print(d2s('*******',chunk_str+'-dcm/'+ses_str0+'/dcm'))
+	
 	mb6_even,mb6_odd,mb6,t1,fm = list_dcm_folders(chunk_str+'-dcm/'+ses_str0+'/dcm') 
 	print('\t\t\tC dmc mb6_even:'+str(len(mb6_even)))
 	print('\t\t\tC dmc mb6_odd:'+str(len(mb6_odd)))
@@ -606,7 +606,7 @@ def add_session_paths(subject,year,month,day,session,pp,Research_path,print_only
 	print('\t\t\tfeat:'+str(len(feat_lst)))
 
 
-	
+
 
 def add_session_info(subject,year,month,day,session,Research_path):
 	'''
