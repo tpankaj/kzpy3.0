@@ -223,5 +223,5 @@ if True:
 
     for r in range(1):
         for l in inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
-            do_it3(l,net,5000,0,True,False)
+            do_it3(l,net,2000,0,True,False)
 
