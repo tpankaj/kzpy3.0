@@ -1,8 +1,9 @@
-from kzpy3.caf.utils import *
+from kzpy3.caf.kaffe.utils import *
 
 #model_name = 'VGG_ILSVRC_16_layers'
 #model_name = 'bvlc_googlenet'
-model_name = 'bvlc_reference_caffenet'
+model_name = 'bvlc_googlenet_person'
+#model_name = 'bvlc_reference_caffenet'
 
 inception_outputs = ['conv1/7x7_s2', 'conv2/3x3', 
     'inception_3a/output', 
@@ -62,7 +63,8 @@ if False:
             tmp = np.reshape(tmp,tmp_shape[0]*tmp_shape[1])
             np.random.shuffle(tmp)
             activations[l][0,i,:,:] = np.reshape(tmp,(tmp_shape[0],tmp_shape[1]))
-activations['conv1'][0,0,:,:]=1   
+L = 'inception_3b/5x5'
+activations[L][0,8,:,:]=1   
 objective_dic = get_objective_dic(model_name,activations)
 
 ml = sorted(objective_dic.keys(),key=natural_keys)
@@ -95,9 +97,9 @@ bvlc_googlenet:
 if __name__ == '__main__':
     backprop_diffs_to_data(
         model_name,
-        ['conv1'],#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
+        [L],#VGG_convs,#['conv3_1','conv3_2','conv4_1','conv4_2','conv5_1'],#ml,##['conv3_1'],#ml,#['conv1_1','conv1_2','conv2_1','conv2_2','conv3_1','conv3_2'],#, 'conv2/3x3'],#, 'inception_3a/1x1', 'inception_3a/3x3', 'inception_3a/5x5','inception_3a/output'],# ml,
         objective_dic,
         net,2000,
-        opjh('scratch/2015/10/7',model_name),
-        'conv-0') #.'.join([img_name,'prob']))# 'to 10')
+        opjh('scratch/2015/10/24',model_name),
+        'temp') #.'.join([img_name,'prob']))# 'to 10')
 

@@ -103,7 +103,7 @@ def backprop_diffs_to_data(model_name,layers,objective_dic,net,iter_n,img_path,o
                 break
             
             if home_path != cluster_home_path:
-                if time.time()-save_time > 15:
+                if time.time()-save_time > 1:
                     vis = deprocess(net, src.data[0])
                     img = np.uint8(255*z2o(zscore(vis,2.5)))
                     imsave(opj(img_path+'.png'),img)
@@ -217,7 +217,7 @@ def make_step2(
     net,
     step_size=1.5,
     end='', 
-    jitter=5,
+    jitter=1,
     clip=True,
     objective=objective_L2):
     '''Basic gradient ascent step.'''
@@ -264,7 +264,7 @@ def get_objective_dic(model_name,activations):
         lay0 = 'conv1/7x7_s2'
         a0 = activations[lay0]/(10.0*activations[lay0].max())
         def obj0(dst):
-            dst.diff[:] = a0
+            dst.diff[:] = dst.data * a0
         objective_dic[lay0] = obj0
         lay1 = 'conv2/3x3'
         a1 = activations[lay1]/(10.0*activations[lay1].max())
@@ -552,7 +552,7 @@ def get_objective_dic(model_name,activations):
         lay0 = 'conv1'
         a0 = activations[lay0]/(10.0*activations[lay0].max())
         def obj0(dst):
-            dst.diff[:] = a0#dst.data * a0#
+            dst.diff[:] = dst.data * a0#
         objective_dic[lay0] = obj0
         lay1 = 'conv2'
         a1 = activations[lay1]/(10.0*activations[lay1].max())

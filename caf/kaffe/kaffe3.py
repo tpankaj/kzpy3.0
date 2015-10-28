@@ -237,7 +237,7 @@ def do_it3(layer,net,iter_n,start=0):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/10/17/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    img_path = opj(home_path,'scratch/2015/10/26/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
@@ -376,11 +376,11 @@ if True:
 
     print(np.shape(net.blobs['data'].data))
     src = net.blobs['data']
-    src.reshape(1,3,227,227)
+    src.reshape(1,3,224,224)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['prob']:#['inception_4e/output']:#['fc8']:
-        do_it3(l,net,2000,527)
+    for l in ['conv1/7x7_s2']:#['inception_4e/output']:#['fc8']:
+        do_it3(l,net,10,0)
 
 if False:
     MODEL_NUM = 5
