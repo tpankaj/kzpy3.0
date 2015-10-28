@@ -117,7 +117,7 @@ def do_it3(layer,net,iter_n,start=0,single_RF=False,multi_RF=False):
     layer_shape = tuple(layer_shape)
     img_path = opj(home_path,'scratch/2015/10/28/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
-    for n in [start]:#range(start,layer_shape[1]):#(num_nodes):
+    for n in range(start,layer_shape[1]):#[start]:#
         mask7 = np.zeros(layer_shape)
         print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
         print(layer_shape)
@@ -160,21 +160,53 @@ def do_it3(layer,net,iter_n,start=0,single_RF=False,multi_RF=False):
                 f = 500
             else:
                 f = 1000
-            if np.mod(i,f)==0:
-                vis = deprocess(net, src.data[0])
-                img = np.uint8(np.clip(vis, 0, 255))
-                #mi(img,opj(img_path,str(n)+'.png'))
-                imsave(opj(img_path,str(n)+'.'+tm+'.'+str(i)+'.png'),img)
+            if False:
+                if np.mod(i,f)==0:
+                    vis = deprocess(net, src.data[0])
+                    img = np.uint8(np.clip(vis, 0, 255))
+                    #mi(img,opj(img_path,str(n)+'.png'))
+                    imsave(opj(img_path,str(n)+'.'+tm+'.'+str(i)+'.png'),img)
 
         
         vis = deprocess(net, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
         #mi(img,opj(img_path,str(n)+'.png'))
-        imsave(opj(img_path,str(n)+'.'+str(np.int(time.time()))+'.png'),img)
+        imsave(opj(img_path,str(n)+'.png'),img)
 
 
 
 
+inception_layers = [
+        'conv1/7x7_s2',
+        'conv2/3x3',
+        'inception_3a/1x1',
+        'inception_3a/3x3',
+        'inception_3a/5x5',
+        'inception_3b/1x1',
+        'inception_3b/3x3',
+        'inception_3b/5x5',
+        'inception_4a/1x1',
+        'inception_4a/3x3',
+        'inception_4a/5x5',
+        'inception_4b/1x1',
+        'inception_4b/3x3',
+        'inception_4b/5x5',
+        'inception_4c/1x1',
+        'inception_4c/3x3',
+        'inception_4c/5x5',
+        'inception_4d/1x1',
+        'inception_4d/3x3',
+        'inception_4d/5x5',
+        'inception_4e/1x1',
+        'inception_4e/3x3',
+        'inception_4e/5x5',
+        'inception_5a/1x1',
+        'inception_5a/3x3',
+        'inception_5a/5x5',
+        'inception_5b/1x1',
+        'inception_5b/3x3',
+        'inception_5b/5x5',
+        'loss3/classifier']
 
 
 
@@ -189,7 +221,7 @@ if True:
     src.reshape(1,3,224,224)
     print(np.shape(net.blobs['data'].data))
 
-    for r in range(100):
-        for l in ['inception_4b/5x5']:#['conv1/7x7_s2']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
-            do_it3(l,net,50000,55,False,True)
+    for r in range(1):
+        for l in inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
+            do_it3(l,net,5000,0,True,False)
 
