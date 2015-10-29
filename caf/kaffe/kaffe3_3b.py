@@ -9,8 +9,11 @@ from IPython.display import clear_output, Image, display
 from google.protobuf import text_format
 import caffe
 
+GPU_FLAG = False
+
 cluster_home_path = '/global/home/users/karlz'
 if home_path == cluster_home_path:
+    GPU_FLAG = True
     caffe.set_mode_gpu()
     caffe.set_device(0) # select GPU device if multiple devices exist
 
@@ -223,8 +226,11 @@ if True:
     src.reshape(1,3,224,224)
     print(np.shape(net.blobs['data'].data))
 
-    inception_layers.reverse()
-
+    #inception_layers.reverse()
+    if GPU_FLAG:
+        print("*********** Using GPU ***********")
+    else:
+        print("*********** Using CPU ***********")
     for r in range(1):
         for l in inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
             if l == 'loss3/classifier':
