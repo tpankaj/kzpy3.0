@@ -107,7 +107,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output',
 
 
 
-def do_it3(layer,net,iter_n,start=0,single_RF=False,multi_RF=False):
+def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_center=-1,y_center=-1,scratch_path='scratch/2015/10/28/',img_dic={}):
 
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2,0,1))
@@ -118,40 +118,49 @@ def do_it3(layer,net,iter_n,start=0,single_RF=False,multi_RF=False):
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
-    img_path = opj(home_path,'scratch/2015/10/28/'+model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
+    img_path = opj(home_path,scratch_path,model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
     unix('mkdir -p ' + img_path)
-    for n in range(start,layer_shape[1]):#[start]:#
+    if end == -1:
+        end = layer_shape[1]
+    for n in range(start,end):#[start]:#
         mask7 = np.zeros(layer_shape)
         print((model_folders[MODEL_NUM],layer,n))#,labels[n]))
         print(layer_shape)
         #n = np.random.randint(1000)
         
-
+        if x_center < 0:
+            x_center = layer_shape[2]/2
+        if y_center < 0:
+            y_center = layer_shape[3]/2
+        print(d2s(('x_center','y_center'),(x,y)))
         if single_RF:
-            mask7[:,n,layer_shape[2]/2,layer_shape[3]/2] = 1.0
-        elif multi_RF:
-            mask7[:,30,layer_shape[2]/2,layer_shape[3]/2] = 0.0/1.0
-            mask7[:,30,layer_shape[2]/2,4+layer_shape[3]/2] = 1.0/1.0
-            mask7[:,30,layer_shape[2]/2,-4+layer_shape[3]/2] = 0.0/1.0
-            
+            mask7[:,n,x_center,y_center] = 1.0
         else:
             mask7[:,n] = 1.0
+
+        #elif multi_RF:
+        #    mask7[:,30,layer_shape[2]/2,layer_shape[3]/2] = 0.0/1.0
+        #    mask7[:,30,layer_shape[2]/2,4+layer_shape[3]/2] = 1.0/1.0
+        #    mask7[:,30,layer_shape[2]/2,-4+layer_shape[3]/2] = 0.0/1.0
         def objective_kz7(dst):
             dst.diff[:] = dst.data * mask7
 
-        try:
-            cimg = caffe.io.load_image(opj(img_path,str(n)+'.png'))
-            net.blobs['data'].reshape(1,3,224,224)
-            net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
-        except:
+        #try: # Try to load existing image, otherwise make random dot pattern.
+        #    cimg = caffe.io.load_image(opj(img_path,str(n)+'.png'))
+        #    net.blobs['data'].reshape(1,3,224,224)
+        #    net.blobs['data'].data[...] = transformer.preprocess('data', cimg)
+        #except:
+        if (x_center,y_center) in img_dic:
+            net.blobs['data'].data[0] = img_dic[(x_center,y_center)].copy()
+        else:
             net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-            #net.blobs['data'].data[0][:,100,99] = 255
+
         pb = ProgressBar(iter_n)
         tm = str(np.int(time.time()))
+        print(time_str())
         for i in range(iter_n):
-
             make_step(net,jitter=1,end=layer,objective=objective_kz7,clip=True)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
@@ -169,12 +178,12 @@ def do_it3(layer,net,iter_n,start=0,single_RF=False,multi_RF=False):
                     img = np.uint8(np.clip(vis, 0, 255))
                     #mi(img,opj(img_path,str(n)+'.png'))
                     imsave(opj(img_path,str(n)+'.'+tm+'.'+str(i)+'.png'),img)
-
+        img_dic[(x_center,y_center)] = net.blobs['data'].data[0].copy()
         
         vis = deprocess(net, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
         #mi(img,opj(img_path,str(n)+'.png'))
-        imsave(opj(img_path,str(n)+'.png'),img)
+        imsave(opj(img_path,str(n)+'.'+str((x_center,y_center))+'.png'),img)
 
 
 
@@ -231,12 +240,16 @@ if True:
         print("*********** Using GPU ***********")
     else:
         print("*********** Using CPU ***********")
-    for r in range(1):
-        for l in inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
-            if l == 'loss3/classifier':
-                single_rf = False
-            else:
-                single_rf = True
-            single_rf = False
-            do_it3(l,net,4000,0,single_rf,False)
+    img_dic = {}
+    for r in range(10000):
+        for x in range(0,14):
+            for y in range(0,14):
+                for l in ['inception_4b/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
+                    #if l == 'loss3/classifier':
+                    #    single_rf = False
+                    #else:
+                    #    single_rf = True
+                    single_rf = True
+                    
+                    do_it3(l,net,100,55,55+1,single_rf,True,x,y,'scratch/2015/10/29',img_dic)
 
