@@ -39,3 +39,6 @@ mod = np.mod
 def opjh(*args):
     return opj(home_path,opj(*args))
 
+def opjD(*args):
+    return opjh('Desktop',opj(*args))
+
