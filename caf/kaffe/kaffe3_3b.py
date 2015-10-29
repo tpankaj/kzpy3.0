@@ -199,7 +199,9 @@ inception_layers = [
         'inception_4d/5x5',
         'inception_4e/1x1',
         'inception_4e/3x3',
-        'inception_4e/5x5',
+        'inception_4e/5x5'
+        ]
+"""        ,
         'inception_5a/1x1',
         'inception_5a/3x3',
         'inception_5a/5x5',
@@ -207,7 +209,7 @@ inception_layers = [
         'inception_5b/3x3',
         'inception_5b/5x5',
         'loss3/classifier']
-
+"""
 
 
 
@@ -230,5 +232,5 @@ if True:
             else:
                 single_rf = True
 
-            do_it3(l,net,2000,0,single_rf,False)
+            do_it3(l,net,4000,0,single_rf,False)
 
