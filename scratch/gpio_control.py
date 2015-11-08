@@ -40,7 +40,7 @@ def motor(
 
 def servo(
 	duty_cycle=7.5,
-	durataion=0.2
+	durataion=0.2,
 	freqency=50,
 	pin=SERVO_IN):
 	"""
