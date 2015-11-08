@@ -49,10 +49,13 @@ def servo(
 
 
 
-global text
+root = tk.Tk()
+root.geometry('300x200')
+text = tk.Text(root, background='black', foreground='white', font=('Comic Sans MS', 12))
+text.pack()
+root.bind('<KeyPress>', onKeyPress)
 
 def onKeyPress(event):
-	global text
     text.insert('end', 'You pressed %s\n' % (event.char, ))
     if event.char == '1':
         servo2(1.0)
@@ -69,11 +72,6 @@ def onKeyPress(event):
         root.destroy() #root.quit()
 
 def tk_control():
-	root = tk.Tk()
-	root.geometry('300x200')
-	text = tk.Text(root, background='black', foreground='white', font=('Comic Sans MS', 12))
-	text.pack()
-	root.bind('<KeyPress>', onKeyPress)
 	root.mainloop()
 
 
