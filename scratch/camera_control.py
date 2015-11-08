@@ -39,7 +39,7 @@ while time.time() < start_time + camera_on_time:
 		if np.mod(ctr,100) == 0:
 			print(d2s('Average interval =',time_sum / (1.0*ctr)))
 		last_time = t
-		camera.capture(image_path,format='jpeg', use_video_port=True,quality=5)
+		camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
 		sftp.put(image_path, dst_image_path)
 	except:
 		break
