@@ -59,9 +59,9 @@ def onKeyPress(event):
     if event.char == '3':
         do_pwm(38,50,0.3,11)
     if event.char == '4':
-        do_pwm(40,50,2,7.20)
+        do_pwm(40,50,0.3,7.20)
     if event.char == '5':
-        do_pwm(40,50,2,7.18)
+        do_pwm(40,50,0.3,7.18)
     if event.char == 'q':
         GPIO.cleanup()
         root.destroy() #root.quit()
