@@ -51,17 +51,17 @@ def servo(
 
 
 def onKeyPress(event):
-    text.insert('end', 'You pressed %s\n' % (event.char, ))
+    text.insert('end', '%s ' % (event.char, ))
     if event.char == '1':
-        servo2(1.0)
+        do_pwm(38,50,0.3,7.8)
     if event.char == '2':
-        servo2(1.5)
+        do_pwm(38,50,0.3,9.5)
     if event.char == '3':
-        servo2(2)
+        do_pwm(38,50,0.3,11)
     if event.char == '4':
-        motor_fast()
+        do_pwm(40,50,2,7.20)
     if event.char == '5':
-        motor_slow()
+        do_pwm(40,50,2,7.18)
     if event.char == 'q':
         GPIO.cleanup()
         root.destroy() #root.quit()
