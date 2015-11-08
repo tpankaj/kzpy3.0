@@ -1,7 +1,7 @@
 from kzpy3.utils import *
 import RPi.GPIO as GPIO
-
-import time
+import Tkinter as tk
+#import time
 """
 d = 7.15
 pwm = GPIO.PWM(40,50);pwm.start(d);time.sleep(0.1);pwm.stop()
@@ -47,8 +47,31 @@ def servo(
 	"""
 	do_pwm(pin,frequency,duration,duty_cycle)
 
-m = motor
-s = servo
 
+
+
+def onKeyPress(event):
+    text.insert('end', 'You pressed %s\n' % (event.char, ))
+    if event.char == '1':
+        servo2(1.0)
+    if event.char == '2':
+        servo2(1.5)
+    if event.char == '3':
+        servo2(2)
+    if event.char == '4':
+        motor_fast()
+    if event.char == '5':
+        motor_slow()
+    if event.char == 'q':
+        GPIO.cleanup()
+        root.destroy() #root.quit()
+
+def tk_control():
+	root = tk.Tk()
+	root.geometry('300x200')
+	text = tk.Text(root, background='black', foreground='white', font=('Comic Sans MS', 12))
+	text.pack()
+	root.bind('<KeyPress>', onKeyPress)
+	root.mainloop()
 
 
