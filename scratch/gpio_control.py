@@ -22,7 +22,7 @@ for p in out_pins:
 	GPIO.setup(p,GPIO.OUT)
 
 def do_pwm(pin,frequency,duration,duty_cycle):
-	pwm = GPIO.PWM(pin,freqency)
+	pwm = GPIO.PWM(pin,frequency)
 	start_time = time.time()
 	pwm.start(duty_cycle)
 	while time.time() < start_time + duration:
