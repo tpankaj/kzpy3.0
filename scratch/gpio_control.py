@@ -28,18 +28,16 @@ def do_pwm(pin,frequency,duration,duty_cycle):
 	while time.time() < start_time + duration:
 		pass;
 	pwm.stop()
-
+"""
 def motor(
 	duty_cycle=10,
 	durataion=0.5,
 	freqency=100,
 	pin=HB_EN1,
 	initial_pulse_time=0.1):
-	"""
-	"""
 	do_pwm(pin,frequency,initial_pulse_time,100)
 	do_pwm(pin,frequency,durataion-initial_pulse_time,duty_cycle)
-
+"""
 def servo(
 	duty_cycle=7.5,
 	durataion=0.2,
