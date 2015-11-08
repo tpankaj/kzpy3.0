@@ -22,7 +22,7 @@ def even_frames(frame_number):
 
 fig = plt.figure(1,figsize=(9,9))
 
-animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=300, repeat=False)
+animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=30, repeat=False)
 
 plt.show()
 

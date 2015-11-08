@@ -245,7 +245,7 @@ if True:
         for r in range(20):
             for x in range(0,14):
                 for y in range(0,14):
-                    for l in ['inception_4b/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
+                    for l in ['inception_4c/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
                         #if l == 'loss3/classifier':
                         #    single_rf = False
                         #else:
