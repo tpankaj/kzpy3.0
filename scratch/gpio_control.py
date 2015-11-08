@@ -1,24 +1,31 @@
 from kzpy3.utils import *
 import RPi.GPIO as GPIO
 
-SERVO_IN = 40
-HB_EN1 = 7
-HB_IN1 = 12
-HB_IN2 = 12
+import time
+"""
+d = 7.15
+pwm = GPIO.PWM(40,50);pwm.start(d);time.sleep(0.1);pwm.stop()
+"""
 
-out_pins = [SERVO_IN, HB_EN1, HB_IN1, HB_IN2]
+SERVO_IN = 38
+MOTOR_IN = 40
+#HB_EN1 = 7
+#HB_IN1 = 12
+#HB_IN2 = 13
+
+out_pins = [SERVO_IN,MOTOR_IN]#[SERVO_IN, HB_EN1, HB_IN1, HB_IN2]
 
 GPIO.setmode(GPIO.BOARD)
 for p in out_pins:
 	GPIO.setup(p,GPIO.OUT)
 
 def do_pwm(pin,frequency,duration,duty_cycle):
-		pwm = GPIO.PWM(pin,freqency)
-		start_time = time.time()
-		pwm.start(duty_cycle)
-		while time.time() < start_time + duration:
-			pass;
-		pwm.stop()
+	pwm = GPIO.PWM(pin,freqency)
+	start_time = time.time()
+	pwm.start(duty_cycle)
+	while time.time() < start_time + duration:
+		pass;
+	pwm.stop()
 
 def motor(
 	duty_cycle=10,
