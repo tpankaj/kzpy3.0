@@ -31,17 +31,21 @@ last_time = start_time
 ctr = 0
 time_sum = 0
 while time.time() < start_time + camera_on_time:
-	t = time.time()
-	ctr += 1
-	time_sum += t-last_time
-	print(time_sum / (1.0*ctr))
-	last_time = t
-	camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
-	sftp.put(image_path, dst_image_path)
+	try:
+		t = time.time()
+		ctr += 1
+		time_sum += t-last_time
+		print(time_sum / (1.0*ctr))
+		last_time = t
+		camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
+		sftp.put(image_path, dst_image_path)
+	except:
+		break
     
-
+print('Cleaning up.')
 sftp.close()
 transport.close()
+print('Done.')
 
 """
 from kzpy3.utils import *
