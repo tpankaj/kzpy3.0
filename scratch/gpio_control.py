@@ -49,8 +49,10 @@ def servo(
 
 
 
+global text
 
 def onKeyPress(event):
+	global text
     text.insert('end', 'You pressed %s\n' % (event.char, ))
     if event.char == '1':
         servo2(1.0)
