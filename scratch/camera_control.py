@@ -19,7 +19,8 @@ sftp = paramiko.SFTPClient.from_transport(transport)
 camera = picamera.PiCamera()
 camera.hflip = True
 camera.vflip = True
-camera.resolution = (640/2, 480/2)
+ydim = 224
+camera.resolution = (np.int(1.3333*ydim), ydim)
 
 image_path = '/home/pi/image1.jpg'
 dst_image_path = '/Users/karlzipser/Desktop/image1.jpg'
@@ -43,7 +44,7 @@ while time.time() < start_time + camera_on_time:
 	except:
 		break
     
-print('Cleaning up.')
+print('\nCleaning up.')
 sftp.close()
 transport.close()
 print('Done.')
