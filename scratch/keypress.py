@@ -14,6 +14,12 @@ def on_key(event):
     	print('GO LEFT!!')
     if event.key == 'right':
     	print('GO RIGHT!!')
+    if event.key == 'q':
+    	print('quit!!')
+    	clf()
+    	close()
+    	fig.canvas.mpl_disconnect(cid)
+
 
 cid = fig.canvas.mpl_connect('key_press_event', on_key)
 
