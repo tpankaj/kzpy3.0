@@ -17,8 +17,8 @@ sftp = paramiko.SFTPClient.from_transport(transport)
 
 
 camera = picamera.PiCamera()
-camera.hflip = True
-camera.vflip = True
+#camera.hflip = True
+#camera.vflip = True
 ydim = 224
 camera.resolution = (np.int(1.3333*ydim), ydim)
 
