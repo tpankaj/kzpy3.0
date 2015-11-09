@@ -7,6 +7,16 @@ import Tkinter as tk
 """
 d = 7.15
 pwm = GPIO.PWM(40,50);pwm.start(d);time.sleep(0.1);pwm.stop()
+
+
+VNC
+on RPi,
+	tightvncserver
+	vncserver :0 -geometery 1920x1080 -depth 24
+may need to adust the vncserver number.
+
+Then on Mac: open vnc://pi@192.168.43.20:5901
+
 """
 
 SERVO_IN = 38
