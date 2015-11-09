@@ -1,3 +1,4 @@
+from kzpy3.vis import *
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -9,18 +10,20 @@ def onclick(event):
 
 
 def on_key(event):
-    print('you pressed', event.key, event.xdata, event.ydata)
+    
     if event.key == 'left':
     	print('GO LEFT!!')
-    if event.key == 'right':
+    elif event.key == 'right':
     	print('GO RIGHT!!')
-    if event.key == 'q':
-    	print('quit!!')
-    	clf()
-    	close()
+    elif event.key == 'q':
+    	plt.clf()
+    	plt.close()
     	fig.canvas.mpl_disconnect(cid)
+    	print('quit!!')
+    else:
+    	print('you pressed', event.key, event.xdata, event.ydata)
 
 
 cid = fig.canvas.mpl_connect('key_press_event', on_key)
 
-fig.canvas.mpl_disconnect(cid)
+#fig.canvas.mpl_disconnect(cid)
