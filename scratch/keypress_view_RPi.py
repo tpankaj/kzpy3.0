@@ -60,7 +60,7 @@ def update(frame_number):
             plt.clf()
             mi(img)
         else:
-            print('Empyt frame.')
+            print('Empty frame.')
 
 
     except KeyboardInterrupt:
