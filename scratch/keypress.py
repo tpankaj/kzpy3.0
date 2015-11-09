@@ -1,3 +1,7 @@
+"""
+ipython --pylab osx kzpy3/scratch/keypress.py
+"""
+
 from kzpy3.vis import *
 
 fig = plt.figure()

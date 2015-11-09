@@ -1,5 +1,5 @@
 """
-animate timelapse frames matrix
+python kzpy3/scratch/view_RPi_images.py
 """
 from kzpy3.vis import *
 from matplotlib.animation import FuncAnimation
@@ -46,5 +46,5 @@ fig = plt.figure(1,figsize=(9,9))
 animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=30, repeat=False)
 
 plt.show()
-
+#input('adfa')
 print('done....')
