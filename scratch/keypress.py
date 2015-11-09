@@ -20,10 +20,13 @@ def on_key(event):
     	plt.close()
     	fig.canvas.mpl_disconnect(cid)
     	print('quit!!')
+    	sys.exit(1)
     else:
     	print('you pressed', event.key, event.xdata, event.ydata)
 
 
 cid = fig.canvas.mpl_connect('key_press_event', on_key)
-
+a=input('afd')
+while True:
+	pass
 #fig.canvas.mpl_disconnect(cid)
