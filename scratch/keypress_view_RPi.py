@@ -13,7 +13,7 @@ from  matplotlib.animation import FuncAnimation
 
 import paramiko
 #paramiko.util.log_to_file(opjD('paramiko.log'))
-hup = txt_file_to_list_of_strings('/Users/karlzipser/pw_MacbookPro.txt')
+hup = txt_file_to_list_of_strings('/Users/karlzipser/pw_RPi.txt')# '/Users/karlzipser/pw_MacbookPro.txt')
 host = hup[0]
 port = 22
 transport = paramiko.Transport((host, port))
@@ -24,7 +24,8 @@ sftp = paramiko.SFTPClient.from_transport(transport)
 
 
 
-
+distal_command_file_path = '/home/pi/Desktop/distal_command.txt'
+local_command_file_path = '/Users/karlzipser/Desktop/local_command.txt'
 
 
 fig = plt.figure(figsize=(7,7))
@@ -37,14 +38,14 @@ last_cmd ='no command yet'
 def update(frame_number):
     global last_cmd
     #print last_cmd
-    start_time = time.time()
+    #start_time = time.time()
 
 
     try:
-        cmd_lst = txt_file_to_list_of_strings('/Users/karlzipser/Desktop/distal_command.txt')    
-        if cmd_lst[0] != last_cmd:
-            last_cmd = cmd_lst[0]
-            print(last_cmd)
+        #cmd_lst = txt_file_to_list_of_strings('/Users/karlzipser/Desktop/distal_command.txt')    
+        #if cmd_lst[0] != last_cmd:
+        #    last_cmd = cmd_lst[0]
+        #    print(last_cmd)
 
         #c_new = os.path.getctime(opjD('image1.jpg'))
         #if c_new == c:
@@ -80,8 +81,8 @@ def onclick(event):
 
 
 def on_key(event):
-    list_of_strings_to_txt_file('/Users/karlzipser/Desktop/local_command.txt',[d2s(event.key,time.time())])
-    sftp.put('/Users/karlzipser/Desktop/local_command.txt', '/Users/karlzipser/Desktop/distal_command.txt')
+    list_of_strings_to_txt_file(local_command_file_path,[d2s(event.key,time.time())])
+    sftp.put(local_command_file_path, distal_command_file_path)
 
     if event.key == 'left':
     	print('GO LEFT!!')

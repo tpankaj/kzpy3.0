@@ -21,6 +21,9 @@ def update():
         if cmd_lst[0] != last_cmd:
             last_cmd = cmd_lst[0]
             print(last_cmd)
+            if last_cmd[0] == 'q':
+                print('Quitting now.')
+                sys.exit(1)
     except KeyboardInterrupt:
         print('Quitting now.')
         sys.exit(1)
