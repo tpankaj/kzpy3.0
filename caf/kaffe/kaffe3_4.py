@@ -302,12 +302,12 @@ if True:
     else:
         print("*********** Using CPU ***********")
     
-    start_node = 24
+    start_node = 267
     for n in range(start_node,start_node+1000):
         img_dic = {}
-        for r in range(6):
+        for r in range(4):
             for x in [4]:
-                for y in [7]:
+                for y in [4]:
                     for l in ['loss3/classifier']:#['inception_4c/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
                         #if l == 'loss3/classifier':
                         #    single_rf = False
