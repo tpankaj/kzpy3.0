@@ -76,11 +76,11 @@ def update():
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
             last_cmd = cmd_lst[0]
-            print(last_cmd)
-            if str_contains(last_cmd,'up'):
+            #print(last_cmd)
+            if last_cmd[0] == ' '::
                 do_pwm(40,50,0.3,7.20)
                 print('forward')
-            elif str_contains(last_cmd,'down'):
+            elif str_contains(last_cmd,'up'):
                 do_pwm(38,50,0.3,9.5)
                 print('straight')
             elif str_contains(last_cmd,'left'):
