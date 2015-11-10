@@ -73,8 +73,10 @@ def update():
         print('Quitting now.')
         GPIO.cleanup()
         sys.exit(1)
+    """
     except:
         pass
+    """
     time.sleep(0.05)
     
 print('command_listener.py: start this after keypress_view_RPi.py')
