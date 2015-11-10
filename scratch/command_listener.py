@@ -75,8 +75,8 @@ def update():
         sys.exit(1)
     except:
         pass
-    time.sleep(1.05)
-    print(time.time())
+    time.sleep(0.05)
+
     
 print('\n#### command_listener.py: start this after keypress_view_RPi.py ####')
 while True:
