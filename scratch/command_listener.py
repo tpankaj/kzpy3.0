@@ -77,7 +77,7 @@ def update():
         if cmd_lst[0] != last_cmd:
             last_cmd = cmd_lst[0]
             #print(last_cmd)
-            if last_cmd[0] == ' '::
+            if last_cmd[0] == ' ':
                 do_pwm(40,50,0.3,7.20)
                 print('forward')
             elif str_contains(last_cmd,'up'):
