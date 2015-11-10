@@ -85,9 +85,11 @@ def on_key(event):
     sftp.put(local_command_file_path, distal_command_file_path)
 
     if event.key == 'left':
-    	print('GO LEFT!!')
+        pass
+    	#print('GO LEFT!!')
     elif event.key == 'right':
-    	print('GO RIGHT!!')
+        pass
+    	#print('GO RIGHT!!')
     elif event.key == 'q':
     	plt.clf()
     	plt.close()
@@ -107,6 +109,9 @@ plt.show()
 print("""Put mouse on display window and press command keys...
     <- left
     -> right
+    [up arrow] straight
+    [space bar] motor
+
     q  quit
 """)
 a=input('...')

@@ -78,17 +78,21 @@ def update():
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
+                print('motor')
                 do_pwm(40,50,0.3,7.20)
-                print('forward')
+                
             elif str_contains(last_cmd,'up'):
-                do_pwm(38,50,0.3,9.5)
                 print('straight')
+                do_pwm(38,50,0.3,9.5)
+                
             elif str_contains(last_cmd,'left'):
-                do_pwm(38,50,0.3,7.8)
                 print('left')
+                do_pwm(38,50,0.3,7.8)
+                
             elif str_contains(last_cmd,'right'):
-                do_pwm(38,50,0.3,11)
                 print('right')
+                do_pwm(38,50,0.3,11)
+                
             elif last_cmd[0] == 'q':
                 print('Quitting now.')
                 GPIO.cleanup()
