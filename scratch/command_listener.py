@@ -77,8 +77,7 @@ def update():
         pass
     time.sleep(0.05)
     
-
+print('command_listener.py: start this after keypress_view_RPi.py')
 while True:
-    print('command_listener.py: start this after keypress_view_RPi.py')
 	update()
 #########
