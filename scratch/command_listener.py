@@ -45,7 +45,9 @@ command_file_path = '/home/pi/Desktop/distal_command.txt'
 
 def update():
     global last_cmd
-
+    global servo_pwm_state
+    global servo_pwm_right_max
+    global servo_pwm_left_min
     try:
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
