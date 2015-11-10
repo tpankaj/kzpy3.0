@@ -60,6 +60,7 @@ def update():
                 servo_pwm_state -= (servo_pwm_right_max-servo_pwm_left_min)/10.0
                 if servo_pwm_state < servo_pwm_left_min:
                     servo_pwm_state = servo_pwm_left_min
+                print(servo_pwm_state)
                 do_pwm(38,50,0.3,servo_pwm_state)
                 
             if last_cmd[0] == 'p':
@@ -67,6 +68,7 @@ def update():
                 servo_pwm_state += (servo_pwm_right_max-servo_pwm_left_min)/10.0
                 if servo_pwm_state > servo_pwm_right_max:
                     servo_pwm_state = servo_pwm_right_max
+                print(servo_pwm_state)
                 do_pwm(38,50,0.3,servo_pwm_state)
                 
             elif str_contains(last_cmd,'up'):
