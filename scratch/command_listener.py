@@ -21,9 +21,10 @@ MOTOR_IN = 40
 
 out_pins = [SERVO_IN,MOTOR_IN]#[SERVO_IN, HB_EN1, HB_IN1, HB_IN2]
 
-GPIO.setmode(GPIO.BOARD)
-for p in out_pins:
-    GPIO.setup(p,GPIO.OUT)
+def gpio_setup():
+    GPIO.setmode(GPIO.BOARD)
+    for p in out_pins:
+        GPIO.setup(p,GPIO.OUT)
 
 def do_pwm(pin,frequency,duration,duty_cycle):
     pwm = GPIO.PWM(pin,frequency)
@@ -56,6 +57,11 @@ def update():
             if last_cmd[0] == ' ':
                 print('motor')
                 do_pwm(40,50,0.3,7.20)
+
+            if last_cmd[0] == 'c':
+                print('GPIO.cleanup(), gpio_setup()')
+                GPIO.cleanup()
+                gpio_setup()
                 
             if last_cmd[0] == 'o':
                 print('L')
