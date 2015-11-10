@@ -110,7 +110,8 @@ animation = FuncAnimation(fig, update, interval=10)
 plt.show()
 
 print("""
-    Start this before starting command listener.
+    *** keypress_view_RPi.py ***
+    Start this before starting command_listener.py
     To make command, put mouse on display window and press command keys...
         [<-] left
         [->] right
