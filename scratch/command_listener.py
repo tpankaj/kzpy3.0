@@ -33,36 +33,6 @@ def do_pwm(pin,frequency,duration,duty_cycle):
         pass;
     pwm.stop()
 
-def servo(
-    duty_cycle=7.5,
-    durataion=0.2,
-    freqency=50,
-    pin=SERVO_IN):
-    """
-    """
-    do_pwm(pin,frequency,duration,duty_cycle)
-
-
-
-
-def onKeyPress(event):
-    text.insert('end', '%s ' % (event.char, ))
-    if event.char == '1':
-        do_pwm(38,50,0.3,7.8)
-    if event.char == '2':
-        do_pwm(38,50,0.3,9.5)
-    if event.char == '3':
-        do_pwm(38,50,0.3,11)
-    if event.char == '4':
-        do_pwm(40,50,0.3,7.20)
-    if event.char == '5':
-        do_pwm(40,50,0.3,7.18)
-    if event.char == 'q':
-        GPIO.cleanup()
-        root.destroy() #root.quit()
-
-
-
 
 ###############
 last_cmd ='no command yet'
@@ -95,7 +65,7 @@ def update():
                 do_pwm(38,50,0.3,11)
                 
             elif last_cmd[0] == 'q':
-                list_of_strings_to_txt_file(command_file_path,['done.'])
+                #list_of_strings_to_txt_file(command_file_path,['done.'])
                 print('Quitting now. Press ctrl-C if this does not exit.')
                 GPIO.cleanup()
                 sys.exit()
@@ -109,5 +79,6 @@ def update():
     
 
 while True:
+    print('command_listener.py: start this after keypress_view_RPi.py')
 	update()
 #########

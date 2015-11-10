@@ -79,6 +79,8 @@ def onclick(event):
     print 'button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(
         event.button, event.x, event.y, event.xdata, event.ydata)
 
+list_of_strings_to_txt_file(local_command_file_path,['no command yet...'])
+sftp.put(local_command_file_path, distal_command_file_path)
 
 def on_key(event):
     list_of_strings_to_txt_file(local_command_file_path,[d2s(event.key,time.time())])
@@ -95,6 +97,7 @@ def on_key(event):
     	plt.close()
     	fig.canvas.mpl_disconnect(cid)
     	print('quit...')
+        #print '\033[2J'
     	sys.exit(1)
     else:
         pass
@@ -106,13 +109,14 @@ cid = fig.canvas.mpl_connect('key_press_event', on_key)
 animation = FuncAnimation(fig, update, interval=10)
 plt.show()
 
-print("""Put mouse on display window and press command keys...
-    <- left
-    -> right
-    [up arrow] straight
-    [space bar] motor
-
-    q  quit
+print("""
+    Start this before starting command listener.
+    To make command, put mouse on display window and press command keys...
+        [<-] left
+        [->] right
+        [up arrow] straight
+        [space bar] motor
+        [q]  quit
 """)
 a=input('...')
 while True:
