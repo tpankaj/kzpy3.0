@@ -78,7 +78,7 @@ def update():
     time.sleep(0.05)
 
     
-print('\n#### command_listener.py: start this after keypress_view_RPi.py ####')
+print('\n*** command_listener.py: start this after keypress_view_RPi.py ***')
 while True:
 	update()
 #########
