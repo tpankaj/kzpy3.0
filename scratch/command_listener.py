@@ -36,6 +36,9 @@ def do_pwm(pin,frequency,duration,duty_cycle):
 
 ###############
 last_cmd ='no command yet'
+servo_pwm_state = 9.5
+servo_pwm_right_max = 11
+servo_pwm_left_min = 7.2
 
 #command_file_path = '/Users/karlzipser/Desktop/distal_command.txt'
 command_file_path = '/home/pi/Desktop/distal_command.txt'
@@ -51,6 +54,20 @@ def update():
             if last_cmd[0] == ' ':
                 print('motor')
                 do_pwm(40,50,0.3,7.20)
+                
+            if last_cmd[0] == 'o':
+                print('L')
+                servo_pwm_state -= (servo_pwm_right_max-servo_pwm_left_min)/10.0
+                if servo_pwm_state < servo_pwm_left_min:
+                    servo_pwm_state = servo_pwm_left_min
+                do_pwm(38,50,0.3,servo_pwm_state)
+                
+            if last_cmd[0] == 'p':
+                print('R')
+                servo_pwm_state += (servo_pwm_right_max-servo_pwm_left_min)/10.0
+                if servo_pwm_state > servo_pwm_right_max:
+                    servo_pwm_state = servo_pwm_right_max
+                do_pwm(38,50,0.3,servo_pwm_state)
                 
             elif str_contains(last_cmd,'up'):
                 print('straight')
