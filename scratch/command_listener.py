@@ -92,7 +92,7 @@ def update():
             elif last_cmd[0] == 'q':
                 print('Quitting now.')
                 GPIO.cleanup()
-                sys.exit(1)
+                raise SystemExit
     except KeyboardInterrupt:
         print('Quitting now.')
         GPIO.cleanup()
