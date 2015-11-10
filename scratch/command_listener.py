@@ -4,6 +4,7 @@ ipython --pylab osx kzpy3/scratch/keypress_view_RPi.py; reset
 
 ssh pi@192.168.43.20
 sudo python kzpy3/scratch/camera_control.py
+sudo python kzpy3/scratch/command_listener.py
 """
 
 import sys
@@ -94,9 +95,9 @@ def update():
                 do_pwm(38,50,0.3,11)
                 
             elif last_cmd[0] == 'q':
-                print('Quitting now.')
+                print('Quitting now. Press ctrl-C if this does not exit.')
                 GPIO.cleanup()
-                raise SystemExit
+                sys.exit()
     except KeyboardInterrupt:
         print('Quitting now.')
         GPIO.cleanup()
