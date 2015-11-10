@@ -93,11 +93,12 @@ def make_step(net, step_size=1.5, end='inception_4c/output',
     #print(shape(src.data[:]))
     gray = src.data.mean(axis=1)
 
-    src.data[:,0,:,:] = 0.99 * src.data[:,0,:,:] + 0.01 * gray
-    src.data[:,1,:,:] = 0.99 * src.data[:,1,:,:] + 0.01 * gray
-    src.data[:,2:,:] = 0.99 * src.data[:,2,:,:] + 0.01 * gray
-
     src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+
+    src.data[:,0,:,:] = 0.99 * src.data[:,0,:,:] + 0.01 * mona[:,:,0]# * (1-mask)#gray
+    src.data[:,1,:,:] = 0.99 * src.data[:,1,:,:] + 0.01 * mona[:,:,0]# * (1-mask)#gray
+    src.data[:,2:,:] = 0.99 * src.data[:,2,:,:] + 0.01 * mona[:,:,0]# * (1-mask)#gray
+
             
     if clip:
         bias = net.transformer.mean['data']
@@ -139,15 +140,17 @@ def make_step2(net, step_size=1.5, end='inception_4c/output',
     if clip:
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)    
-"""
+
 print('Reading mona .png')
 mona = imread(opjD('mona_224.png'))
 mona = mona[:,:,:3]
 mask = 0*mona[:,:,0]
 mask[50:100,50:100] = 1.0
 imsave(opjD('mona_244_occluded.png'),mona[:,:,0]*(1-mask))
-"""
-def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_center=-1,y_center=-1,scratch_path='scratch/2015/10/28/',img_dic={}):
+
+image_path_folders_opened = {}
+
+def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_center=-1,y_center=-1,scratch_path='scratch/2015/10/28/',img_dic={},use_mona=False):
 
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
     transformer.set_transpose('data', (2,0,1))
@@ -158,8 +161,12 @@ def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_cent
     layer_shape=list(np.shape(net.blobs[layer].data));
     layer_shape[0] = 1
     layer_shape = tuple(layer_shape)
+
     img_path = opj(home_path,scratch_path,model_folders[MODEL_NUM]+'/'+layer.replace('/','-'))
-    unix('mkdir -p ' + img_path)
+    if img_path not in image_path_folders_opened:
+        unix('mkdir -p ' + img_path)
+        image_path_folders_opened[img_path] = True
+        unix('open ' + img_path)
     if end == -1:
         end = layer_shape[1]
     for n in range(start,end):#[start]:#
@@ -193,20 +200,26 @@ def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_cent
 
         if (x_center,y_center) in img_dic:
             net.blobs['data'].data[0] = img_dic[(x_center,y_center)].copy()    
-        else:
+        elif use_mona == False:
             net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-        """
         else:
-            net.blobs['data'].data[0][0,:,:] = mona[:,:,0] * (1-mask)
+            net.blobs['data'].data[0][0,:,:] = mona[:,:,0]# * (1-mask)
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-        """
+        
 
         pb = ProgressBar(iter_n)
         tm = str(np.int(time.time()))
         print(time_str())
+
+        src = net.blobs['data']
+        vis = deprocess(net, src.data[0])
+        img = np.uint8(np.clip(vis, 0, 255))
+        #mi(img,opj(img_path,str(n)+'.png'))
+        imsave(opj(img_path,str(n)+'.'+str((x_center,y_center))+'.png'),img)
+
         for i in range(iter_n):
             make_step(net,jitter=1,end=layer,objective=objective_kz7,clip=True)
             #make_step2(net,jitter=1,end=layer,objective=objective_kz7,clip=True,mask=mask)
@@ -289,16 +302,17 @@ if True:
     else:
         print("*********** Using CPU ***********")
     img_dic = {}
-    for n in range(0,1):
-        for r in range(20):
+    start_node = 1
+    for n in range(start_node,start_node+1000):
+        for r in range(10):
             for x in [4]:
                 for y in [7]:
-                    for l in ['inception_4c/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
+                    for l in ['loss3/classifier']:#['inception_4c/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
                         #if l == 'loss3/classifier':
                         #    single_rf = False
                         #else:
                         #    single_rf = True
                         single_rf = False
                         
-                        do_it3(l,net,20,n,n+1,single_rf,True,x,y,'scratch/2015/11/9',img_dic)
+                        do_it3(l,net,100,n,n+1,single_rf,True,x,y,'scratch/2015/11/10',img_dic,use_mona=True)
 
