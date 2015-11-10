@@ -301,10 +301,11 @@ if True:
         print("*********** Using GPU ***********")
     else:
         print("*********** Using CPU ***********")
-    img_dic = {}
+    
     start_node = 24
     for n in range(start_node,start_node+1000):
-        for r in range(1):
+        img_dic = {}
+        for r in range(6):
             for x in [4]:
                 for y in [7]:
                     for l in ['loss3/classifier']:#['inception_4c/5x5']:#inception_layers:#['conv1/7x7_s2']:#['inception_5b/5x5']:#['inception_4b/5x5']:# 'inception_4b/5x5']:# 'inception_4d/5x5']:#['inception_4e/output']:#['fc8']:
@@ -314,5 +315,5 @@ if True:
                         #    single_rf = True
                         single_rf = False
                         
-                        do_it3(l,net,3000,n,n+1,single_rf,True,x,y,'scratch/2015/11/10',img_dic,use_mona=True)
+                        do_it3(l,net,1000,n,n+1,single_rf,True,x,y,'scratch/2015/11/10',img_dic,use_mona=True)
 
