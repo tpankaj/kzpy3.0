@@ -25,7 +25,7 @@ def showarray(a, fmt='jpeg'):
 
 model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet',
 'finetune_BarryLyndon_8Sept2015','VGG_ILSVRC_16_layers','person_clothing_bigger_18Sept2015',
-'bvlc_googlenet_person']
+'bvlc_googlenet_person','nin_imagenet_conv_sandbox']]
 
 def get_net(MODEL_NUM = 2):
     model_folder = model_folders[MODEL_NUM]

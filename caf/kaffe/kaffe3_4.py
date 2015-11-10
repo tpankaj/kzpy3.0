@@ -25,7 +25,7 @@ def showarray(a, fmt='jpeg'):
 
 model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet',
 'finetune_BarryLyndon_8Sept2015','VGG_ILSVRC_16_layers','person_clothing_bigger_18Sept2015',
-'bvlc_googlenet_person']
+'bvlc_googlenet_person','nin_imagenet_conv_sandbox']
 
 def get_net(MODEL_NUM = 2):
     model_folder = model_folders[MODEL_NUM]
@@ -139,14 +139,14 @@ def make_step2(net, step_size=1.5, end='inception_4c/output',
     if clip:
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)    
-
+"""
 print('Reading mona .png')
 mona = imread(opjD('mona_224.png'))
 mona = mona[:,:,:3]
 mask = 0*mona[:,:,0]
 mask[50:100,50:100] = 1.0
 imsave(opjD('mona_244_occluded.png'),mona[:,:,0]*(1-mask))
-
+"""
 def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_center=-1,y_center=-1,scratch_path='scratch/2015/10/28/',img_dic={}):
 
     transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
@@ -192,24 +192,24 @@ def do_it3(layer,net,iter_n,start=0,end=-1,single_RF=False,multi_RF=False,x_cent
         #except:
 
         if (x_center,y_center) in img_dic:
-            net.blobs['data'].data[0] = img_dic[(x_center,y_center)].copy()
-            """    
-            else:
-                net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
-                net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-                net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-            """
+            net.blobs['data'].data[0] = img_dic[(x_center,y_center)].copy()    
+        else:
+            net.blobs['data'].data[0][0,:,:] = 225*np.random.random(np.shape(net.blobs['data'].data[0][1,:,:]))
+            net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
+            net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
+        """
         else:
             net.blobs['data'].data[0][0,:,:] = mona[:,:,0] * (1-mask)
             net.blobs['data'].data[0][1,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
             net.blobs['data'].data[0][2,:,:] = 1.0*net.blobs['data'].data[0][0,:,:]
-        
+        """
 
         pb = ProgressBar(iter_n)
         tm = str(np.int(time.time()))
         print(time_str())
         for i in range(iter_n):
-            make_step2(net,jitter=1,end=layer,objective=objective_kz7,clip=True,mask=mask)
+            make_step(net,jitter=1,end=layer,objective=objective_kz7,clip=True)
+            #make_step2(net,jitter=1,end=layer,objective=objective_kz7,clip=True,mask=mask)
             src = net.blobs['data']
             #vis = deprocess(net, src.data[0])
             if np.mod(i,10.0)==0:
@@ -289,7 +289,7 @@ if True:
     else:
         print("*********** Using CPU ***********")
     img_dic = {}
-    for n in range(44,45):
+    for n in range(0,1):
         for r in range(20):
             for x in [4]:
                 for y in [7]:
