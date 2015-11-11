@@ -4,7 +4,6 @@ from kzpy3.utils import *
 import picamera
 import paramiko
 
-#paramiko.util.log_to_file(opjD('paramiko.log'))
 hup = txt_file_to_list_of_strings('/home/pi/pw_MacbookPro.txt')
 host = hup[0]
 port = 22
