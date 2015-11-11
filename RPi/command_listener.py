@@ -133,8 +133,8 @@ def update():
         print('Quitting now.')
         GPIO.cleanup()
         sys.exit(1)
-    except:
-        pass
+    except Exception,e:
+        print str(e)
     time.sleep(0.01)
 
 

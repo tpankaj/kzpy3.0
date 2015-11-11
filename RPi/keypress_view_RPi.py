@@ -62,14 +62,14 @@ def update(frame_number):
             #print(opj(img_path,f))
         #print(opj(img_path,img_files[-1]))
         img = imread(opj(img_path,'not_yet_viewed',img_files[-1])) # opjD('image1.jpg'))#opj(img_path,f))
-        for f in img_files[:-2]:
+        for f in img_files[:-4]:
             unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
 
         #print(shape(img))
         if shape(img)[2] == 3:
             plt.clf()
             mi(img)
-            time.sleep(0.001)
+            time.sleep(0.01)
         else:
             print('Empty frame.')
 
