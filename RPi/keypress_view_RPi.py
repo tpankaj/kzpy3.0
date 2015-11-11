@@ -40,13 +40,15 @@ ax.set_ylim(0,1), ax.set_yticks([])
 
 last_cmd ='no command yet'
 
+img_path = opjh('scratch/2015/11/RPi_images/')
+
 def update(frame_number):
     global last_cmd
     #print last_cmd
     #start_time = time.time()
 
-
     try:
+        _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
         #cmd_lst = txt_file_to_list_of_strings('/Users/karlzipser/Desktop/distal_command.txt')    
         #if cmd_lst[0] != last_cmd:
         #    last_cmd = cmd_lst[0]
@@ -60,14 +62,20 @@ def update(frame_number):
         #unix(d2n('cp ',opjD('image1.jpg '),' /Users/karlzipser/Desktop/RPi_images/',c_new,'.',ctr,'.jpg'),False)
         #ctr += 1
         #print ctr
-        img = imread(opjD('image1.jpg'))
+        #for f in img_files:
+            #print(opj(img_path,f))
+        #print(opj(img_path,img_files[-1]))
+        img = imread(opj(img_path,'not_yet_viewed',img_files[-1])) # opjD('image1.jpg'))#opj(img_path,f))
+        for f in img_files[:-2]:
+            unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed'),False)
+
         #print(shape(img))
         if shape(img)[2] == 3:
             plt.clf()
             mi(img)
+            time.sleep(0.001)
         else:
             print('Empty frame.')
-
 
     except KeyboardInterrupt:
         print('Quitting now.')

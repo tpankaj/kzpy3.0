@@ -22,7 +22,7 @@ ydim = 224
 camera.resolution = (np.int(1.3333*ydim), ydim)
 
 image_path = '/home/pi/image1.jpg'
-dst_image_path = '/Users/karlzipser/Desktop/RPi'
+dst_image_path = '/Users/karlzipser/Desktop/RPi/not_yet_viewed'
 
 camera_on_time = 600
 start_time = time.time()
