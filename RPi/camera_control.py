@@ -22,7 +22,7 @@ ydim = 224
 camera.resolution = (np.int(1.3333*ydim), ydim)
 
 image_path = '/home/pi/image1.jpg'
-dst_image_path = '/Users/karlzipser/Desktop/RPi/not_yet_viewed'
+dst_image_path = '/Users/karlzipser/scratch/2015/11/RPi_images/not_yet_viewed'
 
 camera_on_time = 600
 start_time = time.time()
@@ -37,7 +37,7 @@ while time.time() < start_time + camera_on_time:
 		time_sum += t-last_time
 		last_time = t
 		camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
-		sftp.put(image_path, d2n('/Users/karlzipser/scratch/2015/11/RPi_images/',ctr,'.',t,'.jpg'))
+		sftp.put(image_path, d2n(dst_image_path,'/',ctr,'.',t,'.jpg'))
 		ctr += 1
 		if np.mod(ctr,100) == 0:
 			print(d2s('Average interval =',time_sum / (1.0*ctr)))
