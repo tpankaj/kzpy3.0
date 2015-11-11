@@ -63,7 +63,7 @@ def update(frame_number):
         #print(opj(img_path,img_files[-1]))
         img = imread(opj(img_path,'not_yet_viewed',img_files[-1])) # opjD('image1.jpg'))#opj(img_path,f))
         for f in img_files[:-2]:
-            unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed'),False)
+            unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
 
         #print(shape(img))
         if shape(img)[2] == 3:

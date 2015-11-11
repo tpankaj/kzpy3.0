@@ -53,8 +53,7 @@ servo_pwm_right_max = 11
 servo_pwm_left_min = 7.2
 servo_pwm_center = 9.5
 
-command_file_path = '/Users/karlzipser/Desktop/distal_command.txt'
-#command_file_path = '/home/pi/Desktop/distal_command.txt'
+command_file_path = '/home/pi/Desktop/distal_command.txt'
 
 def update():
     global last_cmd
