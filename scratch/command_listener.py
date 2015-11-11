@@ -40,6 +40,7 @@ last_cmd ='no command yet'
 servo_pwm_state = 9.5
 servo_pwm_right_max = 11
 servo_pwm_left_min = 7.2
+servo_pwm_center = 9.5
 
 #command_file_path = '/Users/karlzipser/Desktop/distal_command.txt'
 command_file_path = '/home/pi/Desktop/distal_command.txt'
@@ -81,15 +82,18 @@ def update():
                 
             elif str_contains(last_cmd,'up'):
                 print('straight')
-                do_pwm(38,50,0.3,9.5)
+                servo_pwm_state = servo_pwm_center
+                do_pwm(38,50,0.3,servo_pwm_state)
                 
             elif str_contains(last_cmd,'left'):
                 print('left')
-                do_pwm(38,50,0.3,7.8)
+                servo_pwm_state = servo_pwm_left_min
+                do_pwm(38,50,0.3,servo_pwm_state)
                 
             elif str_contains(last_cmd,'right'):
                 print('right')
-                do_pwm(38,50,0.3,11)
+                servo_pwm_state = servo_pwm_right_max
+                do_pwm(38,50,0.3,servo_pwm_state)
                 
             elif last_cmd[0] == 'q':
                 #list_of_strings_to_txt_file(command_file_path,['done.'])
