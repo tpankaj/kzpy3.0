@@ -121,7 +121,7 @@ def update():
                 servo_pwm_state = servo_pwm_right_max
                 do_pwm(38,50,0.3,servo_pwm_state)
                 t = str(time.time())
-                list_of_strings_to_txt_file(local_command_file_path,[servo_pwm_state,t)])
+                list_of_strings_to_txt_file(local_command_file_path,[d2s(servo_pwm_state,t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
                 
             elif last_cmd[0] == 'q':
