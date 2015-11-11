@@ -61,7 +61,7 @@ def update():
     global servo_pwm_state
     global servo_pwm_right_max
     global servo_pwm_left_min
-    if True:
+    try:
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
             last_cmd = cmd_lst[0]
@@ -129,8 +129,6 @@ def update():
                 print('Quitting now. Press ctrl-C if this does not exit.')
                 GPIO.cleanup()
                 sys.exit()
-    try:
-        pass
     except KeyboardInterrupt:
         print('Quitting now.')
         GPIO.cleanup()
