@@ -20,17 +20,13 @@ def plot_axes(n=100):
 
 def cool_nino_plot_1(m,b):
     cool_x_list=range(-1200,1200)
-
     cool_y_list=[]
-
-    
-
     for x in cool_x_list:
         y = m * x + b
         cool_y_list.append(y)
-
     plt.plot(cool_x_list,cool_y_list,'o-')
     plot_axes(n=100)
+    plt.plot(0,b,'r.')
 
 
 # Create new Figure and an Axes which fills it. 
@@ -58,9 +54,10 @@ scat = ax.scatter(rain_drops['position'][:,0], rain_drops['position'][:,1],
                   facecolors='none')
 
 m = -10
-b = 0
+b = -20
 def update(frame_number):
-  global m  
+  global m
+  global b
   # Get an index which we can use to re-spawn the oldest raindrop.
   current_index = frame_number % n_drops
 
@@ -81,11 +78,16 @@ def update(frame_number):
   # Update the scatter collection, with the new colors, sizes and positions.
   plt.clf()
   cool_nino_plot_1(m,b)
-  plot_axes(n=10)
-  plt.title(d2s('m =',m))
+  plot_axes(n=20)
+  if np.abs(m)<0.001:
+    m = 0.0
+  plt.title(d2s('m =',m,', b =',b))
   m = m + 0.1
+  b = b + 0.1
   if m > 10:
     m = -10
+  if b > 20:
+    b = -20
 
 # Construct the animation, using the update function as the animation
 # director.
