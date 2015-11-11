@@ -5,7 +5,7 @@ from kzpy3.vis import *
 from matplotlib.animation import FuncAnimation
 
 
-frames = load_img_folder_to_list(opjh('scratch/2015/10/8/timelapse.1444316394'))
+frames = load_img_folder_to_list(opjh('scratch/2015/11/RPi_images/viewed'))# 'scratch/2015/10/8/timelapse.1444316394'))
 n_frames = len(frames)
 
 

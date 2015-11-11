@@ -135,7 +135,7 @@ def update():
         sys.exit(1)
     except:
         pass
-    time.sleep(0.05)
+    time.sleep(0.01)
 
 
 gpio_setup()    
