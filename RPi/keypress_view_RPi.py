@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 from  matplotlib.animation import FuncAnimation
 
 import paramiko
-#paramiko.util.log_to_file(opjD('paramiko.log'))
 hup = txt_file_to_list_of_strings('/Users/karlzipser/pw_RPi.txt')# '/Users/karlzipser/pw_MacbookPro.txt')
 host = hup[0]
 port = 22
@@ -27,11 +26,8 @@ username = hup[1]
 transport.connect(username = username, password = password)
 sftp = paramiko.SFTPClient.from_transport(transport)
 
-
-
 distal_command_file_path = '/home/pi/Desktop/distal_command.txt'
 local_command_file_path = '/Users/karlzipser/Desktop/local_command.txt'
-
 
 fig = plt.figure(figsize=(7,7))
 ax = fig.add_axes([0, 0, 1, 1], frameon=False)

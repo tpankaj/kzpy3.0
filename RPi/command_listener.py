@@ -12,14 +12,23 @@ sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
 import RPi.GPIO as GPIO
 
+import paramiko
+hup = txt_file_to_list_of_strings('/Users/karlzipser/pw_RPi.txt')# '/Users/karlzipser/pw_MacbookPro.txt') #
+host = hup[0]
+port = 22
+transport = paramiko.Transport((host, port))
+password = hup[2]
+username = hup[1]
+transport.connect(username = username, password = password)
+sftp = paramiko.SFTPClient.from_transport(transport)
+
+distal_command_file_path = '/Users/karlzipser/scratch/2015/11/RPi_images/executed_commands'
+local_command_file_path = '/home/pi/Desktop/executed_commands'
 
 SERVO_IN = 38
 MOTOR_IN = 40
-#HB_EN1 = 7
-#HB_IN1 = 12
-#HB_IN2 = 13
 
-out_pins = [SERVO_IN,MOTOR_IN]#[SERVO_IN, HB_EN1, HB_IN1, HB_IN2]
+out_pins = [SERVO_IN,MOTOR_IN]
 
 def gpio_setup():
     GPIO.setmode(GPIO.BOARD)
@@ -35,6 +44,8 @@ def do_pwm(pin,frequency,duration,duty_cycle):
     pwm.stop()
 
 
+
+
 ###############
 last_cmd ='no command yet'
 servo_pwm_state = 9.5
@@ -42,8 +53,8 @@ servo_pwm_right_max = 11
 servo_pwm_left_min = 7.2
 servo_pwm_center = 9.5
 
-#command_file_path = '/Users/karlzipser/Desktop/distal_command.txt'
-command_file_path = '/home/pi/Desktop/distal_command.txt'
+command_file_path = '/Users/karlzipser/Desktop/distal_command.txt'
+#command_file_path = '/home/pi/Desktop/distal_command.txt'
 
 def update():
     global last_cmd
@@ -58,6 +69,8 @@ def update():
             if last_cmd[0] == ' ':
                 print('motor')
                 do_pwm(40,50,0.3,7.20)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
 
             if last_cmd[0] == 'c':
                 print('GPIO.cleanup(), gpio_setup()')
@@ -71,6 +84,8 @@ def update():
                     servo_pwm_state = servo_pwm_left_min
                 print(servo_pwm_state)
                 do_pwm(38,50,0.3,servo_pwm_state)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
                 
             if last_cmd[0] == 'p':
                 print('R')
@@ -79,21 +94,29 @@ def update():
                     servo_pwm_state = servo_pwm_right_max
                 print(servo_pwm_state)
                 do_pwm(38,50,0.3,servo_pwm_state)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
                 
             elif str_contains(last_cmd,'up'):
                 print('straight')
                 servo_pwm_state = servo_pwm_center
                 do_pwm(38,50,0.3,servo_pwm_state)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
                 
             elif str_contains(last_cmd,'left'):
                 print('left')
                 servo_pwm_state = servo_pwm_left_min
                 do_pwm(38,50,0.3,servo_pwm_state)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
                 
             elif str_contains(last_cmd,'right'):
                 print('right')
                 servo_pwm_state = servo_pwm_right_max
                 do_pwm(38,50,0.3,servo_pwm_state)
+                list_of_strings_to_txt_file(opj(local_command_file_path,str(time.time)+'.txt',[d2s(event.key,time.time())]))
+                sftp.put(local_command_file_path, distal_command_file_path)
                 
             elif last_cmd[0] == 'q':
                 #list_of_strings_to_txt_file(command_file_path,['done.'])
