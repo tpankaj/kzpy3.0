@@ -44,6 +44,11 @@ while time.time() < start_time + camera_on_time:
 
 		#sftp.put(image_path, opj(dst_image_path,d2n(ctr,'.jpg')))
 	except Exception,e:
+		print('\nCleaning up.')
+		del camera
+		sftp.close()
+		transport.close()
+		print('Done.')
 		print str(e)
 		break
     
