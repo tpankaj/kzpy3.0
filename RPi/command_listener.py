@@ -23,7 +23,7 @@ transport.connect(username = username, password = password)
 sftp = paramiko.SFTPClient.from_transport(transport)
 
 distal_command_file_path = '/Users/karlzipser/scratch/2015/11/RPi_images/executed_commands'
-local_command_file_path = '/home/pi/Desktop/executed_commands'
+local_command_file_path = '/home/pi/Desktop/executed_commands/command.txt'
 
 SERVO_IN = 38
 MOTOR_IN = 40
