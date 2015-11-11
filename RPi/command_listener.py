@@ -97,7 +97,7 @@ def update():
                 print(servo_pwm_state)
                 do_pwm(38,50,0.3,servo_pwm_state)
                 t = str(time.time())
-                list_of_strings_to_txt_file(local_command_file_path,[servo_pwm_state,t)])
+                list_of_strings_to_txt_file(local_command_file_path,[d2s(servo_pwm_state,t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
                 
             elif str_contains(last_cmd,'up'):
@@ -105,7 +105,7 @@ def update():
                 servo_pwm_state = servo_pwm_center
                 do_pwm(38,50,0.3,servo_pwm_state)
                 t = str(time.time())
-                list_of_strings_to_txt_file(local_command_file_path,[servo_pwm_state,t)])
+                list_of_strings_to_txt_file(local_command_file_path,[d2s(servo_pwm_state,t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
                 
             elif str_contains(last_cmd,'left'):
@@ -113,7 +113,7 @@ def update():
                 servo_pwm_state = servo_pwm_left_min
                 do_pwm(38,50,0.3,servo_pwm_state)
                 t = str(time.time())
-                list_of_strings_to_txt_file(local_command_file_path,[servo_pwm_state,t)])
+                list_of_strings_to_txt_file(local_command_file_path,[d2s(servo_pwm_state,t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
                 
             elif str_contains(last_cmd,'right'):
