@@ -23,7 +23,7 @@ import subprocess
 home_path = os.path.expanduser("~")
 imread = scipy.misc.imread
 imsave = scipy.misc.imsave
-opj = os.path.join
+#opj = os.path.join
 gg = glob.glob
 shape = np.shape
 randint = np.random.randint
@@ -36,8 +36,14 @@ reshape = np.reshape
 mod = np.mod
 
 
+def opj(*args):
+	str_args = []
+	for a in args:
+		str_args.append(str(a))
+	return os.path.join(*str_args)
+
 def opjh(*args):
-    return opj(home_path,opj(*args))
+	return opj(home_path,opj(*args))
 
 def opjD(*args):
     return opjh('Desktop',opj(*args))
