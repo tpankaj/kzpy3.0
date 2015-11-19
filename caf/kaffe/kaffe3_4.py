@@ -319,5 +319,5 @@ if True:
                         #    single_rf = True
                         single_rf = False
                         
-                        do_it3(l,net,20,n,n+1,single_rf,True,x,y,'scratch/2015/11/10',img_dic,use_mona=True)
+                        do_it3(l,net,20,n,n+1,single_rf,True,x,y,'scratch/2015/11/18',img_dic,use_mona=True)
 
