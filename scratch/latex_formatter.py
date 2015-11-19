@@ -11,12 +11,12 @@ dir_dic,dir_lst=dir_as_dic_and_list(opj(path,'figures'))
 figure_dic = {}
 
 for l in dir_lst:
-	a = l.split('.')
-	n = int(a[0])
-	s = a[1]
-	t = a[-1]
+	a = l.split('.')[0].split('-')
+	t = l.split('.')[-1]
 	#print((a,n,s,t))
 	if t == 'png' or t == 'jpg':
+		s = a[1]
+		n = int(a[0])
 		if n not in figure_dic:
 			figure_dic[n] = {}
 		figure_dic[n][s] = {}
@@ -24,13 +24,14 @@ for l in dir_lst:
 
 for l in dir_lst:
 	a = l.split('.')
-	n = int(a[0])
 	t = a[-1]
 	if t == 'txt':
+		n = int(a[0])
 		txt = txt_file_to_list_of_strings(opj(path,'figures',l))
 		main_txt = []
 		for tx in txt:
 			txs = tx.split('|')
+			print txs
 			if len(txs) > 1:
 				figure_dic[n][txs[1]]['txt'] = txs[2]
 			else:
@@ -41,13 +42,15 @@ print(figure_dic)
 
 a="""
 \\begin{figure}[!tbp]
+
   \\begin{subfigure}{0.15\\textwidth}
-    \\includegraphics[width=\\textwidth]{figures/40.a.527.a.png}
+    \\includegraphics[width=\\textwidth]{figures/"""+figure_dic[40]['a']['filename']+"""}
     \\caption{This is from face and place}
     \\label{fig:40.a}
   \\end{subfigure}
+
   \\begin{subfigure}{0.4\\textwidth}
-    \\includegraphics[width=\\textwidth]{40.b.527.c3.png}
+    \\includegraphics[width=\\textwidth]{figures/"""+figure_dic[40]['b']['filename']+"""}
     \\caption{This is promontory only}
     \\label{fig:40.b}
   \\end{subfigure}

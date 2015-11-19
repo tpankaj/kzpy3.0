@@ -21,12 +21,15 @@ def load_img_folder_to_dict(img_folder):
 def load_img_folder_to_list(img_folder):
     return dict_to_sorted_list(load_img_folder_to_dict(img_folder))
 """
+
+
 def dict_to_float_sorted_list(d):
     l = []
     ks = sorted(d.keys())
     for k in ks:
         l.append(d[k])
     return l
+
 
 def load_txt_folder_to_dict(img_folder):
     ''' '''
@@ -53,15 +56,30 @@ ks = sorted(frames_dic_sortable.keys())
 for k in ks:
     l.append(k)
 
+events_binned_by_frame_times = {}
 ctr2 = 0
+ctr3 = 0
 for ctr in range(len(l)-1):
-	print l[ctr]
-	if l[ctr]>=l[ctr+1]:
-		print "oops"
-		ctr2+=1
+    events_binned_by_frame_times[l[ctr]] = []
+    print l[ctr]
+    if l[ctr]>=l[ctr+1]:
+    	print "oops"
+    	ctr2+=1
+    for c in command_times:
+        if c >= l[ctr] and c < l[ctr+1]:
+            events_binned_by_frame_times[l[ctr]].append(c)
+            ctr3 += 1
+    print((l[ctr],events_binned_by_frame_times[l[ctr]]))
 print ctr2
+print ctr3
 #input('input')
 
+et = []
+ct = []
+for e in events_binned_by_frame_times.keys():
+    if len(events_binned_by_frame_times[e]) > 0:
+        et.append(e)
+        ct.append(events_binned_by_frame_times[e][0])
 
 
 n_frames = len(frames)
@@ -70,21 +88,20 @@ commands_dic = load_txt_folder_to_dict('/Users/karlzipser/Desktop/DATA/EXEC')
 
 command_times = []
 for k in sorted(commands_dic.keys()):
-	t = k.split('.txt')[0]
+	t = np.float(k.split('.txt')[0])
 	command_times.append(t)
 
 frame_times = []
 for k in sorted(frames_dic_sortable.keys()):
 	frame_times.append(k)
 
-frames2 = frames[700:]
+#frames = frames[700:]
 def even_frames(frame_number):
 	print(frame_number)
 	plt.clf()
-	mi(frames2[frame_number])
+	mi(frames[frame_number])
 	if frame_number == n_frames-1:
 		plt.close()
-
 
 fig = plt.figure(1,figsize=(9,9))
 
