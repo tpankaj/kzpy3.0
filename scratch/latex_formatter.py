@@ -1,5 +1,9 @@
 from kzpy3.utils import *
 
+"""
+[integer]-[subimage letter]-[whatever]{optional: __[integer]}.['png' or 'jpg']
+"""
+
 path = '/Users/karlzipser/Google_Drive/2015-11/deep net/18Nov2015 LaTex practice 2'
 
 dir_dic,dir_lst=dir_as_dic_and_list(opj(path,'figures'))
