@@ -2,9 +2,13 @@ from kzpy3.utils import *
 
 """
 [integer]-[subimage letter]-[whatever]{optional: __[integer]}.['png' or 'jpg']
+
+e.g.,
+
+python ~/kzpy3/scratch/latex_formatter.py /Users/karlzipser/Google_Drive/2015-11/deep\ net/18Nov2015\ LaTex\ practice\ 2/
 """
 
-path = '/Users/karlzipser/Google_Drive/2015-11/deep net/18Nov2015 LaTex practice 2'
+path = sys.argv[1]
 
 dir_dic,dir_lst=dir_as_dic_and_list(opj(path,'figures'))
 
@@ -19,7 +23,7 @@ for l in dir_lst:
 		w = np.float(l.split('.')[0].split('__')[-1])
 	else:
 		w = 30
-	if t == 'png' or t == 'jpg':
+	if t == 'png' or t == 'jpg' or t == 'pdf':
 		s = a[1]
 		n = int(a[0])
 		print((a,n,s,t))
@@ -30,12 +34,14 @@ for l in dir_lst:
 		figure_dic[n]['subfigures'][s]['filename'] = l
 		figure_dic[n]['subfigures'][s]['width'] = np.float(w/100.0)
 
-for l in dir_lst:
+_,legend_dir_lst=dir_as_dic_and_list(opj(path,'text','legends'))
+
+for l in legend_dir_lst:
 	a = l.split('.')
 	t = a[-1]
 	if t == 'txt':
 		n = int(a[0])
-		txt = txt_file_to_list_of_strings(opj(path,'figures',l))
+		txt = txt_file_to_list_of_strings(opj(path,'text','legends',l))
 		main_txt = []
 		for tx in txt:
 			txs = tx.split('|')
@@ -48,6 +54,11 @@ for l in dir_lst:
 
 print(figure_dic)
 
+title_text = txt_file_to_list_of_strings(opj(path,'text','title.txt'))[0]
+author_text_lst = txt_file_to_list_of_strings(opj(path,'text','authors.txt'))
+author_text = """"""
+for t in author_text_lst:
+	author_text += t+"\n"
 
 
 a = """
@@ -68,9 +79,9 @@ a = """
 \\renewcommand*\\rmdefault{phv}
 
 %SetFonts
-\\title{\\vspace{-2cm}\\textbf{Convolutional Deep Neural Networks -- A Contradiction in Terms, with Important Implications for Contextual Specificity}}
+\\title{\\vspace{-2cm}\\textbf{"""+title_text+"""}}
 
-\\author{Karl Zipser et al.}
+\\author{"""+author_text+"""}
 %\\date{}							% Activate to display a given date or no date
 
 \\begin{document}
@@ -79,8 +90,11 @@ a = """
 %%%%%%%%%%%%%%%%%%%
 %
 \\begin{abstract}
-\\it
+%\\it
+\\noindent
 """
+
+
 txt = txt_file_to_list_of_strings(opj(path,'text','abstract.txt'))
 for t in txt:
 	a += t
@@ -106,9 +120,16 @@ for s in sections:
 %%%%%%%%%%%%%%%%%%%
 """
 
-#a=""""""
+a = a + """
+\\end{document} 
+"""
+
+body_str = a
+
+#fig_str_dic = {}
 ns = sorted(figure_dic.keys())
 for n in ns:
+	a=""""""
 	caption = ""
 	for c in figure_dic[n]['txt']:
 		caption += c + "\n"
@@ -141,13 +162,11 @@ for n in ns:
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
 """
-
-a = a + """
-\\end{document} 
-"""
+#	fig_str_dic[n] = a
+	body_str = body_str.replace(d2n('<<FIGURE ',n,'>>'),a)
 #print(a)
 
-list_of_strings_to_txt_file(opj(path,'main.tex'),[a])
+list_of_strings_to_txt_file(opj(path,'Zipser.tex'),[body_str])
 #unix(d2s('open',opj(path,'main.tex')))
 
 
