@@ -39,73 +39,111 @@ def load_txt_folder_to_dict(img_folder):
         imgs[f.split('/')[-1]] = txt_file_to_list_of_strings(f)
     return imgs
 
+"""
 frames_dic = load_img_folder_to_dict(opjh('Desktop/DATA/VIEWED'))# 'scratch/2015/11/RPi_images/viewed'))# 'scratch/2015/10/8/timelapse.1444316394'))
+"""
+
+def frames_and_times(frames_dic):
+    frames_dic_sortable = {}
+    for k in frames_dic.keys():
+    	ctr = k.split('.')[0]
+    	t = k.split('.')[1]
+    	t2 = k.split('.')[2]
+    	if t in frames_dic_sortable:
+    		print(d2s(t,t2,'in dic already'))
+    	frames_dic_sortable[np.float(t+'.'+t2)] = frames_dic[k]
+    frames = dict_to_float_sorted_list(frames_dic_sortable)
+    frame_times = []
+    ks = sorted(frames_dic_sortable.keys())
+    for k in ks:
+        frame_times.append(k)       
+    return frames,frame_times
+
+commands_dic = load_txt_folder_to_dict('/Users/karlzipser/Desktop/DATA/EXEC')
+
+def commands_and_times(commands_dic):
+    commands_dic_sortable = {}
+    for k in commands_dic.keys():
+        t = np.float(k.split('.txt')[0])
+        if t in commands_dic_sortable:
+            print(d2s(t,'in dic already'))
+        commands_dic_sortable[t] = commands_dic[k]
+    commands = dict_to_float_sorted_list(commands_dic_sortable)
+    command_times = []
+    ks = sorted(commands_dic_sortable.keys())
+    for k in ks:
+        command_times.append(k)       
+    return commands,command_times
 
 
-frames_dic_sortable = {}
-for k in frames_dic.keys():
-	ctr = k.split('.')[0]
-	t = k.split('.')[1]
-	t2 = k.split('.')[2]
-	if t in frames_dic_sortable:
-		print(d2s(t,t2,'in dic already'))
-	frames_dic_sortable[np.float(t+'.'+t2)] = frames_dic[k]
-frames = dict_to_float_sorted_list(frames_dic_sortable)
-l = []
-ks = sorted(frames_dic_sortable.keys())
-for k in ks:
-    l.append(k)
+def commands_in_frame_sync(frame_times,command_times,commands):
+    binned_commands = []
+    for i in range(len(frame_times)-1):
+        command = False
+        ts = frame_times[i:i+2]
+        for j in range(len(command_times)):
+            if command_times[j] >= ts[0] and command_times[j] < ts[1]:
+                command = commands[j]
+                break
+        binned_commands.append(command)
+    binned_commands.append(False)
+    return binned_commands
 
-events_binned_by_frame_times = {}
-ctr2 = 0
-ctr3 = 0
-for ctr in range(len(l)-1):
-    events_binned_by_frame_times[l[ctr]] = []
-    print l[ctr]
-    if l[ctr]>=l[ctr+1]:
-    	print "oops"
-    	ctr2+=1
-    for c in command_times:
-        if c >= l[ctr] and c < l[ctr+1]:
-            events_binned_by_frame_times[l[ctr]].append(c)
-            ctr3 += 1
-    print((l[ctr],events_binned_by_frame_times[l[ctr]]))
-print ctr2
-print ctr3
-#input('input')
+def binned_commands_to_servo_floats(binned_commands):
+    sf = []
 
-et = []
-ct = []
-for e in events_binned_by_frame_times.keys():
-    if len(events_binned_by_frame_times[e]) > 0:
-        et.append(e)
-        ct.append(events_binned_by_frame_times[e][0])
+    for b in binned_commands:
+        f = 0.0;
+        if b:
+            if b[0].split(' ')[0] != 'motor':
+                f = np.float(b[0].split(' ')[0])
+        sf.append(f)
+    return sf
+
+def servo_floats_to_left_right(servo_floats):
+    lr = []
+
+    p = False
+    for f in servo_floats:
+        d = '___'
+        if f > 0:
+            if p:
+                if f > p:
+                    d = 'right'
+                else:
+                    d = 'left'
+            p = f
+        lr.append(d)
+    return lr
+
 
 
 n_frames = len(frames)
 
-commands_dic = load_txt_folder_to_dict('/Users/karlzipser/Desktop/DATA/EXEC')
-
-command_times = []
-for k in sorted(commands_dic.keys()):
-	t = np.float(k.split('.txt')[0])
-	command_times.append(t)
-
-frame_times = []
-for k in sorted(frames_dic_sortable.keys()):
-	frame_times.append(k)
-
-#frames = frames[700:]
 def even_frames(frame_number):
-	print(frame_number)
-	plt.clf()
-	mi(frames[frame_number])
-	if frame_number == n_frames-1:
-		plt.close()
-
+    frame_number += 1000
+    print(frame_number)
+    plt.clf()
+    if binned_commands[frame_number]:
+        title = binned_commands[frame_number]
+    else:
+        title = ""
+    title = lr[frame_number]
+    mi(frames[frame_number],img_title=title)#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
+    if frame_number == n_frames-1:
+        plt.close()
+"""
+def even_frames(frame_number):
+    print(frame_number)
+    if binned_commands[frame_number]:
+        plt.clf()
+        mi(frames[frame_number],img_title=binned_commands[frame_number])#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
+    if frame_number == n_frames-1:
+        plt.close()
+"""
 fig = plt.figure(1,figsize=(9,9))
 
-animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=3, repeat=False)
+animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=5, repeat=False)
 
 plt.show()
 
