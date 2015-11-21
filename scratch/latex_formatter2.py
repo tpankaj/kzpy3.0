@@ -23,29 +23,35 @@ print('Using ' + latex_formatter_mode)
 if latex_formatter_mode != 'latex_formatter2_18Nov2015':
 	sys.exit(d2s('*** Error,',latex_formatter_mode,' is an unknown formatter mode'))
 
-dir_dic,dir_lst=dir_as_dic_and_list(opj(path,'figures'))
+dir_dic,dir_lst=dir_as_dic_and_list(opj(path))#,'figures'))
 
 figure_dic = {}
+
+print('Figure files:')
 
 for l in dir_lst:
 	a = l.split('.')[0].split('-')
 	t = l.split('.')[-1]
-	print(l.split('.')[0])
-	if len(l.split('.')[0].split('__')) > 1:
-		#print('HERE!!!!!!!')
-		w = np.float(l.split('.')[0].split('__')[-1])
-	else:
-		w = 30
+	
 	if t == 'png' or t == 'jpg' or t == 'pdf':
-		s = a[1]
-		n = int(a[0])
-		#print((a,n,s,t))
-		if n not in figure_dic:
-			figure_dic[n] = {}
-			figure_dic[n]['subfigures'] = {}
-		figure_dic[n]['subfigures'][s] = {}
-		figure_dic[n]['subfigures'][s]['filename'] = l
-		figure_dic[n]['subfigures'][s]['width'] = np.float(w/100.0)
+		if a[0].isdigit():
+			
+			if len(l.split('.')[0].split('__')) > 1:
+				#print('HERE!!!!!!!')
+				w = np.float(l.split('.')[0].split('__')[-1])
+			else:
+				w = 30
+			
+			s = a[1]
+			n = int(a[0])
+			#print((a,n,s,t))
+			print(d2n('\t',l))
+			if n not in figure_dic:
+				figure_dic[n] = {}
+				figure_dic[n]['subfigures'] = {}
+			figure_dic[n]['subfigures'][s] = {}
+			figure_dic[n]['subfigures'][s]['filename'] = l
+			figure_dic[n]['subfigures'][s]['width'] = np.float(w/100.0)
 
 _,legend_dir_lst=dir_as_dic_and_list(opj(path,'text','legends'))
 
