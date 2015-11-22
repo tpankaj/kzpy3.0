@@ -195,5 +195,16 @@ print(d2s('Writing to',output_file_path))
 list_of_strings_to_txt_file(output_file_path,[body_str])
 #unix(d2s('open',opj(path,'main.tex')))
 
+if len(sys.argv) > 2:
+	if sys.argv[2] == 'b':
+		unix('/Library/TeX/texbin/pdflatex Zipser')
+		unix('/Library/TeX/texbin/bibtex Zipser')
+		unix('/Library/TeX/texbin/pdflatex Zipser')
+		unix('/Library/TeX/texbin/pdflatex Zipser')
+		unix('/Library/TeX/texbin/pdflatex Zipser')
+		unix('/Library/TeX/texbin/pdflatex Zipser')
+	else:
+		unix('/Library/TeX/texbin/pdflatex Zipser')
 
+unix('open Zipser.pdf')
 
