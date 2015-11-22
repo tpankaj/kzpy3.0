@@ -204,7 +204,9 @@ if len(sys.argv) > 2:
 		unix('/Library/TeX/texbin/pdflatex Zipser')
 		unix('/Library/TeX/texbin/pdflatex Zipser')
 	else:
-		unix('/Library/TeX/texbin/pdflatex Zipser')
+		sys.exit('ERROR, unknown option '+sys.argv[2])
+else:
+	unix('/Library/TeX/texbin/pdflatex Zipser')
 
 unix('open Zipser.pdf')
 
