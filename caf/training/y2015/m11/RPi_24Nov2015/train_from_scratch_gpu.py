@@ -21,7 +21,7 @@ print(d2s('***** model to load =',model_to_load))
 
 caffe.set_device(0)
 caffe.set_mode_gpu()
-solver = caffe.SGDSolver(opjh('kzpy3/caf/training/y2015/m11/RPi_24Nov2015/train_val_gpu.prototxt'))
+solver = caffe.SGDSolver(opjh('kzpy3/caf/training/y2015/m11/RPi_24Nov2015/solver_gpu.prototxt'))
 """
 solver.net.copy_from(model_to_load)
 """
