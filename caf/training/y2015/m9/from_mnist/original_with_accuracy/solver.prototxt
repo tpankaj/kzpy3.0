@@ -18,7 +18,7 @@ power: 0.75
 # Display every 100 iterations
 display: 100
 # The maximum number of iterations
-max_iter: 10000
+max_iter: 100
 # snapshot intermediate results
-snapshot: 5000
-snapshot_prefix: "scratch/2015/9/20/caffe/models/from_mnist/original_with_accuracy/model"
+snapshot: 100
+snapshot_prefix: "scratch/2015/11/23/caffe/models/from_mnist/original_with_accuracy/model"

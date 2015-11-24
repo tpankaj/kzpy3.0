@@ -5,21 +5,28 @@ from kzpy3.utils import *
 
 from the latex doc folder:
 
-python ~/kzpy3/scratch/latex_formatter3.py .
 
-python ~/kzpy3/scratch/latex_formatter3.py . -b -o
+python ~/kzpy3/scratch/latex_formatter3.py -b -o
 
-ln -s ~/Google_Drive/2015-11/Zipser.bib .
+#ln -s ~/Google_Drive/2015-11/Zipser.bib .
 """
 
-path = sys.argv[1]
+path = os.getcwd()#sys.argv[1]
 
-latex_formatter_mode = txt_file_to_list_of_strings(opj(path,'.Zipser_latex_mode'))[0]
+try:
+	latex_formatter_mode = txt_file_to_list_of_strings(opj(path,'.Zipser_latex_mode'))[0]
+except:
+	sys.exit("""
 
+
+**** Error, unable to load hidden file .Zipser_latex_mode . . .
+Perhaps """+path+""" is not a LaTex doc directory?""")
 print('Using ' + latex_formatter_mode)
 
 if latex_formatter_mode != 'latex_formatter3_22Nov2015':
 	sys.exit(d2s('*** Error,',latex_formatter_mode,' is an unknown formatter mode'))
+
+unix("ln -s ~/Google_Drive/2015-11/Zipser.bib .")
 
 dir_dic,dir_lst=dir_as_dic_and_list(opj(path,'figures'))
 

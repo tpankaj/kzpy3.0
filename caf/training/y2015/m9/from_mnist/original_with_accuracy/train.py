@@ -38,7 +38,7 @@ def look_at_numbers():
 
 
 def restore():
-	solver.restore(opjh('scratch/2015/9/20/caffe/models/from_mnist/original_with_accuracy/model_iter_5000.solverstate'))
+	solver.restore(opjh('scratch/2015/11/23/caffe/models/from_mnist/original_with_accuracy/model_iter_1000.solverstate'))
 
 
 def deploy(img_name = opjh('caffe/examples/images/7.jpg')):
