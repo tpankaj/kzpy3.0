@@ -1,0 +1,2 @@
+/Users/karlzipser/Desktop/mona_224_occluded.png 0
+/Users/karlzipser/Desktop/mona_224.png 1
