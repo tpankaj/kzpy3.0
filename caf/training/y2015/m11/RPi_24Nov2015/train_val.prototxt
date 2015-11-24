@@ -1,23 +1,195 @@
 name: "RPi_23Nov2015"
 
 layer {
-  name: "data"
+  name: "data_0"
   type: "ImageData"
-  top: "data"
-  top: "label"
+  top: "data_0"
+  top: "label_0"
   transform_param {
     mirror: false
-    mean_value: 104
-    mean_value: 117
-    mean_value: 123  
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
   }
   image_data_param {
-    source: "/Users/karlzipser/kzpy3/caf/training/y2015/m11/RPi_24Nov2015/train_0.txt"
-    batch_size: 1
+    source: "/Users/karlzipser/scratch/2015/11/23/train_0.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+layer {
+  name: "data_1"
+  type: "ImageData"
+  top: "data_1"
+  top: "label_1"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_1.txt"
+    batch_size: 10
     shuffle: false
   }
 }
 
+layer {
+  name: "data_2"
+  type: "ImageData"
+  top: "data_2"
+  top: "label_2"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_2.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+layer {
+  name: "data_3"
+  type: "ImageData"
+  top: "data_3"
+  top: "label_3"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_3.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+
+layer {
+  name: "data_4"
+  type: "ImageData"
+  top: "data_4"
+  top: "label_4"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_4.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+layer {
+  name: "data_5"
+  type: "ImageData"
+  top: "data_5"
+  top: "label_5"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_5.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+
+layer {
+  name: "data_6"
+  type: "ImageData"
+  top: "data_6"
+  top: "label_6"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_6.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+layer {
+  name: "data_7"
+  type: "ImageData"
+  top: "data_7"
+  top: "label_7"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_7.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+
+layer {
+  name: "data_8"
+  type: "ImageData"
+  top: "data_8"
+  top: "label_8"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_8.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+layer {
+  name: "data_9"
+  type: "ImageData"
+  top: "data_9"
+  top: "label_9"
+  transform_param {
+    mirror: false
+    mean_value: 115
+    mean_value: 115
+    mean_value: 115
+  }
+  image_data_param {
+    source: "/Users/karlzipser/scratch/2015/11/23/train_9.txt"
+    batch_size: 10
+    shuffle: false
+  }
+}
+
+layer {
+  name: "data"
+  type: "Concat"
+    bottom: 'data_0'
+    bottom: 'data_1'
+    bottom: 'data_2'
+    bottom: 'data_3'
+    bottom: 'data_4'
+    bottom: 'data_5'
+    bottom: 'data_6'
+    bottom: 'data_7'
+    bottom: 'data_8'
+    bottom: 'data_9'
+  top: "data"
+}
 
 layer {
   name: "conv1"
@@ -92,7 +264,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 256
+    num_output: 64
     pad: 2
     kernel_size: 5
     group: 2
@@ -148,7 +320,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 384
+    num_output: 64
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -181,7 +353,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 384
+    num_output: 64
     pad: 1
     kernel_size: 3
     group: 2
@@ -215,7 +387,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 256
+    num_output: 64
     pad: 1
     kernel_size: 3
     group: 2
@@ -300,7 +472,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 100
+    num_output: 10
     weight_filler {
       type: "gaussian"
       std: 0.005
@@ -344,7 +516,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 3
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -360,6 +532,6 @@ layer {
   name: "loss"
   type: "SoftmaxWithLoss"
   bottom: "fc8"
-  bottom: "label"
+  bottom: "label_0"
   top: "loss"
 }
