@@ -32,6 +32,7 @@ mi(ii5,t,[6,10,m+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 
 mi(solver.net.blobs['data'].data[0][1,:,:])
 mi(solver.net.params['conv1'][0].data[1,25,:,:])
+mi(solver.net.params['fc6'][0].data[1,25,:,:])
 '''
 
 from kzpy3.vis import *
