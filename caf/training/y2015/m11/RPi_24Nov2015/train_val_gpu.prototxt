@@ -1,3 +1,5 @@
+name: "RPi_23Nov2015"
+
 layer {
   name: "data_0"
   type: "ImageData"
