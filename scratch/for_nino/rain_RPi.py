@@ -39,9 +39,6 @@ def load_txt_folder_to_dict(img_folder):
         imgs[f.split('/')[-1]] = txt_file_to_list_of_strings(f)
     return imgs
 
-"""
-frames_dic = load_img_folder_to_dict(opjh('Desktop/DATA/VIEWED'))# 'scratch/2015/11/RPi_images/viewed'))# 'scratch/2015/10/8/timelapse.1444316394'))
-"""
 
 def frames_and_times(frames_dic):
     frames_dic_sortable = {}
@@ -58,8 +55,6 @@ def frames_and_times(frames_dic):
     for k in ks:
         frame_times.append(k)       
     return frames,frame_times
-
-commands_dic = load_txt_folder_to_dict('/Users/karlzipser/Desktop/DATA/EXEC')
 
 def commands_and_times(commands_dic):
     commands_dic_sortable = {}
@@ -89,14 +84,18 @@ def commands_in_frame_sync(frame_times,command_times,commands):
     binned_commands.append(False)
     return binned_commands
 
+
 def binned_commands_to_servo_floats(binned_commands):
     sf = []
 
     for b in binned_commands:
         f = 0.0;
         if b:
+            print(b)
             if b[0].split(' ')[0] != 'motor':
                 f = np.float(b[0].split(' ')[0])
+            elif b[0].split(' ')[0] == 'motor':
+                f = -100
         sf.append(f)
     return sf
 
@@ -105,7 +104,7 @@ def servo_floats_to_left_right(servo_floats):
 
     p = False
     for f in servo_floats:
-        d = '___'
+        d = ''
         if f > 0:
             if p:
                 if f > p:
@@ -113,8 +112,71 @@ def servo_floats_to_left_right(servo_floats):
                 else:
                     d = 'left'
             p = f
+        elif f == -100:
+            d = '___'
         lr.append(d)
     return lr
+
+
+"""
+frames_dic = load_img_folder_to_dict(opjh('Desktop/DATA/VIEWED'))# 'scratch/2015/11/RPi_images/viewed'))# 'scratch/2015/10/8/timelapse.1444316394'))
+frames,frame_times = frames_and_times(frames_dic)
+commands_dic = load_txt_folder_to_dict('/Users/karlzipser/Desktop/DATA/EXEC')
+commands,command_times = commands_and_times(commands_dic)
+binned_commands = commands_in_frame_sync(frame_times,command_times,commands)
+sf = binned_commands_to_servo_floats(binned_commands)
+lr = servo_floats_to_left_right(sf)
+
+N = 20
+T = 3
+good_commands_indicies = []
+dts = []
+for i in range(N,len(frame_times)):
+    dt = frame_times[i]-frame_times[i-N]
+    dts.append(dt)
+    if len(lr[i]) > 0 and dt < T:
+        good_commands_indicies.append(i)
+
+path = opjh('scratch/2015/11/23/RPi_frames0')
+unix('mkdir -p '+path)
+for i in range(len(frames)):
+    print i
+    f = zscore(frames[i].mean(axis=2),thresh=2.5)
+    imsave(opj(path,d2n(i,'.jpeg')),f)
+
+
+train = []
+
+for i in good_commands_indicies:
+    
+    train.append([])
+    for j in range(1,N-1):
+        #print (i,i-j)
+        train[-1].append(i-j)
+    print((lr[i],train[-1]))
+
+train2 = {}
+for i in range(18):
+    train2[i] = []
+
+for l in train:
+    c = lr[l[0]+1]
+    if c == '___':
+        label = 0
+    elif c == 'left':
+        label = 1
+    elif c == 'right':
+        label = 2
+    else:
+        sys.exit('ERROR')
+    print label
+    for i in range(len(l)):
+        train2[i].append(d2s(opj(path,d2n(l[i],'.jpeg')),label))
+
+for k in train2.keys():
+    list_of_strings_to_txt_file(opjh('scratch/2015/11/23',d2n('train_',k,'.txt')),train2[k])
+
+"""
 
 
 
@@ -129,7 +191,8 @@ def even_frames(frame_number):
     else:
         title = ""
     title = lr[frame_number]
-    mi(frames[frame_number],img_title=title)#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
+    f = zscore(frames[frame_number].mean(axis=2),thresh=2.5)
+    mi(f,img_title=title)#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
     if frame_number == n_frames-1:
         plt.close()
 """
