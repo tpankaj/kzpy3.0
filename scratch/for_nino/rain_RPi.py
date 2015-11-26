@@ -173,8 +173,20 @@ for l in train:
     for i in range(len(l)):
         train2[i].append(d2s(opj(path,d2n(l[i],'.jpeg')),label))
 
-for k in train2.keys():
-    list_of_strings_to_txt_file(opjh('scratch/2015/11/23',d2n('train_',k,'.txt')),train2[k])
+train3 = {}
+for i in range(18):
+    train3[i] = []
+
+for i in range(1000):
+    r = range(len(train2[0]))
+    random.shuffle(r)
+    for j in r:
+        for k in train2.keys():
+            train3[k].append(train2[k][j])
+
+for k in train3.keys():
+    list_of_strings_to_txt_file(opjh('scratch/2015/11/26',d2n('train_',k,'.txt')),train3[k])
+
 
 """
 
