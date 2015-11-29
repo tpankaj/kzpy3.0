@@ -33,6 +33,12 @@ mi(ii5,t,[6,10,m+51],img_title=d2s(solver.net.blobs['ip2'].data[n,:].argmax()))
 mi(solver.net.blobs['data'].data[0][1,:,:])
 mi(solver.net.params['conv1'][0].data[1,25,:,:])
 mi(solver.net.params['fc6'][0].data[1,25,:,:])
+
+model_to_load = '/Users/karlzipser/scratch/2015/11/23/caffe/models/RPi_24Nov2015/model_iter_1000.caffemodel'
+model_to_restore = '/Users/karlzipser/scratch/2015/11/23/caffe/models/RPi_24Nov2015/model_iter_1000.solverstate'
+
+solver.net.copy_from(model_to_load)
+solver.restore(model_to_restore)
 '''
 
 from kzpy3.vis import *
