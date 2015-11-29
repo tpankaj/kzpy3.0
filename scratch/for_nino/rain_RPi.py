@@ -20,6 +20,14 @@ def load_img_folder_to_dict(img_folder):
 
 def load_img_folder_to_list(img_folder):
     return dict_to_sorted_list(load_img_folder_to_dict(img_folder))
+
+
+t = (2009, 2, 17, 17, 3, 38, 1, 48, 0)
+secs = time.mktime( t )
+print "time.mktime(t) : %f" %  secs
+print "asctime(localtime(secs)): %s" % time.asctime(time.localtime(secs))
+
+
 """
 
 
@@ -173,17 +181,77 @@ for l in train:
     for i in range(len(l)):
         train2[i].append(d2s(opj(path,d2n(l[i],'.jpeg')),label))
 
-for k in train2.keys():
-    list_of_strings_to_txt_file(opjh('scratch/2015/11/23',d2n('train_',k,'.txt')),train2[k])
+train3 = {}
+for i in range(18):
+    train3[i] = []
+
+for i in range(1000):
+    r = range(len(train2[0]))
+    random.shuffle(r)
+    for j in r:
+        for k in train2.keys():
+            train3[k].append(train2[k][j])
+
+for k in train3.keys():
+    list_of_strings_to_txt_file(opjh('scratch/2015/11/26',d2n('train_',k,'.txt')),train3[k])
+
+
+
+
+binned_servo_commands = []
+binned_motor_commands = []
+servo_current = 9.5
+for c in sf:
+    if c > 0:
+        servo_current = c
+        binned_motor_commands.append(0.0)
+    elif c == -100:
+        binned_motor_commands.append(1.0)
+    else:
+        binned_motor_commands.append(0.0)
+    binned_servo_commands.append(servo_current)
+
+
+
+
+path = opjh('scratch/2015/11/28/RPi_frames1')
+unix('mkdir -p '+path)
+
+for i in range(len(frames)):
+    s = d2f('-',i,binned_motor_commands[i],binned_servo_commands[i],frame_times[i],'.jpeg')
+    f = zscore(frames[i].mean(axis=2),thresh=2.5)
+    imsave(opj(path,s),f)
+    print(s)
+
 
 """
 
-
+p = '/Users/karlzipser/scratch/2015/11/28/RPi_frames1'
+d,l=dir_as_dic_and_list(p)
 
 n_frames = len(frames)
 
+
 def even_frames(frame_number):
-    frame_number += 1000
+    frame_number += 250
+    fn = l[frame_number]
+    print(frame_number)
+    plt.clf()
+    if binned_commands[frame_number]:
+        title = binned_commands[frame_number]
+    else:
+        title = ""
+    title = fn.split('-')[1:3]#lr[frame_number]
+    frame = imread(opj(p,fn))
+    f = frame#zscore(frame.mean(),thresh=2.5)
+    mi(f,img_title=title)#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
+    if frame_number == n_frames-1:
+        plt.close()
+
+
+"""
+def even_frames(frame_number):
+    frame_number += 250
     print(frame_number)
     plt.clf()
     if binned_commands[frame_number]:
@@ -195,7 +263,7 @@ def even_frames(frame_number):
     mi(f,img_title=title)#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
     if frame_number == n_frames-1:
         plt.close()
-"""
+
 def even_frames(frame_number):
     print(frame_number)
     if binned_commands[frame_number]:
@@ -203,10 +271,48 @@ def even_frames(frame_number):
         mi(frames[frame_number],img_title=binned_commands[frame_number])#d2s(frame_number,np.int(frame_times[frame_number]-frame_times[0]),binned_commands[frame_number]))
     if frame_number == n_frames-1:
         plt.close()
+
+
+
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(np.random.rand(10))
+
+def onclick(event):
+    print 'button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(
+        event.button, event.x, event.y, event.xdata, event.ydata)
+
+
+def on_key(event):
+    
+    if event.key == 'left':
+        print('GO LEFT!!')
+        plt.clf()
+        plt.plot(np.random.rand(10))
+
+    elif event.key == 'right':
+        print('GO RIGHT!!')
+        
+    elif event.key == 'q':
+        plt.clf()
+        plt.close()
+        fig.canvas.mpl_disconnect(cid)
+        print('quit!!')
+        damn()#sys.exit(1)
+    else:
+        print('you pressed', event.key, event.xdata, event.ydata)
+
+
+cid = fig.canvas.mpl_connect('key_press_event', on_key)
+a=input('afd')
+
+
+
 """
 fig = plt.figure(1,figsize=(9,9))
 
-animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=5, repeat=False)
+animation = FuncAnimation(fig, even_frames, frames=n_frames, interval=1000, repeat=False)
 
 plt.show()
 
