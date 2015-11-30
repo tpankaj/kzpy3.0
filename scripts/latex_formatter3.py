@@ -1,3 +1,5 @@
+#! //anaconda/bin/python
+
 from kzpy3.utils import *
 
 """
@@ -199,6 +201,11 @@ output_file_path = opj(path,'Zipser.tex')
 print(d2s('******** Writing to',output_file_path))
 list_of_strings_to_txt_file(output_file_path,[body_str])
 #unix(d2s('open',opj(path,'main.tex')))
+
+sys_argv = sys.argv
+if len(sys_argv) < 2:
+	sys_argv.append('-b')
+	sys_argv.append('-o')
 
 for i in range(1,len(sys.argv)):
 	if sys.argv[i] == '-b':
