@@ -203,7 +203,7 @@ list_of_strings_to_txt_file(output_file_path,[body_str])
 #unix(d2s('open',opj(path,'main.tex')))
 
 sys_argv = sys.argv
-if len(sys_argv) < 2:
+if len(sys_argv) < 2: # Add default argumets if none provided.
 	sys_argv.append('-b')
 	sys_argv.append('-o')
 
