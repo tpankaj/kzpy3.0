@@ -18,6 +18,7 @@ import random
 import pickle
 import re
 import subprocess
+from pprint import pprint
 
 # - some definitions
 home_path = os.path.expanduser("~")
@@ -37,6 +38,8 @@ mod = np.mod
 
 
 def opj(*args):
+	if len(args) == 0:
+		args = ['*']
 	str_args = []
 	for a in args:
 		str_args.append(str(a))

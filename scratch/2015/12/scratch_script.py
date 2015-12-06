@@ -1,3 +1,6 @@
+print opjh()
+############
+
 from kzpy3.vis import *
 mi(imread(opjh('Pictures/bay2.png')),2)
 plt.show()
