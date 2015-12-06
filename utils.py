@@ -236,3 +236,15 @@ def time_str(mode='FileSafe'):
     if mode=='Pretty':
        return now.strftime('%A, %d %b %Y, %r')
 
+
+def krn(c):
+    f = opjh('kzpy3/scratch/2015/12/scratch_script.py')
+    t = txt_file_to_list_of_strings(f)
+    ctr = 0
+    u = '\n'.join(t)
+    v = u.split('############\n')
+    print('###########\n')
+    print(v[c])
+    d = raw_input('########### Do this? ')
+    if d == 'y':
+        exec(v[c],globals())
