@@ -237,7 +237,7 @@ def time_str(mode='FileSafe'):
        return now.strftime('%A, %d %b %Y, %r')
 
 
-def krn(c):
+def zrn(c,verify=False,show_only=False):
     f = opjh('kzpy3/scratch/2015/12/scratch_script.py')
     t = txt_file_to_list_of_strings(f)
     ctr = 0
@@ -245,6 +245,11 @@ def krn(c):
     v = u.split('############\n')
     print('###########\n')
     print(v[c])
-    d = raw_input('########### Do this? ')
-    if d == 'y':
-        exec(v[c],globals())
+    if not show_only:
+        if verify:
+            d = raw_input('########### Do this? ')
+            if d == 'y':
+                exec(v[c],globals())
+        else:
+            exec(v[c],globals())
+

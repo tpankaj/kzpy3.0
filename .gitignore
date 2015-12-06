@@ -1,5 +1,5 @@
 ## General (from caffe .gitignore)
-
+Icon?
 .DS_Store
 
 # Compiled Object files

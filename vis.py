@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use(u'MacOSX')
+
 from kzpy3.utils import *
 ###########
 '''
