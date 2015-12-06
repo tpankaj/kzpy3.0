@@ -1,3 +1,11 @@
+c = load_obj('/tmp/zpy_vars/c')
+#c = zload('c')
+for d in c:
+	if len(d)>0:
+		unix('say --interactive=/green -r 250 '+d)
+		raw_input('...')
+############
+
 print opjh()
 ############
 
