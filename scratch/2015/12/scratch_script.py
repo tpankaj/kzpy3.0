@@ -1,3 +1,26 @@
+a="""
+tell application "Finder"
+    tell every item of desktop
+        get name
+    end tell
+end tell
+"""
+b="""
+tell application "Finder"
+    
+    get {desktop position, name} of item ITEM_NUM of desktop
+    
+end tell"""
+
+w = applescript.AppleScript(a).run()
+y = []
+for x in range(len(w)):
+    c = b.replace('ITEM_NUM',str(x+1))
+    y.append(applescript.AppleScript(c).run())
+pprint(y)
+############
+############
+############
 from kzpy3.vis import *
 a=np.random.randn(10000)
 hist(a,100)
@@ -76,8 +99,30 @@ for key in dir():
 my_shelf.close()
 
 ############
-
+tell application "Finder"
+    
+    get {desktop position, name} of "untitled folder" desktop
+    
+end tell
 ############
-
+tell application "Finder"
+    set filelist to name of every file in desktop
+end tell
 ############
-
+tell application "Finder"
+    
+    get {desktop position, name} of item 2 of desktop
+    
+end tell
+############
+tell application "Finder"
+    tell every item of desktop
+        get name
+    end tell
+end tell
+############
+############
+############
+############
+############
+############
