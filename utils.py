@@ -270,4 +270,7 @@ scd = setClipboardData
 def say(t):
     unix('say --interactive=/green -r 200 '+t)
 
+def osa(s):
+    os.system("""/usr/bin/osascript -e '""" + s + """'""")
+
 
