@@ -56,4 +56,5 @@ if results.cell != INVALID_DEFAULT:
 	if True:
 		for _v in vars:
 			save_obj(globals()[_v],opj('/tmp/zpy_vars',_v))
-
+else:
+	print('zpy.py: no commands given, nothing done.')

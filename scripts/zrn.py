@@ -25,4 +25,6 @@ if results.open_script:
 
 if results.cell != INVALID_DEFAULT:
 	zrn(results.cell,results.verify,results.show_only)
+else:
+	print('zrn.py: no commands given, nothing done.')
 

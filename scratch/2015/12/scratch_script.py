@@ -1,8 +1,41 @@
+from kzpy3.vis import *
+a=np.random.randn(10000)
+hist(a,100)
+plt.show()
+############
+import objc
+import applescript
+a = """if application "Google Chrome" is running then
+        tell application "Google Chrome" to make new window with properties {mode:"incognito"}
+    else
+        do shell script "open -a /Applications/Google\\\ Chrome.app --args --incognito"
+    end if
+
+    tell application "Google Chrome" to activate
+    open location "http://nytimes.com" """
+applescript.AppleScript(a).run()
+
+############
+def say(t):
+    unix('say '+t)
+#############
+def getClipboardData():
+ p = subprocess.Popen(['pbpaste'], stdout=subprocess.PIPE)
+ retcode = p.wait()
+ data = p.stdout.read()
+ return data
+
+def setClipboardData(data):
+ p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+ p.stdin.write(data)
+ p.stdin.close()
+ retcode = p.wait()
+############
 c = load_obj('/tmp/zpy_vars/c')
 #c = zload('c')
 for d in c:
 	if len(d)>0:
-		unix('say --interactive=/green -r 250 '+d)
+		unix('say --interactive=/green -r 200 '+d)
 		raw_input('...')
 ############
 

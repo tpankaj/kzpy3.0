@@ -254,3 +254,20 @@ def zrn(c,verify=False,show_only=False):
             exec(v[c],globals())
 
 
+
+def getClipboardData():
+    p = subprocess.Popen(['pbpaste'], stdout=subprocess.PIPE)
+    retcode = p.wait()
+    data = p.stdout.read()
+    return data
+gcd = getClipboardData
+def setClipboardData(data):
+    p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+    p.stdin.write(data)
+    p.stdin.close()
+    retcode = p.wait()
+scd = setClipboardData
+def say(t):
+    unix('say --interactive=/green -r 200 '+t)
+
+
