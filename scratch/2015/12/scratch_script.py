@@ -1,24 +1,57 @@
-a="""
-tell application "Finder"
-    tell every item of desktop
-        get name
-    end tell
-end tell
-"""
-b="""
-tell application "Finder"
-    
-    get {desktop position, name} of item ITEM_NUM of desktop
-    
-end tell"""
+import applescript
+import shutil
 
-w = applescript.AppleScript(a).run()
-y = []
-for x in range(len(w)):
-    c = b.replace('ITEM_NUM',str(x+1))
-    y.append(applescript.AppleScript(c).run())
-pprint(y)
+dst = opjh('2015','12','Desktop_'+time_str())
+
+def stowe_Desktop(dst,save_positions=True):
+    a="""
+    tell application "Finder"
+        tell every item of desktop
+            get name
+        end tell
+    end tell
+    """
+    b="""
+    tell application "Finder"
+        
+        get {desktop position, name} of item ITEM_NUM of desktop
+        
+    end tell"""
+
+    w = applescript.AppleScript(a).run()
+    y = []
+    for x in range(len(w)):
+        c = b.replace('ITEM_NUM',str(x+1))
+        y.append(applescript.AppleScript(c).run())
+    pprint(y)
+    unix('mkdir -p ' + dst)
+    _,l = dir_as_dic_and_list(opjD(''))
+    for i in l:
+        shutil.move(opjD(i),dst)
+    if save_positions:
+        save_obj(y,opj(dst,'.item_positions'))
+
+def restore_Desktop(src):
+    _,l = dir_as_dic_and_list(opjD(''))
+    print(l)
+    print(len(l))
+    if len(l) > 0:
+        print('**** Cannot restore Desktop because Desktop is not empty.')
+        return False
+    _,l = dir_as_dic_and_list(src)
+    for i in l:
+        shutil.move(opjh(src,i),opjD(''))
+    time.sleep(1)
+    y = load_obj(opj(src,'.item_positions'))
+    for i in range(len(y)):
+        pass
+        #osa(d2n('tell application "Finder" to set desktop position of item ',i+1,' in desktop to {10,10}'))
+        osa(d2n('tell application "Finder" to set desktop position of item ',i+1,' in desktop to {',y[i][0][0]-1,',',y[i][0][1],'}'))
+
 ############
+tell application "Finder"
+        set position of item 1 of desktop to {2300,100}
+end tell
 ############
 ############
 from kzpy3.vis import *
