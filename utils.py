@@ -274,3 +274,24 @@ def osa(s):
     os.system("""/usr/bin/osascript -e '""" + s + """'""")
 
 
+import shutil
+
+def stowe_Desktop(dst=False):
+    if dst==False:
+        dst = opjh('Desktop_'+time_str())
+    print(dst)
+    unix('mkdir -p ' + dst)
+    _,l = dir_as_dic_and_list(opjD(''))
+    for i in l:
+        shutil.move(opjD(i),dst)
+
+def restore_Desktop(src):
+    _,l = dir_as_dic_and_list(opjD(''))
+    print(l)
+    print(len(l))
+    if len(l) > 0:
+        print('**** Cannot restore Desktop because Desktop is not empty.')
+        return False
+    _,l = dir_as_dic_and_list(src)
+    for i in l:
+        shutil.move(opjh(src,i),opjD(''))

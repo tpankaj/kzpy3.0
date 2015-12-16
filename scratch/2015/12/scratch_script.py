@@ -1,7 +1,7 @@
 import applescript
 import shutil
 
-dst = opjh('2015','12','Desktop_'+time_str())
+dst = opjh('Desktop_'+time_str())
 
 def stowe_Desktop(dst,save_positions=True):
     a="""
