@@ -262,11 +262,15 @@ def getClipboardData():
     return data
 gcd = getClipboardData
 def setClipboardData(data):
+    """
+    setClipboardData
+    """
     p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
     p.stdin.write(data)
     p.stdin.close()
     retcode = p.wait()
 scd = setClipboardData
+
 def say(t):
     unix('say --interactive=/green -r 200 '+t)
 
@@ -274,7 +278,7 @@ def osa(s):
     os.system("""/usr/bin/osascript -e '""" + s + """'""")
 
 
-import shutil
+
 
 def stowe_Desktop(dst=False):
     if dst==False:
@@ -287,8 +291,6 @@ def stowe_Desktop(dst=False):
 
 def restore_Desktop(src):
     _,l = dir_as_dic_and_list(opjD(''))
-    print(l)
-    print(len(l))
     if len(l) > 0:
         print('**** Cannot restore Desktop because Desktop is not empty.')
         return False

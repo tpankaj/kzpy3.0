@@ -6,6 +6,7 @@ from __future__ import division  # 1/2 == 0.5, not 0
 # - import common modules
 import os
 import os.path
+import shutil
 import scipy
 import scipy.io
 import numpy as np  # the Python array package
@@ -39,7 +40,7 @@ mod = np.mod
 
 def opj(*args):
 	if len(args) == 0:
-		args = ['*']
+		args = ['']
 	str_args = []
 	for a in args:
 		str_args.append(str(a))
