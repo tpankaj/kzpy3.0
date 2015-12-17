@@ -11,6 +11,8 @@ from the latex doc folder:
 python ~/kzpy3/scratch/latex_formatter3.py -b -o
 
 #ln -s ~/Google_Drive/2015-11/Zipser.bib .
+
+For converstion to html, use htlatex.
 """
 
 path = os.getcwd()#sys.argv[1]
@@ -102,6 +104,7 @@ a = """
 \\usepackage{amssymb}
 \\usepackage{natbib}
 \\usepackage{authblk}
+\\usepackage{color,soul}
 %SetFonts
 \\renewcommand*\\rmdefault{phv}
 
@@ -221,6 +224,7 @@ unix('/Library/TeX/texbin/pdflatex Zipser')
 for i in range(1,len(sys.argv)):
 	if sys.argv[i] == '-o':
 		print('******** Open pdf')
+		osa('tell app "Preview" to close front window')
 		unix('open Zipser.pdf')
 
 
