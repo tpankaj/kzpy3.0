@@ -119,7 +119,11 @@ a = """
 
 \\begin{document}
 \\maketitle
+"""
 
+txt = txt_file_to_list_of_strings(opj(path,'text','abstract.txt'))
+if len(txt) > 0:
+	a = a + """
 %%%%%%%%%%%%%%%%%%%
 %
 \\begin{abstract}
@@ -127,11 +131,9 @@ a = """
 \\noindent
 """
 
-
-txt = txt_file_to_list_of_strings(opj(path,'text','abstract.txt'))
-for t in txt:
-	a += t
-a = a +"""\\end{abstract}
+	for t in txt:
+		a += t
+	a = a +"""\\end{abstract}
 %
 %%%%%%%%%%%%%%%%%%%
 """
@@ -139,21 +141,22 @@ a = a +"""\\end{abstract}
 sections = ['introduction','methods','results','discussion']
 
 for s in sections:
-	a = a + """
+	txt = txt_file_to_list_of_strings(opj(path,'text',s+'.txt'))
+	if len(txt) > 0:
+		a = a + """
 %%%%%%%%%%%%%%%%%%%
 %
 \\section*{"""+s[0].upper()+s[1:]+"""}
 
 """
-	txt = txt_file_to_list_of_strings(opj(path,'text',s+'.txt'))
-	for t in txt:
-		a += t + "\n"
-	a = a + """
+		for t in txt:
+			a += t + "\n"
+		a = a + """
 %
 %%%%%%%%%%%%%%%%%%%
 """
 
-a = a + """
+		a = a + """
 \\bibliographystyle{natbib}
 \\bibliography{Zipser}
 \\end{document} 
