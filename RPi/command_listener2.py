@@ -3,8 +3,8 @@
 ipython --pylab osx kzpy3/scratch/keypress_view_RPi.py; reset
 
 ssh pi@192.168.43.20
-sudo python kzpy3/scratch/camera_control.py
-sudo python kzpy3/scratch/command_listener.py
+sudo python kzpy3/RPi/camera_control.py
+sudo python kzpy3/RPi/command_listener.py
 """
 
 import sys

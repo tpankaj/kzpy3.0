@@ -1,3 +1,8 @@
+from kzpy3.vis import *
+a=np.random.randn(10000)
+hist(a,100)
+plt.show()
+############
 import applescript
 import shutil
 
