@@ -11,8 +11,6 @@ from the latex doc folder:
 python ~/kzpy3/scratch/latex_formatter3.py -b -o
 
 #ln -s ~/Google_Drive/2015-11/Zipser.bib .
-
-For converstion to html, use htlatex.
 """
 
 path = os.getcwd()#sys.argv[1]
@@ -104,7 +102,6 @@ a = """
 \\usepackage{amssymb}
 \\usepackage{natbib}
 \\usepackage{authblk}
-\\usepackage{color,soul}
 %SetFonts
 \\renewcommand*\\rmdefault{phv}
 
@@ -119,11 +116,7 @@ a = """
 
 \\begin{document}
 \\maketitle
-"""
 
-txt = txt_file_to_list_of_strings(opj(path,'text','abstract.txt'))
-if len(txt) > 0:
-	a = a + """
 %%%%%%%%%%%%%%%%%%%
 %
 \\begin{abstract}
@@ -131,9 +124,11 @@ if len(txt) > 0:
 \\noindent
 """
 
-	for t in txt:
-		a += t
-	a = a +"""\\end{abstract}
+
+txt = txt_file_to_list_of_strings(opj(path,'text','abstract.txt'))
+for t in txt:
+	a += t
+a = a +"""\\end{abstract}
 %
 %%%%%%%%%%%%%%%%%%%
 """
@@ -141,22 +136,21 @@ if len(txt) > 0:
 sections = ['introduction','methods','results','discussion']
 
 for s in sections:
-	txt = txt_file_to_list_of_strings(opj(path,'text',s+'.txt'))
-	if len(txt) > 0:
-		a = a + """
+	a = a + """
 %%%%%%%%%%%%%%%%%%%
 %
 \\section*{"""+s[0].upper()+s[1:]+"""}
 
 """
-		for t in txt:
-			a += t + "\n"
-		a = a + """
+	txt = txt_file_to_list_of_strings(opj(path,'text',s+'.txt'))
+	for t in txt:
+		a += t + "\n"
+	a = a + """
 %
 %%%%%%%%%%%%%%%%%%%
 """
 
-		a = a + """
+a = a + """
 \\bibliographystyle{natbib}
 \\bibliography{Zipser}
 \\end{document} 
@@ -227,7 +221,6 @@ unix('/Library/TeX/texbin/pdflatex Zipser')
 for i in range(1,len(sys.argv)):
 	if sys.argv[i] == '-o':
 		print('******** Open pdf')
-		osa('tell app "Preview" to close front window')
 		unix('open Zipser.pdf')
 
 
