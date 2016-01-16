@@ -60,6 +60,7 @@ servo_pwm_left_min = 7.2
 servo_pwm_center = 9.5
 reverse_state = False
 command_file_path = '/home/pi/Desktop/distal_command.txt'
+last_cmd_time = time.time()
 
 def update():
     global last_cmd
@@ -67,16 +68,22 @@ def update():
     global servo_pwm_right_max
     global servo_pwm_left_min
     global reverse_state
+    global last_cmd_time
+    if time.time() - last_cmd_time > 1:
+        pwm_motor.ChangeDutyCycle(0);
+        pwm_servo.ChangeDutyCycle(0);
+        print('time.time() - last_cmd_time > 1')
     try:
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
+            last_cmd_time = time.time()
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
                 reverse_state = False
                 print('motor')
-                do_pwm(pwm_motor,0.3,7.20)
-
+                #do_pwm(pwm_motor,0.3,7.20)
+                pwm.ChangeDutyCycle(7.20)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))

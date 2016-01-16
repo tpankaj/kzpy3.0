@@ -61,10 +61,9 @@ def onclick(event):
 list_of_strings_to_txt_file(local_command_file_path,['no command yet...'])
 sftp.put(local_command_file_path, distal_command_file_path)
 
-global time_of_last_keypress
+
 
 def on_key(event):
-    time_of_last_keypress = time.time()
     list_of_strings_to_txt_file(local_command_file_path,[d2s(event.key,time.time())])
     sftp.put(local_command_file_path, distal_command_file_path)
 
@@ -102,14 +101,15 @@ print("""
         [q]  quit
 """)
 
-time_of_last_keypress = time.time() - 100
 
 a=input('...')
 
+"""
 while True:
     time.sleep(1)
     print(time.time() - time_of_last_keypress)
     if (time.time() - time_of_last_keypress > 1):
         print('handshake')
         time_of_last_keypress = time.time()
-#fig.canvas.mpl_disconnect(cid)
+"""
+
