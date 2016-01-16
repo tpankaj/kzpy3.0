@@ -79,14 +79,9 @@ def update():
                     pwm_motor.stop()
                     time.sleep(1.0)
                 """
-                for i in range(5):
-                    print('motor')
-                    
-                    do_pwm(pwm_motor,0.3,7.20)
-                    time.sleep(1.0)
-                
 
-
+                print('motor')
+                do_pwm(pwm_motor,0.3,7.20)
 
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
