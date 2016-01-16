@@ -69,9 +69,9 @@ def update():
             #print(last_cmd)
             if last_cmd[0] == ' ':
                 print('motor')
-                print pwm_motor
-                print type(pwm_motor)
-                do_pwm(pwm_motor,0.3,7.20)
+                for i in range(5):
+                    do_pwm(pwm_motor,0.3,7.20)
+                    time.sleep(1.0)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
