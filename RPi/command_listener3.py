@@ -91,6 +91,7 @@ def update():
                 pwm_motor.ChangeDutyCycle(7.8)
                 time.sleep(0.1)
                 pwm_motor.ChangeDutyCycle(0);
+                time.sleep(0.2)
                 pwm_motor.ChangeFrequency(50)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
