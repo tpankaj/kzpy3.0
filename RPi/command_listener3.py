@@ -68,8 +68,10 @@ def update():
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
-                print('motor')
+                
                 for i in range(5):
+                    print('motor')
+                    pwm_motor = GPIO.PWM(40,50)
                     do_pwm(pwm_motor,0.3,7.20)
                     time.sleep(1.0)
                 t = str(time.time())
@@ -142,7 +144,7 @@ def update():
 
 
 gpio_setup() 
-pwm_motor = GPIO.PWM(40,50)
+
 pwm_servo = GPIO.PWM(38,50)
 
 print('\n*** command_listener.py: start this after keypress_view_RPi.py ***')
