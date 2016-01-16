@@ -72,7 +72,7 @@ def update():
     if time.time() - last_cmd_time > 1:
         pwm_motor.ChangeDutyCycle(0);
         pwm_servo.ChangeDutyCycle(0);
-        print('time.time() - last_cmd_time > 1')
+        #print('time.time() - last_cmd_time > 1')
     try:
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
@@ -83,7 +83,7 @@ def update():
                 reverse_state = False
                 print('motor')
                 #do_pwm(pwm_motor,0.3,7.20)
-                pwm.ChangeDutyCycle(7.20)
+                pwm_motor.ChangeDutyCycle(7.20)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
@@ -98,7 +98,7 @@ def update():
                 pwm_motor.ChangeDutyCycle(7.8)
                 time.sleep(0.1)
                 pwm_motor.ChangeDutyCycle(0);
-                time.sleep(0.2)
+                time.sleep(0.3)
                 pwm_motor.ChangeFrequency(50)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
