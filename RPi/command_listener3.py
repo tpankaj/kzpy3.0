@@ -37,8 +37,6 @@ def gpio_setup():
         GPIO.setup(p,GPIO.OUT)
 
 
-pwm_motor = GPIO.PWM(40,50)
-pwm_servo = GPIO.PWM(38,50)
 
 def do_pwm(pwm,duration,duty_cycle):
     start_time = time.time()
@@ -141,7 +139,10 @@ def update():
     time.sleep(0.01)
 
 
-gpio_setup()    
+gpio_setup() 
+pwm_motor = GPIO.PWM(40,50)
+pwm_servo = GPIO.PWM(38,50)
+  
 print('\n*** command_listener.py: start this after keypress_view_RPi.py ***')
 while True:
 	update()
