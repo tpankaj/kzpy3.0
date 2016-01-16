@@ -40,10 +40,10 @@ def gpio_setup():
 
 def do_pwm(pwm,duration,duty_cycle):
     start_time = time.time()
-    pwm.start(duty_cycle)
+    pwm.ChangeDutyCycle(duty_cycle)
     while time.time() < start_time + duration:
         pass;
-    pwm.stop()
+    pwm.ChangeDutyCycle(0)
 
 
 
@@ -68,7 +68,8 @@ def update():
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
-                pwm_motor = GPIO.PWM(40,50)
+                """
+                
                 for i in range(5):
                     print('pwm_motor')
                     start_time = time.time()
@@ -80,10 +81,10 @@ def update():
                 """
                 for i in range(5):
                     print('motor')
-                    pwm_motor = GPIO.PWM(40,50)
+                    
                     do_pwm(pwm_motor,0.3,7.20)
                     time.sleep(1.0)
-                """
+                
 
 
 
@@ -145,6 +146,8 @@ def update():
             elif last_cmd[0] == 'q':
                 #list_of_strings_to_txt_file(command_file_path,['done.'])
                 print('Quitting now. Press ctrl-C if this does not exit.')
+                pwm_motor.stop()
+                pwm_servo.stop()
                 GPIO.cleanup()
                 sys.exit()
     except KeyboardInterrupt:
@@ -157,8 +160,10 @@ def update():
 
 
 gpio_setup() 
-
+pwm_motor = GPIO.PWM(40,50)
 pwm_servo = GPIO.PWM(38,50)
+pwm_motor.start(0)
+pwm_servo.start(0)
 
 print('\n*** command_listener.py: start this after keypress_view_RPi.py ***')
 while True:
