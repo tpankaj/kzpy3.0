@@ -79,11 +79,31 @@ def update():
             last_cmd_time = time.time()
             last_cmd = cmd_lst[0]
             #print(last_cmd)
-            if last_cmd[0] == ' ':
+            if last_cmd[0] == 'g':
                 reverse_state = False
                 print('motor')
                 #do_pwm(pwm_motor,0.3,7.20)
                 pwm_motor.ChangeDutyCycle(7.20)
+                t = str(time.time())
+                list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
+                sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
+
+            if last_cmd[0] == ' ':
+                print('stop')
+                if reverse_state == False:
+                    f = 60
+                    f2 = 50
+                else:
+                    f = 50
+                    f2 = 60
+                pwm_motor.ChangeFrequency(f)
+                pwm_motor.ChangeDutyCycle(7.8)
+                time.sleep(0.3)
+                
+                pwm_motor.ChangeDutyCycle(0)
+                pwm_motor.ChangeFrequency(f2)
+                
+                #pwm_motor.ChangeDutyCycle(7.20)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
