@@ -104,7 +104,7 @@ print("""
 
 time_of_last_keypress = time.time() - 100
 
-#a=input('...')
+a=input('...')
 
 while True:
     time.sleep(1)
