@@ -45,6 +45,10 @@ def do_pwm(pwm,duration,duty_cycle):
         pass;
     pwm.ChangeDutyCycle(0)
 
+def motor_reverse(pwm_motor):
+    for f in [70,50]:
+        pwm_motor.ChangeFrequency(f);pwm_motor.ChangeDutyCycle(7.8);time.sleep(0.2)
+    pwm_motor.ChangeDutyCycle(0)
 
 
 
@@ -54,7 +58,7 @@ servo_pwm_state = 9.5
 servo_pwm_right_max = 11
 servo_pwm_left_min = 7.2
 servo_pwm_center = 9.5
-
+reverse_state = False
 command_file_path = '/home/pi/Desktop/distal_command.txt'
 
 def update():
@@ -62,27 +66,31 @@ def update():
     global servo_pwm_state
     global servo_pwm_right_max
     global servo_pwm_left_min
+    global reverse_state
     try:
         cmd_lst = txt_file_to_list_of_strings(command_file_path)    
         if cmd_lst[0] != last_cmd:
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
-                """
-                
-                for i in range(5):
-                    print('pwm_motor')
-                    start_time = time.time()
-                    pwm_motor.start(7.2)
-                    while time.time() < start_time + 0.3:
-                        pass;
-                    pwm_motor.stop()
-                    time.sleep(1.0)
-                """
 
                 print('motor')
                 do_pwm(pwm_motor,0.3,7.20)
 
+                t = str(time.time())
+                list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
+                sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
+
+            if last_cmd[0] == 'b':
+
+                print('back up')
+                if not reverse_state:
+                    motor_reverse(pwm_motor)
+                pwm_motor.ChangeFrequency(60)
+                pwm_motor.ChangeDutyCycle(7.8)
+                time.sleep(0.3)
+                pwm_motor.ChangeDutyCycle(0);
+                pwm_motor.ChangeFrequency(50)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
