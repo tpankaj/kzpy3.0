@@ -70,10 +70,23 @@ def update():
             if last_cmd[0] == ' ':
                 
                 for i in range(5):
+                    print('pwm_motor')
+                    start_time = time.time()
+                    pwm_motor.start(7.2)
+                    while time.time() < start_time + 0.3:
+                        pass;
+                    pwm_motor.stop()
+                    time.sleep(1.0)
+                """
+                for i in range(5):
                     print('motor')
                     pwm_motor = GPIO.PWM(40,50)
                     do_pwm(pwm_motor,0.3,7.20)
                     time.sleep(1.0)
+                """
+
+
+
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
                 sftp.put(local_command_file_path, opj(distal_command_file_path,t+'.txt'))
