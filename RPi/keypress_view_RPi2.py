@@ -7,7 +7,7 @@ for RPi
 set laptop wifi to phone mobile hotspot
 ssh pi@192.168.43.20 in two tapbs
 sudo python kzpy3/RPi/camera_control.py
-sudo python kzpy3/RPi/command_listener.py
+sudo python kzpy3/RPi/command_listener3.py
 
 
 """
@@ -61,7 +61,10 @@ def onclick(event):
 list_of_strings_to_txt_file(local_command_file_path,['no command yet...'])
 sftp.put(local_command_file_path, distal_command_file_path)
 
+global time_of_last_keypress
+
 def on_key(event):
+    time_of_last_keypress = time.time()
     list_of_strings_to_txt_file(local_command_file_path,[d2s(event.key,time.time())])
     sftp.put(local_command_file_path, distal_command_file_path)
 
@@ -89,7 +92,7 @@ animation = FuncAnimation(fig, update, interval=10)
 plt.show()
 
 print("""
-    *** keypress_view_RPi.py ***
+    *** keypress_view_RPi2.py ***
     Start this before starting command_listener.py
     To make command, put mouse on display window and press command keys...
         [<-] left
@@ -98,7 +101,15 @@ print("""
         [space bar] motor
         [q]  quit
 """)
-a=input('...')
+
+time_of_last_keypress = time.time() - 100
+
+#a=input('...')
+
 while True:
-	pass
+    time.sleep(1)
+    print(time.time() - time_of_last_keypress)
+    if (time.time() - time_of_last_keypress > 1):
+        print('handshake')
+        time_of_last_keypress = time.time()
 #fig.canvas.mpl_disconnect(cid)

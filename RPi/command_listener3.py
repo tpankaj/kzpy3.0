@@ -149,7 +149,7 @@ def update():
                 
             elif last_cmd[0] == 'q':
                 #list_of_strings_to_txt_file(command_file_path,['done.'])
-                print('Quitting now. Press ctrl-C if this does not exit.')
+                print('Quitting now...')
                 pwm_motor.stop()
                 pwm_servo.stop()
                 GPIO.cleanup()
