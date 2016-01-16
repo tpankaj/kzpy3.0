@@ -68,7 +68,7 @@ def update():
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
-                
+                pwm_motor = GPIO.PWM(40,50)
                 for i in range(5):
                     print('pwm_motor')
                     start_time = time.time()
