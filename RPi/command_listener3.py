@@ -70,6 +70,7 @@ def update():
             if last_cmd[0] == ' ':
                 print('motor')
                 print pwm_motor
+                print type(pwm_motor)
                 do_pwm(pwm_motor,0.3,7.20)
                 t = str(time.time())
                 list_of_strings_to_txt_file(local_command_file_path,[d2s('motor',t)])
