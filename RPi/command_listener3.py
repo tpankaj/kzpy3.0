@@ -73,7 +73,7 @@ def update():
             last_cmd = cmd_lst[0]
             #print(last_cmd)
             if last_cmd[0] == ' ':
-
+                reverse_state = False
                 print('motor')
                 do_pwm(pwm_motor,0.3,7.20)
 
@@ -86,6 +86,7 @@ def update():
                 print('back up')
                 if not reverse_state:
                     motor_reverse(pwm_motor)
+                    reverse_state = True
                 pwm_motor.ChangeFrequency(60)
                 pwm_motor.ChangeDutyCycle(7.8)
                 time.sleep(0.3)
