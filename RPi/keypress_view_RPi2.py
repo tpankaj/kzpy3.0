@@ -1,12 +1,13 @@
 """
 
 on Mac:
-ipython --pylab osx kzpy3/scratch/keypress_view_RPi.py; reset
+ipython --pylab osx kzpy3/RPi/keypress_view_RPi2.py; reset
 
 for RPi
-ssh pi@192.168.43.20
-sudo python kzpy3/scratch/camera_control.py
-sudo python kzpy3/scratch/command_listener.py
+set laptop wifi to phone mobile hotspot
+ssh pi@192.168.43.20 in two tapbs
+sudo python kzpy3/RPi/camera_control.py
+sudo python kzpy3/RPi/command_listener.py
 
 
 """
