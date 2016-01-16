@@ -89,7 +89,7 @@ def update():
                     reverse_state = True
                 pwm_motor.ChangeFrequency(60)
                 pwm_motor.ChangeDutyCycle(7.8)
-                time.sleep(0.3)
+                time.sleep(0.1)
                 pwm_motor.ChangeDutyCycle(0);
                 pwm_motor.ChangeFrequency(50)
                 t = str(time.time())
