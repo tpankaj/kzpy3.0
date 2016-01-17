@@ -94,12 +94,12 @@ def update():
                     f = 60
                     f2 = 50
                 
-                pwm_motor.ChangeFrequency(f)
-                pwm_motor.ChangeDutyCycle(7.8)
-                time.sleep(0.3)
-                
-                pwm_motor.ChangeDutyCycle(0)
-                pwm_motor.ChangeFrequency(f2)
+                    pwm_motor.ChangeFrequency(f)
+                    pwm_motor.ChangeDutyCycle(7.8)
+                    time.sleep(0.3)
+                    
+                    pwm_motor.ChangeDutyCycle(0)
+                    pwm_motor.ChangeFrequency(f2)
 
                 else:
                     print('stop only for forward drive')
