@@ -30,6 +30,11 @@ last_cmd ='no command yet'
 
 img_path = opjh('scratch/2015/11/RPi_images/')
 
+_,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
+for f in img_files:
+    print f
+    unix(d2s('rm',opj(img_path,'not_yet_viewed',f)),False)
+
 def update(frame_number):
     global last_cmd
     try:
