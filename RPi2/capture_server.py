@@ -1,8 +1,21 @@
 import io
 import socket
 import struct
-from PIL import Image
+#from PIL import Image
 import time
+import numpy as np
+from kzpy3.vis import *
+#from  matplotlib.animation import FuncAnimation
+
+
+"""
+a=np.random.randn(10000)
+hist(a,100)
+plt.ion()
+plt.show()
+"""
+
+
 
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
@@ -13,6 +26,10 @@ server_socket.listen(0)
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
 t = time.time()
+t2 = t
+
+
+
 try:
     while True:
         # Read the length of the image as a 32-bit unsigned int. If the
@@ -27,12 +44,29 @@ try:
         # Rewind the stream, open it as an image with PIL and do some
         # processing on it
         image_stream.seek(0)
-        image = Image.open(image_stream)
-        print('Image is %dx%d' % image.size)
-        print(t-time.time())
+
+        image = PIL.Image.open(image_stream)
+        img = np.asarray(image.convert('L'))
+        #print('Image is %dx%d' % image.size)
+
         t = time.time()
+        if True: #t - t2 > 1:
+            t2 = t
+            #image.show()
+            print("*************************")
+            #img = np.random.rand(10,10)
+            plt.clf()
+            mi(img)
+            plt.ion()
+            plt.show()
+            plt.pause(0.01)
+
+      
+        print(t-time.time(),np.shape(img))
         #image.verify()
         #print('Image is verified')
+        
 finally:
     connection.close()
     server_socket.close()
+
