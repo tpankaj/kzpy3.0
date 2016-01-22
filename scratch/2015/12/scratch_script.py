@@ -1,3 +1,31 @@
+"server side"
+import socket
+
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serversocket.bind(('localhost', 8080))
+serversocket.listen(5) # become a server socket, maximum 5 connections
+
+while True:
+    connection, address = serversocket.accept()
+    buf = connection.recv(64)
+    if len(buf) > 0:
+        print buf
+        #break
+############
+"Client Side:"
+
+import socket
+
+clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+clientsocket.connect(('localhost', 8080))
+clientsocket.send(raw_input())
+clientsocket.close()
+
+############
+
+
+
+############
 from kzpy3.vis import *
 a=np.random.randn(10000)
 hist(a,100)
