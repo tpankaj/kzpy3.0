@@ -14,9 +14,13 @@ connection, address = serversocket.accept()
 while True:
     buf = connection.recv(64)
     if len(buf) > 0:
-        print buf
+        try:
+            t = eval(buf)
+        except:
+            t = (0,0)
+        print t
         #break
-        if buf == 'qq':
+        if buf == 'q':
             time.sleep(0.1)
             break
 

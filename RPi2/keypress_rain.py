@@ -102,6 +102,9 @@ def on_key(event):
 
 
 cid = fig.canvas.mpl_connect('key_press_event', on_key)
+fig.canvas.mpl_connect('button_press_event', onclick)
+#fig.canvas.mpl_connect('motion_notify_event', onclick)
+
 
 animation = FuncAnimation(fig, update, interval=10)
 plt.show()
