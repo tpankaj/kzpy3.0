@@ -218,9 +218,16 @@ for i in range(1,len(sys.argv)):
 		
 unix('/Library/TeX/texbin/pdflatex Zipser')
 
+"""
 for i in range(1,len(sys.argv)):
 	if sys.argv[i] == '-o':
 		print('******** Open pdf')
 		unix('open Zipser.pdf')
+"""
 
+for i in range(1,len(sys.argv)):
+	if sys.argv[i] == '-o':
+		print('******** Open pdf')
+		osa('tell app "Preview" to close front window')
+		unix('open Zipser.pdf')
 
