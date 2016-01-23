@@ -1,4 +1,4 @@
-"Run d.py, then c.py, then b.py"
+"Run d.py, then c.py, then keypress_rain.py or b.py"
 
 from kzpy3.utils import *
 import socket
