@@ -95,7 +95,7 @@ def motion_notify_event(event):
             motor_ds = get_motor_ds(y)
             
             if ctr < 5:
-                motor_ds = 0
+                #motor_ds = 0
                 ctr += 1
             else:
                 ctr = 0
@@ -173,7 +173,7 @@ def get_steering_ds(mouse_x):
         return servo_pwm_center + 2 * (mouse_x - 0.5) * (servo_pwm_right_max - servo_pwm_center) 
 
 def get_motor_ds(mouse_y):
-    return motor_pwm_max * mouse_y
+    return motor_pwm_max - 1 + mouse_y
 
 ###########################
 
