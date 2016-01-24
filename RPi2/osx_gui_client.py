@@ -2,7 +2,7 @@
 
 To run:
 ssh pi@192.168.43.20
-sudo python kzpy3/RPi2/RPi_client.py 
+sudo python kzpy3/RPi2/RPi_server.py
 ipython --pylab osx kzpy3/RPi2/osx_gui_client.py ; reset
 
 """
@@ -15,10 +15,12 @@ from  matplotlib.animation import FuncAnimation
 SOC = True
 
 
+
 if SOC:
     print "Client Side:"
     import socket
-    host = '192.168.43.20' # 'localhost'
+    #host = '192.168.43.20'
+    host = 'localhost'
     port = 5000
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((host, port))
@@ -94,11 +96,7 @@ def motion_notify_event(event):
             steering_ds = get_steering_ds(x)
             motor_ds = get_motor_ds(y)
             
-            if ctr < 5:
-                #motor_ds = 0
-                ctr += 1
-            else:
-                ctr = 0
+
             
         print(steering_ds,motor_ds)
         if SOC:
