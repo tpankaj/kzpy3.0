@@ -50,7 +50,7 @@ try:
                 t = False
             if t:
                 servo_ds = t[0]
-                if ctr < 10:
+                if ctr < 3:
                     motor_ds = 0
                 else:
                     motor_ds = t[1]
@@ -60,7 +60,7 @@ try:
                     pwm_servo.ChangeDutyCycle(servo_ds)
                     pwm_motor.ChangeDutyCycle(motor_ds)
             else:
-                if ctr < 10:
+                if ctr < 3:
                     motor_ds = 0
                     pwm_motor.ChangeDutyCycle(motor_ds)
                 else:
