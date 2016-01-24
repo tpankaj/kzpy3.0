@@ -43,7 +43,7 @@ while True:
             t = False
         if t:
             print(d2s('t =',t))
-            pwm_servo.ChangeDutyCycle(t)
+            pwm_servo.ChangeDutyCycle(t[0])
         else:
             print('['+buf+']')
         #print(d2s(t[0],t[1]))
