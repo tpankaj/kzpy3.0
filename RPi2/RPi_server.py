@@ -3,7 +3,7 @@ print "RPi_server.py server side"
 
 import socket
 
-ON_RPi = False
+ON_RPi = True
 
 if ON_RPi:
     print("*** on RPi ****")
