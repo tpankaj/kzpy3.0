@@ -51,7 +51,8 @@ try:
                 print(d2s(servo_ds,motor_ds))
                 if ON_RPi:
                     pwm_servo.ChangeDutyCycle(servo_ds)
-                    pwm_motor.ChangeDutyCycle(motor_ds)
+                    if motor_ds >= 0:
+                        pwm_motor.ChangeDutyCycle(motor_ds)
             else:
                 pass
             if buf == 'q':

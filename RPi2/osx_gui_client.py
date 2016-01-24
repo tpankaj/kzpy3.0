@@ -47,13 +47,20 @@ if False:#USE_RPi:
         print f
         unix(d2s('rm',opj(img_path,'not_yet_viewed',f)),False)
 
-
+ctr = 0
 def update(frame_number):
+    global ctr
     global img_shape
     global steering_ds
     global motor_ds
     if SOC:
-        clientsocket.send(d2s((steering_ds,motor_ds)))
+        mds = motor_ds
+        if ctr < 5:
+            mds = 0
+            ctr += 1
+        else:
+            ctr = 0
+        clientsocket.send(d2s((steering_ds,mds)))
 
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
@@ -85,12 +92,9 @@ def button_press_event(event):
     if SOC:
         clientsocket.send(' ')
 
-ctr = 0
+
 def motion_notify_event(event):
-    global ctr
     global steering_ds
-    global motor_ds
-    
     try:
         if event.xdata == None:
             steering_ds = 0
@@ -99,16 +103,20 @@ def motion_notify_event(event):
             x = event.xdata/(1.0*img_shape[1])
             y = 1.0 - event.ydata/(1.0*img_shape[0])
             steering_ds = get_steering_ds(x)
-            motor_ds = get_motor_ds(y)
-        print(steering_ds,motor_ds)
+            #motor_ds = get_motor_ds(y)
+        print(steering_ds,-1)
         if SOC:
-            clientsocket.send(d2s((steering_ds,motor_ds)))
+            clientsocket.send(d2s((steering_ds,-1)))
     except:
         print('error!')
 
 def key_press_event(event):
     if SOC:
         clientsocket.send(event.key)
+    if event.key == '1':
+        if SOC:
+            motor_ds = 7.2
+            clientsocket.send(d2s((steering_ds,motor_ds)))
     if event.key == 'q':
         if SOC:
             clientsocket.close()
@@ -164,7 +172,7 @@ servo_pwm_right_max = 11.7
 servo_pwm_left_min = 7.2
 servo_pwm_center = 9.2
 
-motor_pwm_max = 7.4
+motor_pwm_max = 8
 
 def get_steering_ds(mouse_x):
     if mouse_x < 0.5:
