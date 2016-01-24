@@ -19,8 +19,9 @@ while True:
         except:
             t = False
         if t:
-            print(d2s('t =',t))
-        print('['+buf+']')
+            print(d2s('t =',np.int(100*t)/100.0))
+        else:
+            print('['+buf+']')
         #print(d2s(t[0],t[1]))
         #break
         if buf == 'q':
