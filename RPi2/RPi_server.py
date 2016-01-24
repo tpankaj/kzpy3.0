@@ -28,6 +28,13 @@ else:
 #
 ##############
 
+control_path = '/home/pi/camera_control.txt'
+STANDBY = 'STANDBY'
+CAPTURE = 'CAPTURE'
+QUIT = 'QUIT'
+list_of_strings_to_txt_file(control_path,[STANDBY])
+
+
 
 ##############
 #
@@ -42,11 +49,7 @@ connection, address = serversocket.accept()
 ##############
 
 
-control_path = '/home/pi/camera_control.txt'
-STANDBY = 'STANDBY'
-CAPTURE = 'CAPTURE'
-QUIT = 'QUIT'
-list_of_strings_to_txt_file(control_path,[STANDBY])
+
 try:
     while True:
         buf = connection.recv(64)
