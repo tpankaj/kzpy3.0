@@ -38,7 +38,7 @@ serversocket.listen(5) # become a server socket, maximum 5 connections
 
 connection, address = serversocket.accept()
 
-ctr = 0
+
 
 try:
     while True:
@@ -50,21 +50,13 @@ try:
                 t = False
             if t:
                 servo_ds = t[0]
-                if ctr < 3:
-                    motor_ds = 0
-                else:
-                    motor_ds = t[1]
-                    ctr = 0
+                motor_ds = t[1]
                 print(d2s(servo_ds,motor_ds))
                 if ON_RPi:
                     pwm_servo.ChangeDutyCycle(servo_ds)
                     pwm_motor.ChangeDutyCycle(motor_ds)
             else:
-                if ctr < 3:
-                    motor_ds = 0
-                    pwm_motor.ChangeDutyCycle(motor_ds)
-                else:
-                    ctr = 0
+                pass
   
             #print(d2s(t[0],t[1]))
             #break

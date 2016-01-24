@@ -50,8 +50,10 @@ if False:#USE_RPi:
 
 def update(frame_number):
     global img_shape
+    global steering_ds
+    global motor_ds
     if SOC:
-        clientsocket.send(d2s('handshake'))
+        clientsocket.send(d2s((steering_ds,motor_ds)))
 
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
@@ -95,9 +97,6 @@ def motion_notify_event(event):
             y = 1.0 - event.ydata/(1.0*img_shape[0])
             steering_ds = get_steering_ds(x)
             motor_ds = get_motor_ds(y)
-            
-
-            
         print(steering_ds,motor_ds)
         if SOC:
             clientsocket.send(d2s((steering_ds,motor_ds)))
