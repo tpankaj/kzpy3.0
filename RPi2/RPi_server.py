@@ -45,6 +45,8 @@ while True:
             print(d2s('t =',t))
             pwm_servo.ChangeDutyCycle(t[0])
             pwm_motor.ChangeDutyCycle(t[1])
+            time.sleep(0.01)
+            pwm_motor.ChangeDutyCycle(0)
         else:
             print('['+buf+']')
         #print(d2s(t[0],t[1]))

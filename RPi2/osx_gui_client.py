@@ -2,7 +2,7 @@
 
 To run:
 ssh pi@192.168.43.20
-python kzpy3/RPi2/RPi_client.py 
+sudo python kzpy3/RPi2/RPi_client.py 
 ipython --pylab osx kzpy3/RPi2/osx_gui_client.py ; reset
 
 """
@@ -81,8 +81,9 @@ def button_press_event(event):
     if SOC:
         clientsocket.send(' ')
 
-
+ctr = 0
 def motion_notify_event(event):
+    global ctr
     try:
         if event.xdata == None:
             steering_ds = 0
@@ -92,6 +93,13 @@ def motion_notify_event(event):
             y = 1.0 - event.ydata/(1.0*img_shape[0])
             steering_ds = get_steering_ds(x)
             motor_ds = get_motor_ds(y)
+            
+            if ctr < 5:
+                motor_ds = 0
+                ctr += 1
+            else:
+                ctr = 0
+            
         print(steering_ds,motor_ds)
         if SOC:
             clientsocket.send(d2s((steering_ds,motor_ds)))
@@ -152,7 +160,7 @@ motor_ds = 0
 servo_freq = 50
 servo_ds = 0
 
-servo_pwm_right_max = 11
+servo_pwm_right_max = 11.7
 servo_pwm_left_min = 7.2
 servo_pwm_center = 9.5
 
