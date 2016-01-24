@@ -42,7 +42,7 @@ ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 img_path = opjh('scratch/2015/11/RPi_images/')
 img_shape = False
 
-if False:#USE_RPi:
+if True:#USE_RPi:
     _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
     for f in img_files:
         print f

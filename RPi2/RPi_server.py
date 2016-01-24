@@ -46,7 +46,7 @@ control_path = '/home/pi/camera_control.txt'
 STANDBY = 'STANDBY'
 CAPTURE = 'CAPTURE'
 QUIT = 'QUIT'
-
+list_of_strings_to_txt_file(control_path,[STANDBY])
 try:
     while True:
         buf = connection.recv(64)
@@ -54,6 +54,7 @@ try:
             if buf == 'q':
                 try:
                     GPIO.cleanup()
+                    list_of_strings_to_txt_file(control_path,[QUIT])
                 except:
                     print("*** not RPi ****")
                 time.sleep(0.1)
@@ -90,5 +91,6 @@ except KeyboardInterrupt:
     serversocket.close()
     if ON_RPi:
         GPIO.cleanup()
+        list_of_strings_to_txt_file(control_path,[QUIT])
     print('cleaned up.')
 
