@@ -3,6 +3,7 @@
 To run:
 ssh pi@192.168.43.20
 sudo python kzpy3/RPi2/RPi_server.py
+sudo python kzpy3/RPi2/camera_control3.py
 ipython --pylab osx kzpy3/RPi2/osx_gui_client.py ; reset
 
 """

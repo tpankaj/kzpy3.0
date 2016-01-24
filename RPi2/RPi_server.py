@@ -1,6 +1,7 @@
 print "RPi_server.py server side"
 
-
+##############
+#
 ON_RPi = True
 if ON_RPi:
     print("*** on RPi ****")
@@ -24,9 +25,12 @@ if ON_RPi:
 else:
     print("*** not RPi ****")
     from kzpy3.utils import *
+#
+##############
 
 
-
+##############
+#
 import socket
 host = '0.0.0.0'
 port = 5000
@@ -34,6 +38,8 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
 connection, address = serversocket.accept()
+#
+##############
 
 
 
@@ -41,20 +47,6 @@ try:
     while True:
         buf = connection.recv(64)
         if len(buf) > 0:
-            try:
-                t = eval(buf)
-            except:
-                t = False
-            if t:
-                servo_ds = t[0]
-                motor_ds = t[1]
-                print(d2s(servo_ds,motor_ds))
-                if ON_RPi:
-                    pwm_servo.ChangeDutyCycle(servo_ds)
-                    if motor_ds >= 0:
-                        pwm_motor.ChangeDutyCycle(motor_ds)
-            else:
-                pass
             if buf == 'q':
                 try:
                     GPIO.cleanup()
@@ -62,6 +54,28 @@ try:
                     print("*** not RPi ****")
                 time.sleep(0.1)
                 break
+            elif buf == 'c':
+                print "CAPTURE"
+            elif buf == 'x':
+                print "STANDBY"
+            elif buf == 'z':
+                print "QUIT"
+            else:
+                try:
+                    t = eval(buf)
+                except:
+                    t = False
+                if t:
+                    servo_ds = t[0]
+                    motor_ds = t[1]
+                    print(d2s(servo_ds,motor_ds))
+                    if ON_RPi:
+                        pwm_servo.ChangeDutyCycle(servo_ds)
+                        if motor_ds >= 0:
+                            pwm_motor.ChangeDutyCycle(motor_ds)
+                else:
+                    pass
+
 except KeyboardInterrupt:        
     serversocket.close()
     if ON_RPi:
