@@ -60,11 +60,14 @@ try:
                     pwm_servo.ChangeDutyCycle(servo_ds)
                     pwm_motor.ChangeDutyCycle(motor_ds)
             else:
+                pass
+                """
                 if ctr < 10:
                     motor_ds = 0
                     pwm_motor.ChangeDutyCycle(motor_ds)
                 else:
-                    ctr = 0    
+                    ctr = 0
+                """   
             #print(d2s(t[0],t[1]))
             #break
             if buf == 'q':

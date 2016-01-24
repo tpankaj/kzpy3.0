@@ -11,7 +11,7 @@ from kzpy3.vis import *
 #from kzpy3.RPi.utils import *
 from  matplotlib.animation import FuncAnimation
 
-USE_RPi = False
+USE_RPi = True
 SOC = True
 
 
