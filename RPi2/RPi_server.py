@@ -1,10 +1,11 @@
 print "RPi_server.py server side"
 
-from kzpy3.utils import *
+
 import socket
 
 #try:
 sys.path.insert(0, "/home/pi")
+from kzpy3.utils import *
 import RPi.GPIO as GPIO
 SERVO_IN = 38
 MOTOR_IN = 40
