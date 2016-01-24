@@ -57,9 +57,6 @@ try:
                     pwm_motor.ChangeDutyCycle(motor_ds)
             else:
                 pass
-  
-            #print(d2s(t[0],t[1]))
-            #break
             if buf == 'q':
                 try:
                     GPIO.cleanup()
@@ -67,7 +64,6 @@ try:
                     print("*** not RPi ****")
                 time.sleep(0.1)
                 break
-            ctr += 1
 except KeyboardInterrupt:        
     serversocket.close()
     if ON_RPi:

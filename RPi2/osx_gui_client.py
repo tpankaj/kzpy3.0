@@ -88,6 +88,9 @@ def button_press_event(event):
 ctr = 0
 def motion_notify_event(event):
     global ctr
+    global steering_ds
+    global motor_ds
+    
     try:
         if event.xdata == None:
             steering_ds = 0
@@ -152,10 +155,10 @@ fig.canvas.mpl_connect('figure_enter_event', figure_enter_event)
 
 ###########################
 
-motor_freq = 50
+
 motor_ds = 0
-servo_freq = 50
-servo_ds = 0
+
+steering_ds = 0
 
 servo_pwm_right_max = 11.7
 servo_pwm_left_min = 7.2
