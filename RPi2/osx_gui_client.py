@@ -40,7 +40,7 @@ ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
 
 img_path = opjh('scratch/2015/11/RPi_images/')
-img_shape = False
+img_shape = (1,1)
 
 if True:#USE_RPi:
     _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
@@ -48,15 +48,17 @@ if True:#USE_RPi:
         print f
         unix(d2s('rm',opj(img_path,'not_yet_viewed',f)),False)
 
+MOTOR_SKIP_COUNTER = 5
 ctr = 0
 def update(frame_number):
     global ctr
     global img_shape
     global steering_ds
     global motor_ds
+    global MOTOR_SKIP_COUNTER
     if SOC:
         mds = motor_ds
-        if ctr < 5:
+        if ctr < MOTOR_SKIP_COUNTER:
             mds = 0
             ctr += 1
         else:
@@ -114,23 +116,31 @@ def motion_notify_event(event):
 
 def key_press_event(event):
     global motor_ds
-    if SOC:
-        clientsocket.send(event.key)
-    if event.key == 'a':
-        if SOC:
-            motor_ds = 7.2
-            clientsocket.send(d2s((steering_ds,motor_ds)))
-            print((steering_ds,mds))
+    global MOTOR_SKIP_COUNTER
     if event.key == 'q':
         if SOC:
+            clientsocket.send('q')
             clientsocket.close()
         plt.clf()
         plt.close()
         fig.canvas.mpl_disconnect(cid)
-        print('quit!!')
-        sys.exit(1)
+        print('\nCleaning up.')
+        sys.exit(1)    
+    elif event.key in ['1','2','3','4','5','6','7','8','9','0']:
+        MOTOR_SKIP_COUNTER = 3*int(event.key)
+        if SOC:
+            motor_ds = 7.2
+            clientsocket.send(d2s((steering_ds,motor_ds)))
+            print((steering_ds,motor_ds))
+    elif event.key == ' ':
+        if SOC:
+            motor_ds = 0
+            clientsocket.send(d2s((steering_ds,motor_ds)))
+            print((steering_ds,motor_ds))
     else:
         print('['+event.key+']')
+        if SOC:
+            clientsocket.send(event.key)
 
 def figure_leave_event(event):
     print('figure_leave_event')
@@ -195,7 +205,7 @@ def get_motor_ds(mouse_y):
 
 
 
-animation = FuncAnimation(fig, update, interval=33)
+animation = FuncAnimation(fig, update, interval=10)
 
 #plt.ion()
 plt.show()

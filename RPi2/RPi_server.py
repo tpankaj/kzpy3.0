@@ -61,6 +61,7 @@ try:
                 except:
                     print("*** not RPi ****")
                 time.sleep(0.1)
+                print('\nCleaning up.')
                 break
             elif buf == 'c':
                 cmd = CAPTURE
