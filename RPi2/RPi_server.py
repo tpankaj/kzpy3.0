@@ -19,7 +19,7 @@ while True:
         except:
             t = False
         if t:
-            print(d2s('t =',np.int(100*t)/100.0))
+            print(d2s('t =',t))
         else:
             print('['+buf+']')
         #print(d2s(t[0],t[1]))
