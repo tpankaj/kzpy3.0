@@ -1,8 +1,8 @@
 """
 
 To run:
+ssh pi@192.168.43.20
 python kzpy3/RPi2/RPi_client.py 
-python kzpy3/RPi2/osx_server.py 
 ipython --pylab osx kzpy3/RPi2/osx_gui_client.py ; reset
 
 """
@@ -18,7 +18,7 @@ SOC = True
 if SOC:
     print "Client Side:"
     import socket
-    host = '127.0.0.1' # 'localhost'
+    host = '192.168.43.20' # 'localhost'
     port = 5000
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((host, port))

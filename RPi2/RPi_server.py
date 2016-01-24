@@ -3,7 +3,7 @@ print "RPi_server.py server side"
 from kzpy3.utils import *
 import socket
 
-host = '127.0.0.1' # 'localhost'
+host = '192.168.43.243' # 'localhost'
 port = 5000
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
