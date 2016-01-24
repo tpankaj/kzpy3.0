@@ -13,9 +13,9 @@ def get_sftp(pw_file_path):
 	username = hup[1]
 	transport.connect(username = username, password = password)
 	sftp = paramiko.SFTPClient.from_transport(transport)
-	return sftp
+	return sftp,transport
 
-sftp = get_sftp(opjh('/home/pi/pw_MacbookPro.txt'))
+sftp,transport = get_sftp(opjh('/home/pi/pw_MacbookPro.txt'))
 
 camera = picamera.PiCamera()
 #camera.hflip = True
