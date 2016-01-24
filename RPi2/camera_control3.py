@@ -43,9 +43,12 @@ while status != QUIT:
 			status = s[0]
 			print(status)
 		if status == CAPTURE:
-			camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
+			camera.capture(image_path,format='jpeg', use_video_port=True,quality=100)
 			sftp.put(image_path, d2n(dst_image_path,'/',ctr,'.',t,'.jpg'))
 			print(time.time()-t)
+			"""
+			for q=10, diff is ~1.3
+			"""
 			ctr += 1
 	except Exception,e:
 		print('\nCleaning up.')
