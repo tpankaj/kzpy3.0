@@ -1,3 +1,20 @@
+
+motor_freq = 50
+motor_ds = 0
+servo_freq = 50
+servo_ds = 0
+
+servo_pwm_right_max = 11
+servo_pwm_left_min = 7.2
+servo_pwm_center = 9.5
+
+def steering_freq(mouse_x):
+    if mouse_x < 0.5:
+        return servo_pwm_center - 2 * (0.5 - mouse_x) * (servo_pwm_center - servo_pwm_left_min)
+    else:
+        return servo_pwm_center + 2 * (mouse_x - 0.5) * (servo_pwm_right_max - servo_pwm_center) 
+
+############
 "server side"
 import socket
 

@@ -16,18 +16,36 @@ clientsocket.connect((remotehost, remoteport))
 connection, address = serversocket.accept()
 
 
+
+motor_freq = 50
+motor_ds = 0
+servo_freq = 50
+servo_ds = 0
+
+servo_pwm_right_max = 11
+servo_pwm_left_min = 7.2
+servo_pwm_center = 9.5
+
+def steering_freq(mouse_x):
+    if mouse_x < 0.5:
+        return servo_pwm_center - 2 * mouse_x * (servo_pwm_center - servo_pwm_left_min)
+    else:
+        return servo_pwm_center + 2 * (mouse_x - 0.5) * (servo_pwm_right_max - servo_pwm_center) 
+
 def process_buf(buf):
     if buf == 'q':
         return 'q'
-    r = 'X'
-    if buf == 'left':
-        r = '(40,7.5)'
-    elif buf == 'right':
-        r = '(40,11.0)'
-    elif buf == 'up':
-        r = '(40,9.0)'
+    if buf == 'r':
+        r = 'reverse'
+    elif buf == 'd':
+        r = 'drive'
     elif buf == ' ':
-        r = '(41,9.0)'
+        r = 'break'
+    elif buf == 'handshake':
+        r = 'hs'
+    else:
+        r = str(steering_freq(eval(buf)[0]))
+    print r
     return r
 
 
@@ -35,14 +53,24 @@ def process_buf(buf):
 
 
 print("osx_server.py Server/Client Side:")
+
+last_buf = False
+
 while True:
     buf = connection.recv(64)
-    print(d2s("Received:",buf))
     if len(buf) > 0:
+        last_buf = buf
         clientsocket.send(process_buf(buf))
         if buf == 'q':
             time.sleep(0.1)
-            break       
+            break
+    elif last_buf:
+        print 'here'      
+        clientsocket.send(process_buf(last_buf))
+    else:
+        pass
+    #time.sleep(0.3)
+
 
 clientsocket.close()
 serversocket.close()
