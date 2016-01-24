@@ -113,7 +113,7 @@ def motion_notify_event(event):
 def key_press_event(event):
     if SOC:
         clientsocket.send(event.key)
-    if event.key == '1':
+    if event.key == 'a':
         if SOC:
             motor_ds = 7.2
             clientsocket.send(d2s((steering_ds,motor_ds)))
