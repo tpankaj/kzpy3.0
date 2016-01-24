@@ -11,7 +11,7 @@ from kzpy3.vis import *
 #from kzpy3.RPi.utils import *
 from  matplotlib.animation import FuncAnimation
 
-
+USE_RPi = False
 SOC = True
 
 
@@ -41,7 +41,7 @@ ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 img_path = opjh('scratch/2015/11/RPi_images/')
 img_shape = False
 
-if False:
+if USE_RPi:
     _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
     for f in img_files:
         print f
@@ -160,7 +160,7 @@ servo_ds = 0
 
 servo_pwm_right_max = 11.7
 servo_pwm_left_min = 7.2
-servo_pwm_center = 9.5
+servo_pwm_center = 9.2
 
 motor_pwm_max = 7.4
 
