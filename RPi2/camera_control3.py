@@ -33,7 +33,7 @@ QUIT = 'QUIT'
 status = STANDBY
 
 ctr = 0
-
+last_status_check_time = time.time()
 while status != QUIT:
 	try:
 		t = time.time()
@@ -41,6 +41,7 @@ while status != QUIT:
 			last_status_check_time = t
 			s = txt_file_to_list_of_strings(control_path)
 			status = s[0]
+			print(status)
 		if status == CAPTURE:
 			camera.capture(image_path,format='jpeg', use_video_port=True,quality=10)
 			sftp.put(image_path, d2n(dst_image_path,'/',ctr,'.',t,'.jpg'))
