@@ -42,6 +42,10 @@ connection, address = serversocket.accept()
 ##############
 
 
+control_path = '/home/pi/camera_control.txt'
+STANDBY = 'STANDBY'
+CAPTURE = 'CAPTURE'
+QUIT = 'QUIT'
 
 try:
     while True:
@@ -55,11 +59,17 @@ try:
                 time.sleep(0.1)
                 break
             elif buf == 'c':
-                print "CAPTURE"
+                cmd = CAPTURE
+                print cmd
+                list_of_strings_to_txt_file(control_path,[cmd])
             elif buf == 'x':
-                print "STANDBY"
+                cmd = STANDBY
+                print cmd
+                list_of_strings_to_txt_file(control_path,[cmd])
             elif buf == 'z':
-                print "QUIT"
+                cmd = QUIT
+                print cmd
+                list_of_strings_to_txt_file(control_path,[cmd])
             else:
                 try:
                     t = eval(buf)
