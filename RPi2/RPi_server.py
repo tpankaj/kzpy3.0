@@ -50,7 +50,7 @@ try:
                 t = False
             if t:
                 servo_ds = t[0]
-                if ctr < 5:
+                if ctr < 15:
                     motor_ds = 0
                 else:
                     motor_ds = t[1]

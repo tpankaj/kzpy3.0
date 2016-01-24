@@ -19,8 +19,8 @@ SOC = True
 if SOC:
     print "Client Side:"
     import socket
-    #host = '192.168.43.20'
-    host = 'localhost'
+    host = '192.168.43.20'
+    #host = 'localhost'
     port = 5000
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((host, port))
