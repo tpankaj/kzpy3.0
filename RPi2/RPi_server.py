@@ -1,10 +1,7 @@
 print "RPi_server.py server side"
 
 
-import socket
-
 ON_RPi = True
-
 if ON_RPi:
     print("*** on RPi ****")
     import sys
@@ -29,13 +26,13 @@ else:
     from kzpy3.utils import *
 
 
+
+import socket
 host = '0.0.0.0'
 port = 5000
-
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
-
 connection, address = serversocket.accept()
 
 
