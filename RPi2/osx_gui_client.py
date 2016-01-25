@@ -54,13 +54,14 @@ if True:
 MOTOR_SKIP_COUNTER = 5
 ctr = 0
 session_list = []
-
+viewed_dic = {}
 def update(frame_number):
     global ctr
     global img_shape
     global steering_ds
     global motor_ds
     global MOTOR_SKIP_COUNTER
+    global viewed_dic
     if SOC:
         mds = motor_ds
         if ctr < MOTOR_SKIP_COUNTER:
@@ -73,25 +74,27 @@ def update(frame_number):
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
         f = img_files[-1]
-        #f2 = f.replace('A',str(int(10*motor_ds)))
-        #f2 = f2.replace('B',str(MOTOR_SKIP_COUNTER))
-        #f2 = f2.replace('C',str(int(10*mds)))
-        #f2 = f2.replace('D',str(int(10*steering_ds)))
-       
-        img = imread(opj(img_path,'not_yet_viewed',f))
-        session_list.append(d2s(f,'\t',int(10*motor_ds),MOTOR_SKIP_COUNTER,int(10*mds),int(10*steering_ds)))
-        #unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'not_yet_viewed',f2)),False)
+        if True:#f not in viewed_dic:
+            viewed_dic[f] = True
+            #f2 = f.replace('A',str(int(10*motor_ds)))
+            #f2 = f2.replace('B',str(MOTOR_SKIP_COUNTER))
+            #f2 = f2.replace('C',str(int(10*mds)))
+            #f2 = f2.replace('D',str(int(10*steering_ds)))
+           
+            img = imread(opj(img_path,'not_yet_viewed',f))
+            session_list.append(d2s(f,'\t',int(10*motor_ds),MOTOR_SKIP_COUNTER,int(10*mds),int(10*steering_ds)))
+            #unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'not_yet_viewed',f2)),False)
 
-        #img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
-        img_shape = shape(img)
-        for f in img_files[:-4]:
-            unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
-        if shape(img)[2] == 3:
-            plt.clf()
-            mi(img)
-            #time.sleep(0.01)
-        else:
-            print('Empty frame.')
+            #img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
+            img_shape = shape(img)
+            for f in img_files[:-4]:
+                unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
+            if shape(img)[2] == 3:
+                plt.clf()
+                mi(img)
+                #time.sleep(0.01)
+            else:
+                print('Empty frame.')
     except KeyboardInterrupt:
         print('Quitting now.')
         print('\nCleaning up.')
@@ -135,7 +138,19 @@ def key_press_event(event):
     if event.key == 'q':
         print session_list
         #list_of_strings_to_txt_file( 'session_list.txt',session_list)
-        list_of_strings_to_txt_file( opj(img_path,'session_list-'+time_str()+'.txt'),session_list)
+        timestr = time_str()
+        unix(d2s('mkdir -p',opj(img_path,timestr,'jpg')))
+        list_of_strings_to_txt_file(opj(img_path,timestr,'session_list-'+timestr+'.txt'),session_list)
+        #_,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
+        #for f in img_files:
+        #    unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
+        for l in session_list:
+            f = l.split(' ')[0]
+            try:
+                unix(d2s('mv',opj(img_path,'viewed',f),opj(img_path,timestr,'jpg')))
+            except:
+                print('failed to move '+f)
+
         if SOC:
             clientsocket.send('q')
             clientsocket.close()
