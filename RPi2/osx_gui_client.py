@@ -53,6 +53,8 @@ if True:
 
 MOTOR_SKIP_COUNTER = 5
 ctr = 0
+session_list = []
+
 def update(frame_number):
     global ctr
     global img_shape
@@ -71,7 +73,15 @@ def update(frame_number):
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
         f = img_files[-1]
-        img = imread(opj(img_path,'not_yet_viewed',f))        
+        #f2 = f.replace('A',str(int(10*motor_ds)))
+        #f2 = f2.replace('B',str(MOTOR_SKIP_COUNTER))
+        #f2 = f2.replace('C',str(int(10*mds)))
+        #f2 = f2.replace('D',str(int(10*steering_ds)))
+       
+        img = imread(opj(img_path,'not_yet_viewed',f))
+        session_list.append(d2s(f,'\t',int(10*motor_ds),MOTOR_SKIP_COUNTER,int(10*mds),int(10*steering_ds)))
+        #unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'not_yet_viewed',f2)),False)
+
         #img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
         img_shape = shape(img)
         for f in img_files[:-4]:
@@ -123,6 +133,9 @@ def key_press_event(event):
     global motor_ds
     global MOTOR_SKIP_COUNTER
     if event.key == 'q':
+        print session_list
+        #list_of_strings_to_txt_file( 'session_list.txt',session_list)
+        list_of_strings_to_txt_file( opj(img_path,'session_list-'+time_str()+'.txt'),session_list)
         if SOC:
             clientsocket.send('q')
             clientsocket.close()
@@ -132,7 +145,7 @@ def key_press_event(event):
         print('\nCleaning up.')
         sys.exit(1)    
     elif event.key in ['1','2','3','4','5','6','7','8','9','0']:
-        MOTOR_SKIP_COUNTER = 3*int(event.key)
+        MOTOR_SKIP_COUNTER = 2*int(event.key)
         if SOC:
             motor_ds = 7.2
             clientsocket.send(d2s((steering_ds,motor_ds)))
