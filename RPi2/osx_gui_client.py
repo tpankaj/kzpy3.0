@@ -42,11 +42,14 @@ ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 img_path = opjh('scratch/2015/11/RPi_images/')
 img_shape = (1,1)
 
-if True:#USE_RPi:
+def delete_not_yet_viewed():
     _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
     for f in img_files:
         print f
         unix(d2s('rm',opj(img_path,'not_yet_viewed',f)),False)
+
+if True:
+    delete_not_yet_viewed()
 
 MOTOR_SKIP_COUNTER = 5
 ctr = 0
@@ -67,7 +70,9 @@ def update(frame_number):
         print((steering_ds,mds))
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
-        img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
+        f = img_files[-1]
+        img = imread(opj(img_path,'not_yet_viewed',f))        
+        #img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
         img_shape = shape(img)
         for f in img_files[:-4]:
             unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
