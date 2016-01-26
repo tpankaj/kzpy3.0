@@ -51,7 +51,7 @@ while status != QUIT:
 			for q=100, diff is ~0.15
 			"""
 			ctr += 1
-	except Exception,e:
+	except: # Exception,e:
 		import RPi.GPIO as GPIO
 		GPIO.setmode(GPIO.BOARD)
 		GPIO.setup(38,GPIO.OUT)
