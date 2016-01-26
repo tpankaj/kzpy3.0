@@ -32,6 +32,18 @@ CAPTURE = 'CAPTURE'
 QUIT = 'QUIT'
 status = STANDBY
 
+def error_cleanup():
+	print('\nError, cleaning up.')
+	import RPi.GPIO as GPIO
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(38,GPIO.OUT)
+	GPIO.setup(40,GPIO.OUT)
+	GPIO.cleanup()
+	del camera
+	sftp.close()
+	transport.close()
+	sys.exit()
+
 ctr = 0
 last_status_check_time = time.time()
 while status != QUIT:
@@ -42,6 +54,10 @@ while status != QUIT:
 			s = txt_file_to_list_of_strings(control_path)
 			status = s[0]
 			print(status)
+			#handshake_t = np.load('handshake.npy')
+			#if time.time() - handshake_t > 1.0:
+			#	print('Handshake lost, closing down GPIOs')
+			#	error_cleanup()
 		if status == CAPTURE:
 			camera.capture(image_path,format='jpeg', use_video_port=True,quality=100)
 			sftp.put(image_path, d2n(dst_image_path,'/',ctr,'-',t,'.jpg'))
@@ -52,19 +68,14 @@ while status != QUIT:
 			"""
 			ctr += 1
 	except: # Exception,e:
-		import RPi.GPIO as GPIO
-		GPIO.setmode(GPIO.BOARD)
-		GPIO.setup(38,GPIO.OUT)
-		GPIO.setup(40,GPIO.OUT)
-		GPIO.cleanup()
 		print('\nCamera or transfer failed, cleaning up, including GPIO.')
-		del camera
-		sftp.close()
-		transport.close()
-		print('Done.')
-		print str(e)
+		error_cleanup()
+		#print str(e)
 		break
-print('\nCleaning up.')
+print('\nNormal Quit, cleaning up.')
+del camera
 sftp.close()
 transport.close()
 print('Done.')
+
+

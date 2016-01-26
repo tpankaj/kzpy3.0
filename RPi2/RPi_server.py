@@ -50,6 +50,8 @@ connection, address = serversocket.accept()
 
 # http://stackoverflow.com/questions/17386487/python-detect-when-a-socket-disconnects-for-any-reason
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
+
+
 try:
     while True:
         buf = connection.recv(64)
