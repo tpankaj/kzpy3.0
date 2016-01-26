@@ -69,7 +69,10 @@ try:
         #r, w, e = select.select((connection,), (), (), 0)
         #print (r,w,e)
         #tm = time.time()
-        buf = connection.recv(64)
+        try:
+            buf = connection.recv(64)
+        except:
+            cleanup_and_exit()
         #if time.time() - tm > TIMEOUT_DURATION * 0.75:
         #    cleanup_and_exit()
         if len(buf) != "":
