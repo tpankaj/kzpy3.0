@@ -56,7 +56,7 @@ connection, address = serversocket.accept()
 try:
     while True:
         r, w, e = select.select((connection,), (), (), 0)
-        print r
+        print (r,w,e)
         buf = connection.recv(64)
         if len(buf) != "":
             if buf == 'q':
