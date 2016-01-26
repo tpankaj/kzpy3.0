@@ -52,7 +52,12 @@ while status != QUIT:
 			"""
 			ctr += 1
 	except Exception,e:
-		print('\nCleaning up.')
+		import RPi.GPIO as GPIO
+		GPIO.setmode(GPIO.BOARD)
+		GPIO.setup(38,GPIO.OUT)
+		GPIO.setup(40,GPIO.OUT)
+		GPIO.cleanup()
+		print('\nCamera or transfer failed, cleaning up, including GPIO.')
 		del camera
 		sftp.close()
 		transport.close()
