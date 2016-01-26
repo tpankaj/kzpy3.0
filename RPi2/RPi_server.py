@@ -53,7 +53,7 @@ connection, address = serversocket.accept()
 try:
     while True:
         buf = connection.recv(64)
-        if len(buf) > 0:
+        if len(buf) != "":
             if buf == 'q':
                 try:
                     GPIO.cleanup()
