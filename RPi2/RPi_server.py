@@ -55,7 +55,7 @@ connection, address = serversocket.accept()
 # http://stackoverflow.com/questions/17386487/python-detect-when-a-socket-disconnects-for-any-reason
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
-def cleanup_and_exit():      
+def cleanup_and_exit():
     serversocket.close()
     if ON_RPi:
         GPIO.cleanup()
@@ -75,8 +75,9 @@ try:
         if len(buf) != "":
             if buf == 'q':
                 try:
-                    GPIO.cleanup()
-                    list_of_strings_to_txt_file(control_path,[QUIT])
+                    pass
+                    #GPIO.cleanup()
+                    #list_of_strings_to_txt_file(control_path,[QUIT])
                 except:
                     print("*** not RPi ****")
                 time.sleep(0.1)
