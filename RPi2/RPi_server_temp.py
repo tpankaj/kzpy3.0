@@ -30,7 +30,7 @@ else:
 
 start_t = time.time()
 
-while time.time() - start_t < 5:
+while time.time() - start_t < 10:
     pwm_servo.ChangeDutyCycle(9)
     time.sleep(0.3)
     pwm_servo.ChangeDutyCycle(8.8)
