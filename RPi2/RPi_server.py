@@ -48,8 +48,8 @@ connection, address = serversocket.accept()
 #
 ##############
 
-
-
+# http://stackoverflow.com/questions/17386487/python-detect-when-a-socket-disconnects-for-any-reason
+# http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 try:
     while True:
         buf = connection.recv(64)
@@ -61,6 +61,7 @@ try:
                 except:
                     print("*** not RPi ****")
                 time.sleep(0.1)
+                serversocket.close()
                 print('\nCleaning up.')
                 break
             elif buf == 'c':
@@ -90,6 +91,18 @@ try:
                             pwm_motor.ChangeDutyCycle(motor_ds)
                 else:
                     pass
+        else:
+            print("*** No Data received from socket ***")
+            try:
+                GPIO.cleanup()
+                list_of_strings_to_txt_file(control_path,[QUIT])
+            except:
+                print("*** not RPi ****")
+            time.sleep(0.1)
+            serversocket.close()
+            print('\nCleaning up.')
+            break
+
 
 except KeyboardInterrupt:        
     serversocket.close()

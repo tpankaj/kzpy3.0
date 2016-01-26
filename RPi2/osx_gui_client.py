@@ -132,7 +132,10 @@ def motion_notify_event(event):
     except:
         print('error!')
 
+MOTOR_DS = 7.2
+
 def key_press_event(event):
+    global MOTOR_DS
     global motor_ds
     global MOTOR_SKIP_COUNTER
     if event.key == 'q':
@@ -160,11 +163,24 @@ def key_press_event(event):
         print('\nCleaning up.')
         sys.exit(1)    
     elif event.key in ['1','2','3','4','5','6','7','8','9','0']:
-        MOTOR_SKIP_COUNTER = 2*int(event.key)
+#        MOTOR_SKIP_COUNTER = 2*int(event.key) 26Jan2015, fisrt version
+        MOTOR_SKIP_COUNTER = int(event.key)-1
         if SOC:
-            motor_ds = 7.2
+            motor_ds = MOTOR_DS
             clientsocket.send(d2s((steering_ds,motor_ds)))
             print((steering_ds,motor_ds))
+    elif event.key == 't':
+        MOTOR_DS = 7.2
+    elif event.key == 'y':
+        MOTOR_DS = 7.3
+    elif event.key == 'u':
+        MOTOR_DS = 7.4
+    elif event.key == 'i':
+        MOTOR_DS = 7.5
+    elif event.key == 'o':
+        MOTOR_DS = 7.6
+    elif event.key == 'p':
+        MOTOR_DS = 7.7
     elif event.key == ' ':
         if SOC:
             motor_ds = 0
