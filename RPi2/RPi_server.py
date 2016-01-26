@@ -39,25 +39,39 @@ list_of_strings_to_txt_file(control_path,[STANDBY])
 ##############
 #
 import socket
-import select
+#import select
 host = '0.0.0.0'
 port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
+TIMEOUT_DURATION = 1
+serversocket.settimeout(TIMEOUT_DURATION)
 connection, address = serversocket.accept()
+
 #
 ##############
 
 # http://stackoverflow.com/questions/17386487/python-detect-when-a-socket-disconnects-for-any-reason
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
+def cleanup_and_exit():      
+    serversocket.close()
+    if ON_RPi:
+        GPIO.cleanup()
+        list_of_strings_to_txt_file(control_path,[QUIT])
+    print('cleaned up.')
+    sys.exit()
+
 
 try:
     while True:
-        r, w, e = select.select((connection,), (), (), 0)
-        print (r,w,e)
+        #r, w, e = select.select((connection,), (), (), 0)
+        #print (r,w,e)
+        tm = time.time()
         buf = connection.recv(64)
+        if time.time() - tm > TIMEOUT_DURATION * 0.75:
+            cleanup_and_exit()
         if len(buf) != "":
             if buf == 'q':
                 try:
@@ -66,9 +80,9 @@ try:
                 except:
                     print("*** not RPi ****")
                 time.sleep(0.1)
-                serversocket.close()
-                print('\nCleaning up.')
-                break
+                cleanup_and_exit()
+                #print('\nCleaning up.')
+                #break
             elif buf == 'c':
                 cmd = CAPTURE
                 print cmd
@@ -109,10 +123,8 @@ try:
             break
 
 
-except KeyboardInterrupt:        
-    serversocket.close()
-    if ON_RPi:
-        GPIO.cleanup()
-        list_of_strings_to_txt_file(control_path,[QUIT])
-    print('cleaned up.')
+except KeyboardInterrupt:
+    cleanup_and_exit()
+
+
 
