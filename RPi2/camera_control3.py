@@ -32,18 +32,6 @@ CAPTURE = 'CAPTURE'
 QUIT = 'QUIT'
 status = STANDBY
 
-def error_cleanup():
-	print('\nError, cleaning up.')
-	import RPi.GPIO as GPIO
-	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(38,GPIO.OUT)
-	GPIO.setup(40,GPIO.OUT)
-	GPIO.cleanup()
-	del camera
-	sftp.close()
-	transport.close()
-	sys.exit()
-
 ctr = 0
 last_status_check_time = time.time()
 while status != QUIT:
@@ -69,7 +57,10 @@ while status != QUIT:
 			ctr += 1
 	except: # Exception,e:
 		print('\nCamera or transfer failed, cleaning up, including GPIO.')
-		error_cleanup()
+		del camera
+		sftp.close()
+		transport.close()
+		sys.exit()
 		#print str(e)
 		break
 print('\nNormal Quit, cleaning up.')
