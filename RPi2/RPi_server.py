@@ -56,10 +56,10 @@ connection.settimeout(TIMEOUT_DURATION)
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
 def cleanup_and_exit():
-    serversocket.close()
     if ON_RPi:
         GPIO.cleanup()
         list_of_strings_to_txt_file(control_path,[QUIT])
+    serversocket.close()
     print('cleaned up.')
     sys.exit()
 
