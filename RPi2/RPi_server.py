@@ -39,6 +39,7 @@ list_of_strings_to_txt_file(control_path,[STANDBY])
 ##############
 #
 import socket
+import select
 host = '0.0.0.0'
 port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,6 +55,8 @@ connection, address = serversocket.accept()
 
 try:
     while True:
+        r, w, e = select.select((connection,), (), (), 0)
+        print r
         buf = connection.recv(64)
         if len(buf) != "":
             if buf == 'q':
