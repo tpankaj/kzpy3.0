@@ -61,6 +61,7 @@ def cleanup_and_exit():
         list_of_strings_to_txt_file(control_path,[QUIT])
     serversocket.close()
     print('cleaned up.')
+    time.sleep(3)
     sys.exit()
 
 
