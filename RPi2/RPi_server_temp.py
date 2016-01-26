@@ -30,10 +30,10 @@ else:
 
 start_t = time.time()
 
-while time.time() - start_t < 30:
+while time.time() - start_t < 5:
     pwm_servo.ChangeDutyCycle(9)
     time.sleep(0.3)
-    pwm_servo.ChangeDutyCycle(8)
+    pwm_servo.ChangeDutyCycle(8.8)
     time.sleep(0.3)
 
 GPIO.cleanup()
