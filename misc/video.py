@@ -2,11 +2,11 @@ from kzpy3.utils import *
 
 import cv2
 
+"""
+desired_output_width:
+    we assume video is in landscape orientation.
+"""
 def video_to_frames(video_path,video_filename,desired_output_width,frames_per_folder=1000):
-	'''
-	desired_output_width:
-		we assume video is in landscape orientation.
-	'''
     video_fpath = opj(video_path,video_filename)
     video_frames_fpath = opj(video_path,'frames')
     cap = cv2.VideoCapture(video_fpath)
@@ -39,9 +39,9 @@ def video_to_frames(video_path,video_filename,desired_output_width,frames_per_fo
     #cv2.destroyAllWindows()
 
 def frame_to_video(img_folder):
-    video = cv2.VideoWriter('video.avi',-1,1,(1280,720))
+    video = cv2.VideoWriter('video.avi',-1,1,(298,224))
     img_filenames = sorted(gg(opj(img_folder,'*.*')),key=natural_keys)
-    for i in range(0,100,4):
+    for i in range(len(img_filenames)):
         print(d2n(i,') ',img_filenames[i]))
         img = cv2.imread(img_filenames[i])
         video.write(img)

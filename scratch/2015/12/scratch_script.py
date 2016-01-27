@@ -1,3 +1,45 @@
+l = txt_file_to_list_of_strings(opjh('scratch/2015/11/RPi_images/25Jan16_09h02m20s/session_list-25Jan16_09h02m20s.txt'))
+command_dic = {}
+for s in l:
+    f = s.split(' ')[0]
+    command_dic[f] = s
+
+from kzpy3.vis import *
+
+#img_dic = {}
+img_folder = opjh('scratch/2015/11/RPi_images/25Jan16_09h02m20s/jpg')
+#img_filenames = sorted(gg(opj(img_folder,'*.*')),key=natural_keys)
+_,img_filenames = dir_as_dic_and_list((opj(img_folder)))
+for i in range(2000,len(img_filenames)):
+    f = img_filenames[i]
+    print f
+    if f not in img_dic:
+        img_dic[f] = imread((opj(img_folder,f)))
+    plt.clf()
+    mi(img_dic[f],img_title=command_dic[f])
+    plt.show()
+    plt.ion()
+    plt.pause(0.001)
+
+
+
+############
+motor_freq = 50
+motor_ds = 0
+servo_freq = 50
+servo_ds = 0
+
+servo_pwm_right_max = 11
+servo_pwm_left_min = 7.2
+servo_pwm_center = 9.5
+
+def steering_freq(mouse_x):
+    if mouse_x < 0.5:
+        return servo_pwm_center - 2 * (0.5 - mouse_x) * (servo_pwm_center - servo_pwm_left_min)
+    else:
+        return servo_pwm_center + 2 * (mouse_x - 0.5) * (servo_pwm_right_max - servo_pwm_center) 
+
+############
 "server side"
 import socket
 

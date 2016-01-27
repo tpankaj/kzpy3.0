@@ -18,7 +18,7 @@ while True:
             t = eval(buf)
         except:
             t = (0,0)
-        print t
+        print(d2s(t[0],t[1]))
         #break
         if buf == 'q':
             time.sleep(0.1)
