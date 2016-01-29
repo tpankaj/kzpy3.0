@@ -38,10 +38,10 @@ raspivid -t 100000 -w 640 -h 480 -fps 30 -o - | nc 192.168.43.243 8080
 nc -l -p 8080 | tee mplayer -dumpstream -dumpfile ~/Desktop/stream4.avi | mplayer -fps 60 -demuxer h264es -
 
 to view saved:
-mplayer -fps 20 stream4.avi
+mplayer -fps 30 ~/Desktop/stream4.avi
 
 to convert to png files:
-mplayer -vo png -fps 20  stream4.avi
+mplayer -vo png -fps 30  ~/Desktop/temp/stream4.avi
 #################
 
 
