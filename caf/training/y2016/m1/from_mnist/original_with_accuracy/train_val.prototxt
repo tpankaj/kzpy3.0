@@ -8,7 +8,7 @@ layer {
   dummy_data_param {
     shape {
       dim: 1
-      dim: 3
+      dim: 9
       dim: 224
       dim: 298
     }
@@ -23,7 +23,7 @@ layer {
   dummy_data_param {
     shape {
       dim: 1
-      dim: 11
+      dim: 20
     }
   }
 }
@@ -67,6 +67,7 @@ layer {
   convolution_param {
     num_output: 20
     kernel_size: 5
+    stride: 2
     weight_filler {
       type: "xavier"
     }
@@ -137,7 +138,7 @@ layer {
   bottom: "ip1"
   top: "ip2"
   inner_product_param {
-    num_output: 11
+    num_output: 20
     weight_filler {
       type: "xavier"
     }
