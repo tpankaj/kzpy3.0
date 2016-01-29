@@ -26,7 +26,7 @@ try:
         stream = io.BytesIO()
 
         while time.time()-start < 30:
-			camera.capture(stream, format='jpeg', use_video_port=True,quality=100)
+			camera.capture(stream, format='jpeg', use_video_port=True,quality=5)
 			# Write the length of the capture to the stream and flush to
 			# ensure it actually gets sent
 			connection.write(struct.pack('<L', stream.tell()))
