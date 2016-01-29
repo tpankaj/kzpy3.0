@@ -29,7 +29,7 @@ t = time.time()
 t2 = t
 
 
-
+first_time = True
 try:
     while True:
         t = time.time()
@@ -48,7 +48,7 @@ try:
         image_stream.seek(0)
 
         image = PIL.Image.open(image_stream)
-        img = np.asarray(image.convert('L'))
+        img = np.asarray(image.convert('RGB'))
         #print('Image is %dx%d' % image.size)
 
         
@@ -59,9 +59,11 @@ try:
             #img = np.random.rand(10,10)
             plt.clf()
             mi(img)
-            plt.ion()
-            plt.show()
-            plt.pause(0.01)
+            if first_time:
+                plt.ion()
+                plt.show()
+                first_time = False
+            plt.pause(0.0001)
 
       
         print(t-time.time(),np.shape(img))
