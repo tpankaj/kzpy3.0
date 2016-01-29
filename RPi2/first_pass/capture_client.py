@@ -13,7 +13,7 @@ client_socket.connect(('192.168.43.243', 8000))
 connection = client_socket.makefile('wb')
 try:
     with picamera.PiCamera() as camera:
-        camera.resolution = (300,225)#(640, 480) #(300,225)
+        camera.resolution = (300,225)#(640/4, 480/4) #(300,225)
         # Start a preview and let the camera warm up for 2 seconds
         #camera.start_preview()
         time.sleep(2)
@@ -26,7 +26,7 @@ try:
         stream = io.BytesIO()
 
         while time.time()-start < 30:
-			camera.capture(stream, format='jpeg', use_video_port=True,quality=10)
+			camera.capture(stream, format='jpeg', use_video_port=True,quality=100)
 			# Write the length of the capture to the stream and flush to
 			# ensure it actually gets sent
 			connection.write(struct.pack('<L', stream.tell()))

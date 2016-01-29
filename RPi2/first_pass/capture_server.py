@@ -29,9 +29,10 @@ t = time.time()
 t2 = t
 
 
-
+first_time = True
 try:
     while True:
+        t = time.time()
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
         image_len = struct.unpack('<L', connection.read(4))[0]
@@ -39,6 +40,7 @@ try:
             break
         # Construct a stream to hold the image data and read the image
         # data from the connection
+
         image_stream = io.BytesIO()
         image_stream.write(connection.read(image_len))
         # Rewind the stream, open it as an image with PIL and do some
@@ -46,10 +48,10 @@ try:
         image_stream.seek(0)
 
         image = PIL.Image.open(image_stream)
-        img = np.asarray(image.convert('L'))
+        img = np.asarray(image.convert('RGB'))
         #print('Image is %dx%d' % image.size)
 
-        t = time.time()
+        
         if True: #t - t2 > 1:
             t2 = t
             #image.show()
@@ -57,9 +59,11 @@ try:
             #img = np.random.rand(10,10)
             plt.clf()
             mi(img)
-            plt.ion()
-            plt.show()
-            plt.pause(0.01)
+            if first_time:
+                plt.ion()
+                plt.show()
+                first_time = False
+            plt.pause(0.0001)
 
       
         print(t-time.time(),np.shape(img))
