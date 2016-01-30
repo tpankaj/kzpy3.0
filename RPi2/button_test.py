@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
 
 GPIO.setmode(GPIO.BOARD)
