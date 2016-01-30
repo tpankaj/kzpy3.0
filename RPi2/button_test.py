@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from kzpy3.utils import *
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -10,6 +11,7 @@ while True:
     if input_state == False:
         print('Button Pressed')
         GPIO.cleanup()
+        unix('sudo shutdown -h -P 0')
         break
     time.sleep(0.3)
     print(time.time())
