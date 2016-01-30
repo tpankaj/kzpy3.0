@@ -13,7 +13,7 @@ while True:
     if input_state == False:
         print('Button Pressed')
         GPIO.cleanup()
-        #unix('sudo shutdown -h -P 0')
+        unix('sudo shutdown -h -P 0')
         break
     time.sleep(0.1)
     print(time.time())
