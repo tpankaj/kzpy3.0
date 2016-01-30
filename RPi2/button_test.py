@@ -15,5 +15,5 @@ while True:
         GPIO.cleanup()
         unix('sudo shutdown -h -P 0')
         break
-    time.sleep(0.3)
+    time.sleep(1)
     print(time.time())
