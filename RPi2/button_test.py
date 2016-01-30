@@ -12,4 +12,4 @@ while True:
         GPIO.cleanup()
         break
     time.sleep(0.3)
-    print('...')
+    print(time.time())
