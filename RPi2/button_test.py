@@ -9,4 +9,7 @@ while True:
     input_state = GPIO.input(7)
     if input_state == False:
         print('Button Pressed')
-        time.sleep(0.1)
+        GPIO.cleanup()
+        break
+    time.sleep(0.3)
+    print('...')
