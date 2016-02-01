@@ -75,8 +75,8 @@ def update(frame_number):
     recent = solver.net.blobs['ip2'].data[0][:9].mean()
     predicted = solver.net.blobs['ip2'].data[0][9:].mean()
     print(recent,predicted)
-    motor_ds = predicted
-    
+    steering_ds = predicted
+
     if SOC:
         mds = motor_ds
         if ctr < MOTOR_SKIP_COUNTER:
@@ -165,14 +165,14 @@ def key_press_event(event):
         #_,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
         #for f in img_files:
         #    unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
-        """
-        for l in session_list:
-            f = l.split(' ')[0]
-            try:
-                unix(d2s('mv',opj(img_path,'viewed',f),opj(img_path,timestr,'jpg')))
-            except:
-                print('failed to move '+f)
-        """
+        if False: # move images, temporarily disabling.
+            for l in session_list:
+                f = l.split(' ')[0]
+                try:
+                    unix(d2s('mv',opj(img_path,'viewed',f),opj(img_path,timestr,'jpg')))
+                except:
+                    print('failed to move '+f)
+        
         if SOC:
             clientsocket.send('q')
             clientsocket.close()
