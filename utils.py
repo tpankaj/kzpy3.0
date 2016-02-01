@@ -297,3 +297,7 @@ def restore_Desktop(src):
     _,l = dir_as_dic_and_list(src)
     for i in l:
         shutil.move(opjh(src,i),opjD(''))
+
+def advance(lst,e):
+    lst.pop(0)
+    lst.append(e)

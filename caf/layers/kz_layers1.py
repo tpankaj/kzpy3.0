@@ -138,31 +138,34 @@ class SimpleLayer4(caffe.Layer):
         y2 = y1+224
         for i in range(9):
             top[0].data[0,i,:,:] = (img_lst[i][:,:,1]/255.0-0.5)*mask
-        """
-        top[0].data[0,0,:,:] = (img_lst[0][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,1,:,:] = (img_lst[1][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,2,:,:] = (img_lst[2][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,3,:,:] = (img_lst[3][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,4,:,:] = (img_lst[4][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,5,:,:] = (img_lst[5][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,6,:,:] = (img_lst[6][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,7,:,:] = (img_lst[7][:,:,1]/255.0-0.5)*mask
-        top[0].data[0,8,:,:] = (img_lst[8][:,:,1]/255.0-0.5)*mask
-        """
         ctr += 1
     def backward(self, top, propagate_down, bottom):
         bottom[0].diff[...] = 1.0 * top[0].diff # don't know what this should be, but perhaps it doesn't matter for a data layer
 
 
-
+img_path = opjD('temp_data') #opjh('scratch/2015/11/RPi_images/')
+img_dic = {}
 def get_img_lst_and_target_lst_real_time():
-    _,img_names = dir_as_dic_and_list(opjD('temp_data'))
-    img_names = img_names[:9]
+    global img_dic
+    _,img_names = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
+    old_img_names = img_names[:-9]
+    img_names = img_names[-9:]
     img_lst = []
-    for i in range(9):
-        img_lst.append(imread(opjD('temp_data',img_names[i])))
+    for n in img_names:
+        if n not in img_dic:
+            img_dic[n] = imread(opj(img_path,'not_yet_viewed',n))
+        img_lst.append(img_dic[n])
+    #print img_names
+    #print(len(img_lst))
+    for n in img_dic.keys():
+        if n not in img_names:
+            del img_dic[n]
+    for n in old_img_names:
+        unix(d2s('mv',opj(img_path,'not_yet_viewed',n),opj(img_path,'viewed')),False)
     target_lst = zeros(20,'float')
     return img_lst,target_lst
+
+
 
 class SimpleLayer4_DEPLOY(caffe.Layer):
     """"""
