@@ -143,7 +143,9 @@ class SimpleLayer4(caffe.Layer):
         bottom[0].diff[...] = 1.0 * top[0].diff # don't know what this should be, but perhaps it doesn't matter for a data layer
 
 
-img_path = opjD('temp_data') #opjh('scratch/2015/11/RPi_images/')
+#img_path = opjD('temp_data') #opjh('scratch/2015/11/RPi_images/')
+img_path = opjh('scratch/2015/11/RPi_images/')
+
 img_dic = {}
 def get_img_lst_and_target_lst_real_time():
     global img_dic
@@ -160,8 +162,8 @@ def get_img_lst_and_target_lst_real_time():
     for n in img_dic.keys():
         if n not in img_names:
             del img_dic[n]
-    for n in old_img_names:
-        unix(d2s('mv',opj(img_path,'not_yet_viewed',n),opj(img_path,'viewed')),False)
+    #for n in old_img_names:
+    #    unix(d2s('mv',opj(img_path,'not_yet_viewed',n),opj(img_path,'viewed')),False)
     target_lst = zeros(20,'float')
     return img_lst,target_lst
 

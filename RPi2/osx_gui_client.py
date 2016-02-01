@@ -55,6 +55,7 @@ MOTOR_SKIP_COUNTER = 5
 ctr = 0
 session_list = []
 viewed_dic = {}
+net_command = (0.5,0.5)
 def update(frame_number):
     global ctr
     global img_shape
@@ -62,6 +63,15 @@ def update(frame_number):
     global motor_ds
     global MOTOR_SKIP_COUNTER
     global viewed_dic
+    global net_command
+    """
+    try:
+        net_command = np.load(opjD('net_command.npy'))
+        print net_command
+    except:
+        print "failed to load net_command"
+    steering_ds = get_steering_ds(net_command[1])
+    """ 
     if SOC:
         mds = motor_ds
         if ctr < MOTOR_SKIP_COUNTER:
@@ -71,6 +81,8 @@ def update(frame_number):
             ctr = 0
         clientsocket.send(d2s((steering_ds,mds)))
         print((steering_ds,mds))
+
+        
     try:
         _,img_files = dir_as_dic_and_list(opj(img_path,'not_yet_viewed'))
         f = img_files[-1]
@@ -87,7 +99,7 @@ def update(frame_number):
 
             #img = imread(opj(img_path,'not_yet_viewed',img_files[-1]))
             img_shape = shape(img)
-            for f in img_files[:-4]:
+            for f in img_files[:-20]:
                 unix(d2s('mv',opj(img_path,'not_yet_viewed',f),opj(img_path,'viewed')),False)
             if shape(img)[2] == 3:
                 plt.clf()
