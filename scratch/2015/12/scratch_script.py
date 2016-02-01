@@ -1,3 +1,29 @@
+import theano.tensor as T
+from theano import pp
+from theano import function
+
+x_ = T.dmatrix('x')
+y_ = T.dmatrix('y')
+z_ = x_ + y_
+Add__ = function([x_,y_],z_)
+
+A = np.array([[2.,1.,1.],[4.,-6.,0.],[-2.,7.,2.]])
+
+x = np.array([[1.],[1.],[2.]])
+
+
+
+print Add__(A,A)
+print A+A
+
+w_ = T.dot(x_,y_)
+Mult__ = function([x_,y_],w_)
+
+print A.dot(x)
+print Mult__(A,x)
+
+
+############
 l = txt_file_to_list_of_strings(opjh('scratch/2015/11/RPi_images/25Jan16_09h02m20s/session_list-25Jan16_09h02m20s.txt'))
 command_dic = {}
 for s in l:

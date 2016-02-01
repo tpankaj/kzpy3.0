@@ -18,6 +18,7 @@ import caffe
 def get_sessions_dic(RPi_sessions_path):
     sessions_dic,_ = dir_as_dic_and_list(RPi_sessions_path)
     for k in sessions_dic:
+        print(d2s('***',k))
         sessions_dic[k] = {}
         _,jpg_lst = dir_as_dic_and_list(opj(RPi_sessions_path,k,'jpg'))
         sessions_dic[k]['name_list'] = jpg_lst
@@ -81,9 +82,21 @@ def get_img_lst_and_target_lst(sessions_dic):
         target_lst.append(t)
     return img_lst,target_lst
 
-sessions_dic = get_sessions_dic(opjh('Desktop/RPi_data'))
+#sessions_dic = get_sessions_dic(opjh('Desktop/RPi_data'))
+sessions_dic = False
+
+
+"""
+# making mask from jpg:
+mask = imread('/Users/karlzipser/Desktop/mask.jpg')
+mask = mask / 255.0
+mask = 1.0 - mask
+mask.max()
+mask.min()
+"""
 
 mask = np.load(opjh('Desktop/mask.npy'))
+
 mask = mask[:,:,0]
 
 
@@ -104,14 +117,14 @@ last_time = time.time()
 target_lst = []
 
 class SimpleLayer4(caffe.Layer):
-    """"""
-    
     def setup(self, bottom, top):
+        global sessions_dic
+        if not sessions_dic:
+            print('Loading sessions_dic:')
+            sessions_dic = get_sessions_dic(opjh('Desktop/RPi_data'))
         pass
-
     def reshape(self, bottom, top):
         top[0].reshape(*bottom[0].data.shape)
-    
     def forward(self, bottom, top):
         global target_lst
         global ctr,last_time,mask
@@ -123,6 +136,9 @@ class SimpleLayer4(caffe.Layer):
         x2 = x1+298
         y1 = 0
         y2 = y1+224
+        for i in range(9):
+            top[0].data[0,i,:,:] = (img_lst[i][:,:,1]/255.0-0.5)*mask
+        """
         top[0].data[0,0,:,:] = (img_lst[0][:,:,1]/255.0-0.5)*mask
         top[0].data[0,1,:,:] = (img_lst[1][:,:,1]/255.0-0.5)*mask
         top[0].data[0,2,:,:] = (img_lst[2][:,:,1]/255.0-0.5)*mask
@@ -132,10 +148,44 @@ class SimpleLayer4(caffe.Layer):
         top[0].data[0,6,:,:] = (img_lst[6][:,:,1]/255.0-0.5)*mask
         top[0].data[0,7,:,:] = (img_lst[7][:,:,1]/255.0-0.5)*mask
         top[0].data[0,8,:,:] = (img_lst[8][:,:,1]/255.0-0.5)*mask
+        """
         ctr += 1
-
     def backward(self, top, propagate_down, bottom):
         bottom[0].diff[...] = 1.0 * top[0].diff # don't know what this should be, but perhaps it doesn't matter for a data layer
+
+
+
+def get_img_lst_and_target_lst_real_time():
+    _,img_names = dir_as_dic_and_list(opjD('temp_data'))
+    img_names = img_names[:9]
+    img_lst = []
+    for i in range(9):
+        img_lst.append(imread(opjD('temp_data',img_names[i])))
+    target_lst = zeros(20,'float')
+    return img_lst,target_lst
+
+class SimpleLayer4_DEPLOY(caffe.Layer):
+    """"""
+    def setup(self, bottom, top):
+        pass
+    def reshape(self, bottom, top):
+        top[0].reshape(*bottom[0].data.shape)
+    def forward(self, bottom, top):
+        global target_lst
+        global ctr,last_time,mask
+        img_lst,target_lst = get_img_lst_and_target_lst_real_time()
+        x1 = 0
+        x2 = x1+298
+        y1 = 0
+        y2 = y1+224
+        for i in range(9):
+            top[0].data[0,i,:,:] = (img_lst[i][:,:,1]/255.0-0.5)*mask
+        ctr += 1
+    def backward(self, top, propagate_down, bottom):
+        bottom[0].diff[...] = 1.0 * top[0].diff # don't know what this should be, but perhaps it doesn't matter for a data layer
+
+
+
 
 
 class SimpleLayer5(caffe.Layer):

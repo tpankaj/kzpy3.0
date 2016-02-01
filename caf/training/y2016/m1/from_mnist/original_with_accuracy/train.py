@@ -11,6 +11,8 @@ Next steps:
 
 26 Jan 2016
 from kzpy3.caf.training.y2016.m1.from_mnist.original_with_accuracy.train import *;solver = setup_solver()
+solver.restore('/Users/karlzipser/scratch/2016/1/26/caffe/models/from_mnist/original_with_accuracy/model_iter_2250000.solverstate')
+
 solver.step(1000)
 
 solver.net.copy_from('/Users/karlzipser/scratch/2016/1/26/caffe/models/from_mnist/original_with_accuracy/model_iter_40000.caffemodel')
@@ -36,21 +38,22 @@ def setup_solver():
 solver = setup_solver()
 
 def show_solver_step(solver):
-	solver.step(1)
+	solver.net.forward()
 	img = np.zeros((224,298,3))
 	img[:,:,0] = solver.net.blobs['py_image_data'].data[0,6,:,:]+0.5
 	img[:,:,1] = solver.net.blobs['py_image_data'].data[0,7,:,:]+0.5
 	img[:,:,2] = solver.net.blobs['py_image_data'].data[0,8,:,:]+0.5
-	plt.clf()
-	mi(img,1)
+	#plt.figure(1)
+	#plt.clf()
+	#mi(img,1)
 	print( solver.net.blobs['py_target_data'].data[0])
 	print( solver.net.blobs['ip2'].data)
 	print( solver.net.blobs['identity'].data)
 	plt.figure(2)
-	plt.clf()
+	#plt.clf()
 	plt.plot([0,1],[0,1],'k')
-	plt.plot(solver.net.blobs['py_target_data'].data[0][:9],solver.net.blobs['ip2'].data[0][:9],'o')
 	plt.plot(solver.net.blobs['py_target_data'].data[0][9:],solver.net.blobs['ip2'].data[0][9:],'ro')
+	plt.plot(solver.net.blobs['py_target_data'].data[0][:9],solver.net.blobs['ip2'].data[0][:9],'bo')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
 
@@ -91,4 +94,4 @@ def deploy(img_name = opjh('caffe/examples/images/7.jpg')):
 	mi(img,img_name)
 	return net
 
-"""
+
