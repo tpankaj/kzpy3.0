@@ -12,13 +12,14 @@ out_pins = [EN1,IN1,IN2]
 def setup():
 	GPIO.setmode(GPIO.BOARD)
 	for p in out_pins:
-		GPIO.setup(p,GPIO.OUT) 
-	pwm_EN1 = GPIO.PWM(EN1,50)
-	pwm_EN1.start(0)
-	pwm_IN1 = GPIO.PWM(IN1,50)
-	pwm_IN1.start(0)
-	pwm_IN2 = GPIO.PWM(IN2,50)
-	pwm_IN2.start(0)
+		GPIO.setup(p,GPIO.OUT)
+		
+pwm_EN1 = GPIO.PWM(EN1,50)
+pwm_EN1.start(0)
+pwm_IN1 = GPIO.PWM(IN1,50)
+pwm_IN1.start(0)
+pwm_IN2 = GPIO.PWM(IN2,50)
+pwm_IN2.start(0)
 
 setup()
 
