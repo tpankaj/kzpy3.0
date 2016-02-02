@@ -34,9 +34,15 @@ def reverse(ds=50):
 	pwm_EN1.ChangeDutyCycle(ds)
 
 def stop():
-	pwm_IN2.ChangeDutyCycle(100)
-	pwm_IN1.ChangeDutyCycle(100)
+	pwm_IN2.ChangeDutyCycle(0)
+	pwm_IN1.ChangeDutyCycle(0)
+	pwm_EN1.ChangeDutyCycle(100)
+
+def coast():
+	pwm_IN2.ChangeDutyCycle(0)
+	pwm_IN1.ChangeDutyCycle(0)
 	pwm_EN1.ChangeDutyCycle(0)
+
 
 #
 ##############
