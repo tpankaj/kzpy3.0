@@ -55,7 +55,7 @@ for i in range(100):
 	distance = distance / 2
 
 	print "Distance : %.1f cm" % distance
-	time.sleep(1)
+	time.sleep(0.1)
 
 # Reset GPIO settings
 GPIO.cleanup()
