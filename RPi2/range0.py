@@ -32,7 +32,7 @@ GPIO.output(GPIO_TRIGGER, False)
 
 # Allow module to settle
 time.sleep(0.5)
-	for i in range(100):
+for i in range(100):
 	# Send 10us pulse to trigger
 	GPIO.output(GPIO_TRIGGER, True)
 	time.sleep(0.00001)
@@ -56,6 +56,6 @@ time.sleep(0.5)
 
 	print "Distance : %.1f cm" % distance
 	time.sleep(0.5)
-	
+
 # Reset GPIO settings
 GPIO.cleanup()
