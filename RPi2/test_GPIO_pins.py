@@ -5,7 +5,7 @@ GPIO.setmode(GPIO.BOARD)
 def test_pin(p):	
 	GPIO.setup(p,GPIO.OUT)
 	for i in range(10):
-		GPIO.output(GPIO_TRIGGER, True)
+		GPIO.output(p, True)
 		time.sleep(1/6.0)		
-		GPIO.output(GPIO_TRIGGER, False)
+		GPIO.output(p, False)
 		time.sleep(1/2.0)
