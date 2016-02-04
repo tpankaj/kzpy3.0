@@ -11,8 +11,10 @@ import RPi.GPIO as GPIO
 STEER_PIN = 35
 MOTOR_PIN = 37
 NEUTRAL = 7.0
+GPIO_TRIGGER = 29
+GPIO_ECHO = 31
 
-out_pins = [STEER_PIN,MOTOR_PIN]
+out_pins = [STEER_PIN,MOTOR_PIN,GPIO_TRIGGER,GPIO_ECHO]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
@@ -23,7 +25,7 @@ pwm_motor = GPIO.PWM(MOTOR_PIN,50)
 pwm_steer = GPIO.PWM(STEER_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
-
+GPIO.output(GPIO_TRIGGER, False)
 
 #
 ##############
@@ -48,6 +50,27 @@ connection.settimeout(TIMEOUT_DURATION)
 # http://stackoverflow.com/questions/17386487/python-detect-when-a-socket-disconnects-for-any-reason
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
+
+def ultrasonic_range_measure():
+    GPIO.output(GPIO_TRIGGER, True)
+    time.sleep(0.00001)
+    GPIO.output(GPIO_TRIGGER, False)
+    start = time.time()
+    while GPIO.input(GPIO_ECHO)==0:
+      start = time.time()
+    while GPIO.input(GPIO_ECHO)==1:
+      stop = time.time()
+    elapsed = stop-start
+    # Distance pulse travelled in that time is time
+    # multiplied by the speed of sound (cm/s)
+    distance = elapsed * 34000
+    # That was the distance there and back so halve the value
+    distance = distance / 2
+    return distance
+
+
+
+
 def cleanup_and_exit():
     GPIO.cleanup()
     serversocket.close()
@@ -55,9 +78,15 @@ def cleanup_and_exit():
     time.sleep(1)
     sys.exit()
 
-def decode_buf(buf):
-    
-    return (int(b[0]),int(b[1]))
+def update_driving(buf):
+    b = buf.split(' ')
+    steer = int(b[0])/100.0
+    speed = int(b[1])/100.0
+    #print(steer,speed)
+    servo_ds = 9.2 + 2.0*steer
+    motor_ds = 7.0 + 0.5*speed
+    pwm_steer.ChangeDutyCycle(servo_ds)
+    pwm_motor.ChangeDutyCycle(motor_ds)
 
 try:
     while True:
@@ -66,19 +95,13 @@ try:
         except:
             cleanup_and_exit()
         if len(buf) != "":
-            b = buf.split(' ')
-            steer = int(b[0])/100.0
-            speed = int(b[1])/100.0
-            print(steer,speed)
-            servo_ds = 9.2 + steer
-            motor_ds = 7.0 + speed
-            pwm_steer.ChangeDutyCycle(servo_ds)
-            pwm_motor.ChangeDutyCycle(motor_ds)
+            update_driving(buf)
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
             break
-
+        distance = ultrasonic_range_measure()
+        print "Range : %.1f cm" % distance
 except KeyboardInterrupt:
     cleanup_and_exit()
 
