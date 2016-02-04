@@ -7,21 +7,23 @@ import sys
 sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
 import RPi.GPIO as GPIO
-"""
-SERVO_IN = 38
-MOTOR_IN = 40
-out_pins = [SERVO_IN,MOTOR_IN]
+
+STEER_PIN = 35
+MOTOR_PIN = 37
+NEUTRAL = 7.0
+
+out_pins = [STEER,MOTOR]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
     for p in out_pins:
         GPIO.setup(p,GPIO.OUT)
 gpio_setup() 
-pwm_motor = GPIO.PWM(40,50)
-pwm_servo = GPIO.PWM(38,50)
-pwm_motor.start(0)
-pwm_servo.start(0)
-"""
+pwm_motor = GPIO.PWM(MOTOR_PIN,50)
+pwm_steer = GPIO.PWM(STEER_PIN,50)
+pwm_motor.start(NEUTRAL)
+pwm_steer.start(0)
+
 
 #
 ##############
@@ -47,12 +49,15 @@ connection.settimeout(TIMEOUT_DURATION)
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
 def cleanup_and_exit():
-    #GPIO.cleanup()
+    GPIO.cleanup()
     serversocket.close()
     print('cleaned up.')
     time.sleep(1)
     sys.exit()
 
+def decode_buf(buf):
+    
+    return (int(b[0]),int(b[1]))
 
 try:
     while True:
@@ -61,7 +66,10 @@ try:
         except:
             cleanup_and_exit()
         if len(buf) != "":
-            print buf
+            b = buf.split(' ')
+            steer = int(b[0])/100.0
+            speed = int(b[1])/100.0
+            print(steer,speed)
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
