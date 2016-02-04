@@ -14,7 +14,7 @@ NEUTRAL = 7.0
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
 
-out_pins = [STEER_PIN,MOTOR_PIN,GPIO_TRIGGER,GPIO_ECHO]
+out_pins = [STEER_PIN,MOTOR_PIN]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
@@ -25,7 +25,6 @@ pwm_motor = GPIO.PWM(MOTOR_PIN,50)
 pwm_steer = GPIO.PWM(STEER_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
-GPIO.output(GPIO_TRIGGER, False)
 
 #
 ##############
@@ -100,8 +99,6 @@ try:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
             break
-        distance = ultrasonic_range_measure()
-        print "Range : %.1f cm" % distance
 except KeyboardInterrupt:
     cleanup_and_exit()
 
