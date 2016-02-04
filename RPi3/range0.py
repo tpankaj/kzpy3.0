@@ -28,8 +28,8 @@ print "Ultrasonic Measurement"
 GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
 GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
 GPIO.setup(GPIO_LED,GPIO.OUT)      # Echo
-pwm_LED = GPIO.PWM(GPIO_LED,3)
-pwm_LED.start(0.5)
+#pwm_LED = GPIO.PWM(GPIO_LED,3)
+#pwm_LED.start(0.5)
 
 
 # Set trigger to False (Low)
@@ -58,10 +58,10 @@ for i in range(100):
 
 	# That was the distance there and back so halve the value
 	distance = distance / 2
-	led_freq = 1/distance * 30.0
-	pwm_LED.ChangeFrequency(led_freq)
+	#led_freq = 1/distance * 30.0
+	#pwm_LED.ChangeFrequency(led_freq)
 	print "Distance : %.1f cm" % distance
-	print led_freq
+	#print led_freq
 	time.sleep(0.1)
 
 # Reset GPIO settings
