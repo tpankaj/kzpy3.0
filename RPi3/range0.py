@@ -19,7 +19,7 @@ GPIO.setmode(GPIO.BOARD)
 
 # Define GPIO to use on Pi
 GPIO_TRIGGER = 29
-GPIO_ECHO = 31
+GPIO_ECHO = 23
 
 print "Ultrasonic Measurement"
 
