@@ -70,6 +70,10 @@ try:
             steer = int(b[0])/100.0
             speed = int(b[1])/100.0
             print(steer,speed)
+            servo_ds = 9.2 + steer
+            motor_ds = 7.0 + speed
+            pwm_steer.ChangeDutyCycle(pwm_steer)
+            pwm_motor.ChangeDutyCycle(motor_ds)
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
