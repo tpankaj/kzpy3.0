@@ -58,8 +58,10 @@ for i in range(100):
 
 	# That was the distance there and back so halve the value
 	distance = distance / 2
-	pwm_LED.ChangeFrequency(1/distance * 100.0)
+	led_freq = 1/distance * 100.0
+	pwm_LED.ChangeFrequency(led_freq)
 	print "Distance : %.1f cm" % distance
+	print led_freq
 	time.sleep(0.1)
 
 # Reset GPIO settings
