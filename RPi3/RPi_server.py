@@ -81,9 +81,9 @@ def update_driving(buf):
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
-    #print(steer,speed)
+    print(steer,speed)
     servo_ds = 9.2 + 2.0*steer
-    motor_ds = 7.0 + 0.5*speed
+    motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
     pwm_motor.ChangeDutyCycle(motor_ds)
 

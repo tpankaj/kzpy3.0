@@ -20,12 +20,17 @@ GPIO.setmode(GPIO.BOARD)
 # Define GPIO to use on Pi
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
+GPIO_LED = 31
 
 print "Ultrasonic Measurement"
 
 # Set pins as output and input
 GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
 GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
+GPIO.setup(GPIO_LED,GPIO.OUT)      # Echo
+pwm_LED = GPIO.PWM(GPIO_LED,3)
+pwm_LED.start(0.1)
+
 
 # Set trigger to False (Low)
 GPIO.output(GPIO_TRIGGER, False)
@@ -53,7 +58,7 @@ for i in range(100):
 
 	# That was the distance there and back so halve the value
 	distance = distance / 2
-
+	pwm_LED.ChangeFrequency(1/distance * 100.0)
 	print "Distance : %.1f cm" % distance
 	time.sleep(0.1)
 
