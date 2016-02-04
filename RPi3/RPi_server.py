@@ -72,7 +72,7 @@ try:
             print(steer,speed)
             servo_ds = 9.2 + steer
             motor_ds = 7.0 + speed
-            pwm_steer.ChangeDutyCycle(pwm_steer)
+            pwm_steer.ChangeDutyCycle(servo_ds)
             pwm_motor.ChangeDutyCycle(motor_ds)
         else:
             print("*** No Data received from socket ***")
