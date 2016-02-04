@@ -12,7 +12,7 @@ STEER_PIN = 35
 MOTOR_PIN = 37
 NEUTRAL = 7.0
 
-out_pins = [STEER,MOTOR]
+out_pins = [STEER_PIN,MOTOR_PIN]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
