@@ -59,7 +59,7 @@ connection.settimeout(TIMEOUT_DURATION)
 
 
 def ultrasonic_range_measure():
-    print('ultrasonic_range_measure...')
+    #print('ultrasonic_range_measure...')
     GPIO.output(GPIO_TRIGGER, True)
     time.sleep(0.00001)
     GPIO.output(GPIO_TRIGGER, False)
@@ -119,7 +119,7 @@ try:
             cleanup_and_exit()
         if len(buf) != "":
             update_driving(buf)
-            print(ultrasonic_range_measure())
+            print(d2s('range =',int(ultrasonic_range_measure())))
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
