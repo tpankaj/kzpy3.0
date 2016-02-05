@@ -70,10 +70,11 @@ while True:
             sent_t = t
             clientsocket.send(d2s(d[0],d[1],'okay'))
             print d
+            
     except KeyboardInterrupt:
         sys.exit()
-    except:
-        print "Exception"
+    except Exception, e:
+        print "Couldn't do it: %s" % e
     
 
 

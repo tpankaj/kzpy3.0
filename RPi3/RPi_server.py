@@ -89,7 +89,7 @@ def update_driving(buf):
     eye_ds = 7.2 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
-    pwm_steer.ChangeDutyCycle(eye_ds)
+    eye_ds.ChangeDutyCycle(eye_ds)
     pwm_motor.ChangeDutyCycle(motor_ds)
 
 try:
