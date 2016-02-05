@@ -15,12 +15,13 @@ NEUTRAL = 7.0
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
 
-out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN,GPIO_TRIGGER,GPIO_ECHO]
+out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
     for p in out_pins:
         GPIO.setup(p,GPIO.OUT)
+
 gpio_setup() 
 pwm_motor = GPIO.PWM(MOTOR_PIN,50)
 pwm_steer = GPIO.PWM(STEER_PIN,50)
@@ -28,6 +29,10 @@ pwm_eye = GPIO.PWM(EYE_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
 pwm_eye.start(0)
+
+GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
+GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
+#GPIO.setup(GPIO_LED,GPIO.OUT)      # Echo
 
 #
 ##############
