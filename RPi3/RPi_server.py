@@ -15,7 +15,7 @@ NEUTRAL = 7.0
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
 
-out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
+out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN,GPIO_TRIGGER,GPIO_ECHO]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
@@ -91,7 +91,7 @@ def update_driving(buf):
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
-    print(steer,speed)
+    #print(steer,speed)
     servo_ds = 9.2 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
@@ -114,6 +114,7 @@ try:
             cleanup_and_exit()
         if len(buf) != "":
             update_driving(buf)
+            print(ultrasonic_range_measure())
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
