@@ -15,7 +15,7 @@ pwm_steer.ChangeDutyCycle(0)
 print('centered at 7.8 [?]')
 time.sleep(3)
 
-for nino in np.arange(2.2,8,0.0333):
+for nino in np.arange(2.5,8,0.2):
     pwm_steer.ChangeDutyCycle(nino)
     time.sleep(0.1);pwm_steer.ChangeDutyCycle(0);time.sleep(0.3)
     print nino
