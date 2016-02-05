@@ -27,7 +27,7 @@ pwm_steer = GPIO.PWM(STEER_PIN,50)
 #pwm_eye = GPIO.PWM(EYE_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
-pwm_eye.start(0)
+#pwm_eye.start(0)
 
 #
 ##############
