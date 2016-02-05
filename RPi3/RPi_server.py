@@ -15,7 +15,7 @@ NEUTRAL = 7.0
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
 
-out_pins = [STEER_PIN,MOTOR_PIN]#,EYE_PIN]
+out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
