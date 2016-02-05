@@ -22,4 +22,6 @@ for nino in np.arange(2.5,8,0.2):
 pwm_steer.ChangeDutyCycle(7.8)
 time.sleep(0.3)
 pwm_steer.ChangeDutyCycle(0)
+GPIO.cleanup()
+
 

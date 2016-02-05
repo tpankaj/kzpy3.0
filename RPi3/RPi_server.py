@@ -87,6 +87,7 @@ last_saccade = time.time()
 last_eye_pos = 7.8
 def update_driving(buf):
     global last_saccade
+    global last_eye_pos
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
