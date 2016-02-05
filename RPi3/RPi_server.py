@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 
 STEER_PIN = 35
 MOTOR_PIN = 37
-#EYE_PIN = 31
+EYE_PIN = 31
 NEUTRAL = 7.0
 GPIO_TRIGGER = 29
 GPIO_ECHO = 23
@@ -24,10 +24,10 @@ def gpio_setup():
 gpio_setup() 
 pwm_motor = GPIO.PWM(MOTOR_PIN,50)
 pwm_steer = GPIO.PWM(STEER_PIN,50)
-#pwm_eye = GPIO.PWM(EYE_PIN,50)
+pwm_eye = GPIO.PWM(EYE_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
-#pwm_eye.start(0)
+pwm_eye.start(0)
 
 #
 ##############
@@ -54,6 +54,7 @@ connection.settimeout(TIMEOUT_DURATION)
 
 
 def ultrasonic_range_measure():
+    print('ultrasonic_range_measure...')
     GPIO.output(GPIO_TRIGGER, True)
     time.sleep(0.00001)
     GPIO.output(GPIO_TRIGGER, False)
@@ -61,7 +62,9 @@ def ultrasonic_range_measure():
     while GPIO.input(GPIO_ECHO)==0:
       start = time.time()
     while GPIO.input(GPIO_ECHO)==1:
-      stop = time.time()
+        stop = time.time()
+        if time.time()-start > 0.1:
+            break
     elapsed = stop-start
     # Distance pulse travelled in that time is time
     # multiplied by the speed of sound (cm/s)
@@ -80,16 +83,20 @@ def cleanup_and_exit():
     time.sleep(1)
     sys.exit()
 
+last_saccade = time.time()
 def update_driving(buf):
+    global last_saccade
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
     print(steer,speed)
     servo_ds = 9.2 + 2.0*steer
-    #eye_ds = 7.2 + 2.0*steer
+    eye_ds = 7.2 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
-    #pwm_eye.ChangeDutyCycle(eye_ds)
+    if time.time()-last_saccade > 1:
+        pwm_eye.ChangeDutyCycle(eye_ds)
+        last_saccade = time.time()
     pwm_motor.ChangeDutyCycle(motor_ds)
 
 try:
