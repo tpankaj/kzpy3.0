@@ -84,6 +84,7 @@ def cleanup_and_exit():
     sys.exit()
 
 last_saccade = time.time()
+last_eye_pos = 7.8
 def update_driving(buf):
     global last_saccade
     b = buf.split(' ')
@@ -94,9 +95,11 @@ def update_driving(buf):
     eye_ds = 7.2 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
-    if time.time()-last_saccade > 1:
-        pwm_eye.ChangeDutyCycle(eye_ds)
-        last_saccade = time.time()
+    if time.time()-last_saccade > 0.2:
+        if np.abs(last_eye_pos-eye_ds) > 0.2:
+            pwm_eye.ChangeDutyCycle(eye_ds)
+            last_saccade = time.time()
+            last_eye_pos = eye_ds
     pwm_motor.ChangeDutyCycle(motor_ds)
 
 try:
