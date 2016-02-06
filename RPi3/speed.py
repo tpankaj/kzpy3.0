@@ -12,9 +12,12 @@ reed_close = 0
 
 start_time = 0
 
+rps = 0
+
 def my_callback(channel):
 	global reed_close
 	global start_time
+	global rps
 	if GPIO.input(pin): 
 		pass #print "Rising edge detected"  
 	else:
@@ -23,7 +26,7 @@ def my_callback(channel):
 		if start_time == 0:
 			start_time = time.time()
 		if time.time() -  start_time > 1:
-			print(d2s(reed_close,'counts in',time.time() -  start_time,'seconds'))
+			rps = reed_close / (time.time() - start_time)
 			start_time = time.time()
 			reed_close = 0
 
@@ -42,8 +45,9 @@ def cleanup_and_exit():
 
 try:
     while True:
-		print(time.time())
+		#print(time.time())
     		time.sleep(1)
+    		print rps
 except KeyboardInterrupt:
     cleanup_and_exit()
 
