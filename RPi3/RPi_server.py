@@ -115,9 +115,13 @@ def update_driving(buf):
     b = buf.split(' ')
     steer = int(b[0])/100.0
     if rps < 2.0:
-        speed += 0.1
+        speed += 0.001
     elif rps > 2.5:
-        speed -= 0.1
+        speed -= 0.001
+    if speed > 1.:
+        speed = 1.
+    elif speed < 0.:
+        speed = 0.
     #speed = int(b[1])/100.0
     print(steer,speed)
     servo_ds = 9.43 + 2.0*steer
