@@ -14,7 +14,7 @@ def my_callback(channel):
 	global button_press
 	if GPIO.input(pin): 
 		print "Rising edge detected"  
-    else:                  
+    else:
 		print "Falling edge detected" 
         button_press += 1 
   
