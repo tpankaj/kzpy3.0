@@ -106,13 +106,20 @@ def cleanup_and_exit():
 last_saccade = time.time()
 last_eye_pos = 7.8
 
+speed = 0
+
 def update_driving(buf):
     global last_saccade
     global last_eye_pos
+    global speed
     b = buf.split(' ')
     steer = int(b[0])/100.0
-    speed = int(b[1])/100.0
-    #print(steer,speed)
+    if rps < 2.0:
+        speed += 0.1
+    elif rps > 2.5:
+        speed -= 0.1
+    #speed = int(b[1])/100.0
+    print(steer,speed)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
