@@ -53,7 +53,7 @@ try:
 		d_time = start_t - time.time()
 		if len(reed_close_lst < 10):
 			reed_close_lst.append((reed_close,d_time))
-		else
+		else:
 			advance(reed_close_lst,(reed_close,d_time))
 		print reed_close, reed_close_lst
 except KeyboardInterrupt:
