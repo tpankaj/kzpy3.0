@@ -5,7 +5,7 @@ sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
 
 GPIO.setmode(GPIO.BOARD)
-pin = input('Enter GPIO pin: ')
+pin = 23 #input('Enter GPIO pin: ')
 GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 reed_close = 0
