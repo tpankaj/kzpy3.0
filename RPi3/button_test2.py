@@ -16,7 +16,7 @@ def my_callback(channel):
 		print "Rising edge detected"  
 	else:
 		print "Falling edge detected" 
-		button_press += 1 
+		button_press += 1
 
 # when a changing edge is detected on port 25, regardless of whatever   
 # else is happening in the program, the function my_callback will be run  
