@@ -49,9 +49,11 @@ try:
     while True:
 		reed_close = 0
 		start_t = time.time()
+
 		time.sleep(1)
+
 		d_time = time.time() - start_t
-		if len(reed_close_lst) < 10:
+		if len(reed_close_lst) < 3:
 			reed_close_lst.append((reed_close,d_time))
 		else:
 			advance(reed_close_lst,(reed_close,d_time))
