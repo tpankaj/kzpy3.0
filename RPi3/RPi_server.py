@@ -122,18 +122,9 @@ def update_driving(buf):
     global cruise_rps
     b = buf.split(' ')
     steer = int(b[0])/100.0
-    """
-    if rps < 1.0:
-        speed += 0.003
-    elif rps > 1.5:
-        speed -= 0.003
-    if speed > 1.:
-        speed = 1.
-    elif speed < 0.:
-        speed = 0.
-    """
     speed = int(b[1])/100.0
     cruise = int(b[2])
+
     if cruise:
         print "cruise on!!!!"
         cruise_control = True
@@ -142,7 +133,7 @@ def update_driving(buf):
         cruise_speed = speed
     if cruise_control:
         if time.time() - cruise_control_on_t > 1:
-            if speed > 0.5:
+            if np.abs(speed) > 0.5:
                 cruise_control = False
                 cruise_control_on_t = 0
                 print "CRUISE OFF!!!!!!!"
