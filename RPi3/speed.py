@@ -22,7 +22,7 @@ def my_callback(channel):
 		reed_close += 1
 		if start_time == 0:
 			start_time = time.time()
-		if time.time() -  start_time > 10:
+		if time.time() -  start_time > 1:
 			print(d2s(reed_close,'counts in',time.time() -  start_time,'seconds'))
 			start_time = time.time()
 			reed_close = 0
