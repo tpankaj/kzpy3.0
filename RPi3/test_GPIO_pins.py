@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
 # tested 7 13 15 19 21 23 29 [31,33,35 not tested ] 37
+# pin 11 dead.
 
 def test_pin(p):	
 	GPIO.setup(p,GPIO.OUT)

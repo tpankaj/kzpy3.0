@@ -9,8 +9,10 @@ STEER_PIN = 35
 MOTOR_PIN = 37
 EYE_PIN = 31
 NEUTRAL = 7.0
-GPIO_TRIGGER = 29
-GPIO_ECHO = 23
+GPIO_TRIGGER_RIGHT = 13
+GPIO_ECHO_RIGHT = 15
+GPIO_TRIGGER_LEFT = 19
+GPIO_ECHO_LEFT = 21
 
 out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
 def gpio_setup():
@@ -27,9 +29,11 @@ pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
 pwm_eye.start(0)
 
-GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
-GPIO.setup(GPIO_ECHO,GPIO.IN)      # Echo
-#GPIO.setup(GPIO_LED,GPIO.OUT)      # Echo
+GPIO.setup(GPIO_TRIGGER_RIGHT,GPIO.OUT)  # Trigger
+GPIO.setup(GPIO_ECHO_RIGHT,GPIO.IN)      # Echo
+GPIO.setup(GPIO_TRIGGER_LEFT,GPIO.OUT)  # Trigger
+GPIO.setup(GPIO_ECHO_LEFT,GPIO.IN)      # Echo
+
 
 #
 ##############
@@ -55,15 +59,15 @@ connection.settimeout(TIMEOUT_DURATION)
 # http://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python
 
 
-def ultrasonic_range_measure():
+def ultrasonic_range_measure(GPIO_trigger,GPIO_echo):
     #print('ultrasonic_range_measure...')
-    GPIO.output(GPIO_TRIGGER, True)
+    GPIO.output(GPIO_trigger, True)
     time.sleep(0.00001)
-    GPIO.output(GPIO_TRIGGER, False)
+    GPIO.output(GPIO_trigger, False)
     start = time.time()
-    while GPIO.input(GPIO_ECHO)==0:
+    while GPIO.input(GPIO_echo)==0:
       start = time.time()
-    while GPIO.input(GPIO_ECHO)==1:
+    while GPIO.input(GPIO_echo)==1:
         stop = time.time()
         if time.time()-start > 0.1:
             break
@@ -72,8 +76,8 @@ def ultrasonic_range_measure():
     # multiplied by the speed of sound (cm/s)
     distance = elapsed * 34000
     # That was the distance there and back so halve the value
-    distance = distance / 2
-    return distance
+    distance = distance / 2.0
+    return int(distance)
 
 
 
@@ -107,6 +111,9 @@ def update_driving(buf):
         else:
             pwm_eye.ChangeDutyCycle(0)
     pwm_motor.ChangeDutyCycle(motor_ds)
+
+
+
 try:
     while True:
         try:
@@ -115,7 +122,9 @@ try:
             cleanup_and_exit()
         if len(buf) != "":
             update_driving(buf)
-            print(d2s('range =',int(ultrasonic_range_measure())))
+            left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+            right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
+            print(d2s('range =',(left_range,right_range)))
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
