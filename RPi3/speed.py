@@ -19,7 +19,7 @@ def my_callback(channel):
 	else:
 		#print "Falling edge detected" 
 		reed_close += 1
-		if start_time = 0:
+		if start_time == 0:
 			start_time = time.time()
 		if time.time() -  start_time > 10:
 			print(d2s(reed_close,'counts in',time.time() -  start_time,'seconds'))
