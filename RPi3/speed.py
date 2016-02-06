@@ -23,13 +23,14 @@ def my_callback(channel):
 	else:
 		#print "Falling edge detected" 
 		reed_close += 1
+		"""
 		if start_time == 0:
 			start_time = time.time()
-		if time.time() -  start_time > 1:
+		if reed_close == 5: #time.time() -  start_time > 1:
 			rps = reed_close / (time.time() - start_time)
 			start_time = time.time()
 			reed_close = 0
-
+		"""
 # when a changing edge is detected on port 25, regardless of whatever   
 # else is happening in the program, the function my_callback will be run  
 GPIO.add_event_detect(pin, GPIO.BOTH, callback=my_callback)  
@@ -46,8 +47,9 @@ def cleanup_and_exit():
 try:
     while True:
 		#print(time.time())
+			reed_close = 0
     		time.sleep(1)
-    		print rps
+    		print reed_close
 except KeyboardInterrupt:
     cleanup_and_exit()
 
