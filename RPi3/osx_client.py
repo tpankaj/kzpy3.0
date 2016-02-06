@@ -13,7 +13,7 @@ print os.path.basename(sys.argv[0])
 import serial
 ser = serial.Serial('/dev/tty.usbmodem1411',9600)
 
-import socket
+import socket, errno
 host = '192.168.43.20'
 #host = 'localhost'
 port = 5000
@@ -68,6 +68,12 @@ while True:
             print d
     except KeyboardInterrupt:
         sys.exit()
+    except IOError, e:
+        if e.errno == errno.EPIPE:
+            print(d2s(os.path.basename(sys.argv[0]),':',e))
+            sys.exit()
+        else:
+            print(d2s(os.path.basename(sys.argv[0]),'::::',e))
     except Exception, e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
     
