@@ -114,10 +114,10 @@ def update_driving(buf):
     global speed
     b = buf.split(' ')
     steer = int(b[0])/100.0
-    if rps < 2.0:
-        speed += 0.001
-    elif rps > 2.5:
-        speed -= 0.001
+    if rps < 1.0:
+        speed += 0.01
+    elif rps > 1.5:
+        speed -= 0.01
     if speed > 1.:
         speed = 1.
     elif speed < 0.:
