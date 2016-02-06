@@ -14,6 +14,7 @@ start_time = 0
 
 def my_callback(channel):
 	global reed_close
+	global start_time
 	if GPIO.input(pin): 
 		pass #print "Rising edge detected"  
 	else:
