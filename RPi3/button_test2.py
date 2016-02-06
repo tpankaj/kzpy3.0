@@ -10,10 +10,9 @@ GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 button_press = 0
 
-def my_callback(channel):  
+def my_callback(channel):
 	global button_press
-
-    if GPIO.input(pin): 
+	if GPIO.input(pin): 
 		print "Rising edge detected"  
     else:                  
 		print "Falling edge detected" 
