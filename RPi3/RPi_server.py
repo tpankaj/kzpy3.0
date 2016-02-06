@@ -42,7 +42,7 @@ rps = 0
 
 def my_callback(channel):
     global reed_close
-    if GPIO.input(pin): 
+    if GPIO.input(GPIO_REED): 
         pass #print "Rising edge detected"  
     else:
         #print "Falling edge detected" 
