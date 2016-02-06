@@ -43,12 +43,19 @@ def cleanup_and_exit():
     time.sleep(1)
     sys.exit()
 
-
+reed_close_10s = 0
+reed_close_lst = []
 try:
     while True:
 		reed_close = 0
+		start_t = time.time()
 		time.sleep(1)
-		print reed_close
+		d_time = start_t - time.time()
+		if len(reed_close_lst < 10):
+			reed_close_lst.append((reed_close,d_time))
+		else
+			advance(reed_close_lst,(reed_close,d_time))
+		print reed_close, reed_close_lst
 except KeyboardInterrupt:
     cleanup_and_exit()
 
