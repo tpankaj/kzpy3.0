@@ -9,12 +9,14 @@ pin = input('Enter GPIO pin: ')
 GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 button_press = 0
+
 def my_callback(channel):  
 	global button_press
-    if GPIO.input(pin):     # if port 25 == 1  
-        print "Rising edge detected"  
-    else:                  # if port 25 != 1  
-        print "Falling edge detected" 
+
+    if GPIO.input(pin): 
+		print "Rising edge detected"  
+    else:                  
+		print "Falling edge detected" 
         button_press += 1 
   
 # when a changing edge is detected on port 25, regardless of whatever   
