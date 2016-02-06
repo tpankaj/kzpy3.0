@@ -14,10 +14,10 @@ def my_callback(channel):
 	global button_press
 	if GPIO.input(pin): 
 		print "Rising edge detected"  
-    else:
+	else:
 		print "Falling edge detected" 
-        button_press += 1 
-  
+		button_press += 1 
+
 # when a changing edge is detected on port 25, regardless of whatever   
 # else is happening in the program, the function my_callback will be run  
 GPIO.add_event_detect(pin, GPIO.BOTH, callback=my_callback)  
