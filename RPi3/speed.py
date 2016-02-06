@@ -53,7 +53,7 @@ try:
 		time.sleep(1)
 
 		d_time = time.time() - start_t
-		if len(reed_close_lst) < 3:
+		if len(reed_close_lst) < 2:
 			reed_close_lst.append((reed_close,d_time))
 		else:
 			advance(reed_close_lst,(reed_close,d_time))
