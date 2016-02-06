@@ -47,9 +47,9 @@ def cleanup_and_exit():
 try:
     while True:
 		#print(time.time())
-			reed_close = 0
-    		time.sleep(1)
-    		print reed_close
+		reed_close = 0
+    	time.sleep(1)
+    	print reed_close
 except KeyboardInterrupt:
     cleanup_and_exit()
 
