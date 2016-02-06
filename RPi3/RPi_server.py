@@ -128,6 +128,7 @@ def update_driving(buf):
 
 
 reed_close_lst = []
+start_t = time.time()
 try:
     while True:
         try:
@@ -135,10 +136,15 @@ try:
         except:
             cleanup_and_exit()
         if len(buf) != "":
+            if time.time() - start_t >= 1.0:
+                d_time = time.time() - start_t
+                start_t = time.time()
+                rps = reed_close / d_time
+                reed_close_lst = 0
             update_driving(buf)
             left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
             right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-            print(d2s('range,rps =',(left_range,right_range,reed_close)))
+            print(d2s('range,rps =',(left_range,right_range,rps)))
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
