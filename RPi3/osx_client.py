@@ -20,7 +20,7 @@ port = 5000
 clientsocket = False
 
 
-SPEED_NEUTRAL = 502
+SPEED_NEUTRAL = 536
 SPEED_MAX = 261
 SPEED_MIN = 621
 STEER_NEUTRAL = 513
@@ -49,7 +49,8 @@ def decode_serial_string(s):
     n = s.split(' ')
     steer = process_nums(int(n[0]),STEER_NEUTRAL,STEER_CCW,STEER_CW)
     speed = process_nums(int(n[1]),SPEED_NEUTRAL,SPEED_MIN,SPEED_MAX)
-    return (steer,speed)
+    cruise = int(n[2])
+    return (steer,speed,cruise)
 
 
 
@@ -64,7 +65,7 @@ while True:
             if not clientsocket:
                 clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 clientsocket.connect((host, port))
-            clientsocket.send(d2s(d[0],d[1],'okay'))
+            clientsocket.send(d2s(d[0],d[1],d[2],'okay'))
             print d
     except KeyboardInterrupt:
         sys.exit()
