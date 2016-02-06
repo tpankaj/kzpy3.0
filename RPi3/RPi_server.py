@@ -13,6 +13,7 @@ GPIO_TRIGGER_RIGHT = 13
 GPIO_ECHO_RIGHT = 15
 GPIO_TRIGGER_LEFT = 19
 GPIO_ECHO_LEFT = 21
+GPIO_REED = 23
 
 out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
 def gpio_setup():
@@ -34,7 +35,20 @@ GPIO.setup(GPIO_ECHO_RIGHT,GPIO.IN)      # Echo
 GPIO.setup(GPIO_TRIGGER_LEFT,GPIO.OUT)  # Trigger
 GPIO.setup(GPIO_ECHO_LEFT,GPIO.IN)      # Echo
 
+GPIO.setup(GPIO_REED, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+reed_close = 0
+rps = 0
+
+def my_callback(channel):
+    global reed_close
+    if GPIO.input(pin): 
+        pass #print "Rising edge detected"  
+    else:
+        #print "Falling edge detected" 
+        reed_close += 1
+
+GPIO.add_event_detect(GPIO_REED, GPIO.BOTH, callback=my_callback)
 #
 ##############
 
@@ -113,7 +127,7 @@ def update_driving(buf):
     pwm_motor.ChangeDutyCycle(motor_ds)
 
 
-
+reed_close_lst = []
 try:
     while True:
         try:
@@ -124,7 +138,7 @@ try:
             update_driving(buf)
             left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
             right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-            print(d2s('range =',(left_range,right_range)))
+            print(d2s('range,rps =',(left_range,right_range,reed_close)))
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
@@ -132,5 +146,23 @@ try:
 except KeyboardInterrupt:
     cleanup_and_exit()
 
+"""
+        reed_close = 0
+        start_t = time.time()
+
+        time.sleep(1)
+
+        d_time = time.time() - start_t
+        if len(reed_close_lst) < 2:
+            reed_close_lst.append((reed_close,d_time))
+        else:
+            advance(reed_close_lst,(reed_close,d_time))
+        cnt = 0
+        dt = 0
+        for r in reed_close_lst:
+            cnt += r[0]
+            dt += r[1]
+        print cnt / dt
+"""
 
 
