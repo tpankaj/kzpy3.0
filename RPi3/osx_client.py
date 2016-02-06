@@ -8,7 +8,7 @@ python kzpy3/RPi3/osx_client.py
 """
 
 from kzpy3.utils import *
-print "Client Side:"
+print os.path.basename(sys.argv[0])
 
 import serial
 ser = serial.Serial('/dev/tty.usbmodem1411',9600)
@@ -17,11 +17,7 @@ import socket
 host = '192.168.43.20'
 #host = 'localhost'
 port = 5000
-clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientsocket.connect((host, port))
-
-sent_t = time.time()
-wait_t = 0.1
+clientsocket = False
 
 
 SPEED_NEUTRAL = 502
@@ -30,8 +26,6 @@ SPEED_MIN = 621
 STEER_NEUTRAL = 513
 STEER_CW = 169
 STEER_CCW = 865
-
-
 def process_nums(a,NEUTRAL,MIN,MAX):
     if a < NEUTRAL:
         b = (a - MAX) / (1.0*(NEUTRAL - MAX))
@@ -49,8 +43,6 @@ def process_nums(a,NEUTRAL,MIN,MAX):
             b = 0
     b = int(100*b)
     return b
-
-
 def decode_serial_string(s):
     s = s.replace('\t',' ')
     s = s.replace('\r\n',' ')
@@ -61,20 +53,23 @@ def decode_serial_string(s):
 
 
 
-
+sent_t = time.time()
+wait_t = 0.1
 while True:
     try:
         d = decode_serial_string(ser.readline())
         t = time.time()
         if t - sent_t > wait_t:
             sent_t = t
+            if not clientsocket:
+                clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                clientsocket.connect((host, port))
             clientsocket.send(d2s(d[0],d[1],'okay'))
             print d
-            
     except KeyboardInterrupt:
         sys.exit()
     except Exception, e:
-        print "Couldn't do it: %s" % e
+        print(d2s(os.path.basename(sys.argv[0]),':',e))
     
 
 

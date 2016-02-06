@@ -1,11 +1,8 @@
-print "RPi_server.py server side"
-
-##############
-#
-
 import sys
 sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
+print os.path.basename(sys.argv[0])
+
 import RPi.GPIO as GPIO
 
 STEER_PIN = 35
@@ -84,12 +81,13 @@ def ultrasonic_range_measure():
 def cleanup_and_exit():
     GPIO.cleanup()
     serversocket.close()
-    print('cleaned up.')
+    print(os.path.basename(sys.argv[0])+' : cleaned up.')
     time.sleep(1)
     sys.exit()
 
 last_saccade = time.time()
 last_eye_pos = 7.8
+
 def update_driving(buf):
     global last_saccade
     global last_eye_pos
@@ -108,9 +106,7 @@ def update_driving(buf):
             last_eye_pos = eye_ds
         else:
             pwm_eye.ChangeDutyCycle(0)
-
     pwm_motor.ChangeDutyCycle(motor_ds)
-
 try:
     while True:
         try:
