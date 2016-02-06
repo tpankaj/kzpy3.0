@@ -107,6 +107,7 @@ last_saccade = time.time()
 last_eye_pos = 7.8
 
 speed = 0
+cruise_control = False
 
 def update_driving(buf):
     global last_saccade
@@ -114,6 +115,7 @@ def update_driving(buf):
     global speed
     b = buf.split(' ')
     steer = int(b[0])/100.0
+    """
     if rps < 1.0:
         speed += 0.003
     elif rps > 1.5:
@@ -122,8 +124,12 @@ def update_driving(buf):
         speed = 1.
     elif speed < 0.:
         speed = 0.
-    #speed = int(b[1])/100.0
-    print(steer,speed)
+    """
+    speed = int(b[1])/100.0
+    cruise = int(b[2])
+    if cruise:
+        print "cruise on!!!!"
+    print(steer,speed,cruise)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
