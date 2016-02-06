@@ -50,12 +50,18 @@ try:
 		reed_close = 0
 		start_t = time.time()
 		time.sleep(1)
-		d_time = start_t - time.time()
+		d_time = time.time() - start_t
 		if len(reed_close_lst) < 10:
 			reed_close_lst.append((reed_close,d_time))
 		else:
 			advance(reed_close_lst,(reed_close,d_time))
-		print reed_close, reed_close_lst
+		cnt = 0
+		dt = 0
+		for r in reed_close_lst:
+			cnt += r[0]
+			dt += r[1]
+		print cnt / dt
+		#print reed_close, reed_close_lst
 except KeyboardInterrupt:
     cleanup_and_exit()
 
