@@ -145,7 +145,7 @@ def update_driving(buf):
         cruise_speed = speed
     if cruise_control:
         if time.time() - cruise_control_on_t > 1:
-#            if np.abs(speed) > 0.5:
+#       #     if np.abs(speed) > 0.5:
             if speed < -0.5:
                 cruise_control = False
                 cruise_control_on_t = 0
