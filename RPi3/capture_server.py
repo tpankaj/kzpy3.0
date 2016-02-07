@@ -28,7 +28,8 @@ connection = server_socket.accept()[0].makefile('rb')
 t = time.time()
 t2 = t
 
-
+start_t = time.time()
+ctr = 0
 first_time = True
 try:
     while True:
@@ -49,6 +50,7 @@ try:
 
         image = PIL.Image.open(image_stream)
         img = np.asarray(image.convert('RGB'))
+        ctr += 1.0
         #print('Image is %dx%d' % image.size)
 
         
@@ -66,7 +68,7 @@ try:
             plt.pause(0.0001)
 
       
-        print(t-time.time(),np.shape(img))
+        print(time.time()-t,ctr/(time.time()-start_t),np.shape(img))
         #image.verify()
         #print('Image is verified')
         
