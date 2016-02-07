@@ -162,7 +162,7 @@ def update_driving(buf):
         print "rand_control!!!!"
         rand_control = True
         rand_control_on_t = time.time()
-        rand_steer = 1.0- 2.0 * np.random.random(1)
+        rand_steer = (0.5 - 1.0 * np.random.random(1))[0]
     if rand_control:
         if time.time() - rand_control_on_t > 1:
             if np.abs(steer) > 0.333:
@@ -176,7 +176,7 @@ def update_driving(buf):
 
 
 
-    print(steer,speed,cruise)
+    print(steer,speed,cruise,rand_control)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
