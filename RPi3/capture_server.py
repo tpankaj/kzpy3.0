@@ -16,7 +16,7 @@ plt.show()
 """
 
 
-
+print 'Start a socket listening for connections'
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
