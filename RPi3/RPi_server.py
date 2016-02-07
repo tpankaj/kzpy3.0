@@ -140,7 +140,7 @@ def update_driving(buf):
         print "cruise on!!!!"
         cruise_control = True
         cruise_control_on_t = time.time()
-        cruise_rps = 4#rps
+        cruise_rps = 2#rps
         cruise_speed = speed
     if cruise_control:
         if time.time() - cruise_control_on_t > 1:
@@ -158,7 +158,7 @@ def update_driving(buf):
         speed = cruise_speed
 
 
-    if time.time() - rand_control_on_t > 3:
+    if time.time() - rand_control_on_t > 3 and cruise_on:
         print "rand_control!!!!"
         rand_control = True
         rand_control_on_t = time.time()
