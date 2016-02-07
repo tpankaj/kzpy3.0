@@ -28,9 +28,10 @@ connection = server_socket.accept()[0].makefile('rb')
 t = time.time()
 t2 = t
 
-start_t = time.time()
-ctr = 0
+
+ctr = -1
 first_time = True
+cum_dt = 0
 try:
     while True:
         t = time.time()
@@ -50,25 +51,28 @@ try:
 
         image = PIL.Image.open(image_stream)
         img = np.asarray(image.convert('RGB'))
-        ctr += 1.0
+        ctr += 1
         #print('Image is %dx%d' % image.size)
-
+        imsave(opjD('temp',d2n(ctr,'.jpg')),img)
         
-        if True: #t - t2 > 1:
+        if False: #t - t2 > 1:
             t2 = t
             #image.show()
-            print("*************************")
+            #print("*************************")
             #img = np.random.rand(10,10)
             plt.clf()
             mi(img)
             if first_time:
+                start_t = time.time()
                 plt.ion()
                 plt.show()
                 first_time = False
             plt.pause(0.0001)
 
-      
-        print(time.time()-t,ctr/(time.time()-start_t),np.shape(img))
+        if ctr > 0:
+            cum_dt += time.time()-t
+            if np.mod(ctr,10) == 0:
+                print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img))
         #image.verify()
         #print('Image is verified')
         
