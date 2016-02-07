@@ -112,7 +112,11 @@ cruise_control_on_t = 0
 cruise_speed = 0
 cruise_rps = 0
 
-random_turn_time = time.time()
+rand_control = False
+rand_control_on_t = time.time()
+rand_steer = 0
+
+
 
 def update_driving(buf):
     global last_saccade
@@ -123,6 +127,9 @@ def update_driving(buf):
     global cruise_speed
     global cruise_rps
     global random_turn_time
+    global rand_control
+    global rand_control_on_t
+    global rand_steer
 
     b = buf.split(' ')
     steer = int(b[0])/100.0
@@ -149,11 +156,26 @@ def update_driving(buf):
         else:
             pass
         speed = cruise_speed
-    """
-    if time.time() - random_turn_time > 3:
-        steer = np.random.random(1) - 0.5
-        random_turn_time = time.time()
-    """
+
+
+    if time.time() - rand_control_on_t > 3:
+        print "rand_control!!!!"
+        rand_control = True
+        rand_control_on_t = time.time()
+        rand_steer = 1.0- 2.0 * np.random.random(1)
+    if rand_control:
+        if time.time() - rand_control_on_t > 1:
+            if np.abs(steer) > 0.333:
+                rand_control = False
+                rand_control_on_t = time.time()
+                print "rand_control OFF!!!!!!!"
+            else:
+                rand_steer = 0.0
+    if rand_control:
+        steer = rand_steer
+
+
+
     print(steer,speed,cruise)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
