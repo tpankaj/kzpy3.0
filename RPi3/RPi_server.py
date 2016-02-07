@@ -154,9 +154,9 @@ def update_driving(buf):
         #cruise_speed += 0.01*(rps-cruise_rps)
         
         if rps > 1.1 * cruise_rps:
-            cruise_speed -= 0.006
+            cruise_speed -= 0.003
         elif rps < 0.9 * cruise_rps:
-            cruise_speed += 0.006
+            cruise_speed += 0.003
         else:
             pass
         
