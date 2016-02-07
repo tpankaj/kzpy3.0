@@ -151,9 +151,9 @@ def update_driving(buf):
                 print "CRUISE OFF!!!!!!!"
     if cruise_control:
         if rps > 1.1 * cruise_rps:
-            cruise_speed -= 0.012
+            cruise_speed -= 0.006
         elif rps < 0.9 * cruise_rps:
-            cruise_speed += 0.012
+            cruise_speed += 0.006
         else:
             pass
         speed = cruise_speed
