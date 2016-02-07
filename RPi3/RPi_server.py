@@ -176,7 +176,7 @@ def update_driving(buf):
 
 
 
-    print(steer,speed,cruise,rand_control)
+    print(steer,speed,cruise,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
