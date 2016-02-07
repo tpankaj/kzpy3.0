@@ -14,7 +14,7 @@ connection = client_socket.makefile('wb')
 try:
     with picamera.PiCamera() as camera:
         print 'warming up'
-        camera.resolution = (150,112)#(640, 480)#(300,225)#(640, 480)# #(300,225)
+        camera.resolution = (300,225)#(150,112)#(640, 480)#(640, 480)# #(300,225)
         camera.framerate = 15
         # Start a preview and let the camera warm up for 2 seconds
         #camera.start_preview()
@@ -28,7 +28,7 @@ try:
         stream = io.BytesIO()
         print 'starting capture'
         while time.time()-start < 300:
-			camera.capture(stream, format='jpeg', use_video_port=True)
+			camera.capture(stream, format='jpeg', use_video_port=True, quality = 75)
 			# Write the length of the capture to the stream and flush to
 			# ensure it actually gets sent
 			connection.write(struct.pack('<L', stream.tell()))
