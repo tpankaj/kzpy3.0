@@ -123,6 +123,7 @@ def update_driving(buf):
     global cruise_speed
     global cruise_rps
     global random_turn_time
+
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
@@ -148,11 +149,11 @@ def update_driving(buf):
         else:
             pass
         speed = cruise_speed
-
+    """
     if time.time() - random_turn_time > 3:
         steer = np.random.random(1) - 0.5
         random_turn_time = time.time()
-
+    """
     print(steer,speed,cruise)
     servo_ds = 9.43 + 2.0*steer
     eye_ds = 7.8 + 2.0*steer
