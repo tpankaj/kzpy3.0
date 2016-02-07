@@ -122,6 +122,7 @@ def update_driving(buf):
     global cruise_control_on_t
     global cruise_speed
     global cruise_rps
+    global random_turn_time
     b = buf.split(' ')
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
