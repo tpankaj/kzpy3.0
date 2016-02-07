@@ -55,7 +55,7 @@ try:
         #print('Image is %dx%d' % image.size)
         imsave(opjD('temp',d2n(ctr,'.jpg')),img)
         
-        if False: #t - t2 > 1:
+        if True: #t - t2 > 1:
             t2 = t
             #image.show()
             #print("*************************")
