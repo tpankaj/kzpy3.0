@@ -132,6 +132,7 @@ def update_driving(buf):
     global rand_steer
 
     b = buf.split(' ')
+    print b
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
     cruise = int(b[2])
