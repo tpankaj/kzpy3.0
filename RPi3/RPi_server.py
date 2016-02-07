@@ -171,7 +171,7 @@ def update_driving(buf):
                 rand_control_on_t = time.time()
                 print "rand_control OFF!!!!!!!"
             else:
-                rand_steer = 0.0
+                pass#rand_steer = 0.0
     if rand_control:
         steer = rand_steer
 
