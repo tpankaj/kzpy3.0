@@ -41,6 +41,7 @@ try:
                             connection.write(self.stream.read())
                             drive_data = 'FAIL'
                             fail_ctr = 0
+                            fail_t = time.time()
                             while drive_data == 'FAIL':
                                 try:
                                     drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
@@ -48,7 +49,7 @@ try:
                                         drive_data = drive_data_strs[0]
                                 except Exception, e:
                                     fail_ctr += 1
-                                    print(d2s('fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
+                                    print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
                             buf = d2n(time.time(),drive_data)
                             clientsocket.send(buf)
                             #print buf

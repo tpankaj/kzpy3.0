@@ -233,8 +233,8 @@ try:
                 rps = reed_close / d_time # / 2.0
                 reed_close = 0
             update_driving(buf)
-            left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
-            right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
+            #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+            #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
             print(d2s('range,rps =',(left_range,right_range,rps)))
         else:
             print("*** No Data received from socket ***")
