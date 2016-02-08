@@ -4,6 +4,9 @@ import struct
 import time
 import threading
 import picamera
+import sys
+sys.path.insert(0, "/home/pi")
+from kzpy3.utils import *
 
 client_socket = socket.socket()
 client_socket.connect(('192.168.43.243', 8000))
