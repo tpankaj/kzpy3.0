@@ -55,7 +55,7 @@ try:
         #print('Image is %dx%d' % image.size)
         imsave(opjD('temp/not_yet_viewed',d2n(ctr,'.jpg')),img)
         
-        if np.mod(ctr,5) == 0:
+        if False: #np.mod(ctr,5) == 0:
             t2 = t
             #image.show()
             #print("*************************")
