@@ -8,6 +8,10 @@ import picamera
 client_socket = socket.socket()
 client_socket.connect(('192.168.43.243', 8000))
 connection = client_socket.makefile('wb')
+
+clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+clientsocket.connect(('192.168.43.243', 8080))
+
 try:
     connection_lock = threading.Lock()
     pool_lock = threading.Lock()
@@ -32,6 +36,7 @@ try:
                             connection.flush()
                             self.stream.seek(0)
                             connection.write(self.stream.read())
+                            clientsocket.send(d2s(time.time(),'test'))
                     finally:
                         self.stream.seek(0)
                         self.stream.truncate()
@@ -82,6 +87,7 @@ try:
 finally:
     connection.close()
     client_socket.close()
+    clientsocket.close()
 
 print('Sent %d images in %d seconds at %.2ffps' % (
     count, finish-start, count / (finish-start)))
