@@ -53,7 +53,7 @@ try:
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)
-        imsave(opjD('temp',d2n(ctr,'.jpg')),img)
+        imsave(opjD('temp/not_yet_viewed',d2n(ctr,'.jpg')),img)
         
         if np.mod(ctr,5) == 0:
             t2 = t
