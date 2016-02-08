@@ -46,7 +46,10 @@ try:
                                 try:
                                     drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
                                     if drive_data_strs[1] == 'okay':
-                                        drive_data = drive_data_strs[0]
+                                        d = drive_data_strs[0].split(' ')
+                                        if d[0] == 'Begin'
+                                            if d[-1] == 'End'
+                                                drive_data = d[1]
                                 except Exception, e:
                                     fail_ctr += 1
                                     print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
