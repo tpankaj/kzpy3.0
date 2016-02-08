@@ -1,3 +1,5 @@
+# see http://picamera.readthedocs.org/en/latest/recipes2.html
+
 import io
 import socket
 import struct
