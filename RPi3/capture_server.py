@@ -72,7 +72,7 @@ try:
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)
-        imsave(opj(img_path,'not_yet_viewed',d2n(ctr,'-',ts,'-','.jpg')),img)
+        imsave(opj(img_path,'not_yet_viewed',d2n(ctr,'_',ts,'.jpg')),img)
 
         if ctr > 0:
             cum_dt += time.time()-t
