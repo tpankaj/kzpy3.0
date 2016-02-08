@@ -189,10 +189,17 @@ def update_driving(buf):
     if rand_control:
         steer = rand_steer
 
-    drive_data = d2n('str=',int(steer*100),'_spd=',int(speed*100),
+    drive_data = d2n('_str=',int(steer*100),'_spd=',int(speed*100),
         '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(left_range),
-        '_rnd=',int(rand_control))
-    print drive_data
+        '_rnd=',int(rand_control),'_')
+
+
+    try:
+        list_of_strings_to_txt_file("/home/pi/drive_data.txt",[drive_data,'okay'])
+    except Exception, e:
+        print(d2s(os.path.basename(sys.argv[0]),':',e))
+
+    #print drive_data
 
     print(steer,speed,cruise,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
