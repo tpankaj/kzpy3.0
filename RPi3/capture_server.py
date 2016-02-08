@@ -55,7 +55,7 @@ try:
         #print('Image is %dx%d' % image.size)
         imsave(opjD('temp',d2n(ctr,'.jpg')),img)
         
-        if True: #t - t2 > 1:
+        if np.mod(ctr,5) == 0:
             t2 = t
             #image.show()
             #print("*************************")
@@ -71,7 +71,7 @@ try:
 
         if ctr > 0:
             cum_dt += time.time()-t
-            if np.mod(ctr,10) == 0:
+            if np.mod(ctr,1) == 0:
                 print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img))
         #image.verify()
         #print('Image is verified')
