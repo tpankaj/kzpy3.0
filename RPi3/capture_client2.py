@@ -40,7 +40,7 @@ try:
                             self.stream.seek(0)
                             connection.write(self.stream.read())
                             drive_data = txt_file_to_list_of_strings("/home/pi/drive_data.txt")[0]
-                            buf = d2n(time.time(),_drive_data,'_')
+                            buf = d2n(time.time(),drive_data,'_')
                             clientsocket.send(buf)
                             print buf
                     finally:
