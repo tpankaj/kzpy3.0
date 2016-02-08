@@ -51,7 +51,7 @@ try:
                                     print(d2s('fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
                             buf = d2n(time.time(),drive_data)
                             clientsocket.send(buf)
-                            print buf
+                            #print buf
                     finally:
                         self.stream.seek(0)
                         self.stream.truncate()
