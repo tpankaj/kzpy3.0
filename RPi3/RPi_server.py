@@ -196,7 +196,7 @@ def update_driving(buf):
     drive_success = False
     fail_ctr = 0
     fail_t = time.time()
-    while drive_data == False:
+    while drive_success == False:
         try:
             list_of_strings_to_txt_file("/home/pi/drive_data.txt",[drive_data,'okay'])
             drive_success = True
