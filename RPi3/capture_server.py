@@ -66,7 +66,7 @@ try:
 
         image = PIL.Image.open(image_stream)
         buf = meta_connection.recv(64)
-        ts = float(buf.split(' ')[0])
+        ts = (buf.split(' ')[0])
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)

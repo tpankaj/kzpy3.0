@@ -116,12 +116,18 @@ rand_control = False
 rand_control_on_t = time.time()
 rand_steer = 0
 
+left_range = 0
+right_range = 0
+rps = 0
+steer = 0
+speed = 0
 
 
 def update_driving(buf):
     global last_saccade
     global last_eye_pos
     global speed
+    global steer
     global cruise_control
     global cruise_control_on_t
     global cruise_speed
@@ -130,6 +136,10 @@ def update_driving(buf):
     global rand_control
     global rand_control_on_t
     global rand_steer
+    global left_range
+    global right_range
+    global rps
+
 
     b = buf.split(' ')
     print b
@@ -179,7 +189,10 @@ def update_driving(buf):
     if rand_control:
         steer = rand_steer
 
-
+    drive_data = d2n('str=',int(steer*100),'_spd=',int(speed*100),
+        '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(left_range),
+        '_rnd=',int(rand_control))
+    print drive_data
 
     print(steer,speed,cruise,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
@@ -194,6 +207,8 @@ def update_driving(buf):
         else:
             pwm_eye.ChangeDutyCycle(0)
     pwm_motor.ChangeDutyCycle(motor_ds)
+
+
 
 
 reed_close_lst = []
