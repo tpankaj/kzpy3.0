@@ -193,12 +193,13 @@ def update_driving(buf):
         '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(right_range),
         '_rnd=',int(rand_control),'_')
 
-    drive_data = 'FAIL'
+    drive_success = False
     fail_ctr = 0
     fail_t = time.time()
-    while drive_data == 'FAIL':
+    while drive_data == False:
         try:
             list_of_strings_to_txt_file("/home/pi/drive_data.txt",[drive_data,'okay'])
+            drive_success = True
         except Exception, e:
             fail_ctr += 1
             print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
