@@ -66,38 +66,23 @@ try:
 
         image = PIL.Image.open(image_stream)
         buf = meta_connection.recv(64)
-        print buf
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)
         imsave(opj(img_path,'not_yet_viewed',d2n(ctr,'.jpg')),img)
-        
-        if False: #np.mod(ctr,5) == 0:
-            t2 = t
-            #image.show()
-            #print("*************************")
-            #img = np.random.rand(10,10)
-            plt.clf()
-            mi(img)
-            if first_time:
-                start_t = time.time()
-                plt.ion()
-                plt.show()
-                first_time = False
-            plt.pause(0.0001)
 
         if ctr > 0:
             cum_dt += time.time()-t
             if np.mod(ctr,20) == 0:
-                print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img), ctr)
+                print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img), ctr, buf)
         #image.verify()
         #print('Image is verified')
         
 finally:
     connection.close()
     server_socket.close()
+    meta_connection.close()
+    serversocket.close()
 print ctr
-connection.close()
-server_socket.close()
-meta_connection.close()
-serversocket.close()
+
+

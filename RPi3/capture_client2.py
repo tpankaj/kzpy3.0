@@ -41,6 +41,7 @@ try:
                             connection.write(self.stream.read())
                             buf = d2s(time.time(),'test')
                             clientsocket.send(buf)
+                            print buf
                     finally:
                         self.stream.seek(0)
                         self.stream.truncate()
