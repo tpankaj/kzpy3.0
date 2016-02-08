@@ -47,8 +47,8 @@ try:
                                     drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
                                     if drive_data_strs[1] == 'okay':
                                         d = drive_data_strs[0].split(' ')
-                                        if d[0] == 'Begin'
-                                            if d[-1] == 'End'
+                                        if d[0] == 'Begin':
+                                            if d[-1] == 'End':
                                                 drive_data = d[1]
                                 except Exception, e:
                                     fail_ctr += 1
