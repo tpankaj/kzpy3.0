@@ -40,12 +40,15 @@ try:
                             self.stream.seek(0)
                             connection.write(self.stream.read())
                             drive_data = 'FAIL'
-                            try:
-                                drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
-                                if drive_data_strs[1] == 'okay':
-                                    drive_data = drive_data_strs[0]
-                            except Exception, e:
-                                print(d2s(os.path.basename(sys.argv[0]),':',e))
+                            fail_ctr = 0
+                            while drive_data == 'FAIL':
+                                try:
+                                    drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
+                                    if drive_data_strs[1] == 'okay':
+                                        drive_data = drive_data_strs[0]
+                                except Exception, e:
+                                    fail_ctr += 1
+                                    print(d2s('fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
                             buf = d2n(time.time(),drive_data)
                             clientsocket.send(buf)
                             print buf
@@ -62,7 +65,7 @@ try:
 
     def streams():
         global count, finish
-        while finish - start < 30:
+        while finish - start < 900:
             with pool_lock:
                 if pool:
                     streamer = pool.pop()

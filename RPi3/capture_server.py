@@ -22,6 +22,7 @@ print 'Start a socket listening for connections'
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind(('0.0.0.0', 8000))
 server_socket.listen(0)
 
@@ -29,6 +30,7 @@ server_socket.listen(0)
 host = '0.0.0.0'
 port = 8080
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
 TIMEOUT_DURATION = 1.0

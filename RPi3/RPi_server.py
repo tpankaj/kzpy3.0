@@ -190,7 +190,7 @@ def update_driving(buf):
         steer = rand_steer
 
     drive_data = d2n('_str=',int(steer*100),'_spd=',int(speed*100),
-        '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(left_range),
+        '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(right_range),
         '_rnd=',int(rand_control),'_')
 
 
