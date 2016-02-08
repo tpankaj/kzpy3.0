@@ -62,7 +62,7 @@ try:
 
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer() for i in range(4)]
-        camera.resolution = (640, 480)
+        camera.resolution = (300,225)#(640, 480)
         camera.framerate = 30
         time.sleep(2)
         start = time.time()
