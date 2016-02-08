@@ -33,7 +33,7 @@ serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
 TIMEOUT_DURATION = 1.0
 meta_connection, address = serversocket.accept()
-meta_connection.settimeout(TIMEOUT_DURATION)
+#meta_connection.settimeout(TIMEOUT_DURATION)
 
 
 
@@ -66,10 +66,11 @@ try:
 
         image = PIL.Image.open(image_stream)
         buf = meta_connection.recv(64)
+        ts = float(buf.split(' ')[0])
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)
-        imsave(opj(img_path,'not_yet_viewed',d2n(ctr,'.jpg')),img)
+        imsave(opj(img_path,'not_yet_viewed',d2n(ctr,'-',ts,'-','.jpg')),img)
 
         if ctr > 0:
             cum_dt += time.time()-t
