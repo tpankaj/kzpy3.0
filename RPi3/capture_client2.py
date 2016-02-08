@@ -41,7 +41,7 @@ try:
                             connection.write(self.stream.read())
                             drive_data = 'FAIL'
                             try:
-                                drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")[0]
+                                drive_data_strs = txt_file_to_list_of_strings("/home/pi/drive_data.txt")
                                 if drive_data_strs[1] == 'okay':
                                     drive_data = drive_data_strs[0]
                             except Exception, e:
