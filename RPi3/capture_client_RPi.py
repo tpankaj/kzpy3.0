@@ -89,11 +89,14 @@ try:
                 # When the pool is starved, wait a while for it to refill
                 time.sleep(0.1)
             finish = time.time()
-            if True: #time.time() - check_command_file_t > 5:
+            if time.time() - check_command_file_t > 1:
                 check_command_file_t = time.time()
-                cmd = txt_file_to_list_of_strings("/home/pi/command_file.txt")[0]
-                if cmd == 'quit':
-                    continue_running = False
+                try:
+                    cmd = txt_file_to_list_of_strings("/home/pi/command_file.txt")[0]
+                    if cmd == 'quit':
+                        continue_running = False
+                except Exception, e:
+                    print(d2s(os.path.basename(sys.argv[0]),':',e))
 
     with picamera.PiCamera() as camera:
         pool = [ImageStreamer() for i in range(4)]
