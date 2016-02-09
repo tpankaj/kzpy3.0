@@ -49,7 +49,7 @@ try:
                                         d = drive_data_strs[0].split(' ')
                                         if d[0] == 'Begin':
                                             if d[-1] == 'End':
-                                                drive_data = drive_data_strs[0]
+                                                drive_data = d[0]
                                 except Exception, e:
                                     fail_ctr += 1
                                     print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
