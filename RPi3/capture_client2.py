@@ -72,7 +72,7 @@ try:
 
     def streams():
         global count, finish
-        while finish - start < 30:
+        while True: #finish - start < 30:
             with pool_lock:
                 if pool:
                     streamer = pool.pop()
@@ -111,7 +111,7 @@ except KeyboardInterrupt:
     connection.close()
     client_socket.close()
     clientsocket.close()
-    
+
 finally:
     camera.close()
     connection.close()
