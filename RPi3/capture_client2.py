@@ -54,6 +54,7 @@ try:
                                     fail_ctr += 1
                                     print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
                             buf = d2n(time.time(),drive_data)
+                            print buf
                             while len(buf)<128:
                                 buf += '?'
                             clientsocket.send(buf)
@@ -106,6 +107,7 @@ try:
         connection.write(struct.pack('<L', 0))
 
 finally:
+    camera.close()
     connection.close()
     client_socket.close()
     clientsocket.close()
