@@ -7,15 +7,16 @@ import RPi.GPIO as GPIO
 
 STEER_PIN = 35
 MOTOR_PIN = 37
-EYE_PIN = 31
 NEUTRAL = 7.0
 GPIO_TRIGGER_RIGHT = 13
 GPIO_ECHO_RIGHT = 15
 GPIO_TRIGGER_LEFT = 19
 GPIO_ECHO_LEFT = 21
 GPIO_REED = 23
+GPIO_LED1 = 29
+GPIO_LED2 = 31
 
-out_pins = [STEER_PIN,MOTOR_PIN,EYE_PIN]
+out_pins = [STEER_PIN,MOTOR_PIN,GPIO_LED1,GPIO_LED2]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
@@ -224,6 +225,12 @@ def update_driving(buf):
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
     pwm_motor.ChangeDutyCycle(motor_ds)
+    GPIO.output(GPIO_LED1, False)
+    GPIO.output(GPIO_LED2, False)
+    if steer > 50:
+        GPIO.output(GPIO_LED1, True)
+    elif steer < -50:
+        GPIO.output(GPIO_LED2, True)
 
 
 
