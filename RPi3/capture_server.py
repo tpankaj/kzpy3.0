@@ -71,7 +71,7 @@ try:
         while len(buf) < 128:
             buf += meta_connection.recv(128)
         print len(buf)
-        ts = (buf.split(' ')[1])
+        ts = (buf.split(' ')[0])
         img = np.asarray(image.convert('RGB'))
         ctr += 1
         #print('Image is %dx%d' % image.size)
