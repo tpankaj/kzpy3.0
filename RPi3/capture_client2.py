@@ -106,6 +106,12 @@ try:
     with connection_lock:
         connection.write(struct.pack('<L', 0))
 
+except KeyboardInterrupt:
+    camera.close()
+    connection.close()
+    client_socket.close()
+    clientsocket.close()
+    
 finally:
     camera.close()
     connection.close()
