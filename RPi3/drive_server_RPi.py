@@ -227,9 +227,9 @@ def update_driving(buf):
     pwm_motor.ChangeDutyCycle(motor_ds)
     GPIO.output(GPIO_LED1, False)
     GPIO.output(GPIO_LED2, False)
-    if steer > 50:
+    if steer > 0.50:
         GPIO.output(GPIO_LED1, True)
-    elif steer < -50:
+    elif steer < -0.50:
         GPIO.output(GPIO_LED2, True)
 
 
