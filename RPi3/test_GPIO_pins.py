@@ -12,3 +12,7 @@ def test_pin(p):
 		time.sleep(1/40.0)		
 		GPIO.output(p, False)
 		time.sleep(1/2.0)
+
+if __name__ == '__main__':
+	pin = input('Enter GPIO pin: ')
+	test_pin(pin)
