@@ -1,14 +1,16 @@
 from kzpy3.vis import *
 
-fig = plt.figure(figsize=(5,5))
+fig = plt.figure(figsize=(15,5))
 #ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
-_,l=dir_as_dic_and_list('/Users/karlzipser/Desktop/RPi_data/09Feb16_08h17m57s')
+data_dir = '/Users/karlzipser/Desktop/RPi_data/09Feb16_11h26m11s'
+
+_,l=dir_as_dic_and_list(data_dir)
 
 def button_press_event(event):
 	f = l[np.int(np.floor(event.xdata))]
 	print f
- 	img = imread(opj('/Users/karlzipser/Desktop/RPi_data/09Feb16_08h17m57s',f))
+ 	img = imread(opj(data_dir,f))
  	plt.figure(10)
  	plt.clf()
  	plt.ion()
