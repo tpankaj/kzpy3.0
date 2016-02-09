@@ -89,7 +89,7 @@ try:
                 # When the pool is starved, wait a while for it to refill
                 time.sleep(0.1)
             finish = time.time()
-            if False: #time.time() - check_command_file_t > 5:
+            if True: #time.time() - check_command_file_t > 5:
                 check_command_file_t = time.time()
                 cmd = txt_file_to_list_of_strings("/home/pi/command_file.txt")[0]
                 if cmd == 'quit':
