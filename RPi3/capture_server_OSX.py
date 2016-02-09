@@ -82,7 +82,7 @@ try:
         if ctr > 0:
             cum_dt += time.time()-t
             if np.mod(ctr,20) == 0:
-                print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img), ctr, buf)
+                print(time.time()-t, (1.0*ctr)/cum_dt,np.shape(img), ctr)
         #image.verify()
         #print('Image is verified')
         
