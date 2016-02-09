@@ -67,7 +67,10 @@ try:
         image_stream.seek(0)
 
         image = PIL.Image.open(image_stream)
-        buf = meta_connection.recv(64)
+        buf = ''
+        while len(buf) < 128:
+            buf += meta_connection.recv(128)
+        print len(buf)
         ts = (buf.split(' ')[0])
         img = np.asarray(image.convert('RGB'))
         ctr += 1

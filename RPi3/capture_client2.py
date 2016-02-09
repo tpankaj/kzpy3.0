@@ -54,6 +54,8 @@ try:
                                     fail_ctr += 1
                                     print(d2s('fail time =',time.time()-fail_t,'fail ctr =',fail_ctr,drive_data_strs,os.path.basename(sys.argv[0]),':',e))
                             buf = d2n(time.time(),drive_data)
+                            while len(buf)<128:
+                                buf += '?'
                             clientsocket.send(buf)
                             #print buf
                     finally:
