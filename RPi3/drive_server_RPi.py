@@ -203,7 +203,7 @@ def update_driving(buf):
     if rand_control:
         steer = rand_steer
     """
-    
+
     drive_data = d2n('Begin _str=',int(steer*100),'_spd=',int(speed*100),
         '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(right_range),
         '_rnd=',int(rand_control),'_ End')
@@ -251,8 +251,8 @@ try:
                 rps = reed_close / d_time # / 2.0
                 reed_close = 0
             update_driving(buf)
-            left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
-            right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
+            #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+            #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
             print(d2s('range,rps =',(left_range,right_range,rps)))
         else:
             print("*** No Data received from socket ***")
