@@ -186,7 +186,7 @@ def update_driving(buf):
         
         speed = cruise_speed
 
-    """
+    
     if time.time() - rand_control_on_t > 2 and cruise_control:
         print "rand_control!!!!"
         rand_control = True
@@ -202,7 +202,7 @@ def update_driving(buf):
                 pass#rand_steer = 0.0
     if rand_control:
         steer = rand_steer
-    """
+    
 
     drive_data = d2n('Begin _str=',int(steer*100),'_spd=',int(speed*100),
         '_rps=',int(rps*10),'_lrn=',int(left_range),'_rrn=',int(right_range),
