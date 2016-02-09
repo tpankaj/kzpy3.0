@@ -25,10 +25,10 @@ def gpio_setup():
 gpio_setup() 
 pwm_motor = GPIO.PWM(MOTOR_PIN,50)
 pwm_steer = GPIO.PWM(STEER_PIN,50)
-pwm_eye = GPIO.PWM(EYE_PIN,50)
+
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
-pwm_eye.start(0)
+
 
 GPIO.setup(GPIO_TRIGGER_RIGHT,GPIO.OUT)  # Trigger
 GPIO.setup(GPIO_ECHO_RIGHT,GPIO.IN)      # Echo
@@ -104,7 +104,7 @@ def cleanup_and_exit():
     sys.exit()
 
 last_saccade = time.time()
-last_eye_pos = 7.8
+
 
 speed = 0
 cruise_control = False
@@ -125,8 +125,6 @@ speed = 0
 begin_time = time.time()
 
 def update_driving(buf):
-    global last_saccade
-    global last_eye_pos
     global speed
     global steer
     global cruise_control
@@ -153,6 +151,13 @@ def update_driving(buf):
         steer = 0
         speed = 0
         cruise = 0
+
+    if left_range < 25 or right_range < 25:
+        steer = 0
+        speed = 0
+        cruise = 0
+        rand_control = False
+        print(d2s('Proximity warning, auto stopping!!!!!!!, range =',(left_range,right_range)))
 
     if cruise:
         print "cruise on!!!!"
@@ -215,16 +220,8 @@ def update_driving(buf):
 
     print(steer,speed,cruise,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
-    eye_ds = 7.8 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
-    if time.time()-last_saccade > 0.2:
-        if np.abs(last_eye_pos-eye_ds) > 0.2:
-            pwm_eye.ChangeDutyCycle(eye_ds)
-            last_saccade = time.time()
-            last_eye_pos = eye_ds
-        else:
-            pwm_eye.ChangeDutyCycle(0)
     pwm_motor.ChangeDutyCycle(motor_ds)
 
 
