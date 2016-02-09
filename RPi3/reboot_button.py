@@ -13,7 +13,7 @@ while True:
     if input_state == False:
         print('Button Pressed')
         GPIO.cleanup()
-        print("""unix('sudo reboot')""")
+        unix('sudo reboot')
         break
     time.sleep(5)
     print(d2s('waiting for reboot command,',time.time()))
