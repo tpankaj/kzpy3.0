@@ -75,6 +75,7 @@ try:
     def streams():
         global count, finish
         global continue_running
+        global check_command_file_t
         while continue_running: #finish - start < 30:
             with pool_lock:
                 if pool:
