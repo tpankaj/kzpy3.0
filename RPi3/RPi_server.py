@@ -122,6 +122,7 @@ rps = 0
 steer = 0
 speed = 0
 
+begin_time = time.time()
 
 def update_driving(buf):
     global last_saccade
@@ -143,9 +144,15 @@ def update_driving(buf):
 
     b = buf.split(' ')
     print b
+
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
     cruise = int(b[2])
+
+    if time.time() - begin_time < 0.5: # there is some problem with the initial cruise being high
+        steer = 0
+        speed = 0
+        cruise = 0
 
     if cruise:
         print "cruise on!!!!"
