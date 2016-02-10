@@ -64,7 +64,7 @@ port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
-TIMEOUT_DURATION = 0.1
+TIMEOUT_DURATION = 0.333
 connection, address = serversocket.accept()
 connection.settimeout(TIMEOUT_DURATION)
 #
@@ -141,7 +141,7 @@ def update_driving(buf):
 
 
     b = buf.split(' ')
-    print b
+    #print b
 
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
@@ -269,8 +269,8 @@ try:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
             break
-except KeyboardInterrupt, e:
-    print(d2s(os.path.basename(sys.argv[0]),':',e))
+except KeyboardInterrupt:
+    print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt'))
     cleanup_and_exit()
 
 """
