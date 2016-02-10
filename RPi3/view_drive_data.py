@@ -3,7 +3,7 @@ from kzpy3.vis import *
 fig = plt.figure(figsize=(20,3))
 #ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
-data_dir = '/Users/karlzipser/Desktop/RPi_data/09Feb16_12h10m58s'
+data_dir = '/Users/karlzipser/Desktop/RPi_data/09Feb16_13h40m42s'
 
 _,l=dir_as_dic_and_list(data_dir)
 """

@@ -15,7 +15,6 @@ ser = serial.Serial('/dev/tty.usbmodem1411',9600)
 
 import socket, errno
 host = '192.168.43.20'
-#host = 'localhost'
 port = 5000
 clientsocket = False
 
@@ -50,6 +49,8 @@ def decode_serial_string(s):
     steer = process_nums(int(n[0]),STEER_NEUTRAL,STEER_CCW,STEER_CW)
     speed = process_nums(int(n[1]),SPEED_NEUTRAL,SPEED_MIN,SPEED_MAX)
     cruise = int(n[2])
+    if (np.abs(steer) > 100) or (np.abs(speed) > 100) or cruise > 1:
+        raise ValueError(d2s('Bad value from serial string:',s))
     return (steer,speed,cruise)
 
 
@@ -65,7 +66,11 @@ while True:
             if not clientsocket:
                 clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 clientsocket.connect((host, port))
-            clientsocket.send(d2s(d[0],d[1],d[2],'okay'))
+            buf = d2s(d[0],d[1],d[2],'okay')
+            while len(buf)<64:
+                buf += '?'
+            assert len(buf) == 64
+            clientsocket.send(buf)
             print d
     except KeyboardInterrupt:
         sys.exit()
