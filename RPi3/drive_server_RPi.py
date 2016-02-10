@@ -64,7 +64,7 @@ port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
-TIMEOUT_DURATION = 0.05
+TIMEOUT_DURATION = 0.1
 connection, address = serversocket.accept()
 connection.settimeout(TIMEOUT_DURATION)
 #
