@@ -64,7 +64,7 @@ port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
-TIMEOUT_DURATION = 1.0
+TIMEOUT_DURATION = 0.25
 connection, address = serversocket.accept()
 connection.settimeout(TIMEOUT_DURATION)
 #
@@ -252,7 +252,9 @@ try:
             buf = buf.strip('?')
         except Exception, e:
             print(d2s(os.path.basename(sys.argv[0]),':',e))
-            cleanup_and_exit()
+            buf = '0 0 0 okay'
+            print(d2s('Setting buf to',buf))
+            #cleanup_and_exit()
         if len(buf) != "":
             if time.time() - start_t >= 1.0:
                 d_time = time.time() - start_t
