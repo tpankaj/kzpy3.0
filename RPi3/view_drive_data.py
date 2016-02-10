@@ -3,7 +3,7 @@ from kzpy3.vis import *
 fig = plt.figure(figsize=(20,3))
 #ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
-data_dir = '/Users/karlzipser/Desktop/RPi_data/09Feb16_13h40m42s'
+data_dir = opjh('Desktop/RPi_data',sys.argv[1])
 
 _,l=dir_as_dic_and_list(data_dir)
 """
@@ -17,14 +17,15 @@ for f in l:
 
 """
 def button_press_event(event):
-	f = l[np.int(np.floor(event.xdata))]
-	print f
- 	img = imread(opj(data_dir,f))
- 	plt.figure(10)
- 	plt.clf()
- 	plt.ion()
- 	mi(img,10)
- 	plt.pause(0.001)
+    for x in range(np.int(np.floor(event.xdata))-30,np.int(np.floor(event.xdata))+30):
+    	f = l[x]
+    	print f
+     	img = imread(opj(data_dir,f))
+     	plt.figure(10)
+     	plt.clf()
+     	plt.ion()
+     	mi(img,10)
+     	plt.pause(0.01)
  	plt.figure(1)
  	
 
@@ -50,7 +51,7 @@ for m in l:
     p = n[6].split('=')[1]
     right_range.append(p)
     p = n[7].split('=')[1]
-    rand_control.append(p)
+    rand_control.append(10*int(p))
 
 lrs = []
 lrs.append(left_range[0])
@@ -61,9 +62,8 @@ plt.ion()
 plt.plot(steer,'b')
 plt.show()
 plt.plot(speed,'k')
-plt.plot(left_range,'r')
-plt.plot(right_range,'g')
-plt.plot(rps,'y')
+plt.plot(rand_control,'r')
+plt.plot(rps,'g')
 
 
 a=input('w')

@@ -250,7 +250,8 @@ try:
                 buf += connection.recv(64)
             assert len(buf) == 64
             buf = buf.strip('?')
-        except:
+        except Exception, e:
+            print(d2s(os.path.basename(sys.argv[0]),':',e))
             cleanup_and_exit()
         if len(buf) != "":
             if time.time() - start_t >= 1.0:
