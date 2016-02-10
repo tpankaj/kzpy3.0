@@ -64,7 +64,7 @@ port = 5000
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((host, port))
 serversocket.listen(5) # become a server socket, maximum 5 connections
-TIMEOUT_DURATION = 0.25
+TIMEOUT_DURATION = 0.05
 connection, address = serversocket.accept()
 connection.settimeout(TIMEOUT_DURATION)
 #
@@ -269,7 +269,8 @@ try:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
             break
-except KeyboardInterrupt:
+except KeyboardInterrupt, e:
+    print(d2s(os.path.basename(sys.argv[0]),':',e))
     cleanup_and_exit()
 
 """
