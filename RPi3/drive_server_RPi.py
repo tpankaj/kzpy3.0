@@ -253,7 +253,7 @@ try:
         except Exception, e:
             print(d2s(os.path.basename(sys.argv[0]),':',e))
             buf = '0 0 0 okay'
-            print(d2s('Setting buf to',buf))
+            print(d2s('############################# Setting buf to',buf))
             #cleanup_and_exit()
         if len(buf) != "":
             if time.time() - start_t >= 1.0:
