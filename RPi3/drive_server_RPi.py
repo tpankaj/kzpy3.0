@@ -223,7 +223,7 @@ def update_driving(buf):
 
     #print drive_data
 
-    print(steer,speed,cruise,rand_control,cruise_control)
+    print(steer,speed,rps,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
@@ -264,7 +264,7 @@ try:
             update_driving(buf)
             #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
             #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-            print(d2s('range,rps =',(left_range,right_range,rps)))
+            #print(d2s('range,rps =',(left_range,right_range,rps)))
         else:
             print("*** No Data received from socket ***")
             cleanup_and_exit()
