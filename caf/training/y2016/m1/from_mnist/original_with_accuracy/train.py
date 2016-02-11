@@ -52,8 +52,8 @@ def show_solver_step(solver):
 	plt.figure(2)
 	#plt.clf()
 	plt.plot([0,1],[0,1],'k')
-	plt.plot(solver.net.blobs['py_target_data'].data[0][9:],solver.net.blobs['ip2'].data[0][9:],'ro')
-	plt.plot(solver.net.blobs['py_target_data'].data[0][:9],solver.net.blobs['ip2'].data[0][:9],'bo')
+	plt.plot(solver.net.blobs['py_target_data'].data[0][9:].mean(),solver.net.blobs['ip2'].data[0][9:].mean(),'ro')
+	plt.plot(solver.net.blobs['py_target_data'].data[0][:9].mean(),solver.net.blobs['ip2'].data[0][:9].mean(),'bo')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
 
