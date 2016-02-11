@@ -11,7 +11,8 @@ from kzpy3.utils import *
 print os.path.basename(sys.argv[0])
 
 import serial
-ser = serial.Serial('/dev/tty.usbmodem1411',9600)
+ser = serial.Serial('/dev/tty.usbmodem1421',9600)
+#ser = serial.Serial('/dev/tty.usbmodem1411',9600)
 
 import socket, errno
 host = '192.168.43.20'
