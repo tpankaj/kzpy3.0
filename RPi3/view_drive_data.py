@@ -3,7 +3,7 @@ from kzpy3.vis import *
 fig = plt.figure(figsize=(20,3))
 #ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
-data_dir = opjh('Desktop/RPi_data',sys.argv[1])
+data_dir = opjh('Desktop/RPi3_data',sys.argv[1])
 
 _,l=dir_as_dic_and_list(data_dir)
 """
@@ -19,8 +19,11 @@ for f in l:
 def button_press_event(event):
     for x in range(np.int(np.floor(event.xdata))-30,np.int(np.floor(event.xdata))+30):
     	f = l[x]
+        r = rand_control[x]
     	print f
      	img = imread(opj(data_dir,f))
+        if r > 0:
+            img[:,:,1:] *= 0.5
      	plt.figure(10)
      	plt.clf()
      	plt.ion()
