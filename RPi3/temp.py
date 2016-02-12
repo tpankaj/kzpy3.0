@@ -3,7 +3,6 @@ from kzpy3.vis import *
 
 #  rdd = get_run_data('/Users/karlzipser/Desktop/RPi3_data/10Feb16_13h31m38s')
 
-fig = plt.figure(figsize=(15,3))
 #ax = fig.add_axes([0, 0, 1, 1], frameon=False)
 
 # 0_1455048664.8_str=0_spd=0_rps=0_lrn=36_rrn=100_rnd=0_
@@ -101,7 +100,11 @@ def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
 
 
 def button_press_event(event):
-    for x in range(np.int(np.floor(event.xdata))+play_range[0],np.int(np.floor(event.xdata))+play_range[1]):
+    """
+    #play_range = (0,9)
+    global current_key
+    global all_runs_dic
+    for x in range(np.int(np.floor(event.xdata))+0,np.int(np.floor(event.xdata))+9):
         run_data_dic = all_runs_dic[current_key]
         f = run_data_dic['img_lst'][x]
         r = run_data_dic['rand_control'][x]
@@ -115,6 +118,30 @@ def button_press_event(event):
         mi(img,10,img_title=d2s(x))
         plt.pause(0.01)
     plt.figure(1)
+    """
+    print event.xdata,event.ydata
+
+def show_frames(start,stop,all_runs_dic,current_key):
+    #play_range = (0,9)
+
+    plt.figure(1)
+
+    plt.plot([start,stop],[2.8,2.8])
+    for x in range(start,stop):
+        run_data_dic = all_runs_dic[current_key]
+        f = run_data_dic['img_lst'][x]
+        r = run_data_dic['rand_control'][x]
+        print f
+        img = imread(opj(run_data_dic['run_path'],f))
+        if r > 0:
+            img[:,:,1:] *= 0.5
+        plt.figure(10)
+        plt.clf()
+        plt.ion()
+        mi(img,10,img_title=d2s(x))
+        plt.pause(0.01)
+    plt.figure(1)
+
     
 """
 5884
@@ -142,12 +169,15 @@ def button_press_event(event):
 6605
 6626
 
-play_range = (0,5*30)
+fig = plt.figure(figsize=(15,3))
+
+play_range = (0,9)
 fig.canvas.mpl_connect('button_press_event', button_press_event)
 
 all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
-current_key=k[-1];plot_run(all_runs_dic[current_key])
 k = sorted(all_runs_dic.keys())
+current_key=k[-1];plot_run(all_runs_dic[current_key])
+
 current_key = k[0]
 plot_run(all_runs_dic[k[0]])
 
@@ -158,5 +188,5 @@ for r in k:
     except Exception,e:
         print e
 """
-)
+
 
