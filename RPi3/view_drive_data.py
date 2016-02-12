@@ -65,8 +65,11 @@ def frames_to_next_turn(run_data_dic,steer_thresh=0.1):
 
 
 def plot_run(run_data_dic):
-    #plt.ion()
-    #plt.clf()
+    fig = plt.figure(1,figsize=(7,2))
+    plt.clf()
+    plt.ion()
+    plt.show()
+    fig.canvas.mpl_connect('button_press_event', button_press_event)
     ts = run_data_dic['timestamp']
     fps = len(ts)/ts[-1]
     indx = 0
@@ -76,13 +79,13 @@ def plot_run(run_data_dic):
         plt.plot([indx,indx],[-1,3],'lightgray')
         ctr += 1
     plt.xlim([0,len(ts)])
-    plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
     plt.plot(run_data_dic['steer'],'b',label='steer')
     plt.plot(2.5+run_data_dic['rand_control']/4.0,'r',label='rand_control')
     plt.plot(run_data_dic['speed'],'k',label='speed')
     plt.plot(run_data_dic['rps']/3.0,'g',label='rps/3')
     plt.title(run_data_dic['run_path'].split('/')[-1])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
 
 
 def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
@@ -91,7 +94,7 @@ def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
         d = run_data_dic['timestamp'][i]-run_data_dic['timestamp'][i-1]
         d = min(max_thresh,d)
         deltas.append(d)
-    plot(deltas,'ro')
+    plot(deltas,'r')
     return deltas
 
 current_key = ''
@@ -102,6 +105,8 @@ def button_press_event(event):
     current_key = some_data['current_key']
     all_runs_dic = some_data['all_runs_dic']
     play_range = some_data['play_range']
+    plt.figure(1)
+    plt.plot([event.xdata+play_range[0],event.xdata+play_range[1]],[2,2],'k')
     for x in range(np.int(np.floor(event.xdata))+play_range[0],np.int(np.floor(event.xdata))+play_range[1]):
         run_data_dic = all_runs_dic[current_key]
         f = run_data_dic['img_lst'][x]
@@ -137,18 +142,18 @@ all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
 k = sorted(all_runs_dic.keys())
   
 play_range = (0,9)
-some_data['current_key'] = current_key
+some_data['current_key'] = k[-1]
 some_data['all_runs_dic'] = all_runs_dic
 some_data['play_range'] = play_range
 
+"""
 plt.clf()
 fig = plt.figure(1,figsize=(7,2))
 plt.ion()
 plt.show()
 fig.canvas.mpl_connect('button_press_event', button_press_event)
-#current_key=k[-1];
 plot_run(all_runs_dic[some_data['current_key']])
-
+"""
 
 
 
