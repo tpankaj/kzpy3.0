@@ -189,11 +189,12 @@ def update_driving(buf):
         speed = cruise_speed
 
     
-    if time.time() - rand_control_on_t > 2 and cruise_control:
+    if time.time() - rand_control_on_t > 3 and cruise_control: # was 2 before 2/13/16
         print "rand_control!!!!"
         rand_control = True
         rand_control_on_t = time.time()
-        rand_steer = (0.5 - 1.0 * np.random.random(1))[0]
+        #rand_steer = (0.5 - 1.0 * np.random.random(1))[0] #before 13Feb2016
+        rand_steer = (0.25 - 0.5 * np.random.random(1))[0]
     if rand_control:
         if time.time() - rand_control_on_t > 0.75:
             if np.abs(steer) > 0.333:
