@@ -259,7 +259,7 @@ try:
             if time.time() - start_t >= 1.0:
                 d_time = time.time() - start_t
                 start_t = time.time()
-                rps = reed_close / d_time  / 2.0
+                rps = reed_close / d_time  / 2.0 # two magnets
                 reed_close = 0
             update_driving(buf)
             #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
