@@ -2,6 +2,7 @@
 from kzpy3.vis import *
 
 def get_run_data(run_path):
+    print('get_run_data')
     _,l=dir_as_dic_and_list(run_path)
     index = []
     timestamp = []
@@ -40,6 +41,23 @@ def get_run_data(run_path):
     run_data_dic['left_range'] = np.array(left_range)
     run_data_dic['right_range'] = np.array(right_range)
     run_data_dic['rand_control'] = np.array(rand_control)
+    deltas = [0]
+    max_thresh = 3.0
+    for i in range(1,len(run_data_dic['timestamp'])):
+        d = run_data_dic['timestamp'][i]-run_data_dic['timestamp'][i-1]
+        d = min(max_thresh,d)
+        deltas.append(d)
+    run_data_dic['timestamp_deltas'] = np.array(deltas)
+    run_data_dic['frames_to_next_turn'] = frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100)
+    lockout = []
+    for i in range(len(run_data_dic['timestamp'])):
+        d = 1
+        if run_data_dic['timestamp_deltas'][i] > 0.14:
+            d = 0
+        if run_data_dic['rps'][i] < 0.1:
+            d = 0
+        lockout.append(d)
+    run_data_dic['data_lockout'] = np.array(lockout)
     return run_data_dic
 
 
@@ -49,7 +67,7 @@ def get_all_runs_dic(RPi3_data_path):
         all_runs_dic[k] = get_run_data(opj(RPi3_data_path,k))
     return all_runs_dic
 
-def frames_to_next_turn(run_data_dic,steer_thresh=0.1):
+def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
     m = 0 * run_data_dic['steer']
     len_steer = len(run_data_dic['steer'])
     for i in range(len_steer):
@@ -59,7 +77,7 @@ def frames_to_next_turn(run_data_dic,steer_thresh=0.1):
                 break
             elif run_data_dic['rps'][j] > 0:
                 ctr += 1
-        m[i] = ctr-i
+        m[i] = min(ctr-i,max_thresh)
     return m
 
 
@@ -83,19 +101,16 @@ def plot_run(run_data_dic):
     plt.plot(2.5+run_data_dic['rand_control']/4.0,'r',label='rand_control')
     plt.plot(run_data_dic['speed'],'k',label='speed')
     plt.plot(run_data_dic['rps']/3.0,'g',label='rps/3')
+    plt.plot(run_data_dic['timestamp_deltas']-0.9,'r',label='timestamp_deltas')
+    plt.plot(run_data_dic['frames_to_next_turn']/100.0+2.0,'y',label='frames_to_next_turn')
+    plt.plot(run_data_dic['data_lockout']/4.0-0.5,'k',label='data_lockout')
     plt.title(run_data_dic['run_path'].split('/')[-1])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
+    plt.figure(3);plt.clf();
+    plt.hist(all_runs_dic[some_data['current_key']]['timestamp_deltas'],100);
+    #plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
 
 
-def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
-    deltas = [0]
-    for i in range(1,len(run_data_dic['timestamp'])):
-        d = run_data_dic['timestamp'][i]-run_data_dic['timestamp'][i-1]
-        d = min(max_thresh,d)
-        deltas.append(d)
-    plot(deltas,'r')
-    return deltas
 
 current_key = ''
 all_runs_dic = {}
@@ -124,20 +139,6 @@ def button_press_event(event):
 
 
 
-"""
-run_data_dic = all_runs_dic[some_data['current_key']]
-m = frames_to_next_turn(run_data_dic)
-plt.figure(5)
-plt.clf()
-plt.plot(m)
-plt.xlim([0,len(m)])
-
-
-
-"""
-
-
-
 all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
 k = sorted(all_runs_dic.keys())
   
@@ -146,14 +147,7 @@ some_data['current_key'] = k[-1]
 some_data['all_runs_dic'] = all_runs_dic
 some_data['play_range'] = play_range
 
-"""
-plt.clf()
-fig = plt.figure(1,figsize=(7,2))
-plt.ion()
-plt.show()
-fig.canvas.mpl_connect('button_press_event', button_press_event)
 plot_run(all_runs_dic[some_data['current_key']])
-"""
 
 
 

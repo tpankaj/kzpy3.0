@@ -40,6 +40,12 @@ def get_run_data(run_path):
     run_data_dic['left_range'] = np.array(left_range)
     run_data_dic['right_range'] = np.array(right_range)
     run_data_dic['rand_control'] = np.array(rand_control)
+    deltas = [0]
+    for i in range(1,len(run_data_dic['timestamp'])):
+        d = run_data_dic['timestamp'][i]-run_data_dic['timestamp'][i-1]
+        d = min(max_thresh,d)
+        deltas.append(d)
+    run_data_dic['timestamp_deltas'] = np.array(deltas)
     return run_data_dic
 
 
@@ -83,11 +89,12 @@ def plot_run(run_data_dic):
     plt.plot(2.5+run_data_dic['rand_control']/4.0,'r',label='rand_control')
     plt.plot(run_data_dic['speed'],'k',label='speed')
     plt.plot(run_data_dic['rps']/3.0,'g',label='rps/3')
+    plt.plot(run_data_dic['timestamp_deltas'],'r',label='timestamp_deltas')
     plt.title(run_data_dic['run_path'].split('/')[-1])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
 
-
+"""
 def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
     deltas = [0]
     for i in range(1,len(run_data_dic['timestamp'])):
@@ -96,6 +103,7 @@ def plot_run_timestamp_deltas(run_data_dic,max_thresh=1):
         deltas.append(d)
     plot(deltas,'r')
     return deltas
+"""
 
 current_key = ''
 all_runs_dic = {}
