@@ -264,6 +264,7 @@ try:
                 buf += connection.recv(64)
                 if time.time()-t0 > 0.5:
                     print("""\a stuck in 'while len(buf) < 64' """)
+                    raise Exception(d2s("""stuck in 'while len(buf) < 64' """,buf))
                     t0 = time.time()
             assert len(buf) == 64
             buf = buf.strip('?')
