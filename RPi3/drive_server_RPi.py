@@ -157,8 +157,7 @@ def update_driving(buf):
     print buf
     if b[3] != 'okay':
         pwm_motor.ChangeDutyCycle(0)
-        print buf
-        print('\aupdate_driving PROBLEM. Stopping motor for 30s . . .')
+        print('\a'+bcolors.FAIL+'update_driving PROBLEM (buf=['+buf+']. Stopping motor for 30s . . .'+bcolors.ENDC)
         time.sleep(30)
 
     steer = int(b[0])/100.0
