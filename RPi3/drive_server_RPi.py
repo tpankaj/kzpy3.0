@@ -163,7 +163,7 @@ def update_driving(buf):
         pwm_steer.ChangeDutyCycle(10)
         time.sleep(0.1)
         pwm_steer.ChangeDutyCycle(0)
-        print(d2s('\a',bcolors.FAIL,'update_driving PROBLEM (buf=[',buf,']. Stopping motor for',sleep_time,'s, . . .',bcolors.ENDC)
+        print(d2s('\a',bcolors.FAIL,'update_driving PROBLEM (buf=[',buf,']. Stopping motor for',sleep_time,'s, . . .',bcolors.ENDC))
         time.sleep(sleep_time)
 
     steer = int(b[0])/100.0
