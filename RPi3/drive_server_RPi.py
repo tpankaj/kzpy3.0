@@ -154,7 +154,12 @@ def update_driving(buf):
 
 
     b = buf.split(' ')
-    #print b
+    print buf
+    if b[3] != 'okay':
+        pwm_motor.ChangeDutyCycle(0)
+        print buf
+        print('\aupdate_driving PROBLEM. Stopping motor for 30s . . .')
+        time.sleep(30)
 
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
@@ -271,7 +276,7 @@ try:
         except Exception, e:
             print('\a')
             print(d2s(os.path.basename(sys.argv[0]),':',e))
-            buf = '0 0 0 okay'
+            buf = '0 0 0 PROBLEM'
             print(d2s(bcolors.FAIL,'\a ############################# Setting buf to',buf,bcolors.ENDC))
             #cleanup_and_exit()
         if len(buf) != "":
