@@ -53,7 +53,20 @@ GPIO.add_event_detect(GPIO_REED, GPIO.BOTH, callback=my_callback)
 #
 ##############
 
-
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+"""
+print bcolors.FAIL + "\a Warning: No active frommets remain. Continue?" + bcolors.ENDC
+"""
+#from termcolor import colored
+#print colored('hello', 'red'), colored('world', 'green')
 
 ##############
 #
@@ -164,14 +177,13 @@ def update_driving(buf):
             print(d2s('Proximity warning, auto stopping!!!!!!!, range =',(left_range,right_range)))
     """
     if cruise:
-        print "cruise on!!!!"
+        print bcolors.WARNING+"cruise on!!!!"+ bcolors.ENDC
         cruise_control = True
         cruise_control_on_t = time.time()
-        cruise_rps = 3.5#rps
+        cruise_rps = rps # 3.5 up to 2/13/16
         cruise_speed = speed
     if cruise_control:
         if time.time() - cruise_control_on_t > 1:
-#       #     if np.abs(speed) > 0.5:
             if np.abs(speed) > 0.5:
                 cruise_control = False
                 cruise_control_on_t = 0
@@ -247,14 +259,19 @@ try:
     while True:
         try:
             buf = ''
+            t0 = time.time()
             while len(buf) < 64:
                 buf += connection.recv(64)
+                if time.time()-t0 > 0.5:
+                    print("""\a stuck in 'while len(buf) < 64' """)
+                    t0 = time.time()
             assert len(buf) == 64
             buf = buf.strip('?')
         except Exception, e:
+            print('\a')
             print(d2s(os.path.basename(sys.argv[0]),':',e))
             buf = '0 0 0 okay'
-            print(d2s('############################# Setting buf to',buf))
+            print(d2s(bcolors.FAIL,'\a ############################# Setting buf to',buf,bcolors.ENDC))
             #cleanup_and_exit()
         if len(buf) != "":
             if time.time() - start_t >= 1.0:
@@ -267,11 +284,11 @@ try:
             #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
             #print(d2s('range,rps =',(left_range,right_range,rps)))
         else:
-            print("*** No Data received from socket ***")
+            print("\a *** No Data received from socket ***")
             cleanup_and_exit()
             break
 except KeyboardInterrupt:
-    print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt'))
+    print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt \a'))
     cleanup_and_exit()
 
 """
