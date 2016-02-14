@@ -156,9 +156,15 @@ def update_driving(buf):
     b = buf.split(' ')
     print buf
     if b[3] != 'okay':
+        sleep_time = 2
         pwm_motor.ChangeDutyCycle(0)
-        print('\a'+bcolors.FAIL+'update_driving PROBLEM (buf=['+buf+']. Stopping motor for 30s . . .'+bcolors.ENDC)
-        time.sleep(30)
+        pwm_steer.ChangeDutyCycle(9)
+        time.sleep(0.1)
+        pwm_steer.ChangeDutyCycle(10)
+        time.sleep(0.1)
+        pwm_steer.ChangeDutyCycle(0)
+        print(d2s('\a',bcolors.FAIL,'update_driving PROBLEM (buf=[',buf,']. Stopping motor for',sleep_time,'s, . . .',bcolors.ENDC)
+        time.sleep(sleep_time)
 
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
