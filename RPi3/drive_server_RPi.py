@@ -267,6 +267,7 @@ reed_close_lst = []
 start_t = time.time()
 try:
     while True:
+        okay = False
         try:
             buf = ''
             t0 = time.time()
@@ -278,26 +279,29 @@ try:
                     t0 = time.time()
             assert len(buf) == 64
             buf = buf.strip('?')
+            okay = True
         except Exception, e:
             print('\a')
-            print(d2s(os.path.basename(sys.argv[0]),':',e))
-            buf = '0 0 0 PROBLEM'
-            print(d2s(bcolors.FAIL,'\a ############################# Setting buf to',buf,bcolors.ENDC))
+            print(d2s(os.path.basename(sys.argv[0]),':',e,' ######### pwm_motor.ChangeDutyCycle(0)'))
+            #buf = '0 0 0 PROBLEM'
+            #print(d2s(bcolors.FAIL,'############################# Setting buf to',buf,bcolors.ENDC))
+            pwm_motor.ChangeDutyCycle(0)
             #cleanup_and_exit()
-        if len(buf) != "":
-            if time.time() - start_t >= 1.0:
-                d_time = time.time() - start_t
-                start_t = time.time()
-                rps = reed_close / d_time  / 2.0 # two magnets
-                reed_close = 0
-            update_driving(buf)
-            #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
-            #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-            #print(d2s('range,rps =',(left_range,right_range,rps)))
-        else:
-            print("\a *** No Data received from socket ***")
-            cleanup_and_exit()
-            break
+        if okay:
+            if len(buf) != "":
+                if time.time() - start_t >= 1.0:
+                    d_time = time.time() - start_t
+                    start_t = time.time()
+                    rps = reed_close / d_time  / 2.0 # two magnets
+                    reed_close = 0
+                update_driving(buf)
+                #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+                #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
+                #print(d2s('range,rps =',(left_range,right_range,rps)))
+            else:
+                print("\a *** No Data received from socket ***")
+                cleanup_and_exit()
+                break
 except KeyboardInterrupt:
     print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt \a'))
     cleanup_and_exit()
