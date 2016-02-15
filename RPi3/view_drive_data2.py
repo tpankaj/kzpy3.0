@@ -189,7 +189,9 @@ all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
 k = sorted(all_runs_dic.keys())
   
 play_range = (0,5*15)
-some_data['current_key'] = k[-1]
+i = input('Enter k index: ')
+
+some_data['current_key'] = k[i]
 some_data['all_runs_dic'] = all_runs_dic
 some_data['play_range'] = play_range
 
