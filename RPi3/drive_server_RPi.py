@@ -281,7 +281,7 @@ try:
             buf = buf.strip('?')
             okay = True
         except Exception, e:
-            print(d2s(os.path.basename(sys.argv[0]),':',e,' ######### pwm_motor.ChangeDutyCycle(0)'))
+            print(d2s(os.path.basename(sys.argv[0]),':',e,' \a ######### pwm_motor.ChangeDutyCycle(0)'))
             #buf = '0 0 0 PROBLEM'
             #print(d2s(bcolors.FAIL,'############################# Setting buf to',buf,bcolors.ENDC))
             pwm_motor.ChangeDutyCycle(0)
