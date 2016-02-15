@@ -53,7 +53,20 @@ GPIO.add_event_detect(GPIO_REED, GPIO.BOTH, callback=my_callback)
 #
 ##############
 
-
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+"""
+print bcolors.FAIL + "\a Warning: No active frommets remain. Continue?" + bcolors.ENDC
+"""
+#from termcolor import colored
+#print colored('hello', 'red'), colored('world', 'green')
 
 ##############
 #
@@ -141,7 +154,17 @@ def update_driving(buf):
 
 
     b = buf.split(' ')
-    #print b
+    print buf
+    if b[3] != 'okay':
+        sleep_time = 2
+        pwm_motor.ChangeDutyCycle(0)
+        pwm_steer.ChangeDutyCycle(9)
+        time.sleep(0.1)
+        pwm_steer.ChangeDutyCycle(10)
+        time.sleep(0.1)
+        pwm_steer.ChangeDutyCycle(0)
+        print(d2s('\a',bcolors.FAIL,'update_driving PROBLEM (buf=[',buf,']. Stopping motor for',sleep_time,'s, . . .',bcolors.ENDC))
+        time.sleep(sleep_time)
 
     steer = int(b[0])/100.0
     speed = int(b[1])/100.0
@@ -164,14 +187,13 @@ def update_driving(buf):
             print(d2s('Proximity warning, auto stopping!!!!!!!, range =',(left_range,right_range)))
     """
     if cruise:
-        print "cruise on!!!!"
+        print bcolors.WARNING+"cruise on!!!!"+ bcolors.ENDC
         cruise_control = True
         cruise_control_on_t = time.time()
-        cruise_rps = 3.5#rps
+        cruise_rps = rps # 3.5 up to 2/13/16
         cruise_speed = speed
     if cruise_control:
         if time.time() - cruise_control_on_t > 1:
-#       #     if np.abs(speed) > 0.5:
             if np.abs(speed) > 0.5:
                 cruise_control = False
                 cruise_control_on_t = 0
@@ -188,22 +210,23 @@ def update_driving(buf):
         
         speed = cruise_speed
 
-    
-    if time.time() - rand_control_on_t > 2 and cruise_control:
-        print "rand_control!!!!"
-        rand_control = True
-        rand_control_on_t = time.time()
-        rand_steer = (0.5 - 1.0 * np.random.random(1))[0]
-    if rand_control:
-        if time.time() - rand_control_on_t > 0.75:
-            if np.abs(steer) > 0.333:
-                rand_control = False
-                rand_control_on_t = time.time()
-                print "rand_control OFF!!!!!!!"
-            else:
-                pass#rand_steer = 0.0
-    if rand_control:
-        steer = rand_steer
+    if False:
+        if time.time() - rand_control_on_t > 2 and cruise_control and not rand_control: # was 2 before 2/13/16
+            print "rand_control!!!!"
+            rand_control = True
+            rand_control_on_t = time.time()
+            #rand_steer = (0.5 - 1.0 * np.random.random(1))[0] #before 13Feb2016
+            rand_steer = (0.25 - 0.5 * np.random.random(1))[0]
+        if rand_control:
+            if time.time() - rand_control_on_t > 0.75:
+                if np.abs(steer) > 0.333:
+                    rand_control = False
+                    rand_control_on_t = time.time()
+                    print "rand_control OFF!!!!!!!"
+                else:
+                    pass#rand_steer = 0.0
+        if rand_control:
+            steer = rand_steer
     
 
     drive_data = d2n('Begin _str=',int(steer*100),'_spd=',int(speed*100),
@@ -244,33 +267,42 @@ reed_close_lst = []
 start_t = time.time()
 try:
     while True:
+        okay = False
         try:
             buf = ''
+            t0 = time.time()
             while len(buf) < 64:
                 buf += connection.recv(64)
+                if time.time()-t0 > 0.5:
+                    print("""\a stuck in 'while len(buf) < 64' """)
+                    raise Exception(d2s("""stuck in 'while len(buf) < 64' """,buf))
+                    t0 = time.time()
             assert len(buf) == 64
             buf = buf.strip('?')
+            okay = True
         except Exception, e:
-            print(d2s(os.path.basename(sys.argv[0]),':',e))
-            buf = '0 0 0 okay'
-            print(d2s('############################# Setting buf to',buf))
+            print(d2s(os.path.basename(sys.argv[0]),':',e,' \a ######### pwm_motor.ChangeDutyCycle(0)'))
+            #buf = '0 0 0 PROBLEM'
+            #print(d2s(bcolors.FAIL,'############################# Setting buf to',buf,bcolors.ENDC))
+            pwm_motor.ChangeDutyCycle(0)
             #cleanup_and_exit()
-        if len(buf) != "":
-            if time.time() - start_t >= 1.0:
-                d_time = time.time() - start_t
-                start_t = time.time()
-                rps = reed_close / d_time  / 2.0 # two magnets
-                reed_close = 0
-            update_driving(buf)
-            #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
-            #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-            #print(d2s('range,rps =',(left_range,right_range,rps)))
-        else:
-            print("*** No Data received from socket ***")
-            cleanup_and_exit()
-            break
+        if okay:
+            if len(buf) != "":
+                if time.time() - start_t >= 1.0:
+                    d_time = time.time() - start_t
+                    start_t = time.time()
+                    rps = reed_close / d_time  / 2.0 # two magnets
+                    reed_close = 0
+                update_driving(buf)
+                #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+                #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
+                #print(d2s('range,rps =',(left_range,right_range,rps)))
+            else:
+                print("\a *** No Data received from socket ***")
+                cleanup_and_exit()
+                break
 except KeyboardInterrupt:
-    print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt'))
+    print(d2s(os.path.basename(sys.argv[0]),':','KeyboardInterrupt \a'))
     cleanup_and_exit()
 
 """
