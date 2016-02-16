@@ -157,6 +157,10 @@ review of runs
 14Feb16_11h34m14s_scl=25_mir=0 delete
 14Feb16_12h43m16s_scl=25_mir=0 delete
 14Feb16_15h00m14s_scl=25_mir=0 delete
+
+09Feb16_14h19m10s_scl=25_mir=0 good to 6400
+
+14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
 """
 
 
@@ -288,15 +292,17 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6)):
     rps = int(10.0*all_runs_dic[r]['rps'][n])
     frame_names = []
     for i in range(frame_range[0]+n,frame_range[1]+n):
-        frame_names.append(all_runs_dic[r]['img_lst'][i])
+        frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
     if True:
         for f in frame_names:
-            img = imread(opj(all_runs_dic[r]['run_path'],f))
+            img = imread(f)
             plt.figure(9)
             plt.clf()
             mi(img,9)
             plt.pause(0.0001)
     return (b,r,n,steer,frames_to_next_turn,rps,frame_names)
+
+
 
 
 
