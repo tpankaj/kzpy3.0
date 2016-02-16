@@ -1,21 +1,7 @@
 '''
-20 Sept. 2015
-Do this:
-from kzpy3.caf.training.y2015.m9.from_mnist.original_with_accuracy.train import *
+16 Feb 2016
 
-This module allows for training and deploy-testing of mnist network.
-
-Next steps:
-1) change to work with RGB images of look_at_numbers, using python layer for data layer.
-
-
-26 Jan 2016
-from kzpy3.caf.training.y2016.m1.from_mnist.original_with_accuracy.train import *;solver = setup_solver()
-solver.restore('/Users/karlzipser/scratch/2016/1/26/caffe/models/from_mnist/original_with_accuracy/model_iter_2250000.solverstate')
-
-solver.step(1000)
-
-solver.net.copy_from('/Users/karlzipser/scratch/2016/1/26/caffe/models/from_mnist/original_with_accuracy/model_iter_40000.caffemodel')
+from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *; safe_solver_step(solver)
 
 '''
 
@@ -27,7 +13,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 def setup_solver():
-	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m1/from_mnist/original_with_accuracy/solver.prototxt"))
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver.prototxt"))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
@@ -36,6 +22,26 @@ def setup_solver():
 
 
 solver = setup_solver()
+
+#show_solver_step(solver)
+
+
+def safe_solver_step(solver):
+    while True:
+        try:
+            solver.step(10000)
+        except Exception, e: 
+            print e
+
+"""
+solver.step(1)
+for i in range(9):
+    plt.figure(9)
+    plt.clf()
+    mi(solver.net.blobs['py_image_data'].data[0,i,:,:],9,img_title=d2s(solver.net.blobs['py_target_data'].data[0][:],solver.net.blobs['ip2'].data))
+    plt.pause(0.0001)
+
+"""
 
 def show_solver_step(solver):
 	solver.net.forward()
@@ -57,41 +63,34 @@ def show_solver_step(solver):
 	plt.xlim((0,1))
 	plt.ylim((0,1))
 
-show_solver_step(solver)
 
-
-def safe_solver_step(solver):
-    while True:
-        try:
-            solver.step(10000)
-        except Exception, e: 
-            print e
-
-
-def look_at_numbers(solver):
-	solver.step(1)
-	mi(solver.net.blobs['data'].data[:1, 0].transpose(1, 0, 2).reshape(28, 1*28),'train')
-	mi(solver.net.blobs['pydata'].data[:1, 0].transpose(1, 0, 2).reshape(28, 1*28),'train2')
+def test_solver(solver,n):
+	St_list = []
+	Ft_list = []
+	Rt_list = []
+	So_list = []
+	Fo_list = []
+	Ro_list = []
+	for i in range(n):
+		solver.net.forward()
+		t = solver.net.blobs['py_target_data'].data[0]
+		o = solver.net.blobs['ip2'].data[0]
+		St_list.append(t[0])
+		So_list.append(o[0])
+		Ft_list.append(t[1])
+		Fo_list.append(o[1])
+		Rt_list.append(t[2])
+		Ro_list.append(o[2])
+	plt.figure(100)
+	plt.clf()
+	plt.plot(St_list,So_list,'.',label='steer')
+	plt.plot(Ft_list,Fo_list,'.',label='frames to turn')
+	plt.plot(Rt_list,Ro_list,'.',label='rot')
+	plt.xlim((0,1))
+	plt.ylim((0,1))
+	plt.legend()
 	plt.ion()
 	plt.show()
-	print solver.net.blobs['label'].data[:1]
-	mi(solver.test_nets[0].blobs['data'].data[:1, 0].transpose(1, 0, 2).reshape(28, 1*28), 'test')
-	print solver.test_nets[0].blobs['label'].data[:1]
 
-
-def restore(solver):
-	solver.restore(opjh('scratch/2015/11/23/caffe/models/from_mnist/original_with_accuracy/model_iter_1000.solverstate'))
-
-
-def deploy(img_name = opjh('caffe/examples/images/7.jpg')):
-	net = caffe.Net(opjh('kzpy3/caf/training/y2015/m9/from_mnist/original_with_accuracy/deploy.prototxt'),opjh('scratch/2015/9/20/caffe/models/from_mnist/original_with_accuracy/model_iter_5000.caffemodel'),caffe.TEST)
-	net.blobs['data'].reshape(1,1,28,28)
-	img = scipy.misc.imread(img_name)
-	img = img[:,:,0] # this network wants grayscale images, no color channel.
-	net.blobs['data'].data[...] = img
-	out = net.forward()
-	print("Predicted class is #{}.".format(out['prob'].argmax()))
-	mi(img,img_name)
-	return net
 
 

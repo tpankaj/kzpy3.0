@@ -1,5 +1,21 @@
+"""
+Top priority items:
 
-from kzpy3.vis import *
+second car
+second RPi
+desktop linux machine
+K40 GPU
+budget (materials vs salary)
+
+Jetson GPU
+"""
+
+USE_GRAPHICS = False
+
+from kzpy3.utils import *
+
+if USE_GRAPHICS:
+    from kzpy3.vis import *
 
 def get_run_data(run_path):
     print('get_run_data')
@@ -85,7 +101,7 @@ def get_all_runs_dic(RPi3_data_path):
         all_runs_dic[k] = get_run_data(opj(RPi3_data_path,k))
     return all_runs_dic
 
-img_dic = {}
+
 
 def imread_from_img_dic(img_dic,path,fname):
     if fname not in img_dic:
@@ -201,9 +217,7 @@ def plot_run(all_runs_dic,key_index):
 
 
 
-#current_key = ''
-all_runs_dic = {}
-some_data = {}
+
 
 def animate_frames(run_data_dic,start_frame,end_frame,fig,title=''):
     for x in range(start_frame,end_frame):
@@ -279,8 +293,8 @@ def steer_bin_medians(steer_bins,all_runs_dic):
 
 
 
-def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6)):
-    sbks = steer_bins.keys()
+def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=False):
+    sbks = steer_bins.keys() + ['center']
     b = sbks[np.random.randint(len(sbks))]
     ardks = all_runs_dic.keys()
     l = len(steer_bins[b])
@@ -293,7 +307,7 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6)):
     frame_names = []
     for i in range(frame_range[0]+n,frame_range[1]+n):
         frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
-    if True:
+    if Graphics:
         for f in frame_names:
             img = imread(f)
             plt.figure(9)
@@ -304,66 +318,53 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6)):
 
 
 
+def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+    b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+    img_lst = []
+    for f in frame_names:
+        img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+    S = steer/200.0 + 0.5
+    assert(S>=0)
+    assert(S<=1)
+    F = frames_to_next_turn/45.0
+    F = min(F,1.0)
+    assert(F>=0)
+    assert(F<=1)
+    R = rps/75.0
+    R = min(R,1.0)
+    assert(R>=0)
+    assert(R<=1)
+    return img_lst,[S,F,R]
+
+"""
+il,tl=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,(-15,-6));
+for img in il:
+    plt.figure(9)
+    plt.clf()
+    mi(img,9,img_title=d2s(tl))
+    plt.pause(0.0001)
+"""
+
+
+
+####################################################
+
+
 
 
 all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
-k = sorted(all_runs_dic.keys())
-  
-play_range = (0,5*15)
-#i = input('Enter k index: ')
-
-some_data['current_key'] = k[0]
-some_data['all_runs_dic'] = all_runs_dic
-some_data['play_range'] = play_range
-
-#plot_run(all_runs_dic[some_data['current_key']])
+steer_bins = get_steer_bins(all_runs_dic)
+img_dic = {}
 
 
-"""
-steer_list = []
-for k in all_runs_dic:
-    rd = all_runs_dic[k]
-    for i in range(len(rd['train_frames'])):
-        f = rd['train_frames'][i]
-        if f:
-            steer_list.append(rd['steer'][i])
-plt.figure('steer hist')
-plt.clf()
-bw = 1/2.0
-bins = np.arange(-1,1+2*bw,bw)-bw/2.0 # = array([-1.25, -0.75, -0.25,  0.25,  0.75,  1.25])
-plt.hist(steer_list,bins);
+if USE_GRAPHICS:
+    k = sorted(all_runs_dic.keys())
+    play_range = (0,5*15)
+    some_data = {}
+    some_data['current_key'] = k[0]
+    some_data['all_runs_dic'] = all_runs_dic
+    some_data['play_range'] = play_range
 
-dsteer_list = []
-for k in all_runs_dic:
-    rd = all_runs_dic[k]
-    for i in range(len(rd['train_frames'])):
-        f = rd['train_frames'][i]
-        if f:
-            dsteer_list.append(rd['dsteer'][i])
-plt.figure('dsteer hist')
-plt.clf()
-bw = 1/64.0
-bins = np.arange(-2,2+2*bw,bw)-bw/2.0 # = array([-1.25, -0.75, -0.25,  0.25,  0.75,  1.25])
-plt.hist(dsteer_list,bins);
-
-
-for b in sb['center']:
-    r=b[0]
-    n=b[1]
-    plt.clf()
-    plt.pause(0.1)
-    animate_frames(all_runs_dic[r],n-14,n-5,100,d2s(r,n,all_runs_dic[r]['steer'][(n-14):n]))
-    #plt.clf()
-    good = raw_input('Good? ')
-
-
-
-# choose bin
-# choose random entry to get (k,i)
-# for that (k,i) get list of images, get (steer, rps, frames_to_next_turn)
-# [first decide if mirrored or not, then modify values]
-# load images into appropriate image dictionary
-"""
 
 
 
