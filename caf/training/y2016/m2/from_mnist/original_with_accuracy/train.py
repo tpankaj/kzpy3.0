@@ -4,11 +4,12 @@
 from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *; #safe_solver_step(solver)
 
 '''
-
-from kzpy3.vis import *
 import caffe
-plt.ion()
-plt.show()
+USE_GRAPHICS = False
+if USE_GRAPHICS:
+	from kzpy3.vis import *
+	plt.ion()
+	plt.show()
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
