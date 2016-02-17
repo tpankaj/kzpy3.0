@@ -1,7 +1,7 @@
 '''
 16 Feb 2016
 
-from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *; safe_solver_step(solver)
+from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *; #safe_solver_step(solver)
 
 '''
 
@@ -64,7 +64,7 @@ def show_solver_step(solver):
 	plt.ylim((0,1))
 
 
-def test_solver(solver,n):
+def test_solver(solver,n,fig=100):
 	St_list = []
 	Ft_list = []
 	Rt_list = []
@@ -81,11 +81,11 @@ def test_solver(solver,n):
 		Fo_list.append(o[1])
 		Rt_list.append(t[2])
 		Ro_list.append(o[2])
-	plt.figure(100)
+	plt.figure(fig,(5,7))
 	plt.clf()
-	plt.plot(St_list,So_list,'.',label='steer')
-	plt.plot(Ft_list,Fo_list,'.',label='frames to turn')
-	plt.plot(Rt_list,Ro_list,'.',label='rot')
+	plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
+	plt.plot(Rt_list,Ro_list,'rx',label='rot')
+	plt.plot(St_list,So_list,'bo',label='steer')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
 	plt.legend()
