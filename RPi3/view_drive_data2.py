@@ -334,7 +334,7 @@ def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6))
     R = min(R,1.0)
     assert(R>=0)
     assert(R<=1)
-    return img_lst,[S,F,R]
+    return img_lst,[S,0*F,0*R]
 
 """
 il,tl=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,(-15,-6));

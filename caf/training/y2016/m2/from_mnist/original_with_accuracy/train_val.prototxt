@@ -65,7 +65,7 @@ layer {
   bottom: "py_image_data"
   top: "conv1"
   convolution_param {
-    num_output: 96 # 20 in first pass
+    num_output: 96
     kernel_size: 5
     stride: 2
     weight_filler {
@@ -86,7 +86,7 @@ layer {
   top: "pool1"
   pooling_param {
     pool: MAX
-    kernel_size: 3 # 2
+    kernel_size: 3
     stride: 2
   }
 }
@@ -97,9 +97,9 @@ layer {
   bottom: "pool1"
   top: "conv2"
   convolution_param {
-    num_output: 256 # 50
+    num_output: 256
     kernel_size: 5
-    group: 2 # was no group
+    group: 2
     weight_filler {
       type: "xavier"
     }
@@ -118,7 +118,7 @@ layer {
   top: "pool2"
   pooling_param {
     pool: MAX
-    kernel_size: 3 #2
+    kernel_size: 3
     stride: 2
   }
 }
@@ -129,7 +129,7 @@ layer {
   bottom: "pool2"
   top: "ip1"
   inner_product_param {
-    num_output: 500
+    num_output: 512
     weight_filler {
       type: "xavier"
     }

@@ -88,7 +88,8 @@ def test_solver(solver,n,fig=100):
 	plt.plot(St_list,So_list,'bo',label='steer')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
-	plt.legend()
+	plt.title(np.corrcoef(St_list,So_list)[0,1])
+	#plt.legend()
 	plt.ion()
 	plt.show()
 
