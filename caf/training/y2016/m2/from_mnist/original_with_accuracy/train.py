@@ -5,8 +5,14 @@ from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import 
 
 '''
 import caffe
-USE_GRAPHICS = False
-if USE_GRAPHICS:
+from kzpy3.utils import *
+
+ON_CLUSTER = False
+if home_path == '/global/home/users/karlz':
+	ON_CLUSTER = True
+
+
+if not ON_CLUSTER:
 	from kzpy3.vis import *
 	plt.ion()
 	plt.show()
