@@ -334,18 +334,36 @@ def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6))
     R = min(R,1.0)
     assert(R>=0)
     assert(R<=1)
-    return img_lst,[S,0*F,0*R]
+    #return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
+    return img_lst,[S,F,R]
 
 """
-il,tl=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,(-15,-6));
-for img in il:
-    plt.figure(9)
-    plt.clf()
-    mi(img,9,img_title=d2s(tl))
-    plt.pause(0.0001)
+for j in range(100):
+    il,tl=get_caffe_input_target_(img_dic,steer_bins,all_runs_dic,(-15,-6));
+    for img in il:
+        plt.figure(9)
+        plt.clf()
+        mi(img,9,img_title=d2s(INDEX))
+        plt.pause(0.0001)
 """
 
 
+current_key = '14Feb16_17h33m13s_scl=25_mir=0'
+INDEX = 2000
+def ___get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+    global INDEX
+    run_data_dic = all_runs_dic[current_key]
+    img_lst = []
+    for i in range(INDEX,INDEX+9):
+        img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],run_data_dic['img_lst'][i])/255.0-0.5)
+    INDEX += 1
+    return img_lst,[0,0,0]
+
+"""
+from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *
+solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/steer_only/model_iter_3200000.caffemodel'))
+for i in range(1000): test_solver2(solver)
+"""
 
 ####################################################
 
