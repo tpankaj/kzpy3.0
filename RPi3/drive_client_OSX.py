@@ -6,7 +6,7 @@ sudo python kzpy3/RPi3/RPi_server.py
 python kzpy3/RPi3/osx_client.py
 
 """
-
+CAFFE_DRIVE = True
 from kzpy3.utils import *
 print os.path.basename(sys.argv[0])
 
@@ -61,6 +61,12 @@ wait_t = 0.1
 while True:
     try:
         d = decode_serial_string(ser.readline())
+        if CAFFE_DRIVE:
+            try:
+                caffe_steer = np.load(opjh('Desktop/caffe_command.npy'))[0]
+                d[0] = caffe_steer
+            except Exception, e:
+                print(d2s(os.path.basename(sys.argv[0]),':',e))
         t = time.time()
         if t - sent_t > wait_t:
             sent_t = t
