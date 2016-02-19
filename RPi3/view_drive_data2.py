@@ -8,9 +8,35 @@ K40 GPU
 budget (materials vs salary)
 
 Jetson GPU
+
+
+review of runs
+09Feb16_12h10m58s_scl=25_mir=1 bad for training
+09Feb16_13h37m22s_scl=25_mir=0 good to 1500
+
+09Feb16_13h40m42s_scl=25_mir=0 good to 2600
+10Feb16_08h25m38s_scl=25_mir=0 delete
+10Feb16_08h31m21s_scl=25_mir=0 good to 2400
+10Feb16_08h56m14s_scl=25_mir=0 good to 3500
+10Feb16_09h03m26s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 4829 to 4876
+10Feb16_09h15m53s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 8185 to 8215
+
+13Feb16_08h29m40s_scl=25_mir=0 delete
+13Feb16_18h09m00s_scl=25_mir=0 too dark
+13Feb16_18h17m34s_scl=25_mir=0 too dark
+14Feb16_11h34m14s_scl=25_mir=0 delete
+14Feb16_12h43m16s_scl=25_mir=0 delete
+14Feb16_15h00m14s_scl=25_mir=0 delete
+
+09Feb16_14h19m10s_scl=25_mir=0 good to 6400
+
+14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
+
 """
 
 USE_GRAPHICS = False
+
+CAFFE_TRAINING_MODE = False#True#
 
 from kzpy3.utils import *
 
@@ -155,29 +181,7 @@ def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
         m[i] = min(ctr-i,max_thresh)
     return m
 
-"""
-review of runs
-09Feb16_12h10m58s_scl=25_mir=1 bad for training
-09Feb16_13h37m22s_scl=25_mir=0 good to 1500
 
-09Feb16_13h40m42s_scl=25_mir=0 good to 2600
-10Feb16_08h25m38s_scl=25_mir=0 delete
-10Feb16_08h31m21s_scl=25_mir=0 good to 2400
-10Feb16_08h56m14s_scl=25_mir=0 good to 3500
-10Feb16_09h03m26s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 4829 to 4876
-10Feb16_09h15m53s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 8185 to 8215
-
-13Feb16_08h29m40s_scl=25_mir=0 delete
-13Feb16_18h09m00s_scl=25_mir=0 too dark
-13Feb16_18h17m34s_scl=25_mir=0 too dark
-14Feb16_11h34m14s_scl=25_mir=0 delete
-14Feb16_12h43m16s_scl=25_mir=0 delete
-14Feb16_15h00m14s_scl=25_mir=0 delete
-
-09Feb16_14h19m10s_scl=25_mir=0 good to 6400
-
-14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
-"""
 
 
 def plot_run(all_runs_dic,key_index):
@@ -307,6 +311,7 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
     frame_names = []
     for i in range(frame_range[0]+n,frame_range[1]+n):
         frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
+    """
     if Graphics:
         for f in frame_names:
             img = imread(f)
@@ -314,29 +319,73 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
             plt.clf()
             mi(img,9)
             plt.pause(0.0001)
+    """
     return (b,r,n,steer,frames_to_next_turn,rps,frame_names)
 
 
+if CAFFE_TRAINING_MODE:
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        img_lst = []
+        for f in frame_names:
+            img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+        S = steer/200.0 + 0.5
+        assert(S>=0)
+        assert(S<=1)
+        F = frames_to_next_turn/45.0
+        F = min(F,1.0)
+        assert(F>=0)
+        assert(F<=1)
+        R = rps/75.0
+        R = min(R,1.0)
+        assert(R>=0)
+        assert(R<=1)
+        #return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
+        return img_lst,[S,F,R]
 
+else:
+    img_top_folder = opjh('Desktop/RPi_data')
+    _,img_dirs = dir_as_dic_and_list(img_top_folder)
+    ctimes = []
+    for d in img_dirs:
+        ctimes.append(os.path.getmtime(opj(img_top_folder,d)))
+    sort_indicies = [i[0] for i in sorted(enumerate(ctimes), key=lambda x:x[1])]
+    most_recent_img_dir = img_dirs[sort_indicies[-1]]
+    print most_recent_img_dir
+    unix(d2s('mkdir -p',opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
+    def get_caffe_input_target(img_dic,_ignore1_,_ignore2_,_ignore3_):
+        _,img_files = dir_as_dic_and_list(opj(img_top_folder,most_recent_img_dir))
+        if len(img_files) > 9:
+            img_lst = []
+            for i in range(-10,-1): # = [-10, -9, -8, -7, -6, -5, -4, -3, -2]
+                # we avoid loading the most recent image to avoid 'race' conditions.
+                f = img_files[i]
+                #print f
+                img = imread_from_img_dic(img_dic,opj(img_top_folder,most_recent_img_dir),f)
+                img = img.mean(axis=2)
+                img = imresize(img,25)/255.0-0.5
+                img_lst.append(img)
+            if len(img_files) > 10:
+                for f in img_files[:-10]:
+                    unix(d2s('mv',opj(img_top_folder,most_recent_img_dir,f),opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
+        else:
+            dummy = np.random.random((56,75))
+            for i in range(9):
+                img_lst.append(dummy)
+        return img_lst,[0,0,0]
+
+"""    
+current_key = '14Feb16_17h33m13s_scl=25_mir=0'
+INDEX = 2000
 def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
-    b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+    global INDEX
+    run_data_dic = all_runs_dic[current_key]
     img_lst = []
-    for f in frame_names:
-        img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
-    S = steer/200.0 + 0.5
-    assert(S>=0)
-    assert(S<=1)
-    F = frames_to_next_turn/45.0
-    F = min(F,1.0)
-    assert(F>=0)
-    assert(F<=1)
-    R = rps/75.0
-    R = min(R,1.0)
-    assert(R>=0)
-    assert(R<=1)
-    #return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
-    return img_lst,[S,F,R]
-
+    for i in range(INDEX,INDEX+9):
+        img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],run_data_dic['img_lst'][i])/255.0-0.5)
+    INDEX += 1
+    return img_lst,[0,0,0]
+"""
 """
 for j in range(100):
     il,tl=get_caffe_input_target_(img_dic,steer_bins,all_runs_dic,(-15,-6));
@@ -346,19 +395,6 @@ for j in range(100):
         mi(img,9,img_title=d2s(INDEX))
         plt.pause(0.0001)
 """
-
-
-current_key = '14Feb16_17h33m13s_scl=25_mir=0'
-INDEX = 2000
-def ___get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
-    global INDEX
-    run_data_dic = all_runs_dic[current_key]
-    img_lst = []
-    for i in range(INDEX,INDEX+9):
-        img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],run_data_dic['img_lst'][i])/255.0-0.5)
-    INDEX += 1
-    return img_lst,[0,0,0]
-
 """
 from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *
 solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/steer_only/model_iter_3200000.caffemodel'))
@@ -368,11 +404,14 @@ for i in range(1000): test_solver2(solver)
 ####################################################
 
 
-
-
-all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
-steer_bins = get_steer_bins(all_runs_dic)
 img_dic = {}
+
+if CAFFE_TRAINING_MODE:
+    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
+    steer_bins = get_steer_bins(all_runs_dic)
+else:
+    all_runs_dic = {}
+    steer_bins = {}
 
 
 if USE_GRAPHICS:

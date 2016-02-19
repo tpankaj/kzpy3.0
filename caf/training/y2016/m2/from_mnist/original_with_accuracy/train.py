@@ -130,6 +130,7 @@ def test_solver(solver,n,fig=100):
 
 """
 solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy/model_iter_3200000.caffemodel'))
+solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_4800000.caffemodel'))
 """
 o_list = [0,0,0,0,0]
 def test_solver2(solver):
@@ -154,19 +155,22 @@ def test_solver2(solver):
 
 def view_filters(solver,fig=1):
 	filters = solver.net.params['conv1'][0].data
-	blnk = np.zeros((27,27))
+	blnk = np.zeros((27,27*10))
 	blnk[0,0] = -0.333/2.0
 	blnk[0,1] = 0.333/2.0
-	plt.figure(fig)
-	for f in range(96):
-		for i in range(8,-1,-1):
+	#plt.figure(fig)
+	for j in range(100):
+		for i in range(0,9): #(8,-1,-1):
 			plt.clf()
-			blnk[7:18,7:18] = filters[f,i,:,:]
+			for f in range(10):#96):
+				blnk[7:18,(f*14+7):(f*14+18)] = filters[f,i,:,:]
 			mi(blnk,figure_num=fig,img_title=d2s(f))
 			plt.pause(0.05)
-		blnk[7:18,7:18]=0
-		mi(blnk,figure_num=fig,img_title=d2s(f))
-		plt.pause(1)
+		blnk *= 0
+		blnk[0,0] = -0.333/2.0
+		blnk[0,1] = 0.333/2.0
+		#mi(blnk,figure_num=fig,img_title=d2s(f))
+		plt.pause(0.5)
 
 
 
