@@ -40,7 +40,7 @@ GPIO.setup(GPIO_REED, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 reed_close = 0
 rps = 0
-reed_close_times = [0,0]
+reed_close_times = [0,time.time()]
 
 def my_callback(channel):
     global reed_close
