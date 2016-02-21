@@ -186,8 +186,8 @@ def view_filters2(solver,fig=1):
 			mi(blnk,figure_num=fig,img_title=d2s(f))
 			plt.pause(0.05)
 		blnk *= 0
-		blnk[0,0] = -0.333/2.0
-		blnk[0,1] = 0.333/2.0
+		blnk[0,0] = -0.333/4.0
+		blnk[0,1] = 0.333/4.0
 		#mi(blnk,figure_num=fig,img_title=d2s(f))
 		plt.pause(0.5)
 

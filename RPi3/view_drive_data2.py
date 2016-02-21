@@ -34,7 +34,7 @@ review of runs
 
 """
 
-USE_GRAPHICS = True
+USE_GRAPHICS = False
 
 CAFFE_TRAINING_MODE = True#
 
@@ -251,6 +251,8 @@ def plot_run(all_runs_dic,key_index):
     plt.plot(run_data_dic['steer'],'b',label='steer')
     #plt.plot(run_data_dic['dsteer'],'r',label='dsteer')
     plt.plot(2.5+run_data_dic['rand_control']/4.0,'r',label='rand_control')
+    #plt.plot(run_data_dic['left_range']/100.0,'go',label='left_range')
+    #plt.plot(run_data_dic['right_range']/100.0,'ro',label='right_range')
     plt.plot(run_data_dic['speed'],'k',label='speed')
     plt.plot(run_data_dic['rps']/3.0,'g',label='rps/3')
     plt.plot(run_data_dic['timestamp_deltas']-0.9,'r',label='timestamp_deltas')
@@ -384,8 +386,8 @@ if CAFFE_TRAINING_MODE:
         R = min(R,1.0)
         assert(R>=0)
         assert(R<=1)
-        #return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
-        return img_lst,[S,F,R]
+        return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
+        #return img_lst,[S,F,R]
 
 else:
     img_top_folder = opjh('Desktop/RPi_data')
@@ -451,7 +453,7 @@ for i in range(1000): test_solver2(solver)
 img_dic = {}
 
 if CAFFE_TRAINING_MODE:
-    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_caffe'))
+    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_scale_50_BW'))
     steer_bins = get_steer_bins(all_runs_dic)
 else:
     all_runs_dic = {}
