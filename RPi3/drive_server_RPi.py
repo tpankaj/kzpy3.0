@@ -185,15 +185,15 @@ def update_driving(buf):
         speed = 0
         cruise = 0
 
-    """
-    if left_range < 50 or right_range < 50:
+    
+    if left_range < 30:# or right_range < 50:
         if speed > 0:
             steer = 0
             speed = 0
             cruise = 0
             rand_control = False
             print(d2s('Proximity warning, auto stopping!!!!!!!, range =',(left_range,right_range)))
-    """
+    
     if cruise:
         print bcolors.WARNING+"cruise on!!!!"+ bcolors.ENDC
         cruise_control = True
