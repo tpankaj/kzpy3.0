@@ -40,6 +40,7 @@ GPIO.setup(GPIO_REED, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 reed_close = 0
 rps = 0
+reed_close_times = [0,0]
 
 def my_callback(channel):
     global reed_close
@@ -48,6 +49,7 @@ def my_callback(channel):
     else:
         #print "Falling edge detected" 
         reed_close += 1
+        advance(reed_close_times,time.time())
 
 GPIO.add_event_detect(GPIO_REED, GPIO.BOTH, callback=my_callback)
 #
@@ -205,12 +207,22 @@ def update_driving(buf):
     if cruise_control:
         #cruise_speed += 0.01*(rps-cruise_rps)
         
+        if rps > 0:
+            cruise_speed += 0.03 * (cruise_rps - rps)/rps
+        else:
+            cruise_speed = 0.75
+        if cruise_speed > 1.0:
+            cruise_speed = 1.0
+        if cruise_speed < -1.0:
+            cruise_speed = -1.0 
+        """
         if rps > 1.1 * cruise_rps:
             cruise_speed -= 0.003
         elif rps < 0.9 * cruise_rps:
             cruise_speed += 0.003
         else:
             pass
+        """
         
         speed = cruise_speed
 
@@ -297,11 +309,14 @@ try:
                     start_t = time.time()
                     rps = reed_close / d_time  / 2.0 # two magnets
                     reed_close = 0
+                print((reed_close_lst,2.0*(reed_close_lst[1]-reed_close_lst[0])))
                 update_driving(buf)
+                """
                 try:
                     left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
                 except Exception, e:
                     print e
+                """
                 #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
                 #print(d2s('range,rps =',(left_range,right_range,rps)))
             else:
