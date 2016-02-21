@@ -89,16 +89,20 @@ connection.settimeout(TIMEOUT_DURATION)
 
 def ultrasonic_range_measure(GPIO_trigger,GPIO_echo):
     #print('ultrasonic_range_measure...')
+    enter_time = time.time()
+    timeout = 0.1
     GPIO.output(GPIO_trigger, True)
     time.sleep(0.00001)
     GPIO.output(GPIO_trigger, False)
     start = time.time()
     while GPIO.input(GPIO_echo)==0:
       start = time.time()
+      if time.time() - enter_time > timeout:
+        raise ValueError(d2s('range measure timeout 1'))
     while GPIO.input(GPIO_echo)==1:
         stop = time.time()
-        if time.time()-start > 0.1:
-            break
+        if time.time() - enter_time > timeout:
+            raise ValueError(d2s('range measure timeout 1'))
     elapsed = stop-start
     # Distance pulse travelled in that time is time
     # multiplied by the speed of sound (cm/s)
@@ -294,7 +298,10 @@ try:
                     rps = reed_close / d_time  / 2.0 # two magnets
                     reed_close = 0
                 update_driving(buf)
-                #left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+                try:
+                    left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
+                except Exception, e:
+                    print e
                 #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
                 #print(d2s('range,rps =',(left_range,right_range,rps)))
             else:

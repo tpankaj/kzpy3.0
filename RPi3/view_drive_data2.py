@@ -34,9 +34,9 @@ review of runs
 
 """
 
-USE_GRAPHICS = False
+USE_GRAPHICS = True
 
-CAFFE_TRAINING_MODE = False#True#
+CAFFE_TRAINING_MODE = True#
 
 from kzpy3.utils import *
 
@@ -135,6 +135,7 @@ def imread_from_img_dic(img_dic,path,fname):
     return img_dic[fname]
 
 
+####################
 def run_to_scaled_BW(img_dic,run_data_dic,scale_percent,mirror=False):
     mirror_str = '_mir=0'
     if mirror:
@@ -164,6 +165,49 @@ def scale_BW_mirror_all_runs(img_dic,all_runs_dic,scale_percent):
         for mirror in [False,True]:
             print mirror
             run_to_scaled_BW(img_dic,all_runs_dic[k],scale_percent,mirror)
+
+
+
+
+def run_to_scaled_color_mod(img_dic,run_data_dic,scale_percent,mirror=False,to_BW=False):
+    mirror_str = '_mir=0'
+    if mirror:
+        mirror_str = '_mir=1'
+    dst_path = d2n(run_data_dic['run_path'],'_scl=',scale_percent,mirror_str)
+    unix(d2s('mkdir -p',dst_path))
+    _,l=dir_as_dic_and_list(run_data_dic['run_path'])
+    for m in l:
+        n = m.split('_')
+        p = int(n[2].split('=')[1])
+        img = imread_from_img_dic(img_dic,run_data_dic['run_path'],m)
+        if scale_percent < 100:
+            img_scaled = imresize(img,scale_percent)
+        else:
+            img_scaled = img
+        if to_BW:
+            img_scaled = img_scaled.mean(axis=2)
+        if mirror:
+            p = -p
+            img_scaled = np.fliplr(img_scaled)
+        n[2] = d2n('str=',p)
+        f = '_'.join(n)
+        f0 = f.split('_')
+        if scale_percent <= 50:
+            extension = '_.png'
+        else:
+            extension = '_.jpg'            
+        f2 = f.replace('.jpg',d2n('scl=',scale_percent,mirror_str,extension))
+        #print(d2s(m,'to',f2))
+        imsave(opj(dst_path,f2),img_scaled)
+
+def scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,scale_percent,to_BW=False):
+    for k in all_runs_dic:
+        print k
+        for mirror in [False,True]:
+            print mirror
+            run_to_scaled_color_mod(img_dic,all_runs_dic[k],scale_percent,mirror,to_BW)
+
+####################
 
 
 
@@ -407,7 +451,7 @@ for i in range(1000): test_solver2(solver)
 img_dic = {}
 
 if CAFFE_TRAINING_MODE:
-    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs'))
+    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_caffe'))
     steer_bins = get_steer_bins(all_runs_dic)
 else:
     all_runs_dic = {}

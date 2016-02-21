@@ -20,7 +20,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 def setup_solver():
-	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px.prototxt"))
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50.prototxt"))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
@@ -171,6 +171,26 @@ def view_filters(solver,fig=1):
 		blnk[0,1] = 0.333/2.0
 		#mi(blnk,figure_num=fig,img_title=d2s(f))
 		plt.pause(0.5)
+
+
+def view_filters2(solver,fig=1):
+	filters = solver.net.params['conv1'][0].data
+	blnk = np.zeros((27,27*10))
+	blnk[0,0] = -0.333/2.0
+	blnk[0,1] = 0.333/2.0
+
+	for f in range(96):
+		for i in range(0,9): #(8,-1,-1):
+			plt.clf()
+			blnk[7:18,(1*14+7):(1*14+18)] = filters[f,i,:,:]
+			mi(blnk,figure_num=fig,img_title=d2s(f))
+			plt.pause(0.05)
+		blnk *= 0
+		blnk[0,0] = -0.333/2.0
+		blnk[0,1] = 0.333/2.0
+		#mi(blnk,figure_num=fig,img_title=d2s(f))
+		plt.pause(0.5)
+
 
 
 
