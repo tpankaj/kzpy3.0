@@ -185,7 +185,7 @@ def update_driving(buf):
         speed = 0
         cruise = 0
 
-    
+    """
     if left_range < 30:# or right_range < 50:
         if speed > 0:
             steer = 0
@@ -193,7 +193,7 @@ def update_driving(buf):
             cruise = 0
             rand_control = False
             print(d2s('Proximity warning, auto stopping!!!!!!!, range =',(left_range,right_range)))
-    
+    """
     if cruise:
         print bcolors.WARNING+"cruise on!!!!"+ bcolors.ENDC
         cruise_control = True
@@ -316,12 +316,12 @@ try:
                     rps = 0
 
                 update_driving(buf)
-                
+                """
                 try:
                     left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
                 except Exception, e:
                     print e
-                
+                """
                 #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
                 print(d2s('range =',(dec2(left_range))))#,right_range,rps)))
             else:
