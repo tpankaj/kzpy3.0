@@ -316,12 +316,12 @@ try:
                     rps = 0
 
                 update_driving(buf)
-                """
+                
                 try:
                     left_range = ultrasonic_range_measure(GPIO_TRIGGER_LEFT,GPIO_ECHO_LEFT)
                 except Exception, e:
                     print e
-                """
+                
                 #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
                 #print(d2s('range,rps =',(left_range,right_range,rps)))
             else:
