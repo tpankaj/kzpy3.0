@@ -161,9 +161,8 @@ def update_driving(buf):
     global right_range
     global rps
 
-
     b = buf.split(' ')
-    print buf
+    #print buf
     if b[3] != 'okay':
         sleep_time = 2
         pwm_motor.ChangeDutyCycle(0)
