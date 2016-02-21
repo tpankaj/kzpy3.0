@@ -210,7 +210,7 @@ def update_driving(buf):
         if rps > 0:
             cruise_speed += 0.003 * (cruise_rps - rps)/rps
         else:
-            cruise_speed = 0.1
+            cruise_speed = 0.5
         if cruise_speed > 1.0:
             cruise_speed = 1.0
         if cruise_speed < -1.0:
