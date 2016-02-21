@@ -262,7 +262,7 @@ def update_driving(buf):
 
     #print drive_data
 
-    print(steer,speed,rps,rand_control,cruise_control)
+    print(steer,speed,int(100*rps)/100.0,rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
@@ -310,7 +310,7 @@ try:
                     rps = reed_close / d_time  / 2.0 # two magnets
                     reed_close = 0
                 #print((reed_close_times,2.0*(reed_close_times[1]-reed_close_times[0])))
-                rps = reed_close_times[1]-reed_close_times[0]
+                rps = 2.0*(reed_close_times[1]-reed_close_times[0])
                 if time.time() - reed_close_times[1] > 2:
                     rps = 0
 
