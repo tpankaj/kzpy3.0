@@ -5,6 +5,9 @@ print os.path.basename(sys.argv[0])
 
 import RPi.GPIO as GPIO
 
+def dec2(f):
+    return int(100*f)/100.0
+
 STEER_PIN = 35
 MOTOR_PIN = 37
 NEUTRAL = 7.0
@@ -210,7 +213,7 @@ def update_driving(buf):
         if rps > 0:
             cruise_speed += 0.003 * (cruise_rps - rps)/rps
         else:
-            cruise_speed = 0.5
+            cruise_speed += 0.003
         if cruise_speed > 1.0:
             cruise_speed = 1.0
         if cruise_speed < -1.0:
@@ -262,7 +265,7 @@ def update_driving(buf):
 
     #print drive_data
 
-    print(steer,speed,int(100*rps)/100.0,rand_control,cruise_control)
+    print(steer,dec2(speed),dec2(rps),dec2(cruise_rps),rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
     pwm_steer.ChangeDutyCycle(servo_ds)
@@ -275,7 +278,6 @@ def update_driving(buf):
     elif steer < -0.50:
         GPIO.output(GPIO_LED2, True)
     """
-
 
 
 
@@ -311,7 +313,7 @@ try:
                     reed_close = 0
                 #print((reed_close_times,2.0*(reed_close_times[1]-reed_close_times[0])))
                 rps = 1.0/(2.0*(reed_close_times[1]-reed_close_times[0]))
-                if time.time() - reed_close_times[1] > 2:
+                if time.time() - reed_close_times[1] > 1:
                     rps = 0
 
                 update_driving(buf)
