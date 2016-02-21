@@ -310,7 +310,7 @@ try:
                     rps = reed_close / d_time  / 2.0 # two magnets
                     reed_close = 0
                 #print((reed_close_times,2.0*(reed_close_times[1]-reed_close_times[0])))
-                rps = 2.0*(reed_close_times[1]-reed_close_times[0])
+                rps = 1.0/(2.0*(reed_close_times[1]-reed_close_times[0]))
                 if time.time() - reed_close_times[1] > 2:
                     rps = 0
 
