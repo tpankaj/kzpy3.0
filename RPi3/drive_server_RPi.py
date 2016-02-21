@@ -323,7 +323,7 @@ try:
                     print e
                 
                 #right_range = ultrasonic_range_measure(GPIO_TRIGGER_RIGHT,GPIO_ECHO_RIGHT)
-                #print(d2s('range,rps =',(left_range,right_range,rps)))
+                print(d2s('range =',(dec2(left_range))))#,right_range,rps)))
             else:
                 print("\a *** No Data received from socket ***")
                 cleanup_and_exit()
