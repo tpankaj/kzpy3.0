@@ -78,7 +78,7 @@ while True:
                 buf += '?'
             assert len(buf) == 64
             clientsocket.send(buf)
-            print d
+            #print d
     except KeyboardInterrupt:
         sys.exit()
     except IOError, e:

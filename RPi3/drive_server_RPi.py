@@ -309,7 +309,7 @@ try:
                     start_t = time.time()
                     rps = reed_close / d_time  / 2.0 # two magnets
                     reed_close = 0
-                print((reed_close_lst,2.0*(reed_close_times[1]-reed_close_times[0])))
+                print((reed_close_times,2.0*(reed_close_times[1]-reed_close_times[0])))
                 update_driving(buf)
                 """
                 try:
