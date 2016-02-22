@@ -34,9 +34,9 @@ review of runs
 
 """
 
-USE_GRAPHICS = False
+USE_GRAPHICS = True
 
-CAFFE_TRAINING_MODE = True#
+CAFFE_TRAINING_MODE = False#
 
 from kzpy3.utils import *
 
@@ -461,8 +461,9 @@ else:
 
 
 if USE_GRAPHICS:
+    all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi_data/caffe'))
     k = sorted(all_runs_dic.keys())
-    play_range = (0,5*15)
+    play_range = (0,15*15)
     some_data = {}
     some_data['current_key'] = k[0]
     some_data['all_runs_dic'] = all_runs_dic
