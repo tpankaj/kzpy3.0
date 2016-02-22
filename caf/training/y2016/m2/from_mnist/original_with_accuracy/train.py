@@ -1,7 +1,11 @@
 '''
 16 Feb 2016
 
-from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *; #safe_solver_step(solver)
+from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *
+
+solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_scl100_RGB_nin_iter_100000.caffemodel'))
+
+safe_solver_step(solver)
 
 '''
 import caffe
@@ -20,7 +24,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 def setup_solver():
-	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50.prototxt"))
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl100_RGB_nin.prototxt"))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
@@ -78,6 +82,7 @@ def test_solver(solver,n,fig=100):
 	So_list = []
 	Fo_list = []
 	Ro_list = []
+	start_t = time.time()
 	for i in range(n):
 		try:
 			solver.net.forward()
@@ -91,6 +96,7 @@ def test_solver(solver,n,fig=100):
 			Ro_list.append(o[2])
 		except Exception,e:
 			print e
+	print(d2s('Speed =',n/(time.time()-start_t),'trials per second.'))
 	plt.figure(fig,(5,7))
 	plt.clf()
 	plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
@@ -192,6 +198,17 @@ def view_filters2(solver,fig=1):
 		plt.pause(0.5)
 
 
+"""
+filters = solver.net.params['conv1_RGB'][0].data
+for i in range(40):
+	a=filters[i,:,:,:].copy()
+	a=np.transpose(a,(1,2,0))
+	a -= a.min()
+	a /= a.max()
+	mi(a,img_title=d2s(i))
+	plt.pause(1)
 
+
+"""
 
 

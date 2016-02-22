@@ -33,12 +33,15 @@ review of runs
 14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
 
 """
+from kzpy3.utils import *
 
 USE_GRAPHICS = False
+CAFFE_TRAINING_MODE = True
+#CAFFE_FRAME_RANGE = (-15,-6)
+CAFFE_FRAME_RANGE = (-7,-6)
+#CAFFE_DATA = opjD('RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjD('RPi3_data/runs_scl_100_RGB')
 
-CAFFE_TRAINING_MODE = True#
-
-from kzpy3.utils import *
 
 if USE_GRAPHICS:
     from kzpy3.vis import *
@@ -261,6 +264,7 @@ def plot_run(all_runs_dic,key_index):
     plt.plot(run_data_dic['train_frames']/4.0+1.5,'c',label='train_frames')
     plt.title(run_data_dic['run_path'].split('/')[-1])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.ylim(-1.5,3.5)
     #plt.figure(3);plt.clf();
     #plt.hist(all_runs_dic[some_data['current_key']]['timestamp_deltas'],100);
     #plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
@@ -370,11 +374,14 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
 
 
 if CAFFE_TRAINING_MODE:
-    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=CAFFE_FRAME_RANGE):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
         for f in frame_names:
             img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+        if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
+            img = img_lst[0]
+            img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]
         S = steer/200.0 + 0.5
         assert(S>=0)
         assert(S<=1)
@@ -388,7 +395,6 @@ if CAFFE_TRAINING_MODE:
         assert(R<=1)
         return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
         #return img_lst,[S,F,R]
-
 else:
     img_top_folder = opjh('Desktop/RPi_data')
     _,img_dirs = dir_as_dic_and_list(img_top_folder)
@@ -453,7 +459,7 @@ for i in range(1000): test_solver2(solver)
 img_dic = {}
 
 if CAFFE_TRAINING_MODE:
-    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_scale_50_BW'))
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
 else:
     all_runs_dic = {}
@@ -461,6 +467,7 @@ else:
 
 
 if USE_GRAPHICS:
+    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_new'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,5*15)
     some_data = {}

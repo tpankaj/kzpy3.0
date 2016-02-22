@@ -20,8 +20,8 @@ class SimpleLayer4(caffe.Layer):
         if np.mod(ctr,100) == 0:
             print time.time()-last_time
             last_time = time.time()
-        img_lst,target_lst=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,(-15,-6))
-        for i in range(9):
+        img_lst,target_lst=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,CAFFE_FRAME_RANGE)
+        for i in range(len(img_lst)): #range(9):
             top[0].data[0,i,:,:] = img_lst[i]
         ctr += 1
     def backward(self, top, propagate_down, bottom):
