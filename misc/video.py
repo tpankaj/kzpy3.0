@@ -40,8 +40,9 @@ def video_to_frames(video_path,video_filename,desired_output_width,frames_per_fo
 """
 frame to video is not working, but here are alternatives:
     
-    ffmpeg  -r 1 -i %d.jpg output.avi
+    ffmpeg  -r 15 -i %d.jpg output.avi
     
+    [see http://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality]
     ffmpeg  -r 15 -i %d.jpg output.gif
 """
 
