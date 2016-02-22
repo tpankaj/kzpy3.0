@@ -3,7 +3,7 @@
 
 from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *
 
-solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_scl100_RGB_nin_iter_100000.caffemodel'))
+solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_scl50_nin/original_with_accuracy_11px_scl50_nin_iter_300000.caffemodel'))
 
 safe_solver_step(solver)
 
@@ -24,7 +24,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 def setup_solver():
-	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl100_RGB_nin.prototxt"))
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl100_RGB.prototxt"))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
@@ -199,7 +199,7 @@ def view_filters2(solver,fig=1):
 
 
 """
-filters = solver.net.params['conv1_RGB'][0].data
+filters = solver.net.params['conv1'][0].data
 for i in range(40):
 	a=filters[i,:,:,:].copy()
 	a=np.transpose(a,(1,2,0))

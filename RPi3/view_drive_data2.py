@@ -33,12 +33,16 @@ review of runs
 14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
 
 """
-
-USE_GRAPHICS = True
-
-CAFFE_TRAINING_MODE = False#
-
 from kzpy3.utils import *
+
+USE_GRAPHICS = False#True
+CAFFE_TRAINING_MODE = True#
+CAFFE_DATA = opjD('RPi3_data/runs_scl_100_RGB')
+CAFFE_FRAME_RANGE = (-7,-6)# (-15,-6) # 
+
+
+
+
 
 if USE_GRAPHICS:
     from kzpy3.vis import *
@@ -375,6 +379,9 @@ if CAFFE_TRAINING_MODE:
         img_lst = []
         for f in frame_names:
             img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+        if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
+            img = img_lst[0]
+            img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]
         S = steer/200.0 + 0.5
         assert(S>=0)
         assert(S<=1)
@@ -453,7 +460,8 @@ for i in range(1000): test_solver2(solver)
 img_dic = {}
 
 if CAFFE_TRAINING_MODE:
-    all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_scale_50_BW'))
+    #all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_scale_50_BW'))
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
 else:
     all_runs_dic = {}
