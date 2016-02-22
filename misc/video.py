@@ -37,6 +37,13 @@ def video_to_frames(video_path,video_filename,desired_output_width,frames_per_fo
     print(d2s('Saved',ctr,'frames in',fctr,'folders in ',np.int(time.time()-start_time),'seconds'))
     cap.release()
     #cv2.destroyAllWindows()
+"""
+frame to video is not working, but here are alternatives:
+    
+    ffmpeg  -r 1 -i %d.jpg output.avi
+    
+    ffmpeg  -r 15 -i %d.jpg output.gif
+"""
 
 def frame_to_video(img_folder):
     video = cv2.VideoWriter('video.avi',-1,1,(298,224))
