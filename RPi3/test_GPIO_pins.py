@@ -16,3 +16,4 @@ def test_pin(p):
 if __name__ == '__main__':
 	pin = input('Enter GPIO pin: ')
 	test_pin(pin)
+	GPIO.cleanup()
