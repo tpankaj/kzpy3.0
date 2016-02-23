@@ -89,6 +89,11 @@ pip install lockfile
 
 ##############################################################
 #
+add to end of .bashrc (don't use .bash_profile)
+
+alias SHUTDOWN="sudo shutdown -h -P 0"
+alias gpkzpy3="cd ~/kzpy3;git pull;cd"
+export PYTHONPATH=/home/pi:$PYTHONPATH
 #
 ##############################################################
 
