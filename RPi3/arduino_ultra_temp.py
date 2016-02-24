@@ -6,7 +6,8 @@ while True:
     print 'setup ser'
     buf = ''
     del ser
-    ser = serial.Serial('/dev/tty.usbmodem1421',9600)#,timeout=0.2)
+    #ser = serial.Serial('/dev/tty.usbmodem1421',9600)#,timeout=0.2)
+    ser = serial.Serial('/dev/ttyACM0',9600)#,timeout=0.2)
     while True: #'Out of range' not in buf:
         try:
             buf = ser.readline()
