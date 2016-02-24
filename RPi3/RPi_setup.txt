@@ -101,7 +101,7 @@ export PYTHONPATH=/home/pi:$PYTHONPATH
 
 ##############################################################
 #
-sudo apt-get install python-serial
+sudo apt-get install python-serial [not necessary]
 #
 ##############################################################
 
@@ -110,6 +110,7 @@ sudo apt-get install python-serial
 
 ##############################################################
 #
+sudo apt-get install gpsd gpsd-clients python-gps
 #
 ##############################################################
 
@@ -118,6 +119,33 @@ sudo apt-get install python-serial
 
 ##############################################################
 #
+from adafruit ultimate gps on the raspberry-pi.pdf
+[don't do this . . .]
+
+sudo vi /boot/cmdline.txt 
+
+change:
+
+dwc_otg.lpm_enable=0 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
+
+[actually was:]
+dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p6 rootfstype=ext4 elevator=deadline rootwait
+
+to:
+
+dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline rootwait
+[undid, because this kept computer from booting]
+
+sudo vi /etc/inittab
+And change:
+#Spawn a getty on Raspberry Pi serial line T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
+to:
+#Spawn a getty on Raspberry Pi serial line #T0:23:respawn:/sbin/getty -L ttyAMA0 115200 vt100
+That is, add a # to the beginning of the line!
+Note, check out if this affects Arduino use!
+[undid because I undid the thing above.]
+
+
 #
 ##############################################################
 
