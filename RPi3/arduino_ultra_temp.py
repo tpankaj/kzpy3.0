@@ -1,5 +1,7 @@
-import sys
-sys.path.insert(0, "/home/pi")
+RPI = True
+if RPI:
+    import sys
+    sys.path.insert(0, "/home/pi")
 from kzpy3.utils import *
 import serial
 
@@ -8,8 +10,11 @@ while True:
     print 'setup ser'
     buf = ''
     del ser
-    #ser = serial.Serial('/dev/tty.usbmodem1421',9600)#,timeout=0.2)
-    ser = serial.Serial('/dev/ttyACM0',9600)#,timeout=0.2)
+    
+    if RPI:
+        ser = serial.Serial('/dev/ttyACM0',9600)#,timeout=0.2)
+    else:
+        ser = serial.Serial('/dev/tty.usbmodem1421',9600)#,timeout=0.2)
     while True: #'Out of range' not in buf:
         try:
             buf = ser.readline()
