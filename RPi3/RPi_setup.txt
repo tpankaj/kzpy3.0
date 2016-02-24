@@ -68,9 +68,8 @@ git clone https://github.com/karlzipser/kzpy3.0.git
 
 ##############################################################
 #
-#sudo apt-get install python-scipy
-pip install scipy
-#
+sudo apt-get install python-scipy
+# [needed an effort]
 ##############################################################
 
 
@@ -102,6 +101,7 @@ export PYTHONPATH=/home/pi:$PYTHONPATH
 
 ##############################################################
 #
+sudo apt-get install python-serial
 #
 ##############################################################
 
