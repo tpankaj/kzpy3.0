@@ -24,7 +24,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 def setup_solver():
-	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50_BW.prototxt"))
+	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50.prototxt"))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
