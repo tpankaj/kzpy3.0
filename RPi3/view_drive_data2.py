@@ -35,8 +35,8 @@ review of runs
 """
 from kzpy3.utils import *
 
-USE_GRAPHICS = False#True
-CAFFE_TRAINING_MODE = True#
+USE_GRAPHICS = True#False#
+CAFFE_TRAINING_MODE = False#
 CAFFE_DATA = opjD('RPi3_data/runs_scl_100_RGB')
 CAFFE_FRAME_RANGE = (-7,-6)# (-15,-6) # 
 
@@ -265,6 +265,7 @@ def plot_run(all_runs_dic,key_index):
     plt.plot(run_data_dic['train_frames']/4.0+1.5,'c',label='train_frames')
     plt.title(run_data_dic['run_path'].split('/')[-1])
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.ylim(-1.3,3.5)
     #plt.figure(3);plt.clf();
     #plt.hist(all_runs_dic[some_data['current_key']]['timestamp_deltas'],100);
     #plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
@@ -397,7 +398,7 @@ if CAFFE_TRAINING_MODE:
         #return img_lst,[S,F,R]
 
 else:
-    img_top_folder = opjh('Desktop/RPi_data')
+    img_top_folder = opjh('Desktop/RPi3_data')
     _,img_dirs = dir_as_dic_and_list(img_top_folder)
     ctimes = []
     for d in img_dirs:
@@ -469,7 +470,8 @@ else:
 
 
 if USE_GRAPHICS:
-    all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi_data/caffe'))
+    print 'here'
+    all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_new'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,15*15)
     some_data = {}

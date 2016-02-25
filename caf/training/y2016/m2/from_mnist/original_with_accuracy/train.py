@@ -200,13 +200,14 @@ def view_filters2(solver,fig=1):
 
 """
 filters = solver.net.params['conv1'][0].data
-for i in range(40):
-	a=filters[i,:,:,:].copy()
+for i in range(96):
+	a=filters[i,:,:,:]
 	a=np.transpose(a,(1,2,0))
 	a -= a.min()
 	a /= a.max()
+	plt.clf()
 	mi(a,img_title=d2s(i))
-	plt.pause(1)
+	plt.pause(0.5)
 
 
 """
