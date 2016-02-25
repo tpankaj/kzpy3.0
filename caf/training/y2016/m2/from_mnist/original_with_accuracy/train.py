@@ -22,6 +22,9 @@ if not ON_CLUSTER:
 	plt.show()
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
+if host_name == 'redwood2':
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
 
 def setup_solver():
 	solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50.prototxt"))
