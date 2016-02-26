@@ -267,6 +267,8 @@ def update_driving(buf):
     print(steer,dec2(speed),dec2(rps),dec2(cruise_rps),rand_control,cruise_control)
     servo_ds = 9.43 + 2.0*steer
     motor_ds = 7.0 + 0.75*speed
+    assert(motor_ds) <= 7.0+0.75
+    assert(motor_ds) >= 7.0-0.75
     pwm_steer.ChangeDutyCycle(servo_ds)
     pwm_motor.ChangeDutyCycle(motor_ds)
     """
