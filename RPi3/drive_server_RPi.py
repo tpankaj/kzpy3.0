@@ -238,7 +238,7 @@ def update_driving(buf):
             GPIO.output(GPIO_LED1, True)
         if rand_control:
             if time.time() - rand_control_on_t > 0.75:
-                if np.abs(steer) > 0.25:#333:
+                if np.abs(steer) > 0.2:#333:
                     rand_control = False
                     rand_control_on_t = time.time()
                     print "rand_control OFF!!!!!!!"
