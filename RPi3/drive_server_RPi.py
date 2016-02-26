@@ -33,11 +33,12 @@ pwm_steer = GPIO.PWM(STEER_PIN,50)
 pwm_motor.start(NEUTRAL)
 pwm_steer.start(0)
 
+GPIO.output(GPIO_LED1, False)
 
 #GPIO.setup(GPIO_TRIGGER_RIGHT,GPIO.OUT)  # Trigger
 #GPIO.setup(GPIO_ECHO_RIGHT,GPIO.IN)      # Echo
-GPIO.setup(GPIO_TRIGGER_LEFT,GPIO.OUT)  # Trigger
-GPIO.setup(GPIO_ECHO_LEFT,GPIO.IN)      # Echo
+#GPIO.setup(GPIO_TRIGGER_LEFT,GPIO.OUT)  # Trigger
+#GPIO.setup(GPIO_ECHO_LEFT,GPIO.IN)      # Echo
 
 GPIO.setup(GPIO_REED, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
