@@ -22,6 +22,8 @@ import subprocess
 from pprint import pprint
 
 # - some definitions
+import socket
+host_name = socket.gethostname()
 home_path = os.path.expanduser("~")
 imread = scipy.misc.imread
 imsave = scipy.misc.imsave

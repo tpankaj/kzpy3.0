@@ -35,10 +35,10 @@ review of runs
 """
 from kzpy3.utils import *
 
-USE_GRAPHICS = True#False#
-CAFFE_TRAINING_MODE = False#
-CAFFE_DATA = opjD('RPi3_data/runs_scl_100_RGB')
-CAFFE_FRAME_RANGE = (-7,-6)# (-15,-6) # 
+USE_GRAPHICS = False#
+CAFFE_TRAINING_MODE = True#False#
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
 
 
