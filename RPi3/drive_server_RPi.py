@@ -16,10 +16,10 @@ GPIO_ECHO_RIGHT = 15
 GPIO_TRIGGER_LEFT = 19
 GPIO_ECHO_LEFT = 21
 GPIO_REED = 23
-#GPIO_LED1 = 29
-#GPIO_LED2 = 31
+GPIO_LED1 = 29
+GPIO_LED2 = 31
 
-out_pins = [STEER_PIN,MOTOR_PIN]#,GPIO_LED1,GPIO_LED2]
+out_pins = [STEER_PIN,MOTOR_PIN,GPIO_LED1,GPIO_LED2]
 def gpio_setup():
     print('gpio_setup')
     GPIO.setmode(GPIO.BOARD)
@@ -235,12 +235,14 @@ def update_driving(buf):
             rand_control_on_t = time.time()
             #rand_steer = (0.5 - 1.0 * np.random.random(1))[0] #before 13Feb2016
             rand_steer = (0.25 - 0.5 * np.random.random(1))[0]
+            GPIO.output(GPIO_LED1, True)
         if rand_control:
             if time.time() - rand_control_on_t > 0.75:
                 if np.abs(steer) > 0.25:#333:
                     rand_control = False
                     rand_control_on_t = time.time()
                     print "rand_control OFF!!!!!!!"
+                    GPIO.output(GPIO_LED1, False)
                 else:
                     pass#rand_steer = 0.0
         if rand_control:
