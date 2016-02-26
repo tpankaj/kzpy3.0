@@ -8,7 +8,7 @@ while True:
 		# Wait for a 'TPV' report and display the current time # To see all report data, uncomment the line below # print report
 		if report['class'] == 'TPV':
 			if hasattr(report, 'lat'):
-				print report.lat,report.lon,report.alt,report.speed,report.climb
+				print report.lat,report.lon,report.alt,report.speed,report.climb,report.heading
 	except KeyError:
 		pass
 	except KeyboardInterrupt:
