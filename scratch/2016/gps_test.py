@@ -7,8 +7,8 @@ while True:
 		report = session.next()
 		# Wait for a 'TPV' report and display the current time # To see all report data, uncomment the line below # print report
 		if report['class'] == 'TPV':
-			if hasattr(report, 'time'):
-				print report.time
+			if hasattr(report, 'latitude'):
+				print report.latitude
 	except KeyError:
 		pass
 	except KeyboardInterrupt:
