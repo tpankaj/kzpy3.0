@@ -15,7 +15,7 @@ ser = serial.Serial('/dev/tty.usbmodem1421',9600)
 #ser = serial.Serial('/dev/tty.usbmodem1411',9600)
 
 import socket, errno
-host = '192.168.43.20'
+host = '192.168.43.20'#'192.168.43.219'#
 port = 5000
 clientsocket = False
 
