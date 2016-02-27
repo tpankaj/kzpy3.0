@@ -1,51 +1,22 @@
-"""
-Top priority items:
 
-second car
-second RPi
-desktop linux machine
-K40 GPU
-budget (materials vs salary)
-
-Jetson GPU
-
-
-review of runs
-09Feb16_12h10m58s_scl=25_mir=1 bad for training
-09Feb16_13h37m22s_scl=25_mir=0 good to 1500
-
-09Feb16_13h40m42s_scl=25_mir=0 good to 2600
-10Feb16_08h25m38s_scl=25_mir=0 delete
-10Feb16_08h31m21s_scl=25_mir=0 good to 2400
-10Feb16_08h56m14s_scl=25_mir=0 good to 3500
-10Feb16_09h03m26s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 4829 to 4876
-10Feb16_09h15m53s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 8185 to 8215
-
-13Feb16_08h29m40s_scl=25_mir=0 delete
-13Feb16_18h09m00s_scl=25_mir=0 too dark
-13Feb16_18h17m34s_scl=25_mir=0 too dark
-14Feb16_11h34m14s_scl=25_mir=0 delete
-14Feb16_12h43m16s_scl=25_mir=0 delete
-14Feb16_15h00m14s_scl=25_mir=0 delete
-
-09Feb16_14h19m10s_scl=25_mir=0 good to 6400
-
-14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
-
-"""
 from kzpy3.utils import *
 
-USE_GRAPHICS = False#
-CAFFE_TRAINING_MODE = True#False#
+img_dic = {}
+steer_bins = {}
+all_runs_dic = {}
+
+CAFFE_TRAINING_MODE = 1#
+CAFFE_DEPLOY_MODE = 2
+USE_GRAPHICS = 3
+
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
+run_mode = USE_GRAPHICS
 
 
 
 
-if USE_GRAPHICS:
-    from kzpy3.vis import *
 
 def get_run_data(run_path):
     print('get_run_data')
@@ -122,8 +93,6 @@ def get_run_data(run_path):
     run_data_dic['dsteer'] = dsteer
     return run_data_dic
 
-
-
 def get_all_runs_dic(RPi3_data_path):
     all_runs_dic,_ = dir_as_dic_and_list(RPi3_data_path)
     for k in all_runs_dic:
@@ -131,15 +100,11 @@ def get_all_runs_dic(RPi3_data_path):
         all_runs_dic[k] = get_run_data(opj(RPi3_data_path,k))
     return all_runs_dic
 
-
-
 def imread_from_img_dic(img_dic,path,fname):
     if fname not in img_dic:
         img_dic[fname] = imread(opj(path,fname))
     return img_dic[fname]
 
-
-####################
 def run_to_scaled_BW(img_dic,run_data_dic,scale_percent,mirror=False):
     mirror_str = '_mir=0'
     if mirror:
@@ -169,9 +134,6 @@ def scale_BW_mirror_all_runs(img_dic,all_runs_dic,scale_percent):
         for mirror in [False,True]:
             print mirror
             run_to_scaled_BW(img_dic,all_runs_dic[k],scale_percent,mirror)
-
-
-
 
 def run_to_scaled_color_mod(img_dic,run_data_dic,scale_percent,mirror=False,to_BW=False):
     mirror_str = '_mir=0'
@@ -211,11 +173,6 @@ def scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,scale_percent,to_BW=Fal
             print mirror
             run_to_scaled_color_mod(img_dic,all_runs_dic[k],scale_percent,mirror,to_BW)
 
-####################
-
-
-
-
 def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
     m = 0 * run_data_dic['steer']
     len_steer = len(run_data_dic['steer'])
@@ -228,9 +185,6 @@ def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
                 ctr += 1
         m[i] = min(ctr-i,max_thresh)
     return m
-
-
-
 
 def plot_run(all_runs_dic,key_index):
     global some_data
@@ -270,10 +224,6 @@ def plot_run(all_runs_dic,key_index):
     #plt.hist(all_runs_dic[some_data['current_key']]['timestamp_deltas'],100);
     #plot_run_timestamp_deltas(run_data_dic,max_thresh=3)
 
-
-
-
-
 def animate_frames(run_data_dic,start_frame,end_frame,fig,title=''):
     for x in range(start_frame,end_frame):
         f = run_data_dic['img_lst'][x]
@@ -289,7 +239,6 @@ def animate_frames(run_data_dic,start_frame,end_frame,fig,title=''):
         plt.clf()
         mi(img,fig,img_title=title)
         plt.pause(0.0001)
-
 
 def button_press_event(event):
     current_key = some_data['current_key']
@@ -334,9 +283,6 @@ def get_steer_bins(all_runs_dic):
                     raise Exception('get_steer_bins error!')
     return steer_bins
 
-
-
-
 def steer_bin_medians(steer_bins,all_runs_dic):
     m = []
     for b in steer_bins:
@@ -345,8 +291,6 @@ def steer_bin_medians(steer_bins,all_runs_dic):
             lst.append(all_runs_dic[q[0]]['steer'][q[1]])
         m.append((b,np.median(lst),len(steer_bins[b])))
     return m
-
-
 
 def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=False):
     sbks = steer_bins.keys() + ['center']
@@ -362,19 +306,14 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
     frame_names = []
     for i in range(frame_range[0]+n,frame_range[1]+n):
         frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
-    """
-    if Graphics:
-        for f in frame_names:
-            img = imread(f)
-            plt.figure(9)
-            plt.clf()
-            mi(img,9)
-            plt.pause(0.0001)
-    """
     return (b,r,n,steer,frames_to_next_turn,rps,frame_names)
 
 
-if CAFFE_TRAINING_MODE:
+
+
+if run_mode == CAFFE_TRAINING_MODE:
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    steer_bins = get_steer_bins(all_runs_dic)
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
@@ -397,8 +336,8 @@ if CAFFE_TRAINING_MODE:
         return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
         #return img_lst,[S,F,R]
 
-else:
-    img_top_folder = opjh('Desktop/RPi3_data')
+elif run_mode == CAFFE_DEPLOY_MODE:
+    img_top_folder = opjh('Desktop/RPi_data')
     _,img_dirs = dir_as_dic_and_list(img_top_folder)
     ctimes = []
     for d in img_dirs:
@@ -417,7 +356,7 @@ else:
                 #print f
                 img = imread_from_img_dic(img_dic,opj(img_top_folder,most_recent_img_dir),f)
                 img = img.mean(axis=2)
-                img = imresize(img,25)/255.0-0.5
+                img = imresize(img,50)/255.0-0.5
                 img_lst.append(img)
             if len(img_files) > 10:
                 for f in img_files[:-10]:
@@ -428,49 +367,8 @@ else:
                 img_lst.append(dummy)
         return img_lst,[0,0,0]
 
-"""    
-current_key = '14Feb16_17h33m13s_scl=25_mir=0'
-INDEX = 2000
-def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
-    global INDEX
-    run_data_dic = all_runs_dic[current_key]
-    img_lst = []
-    for i in range(INDEX,INDEX+9):
-        img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],run_data_dic['img_lst'][i])/255.0-0.5)
-    INDEX += 1
-    return img_lst,[0,0,0]
-"""
-"""
-for j in range(100):
-    il,tl=get_caffe_input_target_(img_dic,steer_bins,all_runs_dic,(-15,-6));
-    for img in il:
-        plt.figure(9)
-        plt.clf()
-        mi(img,9,img_title=d2s(INDEX))
-        plt.pause(0.0001)
-"""
-"""
-from kzpy3.caf.training.y2016.m2.from_mnist.original_with_accuracy.train import *
-solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/steer_only/model_iter_3200000.caffemodel'))
-for i in range(1000): test_solver2(solver)
-"""
-
-####################################################
-
-
-img_dic = {}
-
-if CAFFE_TRAINING_MODE:
-    #all_runs_dic = get_all_runs_dic(opjD('RPi3_data/runs_scale_50_BW'))
-    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
-    steer_bins = get_steer_bins(all_runs_dic)
-else:
-    all_runs_dic = {}
-    steer_bins = {}
-
-
-if USE_GRAPHICS:
-    print 'here'
+elif run_mode == USE_GRAPHICS:
+    from kzpy3.vis import *
     all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_new'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,15*15)
@@ -478,6 +376,57 @@ if USE_GRAPHICS:
     some_data['current_key'] = k[0]
     some_data['all_runs_dic'] = all_runs_dic
     some_data['play_range'] = play_range
+
+else:
+    print('Unknown mode')
+    assert(False)
+
+
+
+
+
+
+
+
+
+"""
+Top priority items:
+
+second car
+second RPi
+desktop linux machine
+K40 GPU
+budget (materials vs salary)
+Jetson GPU
+
+
+review of runs
+09Feb16_12h10m58s_scl=25_mir=1 bad for training
+09Feb16_13h37m22s_scl=25_mir=0 good to 1500
+
+09Feb16_13h40m42s_scl=25_mir=0 good to 2600
+10Feb16_08h25m38s_scl=25_mir=0 delete
+10Feb16_08h31m21s_scl=25_mir=0 good to 2400
+10Feb16_08h56m14s_scl=25_mir=0 good to 3500
+10Feb16_09h03m26s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 4829 to 4876
+10Feb16_09h15m53s_scl=25_mir=0 problem with very high rps with wheels of ground around delete 8185 to 8215
+
+13Feb16_08h29m40s_scl=25_mir=0 delete
+13Feb16_18h09m00s_scl=25_mir=0 too dark
+13Feb16_18h17m34s_scl=25_mir=0 too dark
+14Feb16_11h34m14s_scl=25_mir=0 delete
+14Feb16_12h43m16s_scl=25_mir=0 delete
+14Feb16_15h00m14s_scl=25_mir=0 delete
+
+09Feb16_14h19m10s_scl=25_mir=0 good to 6400
+
+14Feb16_17h33m13s_scl=25_mir=0 delete 23179 to 23227
+
+"""
+
+    
+
+
 
 
 

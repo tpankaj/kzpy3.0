@@ -49,3 +49,18 @@ U = GFE.multiply(A,'U')
 b = mtrx('b',[[5],[-2],[9]])
 
 c = GFE.multiply(b,'c')
+
+Ei = mtrx('Ei',[[1,0,0],[2,1,0],[0,0,1]])
+Fi = mtrx('Fi',[[1,0,0],[0,1,0],[-1,0,1]])
+Gi = mtrx('Gi',[[1,0,0],[0,1,0],[0,-1,1]])
+
+L = Ei.multiply(Fi.multiply(Gi,'FiGi'),'L')
+
+D = mtrx('D',[[2,0,0],[0,-8,0],[0,0,1]])
+Uu = mtrx('Uu',[[2/2.,1/2.,1/.2],[0,8/8.,2/8.],[0,0,1]])
+D.multiply(Uu,'DUu');
+
+L.multiply(D.multiply(Uu,'DUu'),'LDUu');
+
+
+
