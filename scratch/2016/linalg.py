@@ -64,3 +64,16 @@ L.multiply(D.multiply(Uu,'DUu'),'LDUu');
 
 
 
+N = mtrx('N',[[1,2,3],[4,5,6],[7,8,9]])
+P1 = mtrx('P1',[[0,0,1],[0,0,0],[0,0,1]])
+P1.multiply(N,'P1N');
+
+V = mtrx('V',[[4],[5]])
+R = mtrx('R',[[1,2],[3,4],[5,6]])
+R.multiply(V,'RV');
+
+V = mtrx('V',[[4,5,6]])
+R = mtrx('R',[[1,2],[3,4],[5,6]])
+V.multiply(R,'VR');
+
+

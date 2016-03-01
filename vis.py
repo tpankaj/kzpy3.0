@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt  # the Python plotting package
 plot = plt.plot
 hist = plt.hist
 figure = plt.figure
-
+plt.ion()
+plt.show()
 PP,FF = plt.rcParams,'figure.figsize'
 
 
