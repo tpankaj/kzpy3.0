@@ -5,16 +5,16 @@ img_dic = {}
 steer_bins = {}
 all_runs_dic = {}
 
-CAFFE_TRAINING_MODE = 1#
-CAFFE_DEPLOY_MODE = 2
-USE_GRAPHICS = 3
+CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'#
+CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
+USE_GRAPHICS = 'USE_GRAPHICS'
 
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
 run_mode = USE_GRAPHICS
 
-
+print(d2s('*** run_mode =',run_mode))
 
 
 
@@ -356,7 +356,7 @@ elif run_mode == CAFFE_DEPLOY_MODE:
                 #print f
                 img = imread_from_img_dic(img_dic,opj(img_top_folder,most_recent_img_dir),f)
                 img = img.mean(axis=2)
-                img = imresize(img,50)/255.0-0.5
+                img = imresize(img,25)/255.0-0.5
                 img_lst.append(img)
             if len(img_files) > 10:
                 for f in img_files[:-10]:
