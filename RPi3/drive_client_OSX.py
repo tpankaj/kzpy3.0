@@ -6,7 +6,7 @@ sudo python kzpy3/RPi3/RPi_server.py
 python kzpy3/RPi3/osx_client.py
 
 """
-CAFFE_DRIVE = False
+CAFFE_DRIVE = True
 from kzpy3.utils import *
 print os.path.basename(sys.argv[0])
 
@@ -52,7 +52,7 @@ def decode_serial_string(s):
     cruise = int(n[2])
     if (np.abs(steer) > 100) or (np.abs(speed) > 100) or cruise > 1:
         raise ValueError(d2s('Bad value from serial string:',s))
-    return (steer,speed,cruise)
+    return [steer,speed,cruise]
 
 
 
@@ -63,8 +63,10 @@ while True:
         d = decode_serial_string(ser.readline())
         if CAFFE_DRIVE:
             try:
-                caffe_steer = np.load(opjh('Desktop/caffe_command.npy'))[0]
+                caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
+                
                 d[0] = caffe_steer
+                
             except Exception, e:
                 print(d2s(os.path.basename(sys.argv[0]),':',e))
         t = time.time()
