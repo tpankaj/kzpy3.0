@@ -34,27 +34,57 @@ plt.plot(flatx,flaty,'o')
 
 
 """
+tksurfer S12015 lh smoothwm
+tksurfer S12015 rh smoothwm
+mris_flatten -O fiducial /Users/karlzipser/freesurfer/subjects/S12015/surf/lh.flatten.patch.3d /Users/karlzipser/freesurfer/subjects/S12015/surf/lh.flat.patch
+mris_flatten -O fiducial /Users/karlzipser/freesurfer/subjects/S12015/surf/rh.flatten.patch.3d /Users/karlzipser/freesurfer/subjects/S12015/surf/rh.flat.patch
+
+
+
 # 29 Feb. 2016
 # This shows the process needed for marking visual areas
-view = cortex.Volume.random("__S12015","one",cmap="hot")
+import cortex
+view = cortex.Volume.random("S12015","mc_to_006a_of_9Feb2015",cmap="hot")
 
-cortex.add_roi(view,'A2')
+#cortex.add_roi(view,'A2')
 
-rois = cortex.get_roi_verts('__S12015', roi='A3')
-v3=rois['A3']
+rois = cortex.get_roi_verts('S12015', roi='V1')
+v1=rois['V1']
 
-mapper = cortex.get_mapper('__S12015','one')
-l,r = mapper.backwards(v3)
+mapper = cortex.get_mapper('S12015','mc_to_006a_of_9Feb2015')
+l,r = mapper.backwards(v1)
 mask = l+r
 
-view.data = mask
+#view.data = mask
+#img = cortex.quickflat.make(view)
+#mi(img[0],4)
+
+#mi(mask.mean(axis=0),22)
+
+import h5py
+f = h5py.File('/Users/karlzipser/2015/10/2015-10/HVO_RF_mapping.736252.5459.mat','r')
+h = f['HVO_RF_mapping']
+selected_voxel_xyzs = h[u'selected_voxel_xyzs'][:,:]
+selected_voxel_xyzs -= 1 # matlab to python indexing
+
+rmask = zeros((60,106,106))+0.5
+
+for i in range(shape(selected_voxel_xyzs)[1]):
+	x,y,z = selected_voxel_xyzs[:,i]
+	rmask[z,y,x] = 1
+# rmask[y,z,x]
+# 	rmask[z,x,y]
+view.data = rmask
+fig = cortex.quickflat.make_figure(view,depth=0.5,thick=32,sampler='trilinear')
+
 img = cortex.quickflat.make(view)
+plt.clf()
 mi(img[0],4)
-
-mi(mask.mean(axis=0),22)
-
+cortex.webshow((rmask,"S12015","mc_to_006a_of_9Feb2015")) #[note,, __S12015 doesn't work]
 """
 
+
+# mris_convert -p lh.flat.patch flat_lh.gii
 
 """
 import cortex
