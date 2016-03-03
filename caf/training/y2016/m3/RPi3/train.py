@@ -8,6 +8,7 @@ from kzpy3.vis import *
 if host_name == 'redwood2':
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
+	print("************** using GPU *************")
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 

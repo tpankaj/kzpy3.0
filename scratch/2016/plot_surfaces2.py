@@ -26,6 +26,10 @@ for i in range(shape(selected_voxel_xyzs)[1]):
 
 
 def get_surfaces(subject,xfm):
+	"""
+	Use pycortex functionality to load white matter and pial surfaces.
+	Generate mid-depth surface(s)
+	"""
 	surfaces = {}
 	surfaces['lh'] = {}
 	surfaces['rh'] = {}
@@ -44,8 +48,8 @@ def get_surfaces(subject,xfm):
 	return surfaces
 
 
-def display_slice(reference,surfaces,Z,data):
-	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = Z)
+def display_slice(reference,surfaces,Z,data,img_title=Z):
+	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = img_title)
 	#pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['mid'],surfaces['rh']['mid'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
 	pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
 	pts_lst = []
@@ -63,25 +67,51 @@ def display_slice(reference,surfaces,Z,data):
 surfaces = get_surfaces(subject,xfm)
 
 
-for z in range(1,60):
-	display_slice(reference,surfaces,z,data)
+display_slice(reference,surfaces,25,data)
 
 
 
+pix_dics = {}
+flat_imgs = {}
 
 for h in ['lh','rh']:
-	f =surfaces[h]['flat']
+	f =surfaces[h]['flat'].copy()
 	f -= f.min()
-	img = np.zeros((f.max()+1,f.max()+1))
+	flat_imgs[h] = np.zeros((f.max()+1,f.max()+1))
+	pix_dics[h] = {}
+	bad_center = int(f.max()/2.0)
 	for i in range(len(f)):
 		for l in ['wm','mid','pia']:
-			img[int(f[i,0]),int(f[i,1])] = max(rmask[surfaces[h][l][i,0],surfaces[h][l][i,1],surfaces[h][l][i,2]],img[int(f[i,0]),int(f[i,1])])
-	mi(img,h)
+			x,y = int(f[i,0]),int(f[i,1])
+			if x == bad_center and y == bad_center:
+				pass
+			else:
+				X,Y,Z = int(surfaces[h][l][i,0]),int(surfaces[h][l][i,1]),int(surfaces[h][l][i,2])
+				if (x,y) not in pix_dics[h]:
+					pix_dics[h][(x,y)] = []
+				pix_dics[h][(x,y)].append((X,Y,Z))
+				flat_imgs[h][x,y] = max(data[X,Y,Z],flat_imgs[h][x,y])
+	mi(flat_imgs[h],h+' data',do_clf=True,toolBar=True,do_axis=True)
 
-roi_flatmask = img.copy()
-roi_flatmask[:int(f.max()*0.7),:int(f.max()*0.7)] = 0
-roi_flatmask[roi_flatmask<1] = 0
-mi(roi_flatmask,'roi_flatmask')
+
+roi_flatmasks = {}
+roi_masks = {}
+for h in ['lh','rh']:
+	roi_flatmasks[h] = flat_imgs[h].copy()
+	#roi_flatmask[h][:,int(f.max()*0.5):] = 0
+	roi_flatmasks[h][roi_flatmasks[h]<1] = 0
+	if h == 'rh':
+		roi_flatmasks[h] = v1mask
+	mi(roi_flatmasks[h],'roi_flatmask '+h)
+	roi_masks[h] = 0*reference
+	r = np.where(roi_flatmasks[h] > 0)
+	for i in range(len(r[0])):
+		x = r[0][i]
+		y = r[1][i]
+		XYZs = pix_dics[h][(x,y)]
+		for xyz in XYZs:
+			roi_masks[h][xyz[0],xyz[1],xyz[2]] = 1
+	display_slice(reference,surfaces,25,roi_masks[h],'roi '+h)
 
 """
 tksurfer S12015 lh smoothwm
