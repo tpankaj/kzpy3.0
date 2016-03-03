@@ -5,14 +5,15 @@ img_dic = {}
 steer_bins = {}
 all_runs_dic = {}
 
-CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'#
+CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'
+MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
-run_mode = USE_GRAPHICS
+run_mode = MC_CAFFE_TRAINING_MODE
 
 print(d2s('*** run_mode =',run_mode))
 
@@ -335,6 +336,37 @@ if run_mode == CAFFE_TRAINING_MODE:
         assert(R<=1)
         return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
         #return img_lst,[S,F,R]
+
+# e.g.s for transforming filenames
+# C_f='/Users/karlzipser/Desktop/RPi3_data/runs_scl_100_RGB/09Feb16_13h33m51s_scl=100_mir=0/0_1455053641.36_str=-6_spd=52_rps=0_lrn=125_rrn=105_rnd=0_scl=100_mir=0_.jpg'
+# M_f='/Users/karlzipser/Desktop/RPi3_data/runs_scale_50_BW/09Feb16_13h33m51s_scl=50_mir=0/0_1455053641.36_str=-6_spd=52_rps=0_lrn=125_rrn=105_rnd=0_scl=50_mir=0_.png'
+elif run_mode == MC_CAFFE_TRAINING_MODE:
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    steer_bins = get_steer_bins(all_runs_dic)
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        M_img_lst = []
+        C_img_lst = []
+        for M_f in frame_names:
+            M_img_lst.append(imread_from_img_dic(img_dic,'',M_f)/255.0-0.5)
+        c_f = M_f # last frame is most recent
+        c_f = c_f.replace('scale_50_BW','scl_100_RGB')
+        c_f = c_f.replace('scl=50','scl=100')
+        C_f = c_f.replace('png','jpg')
+        C_img = imread_from_img_dic(img_dic,'',C_f)/255.0-0.5
+        C_img_lst = [C_img[:,:,0],C_img[:,:,1],C_img[:,:,2]]
+        S = steer/200.0 + 0.5
+        assert(S>=0)
+        assert(S<=1)
+        F = frames_to_next_turn/45.0
+        F = min(F,1.0)
+        assert(F>=0)
+        assert(F<=1)
+        R = rps/75.0
+        R = min(R,1.0)
+        assert(R>=0)
+        assert(R<=1)
+        return M_img_lst,C_img_lst,[S,0*F,0*R]
 
 elif run_mode == CAFFE_DEPLOY_MODE:
     img_top_folder = opjh('Desktop/RPi_data')

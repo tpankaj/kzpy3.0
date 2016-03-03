@@ -1,6 +1,8 @@
 import caffe
 from kzpy3.utils import *
 
+# rsync -avz ~/Desktop/RPi3_data/runs_scale_50_BW/ kzipser@redwood2.dyn.berkeley.edu:'~/Desktop/runs_scale_50_BW'
+
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 #solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_scl50.prototxt"))

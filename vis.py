@@ -52,7 +52,9 @@ def mi(
     img_xlabel = 'x',
     img_ylabel = 'y',
     cmap = 'gray',
-    toolBar = False ):
+    toolBar = False,
+    do_clf = True,
+    do_axis = False ):
     """
     My Imagesc, displays a matrix as grayscale image if 2d, or color if 3d.
     Can take different inputs -- e.g.,
@@ -99,7 +101,8 @@ def mi(
         plt.rcParams['toolbar'] = 'toolbar2'
 
     f = plt.figure(figure_num)
-    #plt.clf()
+    if do_clf:
+        plt.clf()
 
     if True:
         f.subplots_adjust(bottom=0.05)
@@ -118,7 +121,8 @@ def mi(
     f.add_subplot(subplot_array[0],subplot_array[1],subplot_array[2])
     imgplot = plt.imshow(image_matrix, cmap)
     imgplot.set_interpolation('nearest')
-    plt.axis('off')
+    if not do_axis:
+        plt.axis('off')
     if len(img_title) > 0:# != 'no title':
         plt.title(img_title)
 #
