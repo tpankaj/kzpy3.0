@@ -10,37 +10,19 @@ subject = 'S12015'
 transform_name = '9Feb2015'
 reference = (nib.load(opj(db_path,subject,'transforms',transform_name,'reference.nii.gz'))).get_data()
 xfm = np.load(opj(db_path,subject,'transforms',transform_name,'coord.npy'))
+
+import h5py
+f = h5py.File('/Users/karlzipser/2015/10/2015-10/HVO_RF_mapping.736252.5459.mat','r')
+h = f['HVO_RF_mapping']
+selected_voxel_xyzs = h['selected_voxel_xyzs'][:,:]
+selected_voxel_xyzs -= 1 # matlab to python indexing
+data = zeros((106,106,60))+0.5
+for i in range(shape(selected_voxel_xyzs)[1]):
+	x,y,z = selected_voxel_xyzs[:,i]
+	data[x,y,z] = 1
 #
 #################################
-"""
-xfm = [
-        [
-            -0.49957099095280805, 
-            -0.02070785171394666, 
-            -0.00015375068717687874, 
-            56.099478022100556
-        ], 
-        [
-            -0.020706750693901786, 
-            0.49946988934948844, 
-            0.010054032143392434, 
-            42.09083352832065
-        ], 
-        [
-            0.00026283624546495014, 
-            -0.010051764031716521, 
-            0.49989882666773866, 
-            7.980459285840416
-        ], 
-        [
-            0.0, 
-            0.0, 
-            0.0, 
-            1.0
-        ]
-    ]
-xfm = np.array(xfm)
-"""
+
 
 
 def get_surfaces(subject,xfm):
@@ -54,16 +36,18 @@ def get_surfaces(subject,xfm):
 		for i in range(3):
 			surfaces['lh'][t][:,i] += xfm[i,3]
 			surfaces['rh'][t][:,i] += xfm[i,3]
+	for h in ['lh','rh']:
+		surfaces[h]['mid'] = (0.5*surfaces[h]['wm']+0.5*surfaces[h]['pia'])
 	l,r = cortex.db.get_surf(subject, 'flat', merge=False)
 	surfaces['lh']['flat'] = l[0]
 	surfaces['rh']['flat'] = r[0]
 	return surfaces
 
+surfaces = get_surfaces(subject,xfm)
 
-
-
-def display_slice(reference,surfaces,Z):
-	mi(reference[:,:,Z],do_clf=True,toolBar=True,do_axis=True,figure_num = Z)
+def display_slice(reference,surfaces,Z,data):
+	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = Z)
+	#pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['mid'],surfaces['rh']['mid'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
 	pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
 	pts_lst = []
 	for p in range(shape(pts)[0]):
@@ -77,17 +61,27 @@ def display_slice(reference,surfaces,Z):
 
 ####################
 
-surfaces = get_surfaces(subject,xfm)
 
-for z in [20,30,40]:
-	display_slice(reference,surfaces,z)
 
-f =surfaces['lh']['flat']
-f -= f.min()
-img = np.zeros((f.max()+1,f.max()+1))
-for i in range(len(f)):
-	img[f[i,0],f[i,1]] += 1
-mi(img,100)
+for z in range(1,60):
+	display_slice(reference,surfaces,z,data)
+
+
+
+
+
+
+
+
+for h in ['lh','rh']:
+	f =surfaces[h]['flat']
+	f -= f.min()
+	img = np.zeros((f.max()+1,f.max()+1))
+	for i in range(len(f)):
+		for l in ['wm','mid','pia']:
+			img[int(f[i,0]),int(f[i,1])] = max(rmask[surfaces[h][l][i,0],surfaces[h][l][i,1],surfaces[h][l][i,2]],img[int(f[i,0]),int(f[i,1])])
+	mi(img,h)
+
 
 
 
@@ -96,10 +90,12 @@ tksurfer S12015 lh smoothwm
 save patch as: lh.S12015_flat.patch.3d
 cd freesurfer/subjects/S12015/surf/
 mris_flatten lh.S12015_flat.patch.3d lh.S12015_flat.flat.patch.3d
+mris_convert -p lh.S12015_flat.flat.patch.3d flat_lh.gii
 
 tksurfer S12015 rh smoothwm
 [file:load curvature]
 save patch as: rh.S12015_flat.patch.3d
 cd freesurfer/subjects/S12015/surf/
 mris_flatten rh.S12015_flat.patch.3d rh.S12015_flat.flat.patch.3d
+mris_convert -p rh.S12015_flat.flat.patch.3d.out flat_rh.gii
 """

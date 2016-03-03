@@ -1,5 +1,5 @@
 """
-
+run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 """
 
 import caffe
