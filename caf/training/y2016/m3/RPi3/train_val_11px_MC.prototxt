@@ -23,7 +23,7 @@ layer {
   dummy_data_param {
     shape {
       dim: 1
-      dim: 9
+      dim: 3
     }
   }
 }
@@ -290,7 +290,7 @@ layer {
   bottom: "MC_ip1"
   top: "MC_ip2"
   inner_product_param {
-    num_output: 9
+    num_output: 3
     weight_filler {
       type: "xavier"
     }
