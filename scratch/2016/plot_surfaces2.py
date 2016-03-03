@@ -43,7 +43,6 @@ def get_surfaces(subject,xfm):
 	surfaces['rh']['flat'] = r[0]
 	return surfaces
 
-surfaces = get_surfaces(subject,xfm)
 
 def display_slice(reference,surfaces,Z,data):
 	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = Z)
@@ -61,14 +60,11 @@ def display_slice(reference,surfaces,Z,data):
 
 ####################
 
+surfaces = get_surfaces(subject,xfm)
 
 
 for z in range(1,60):
 	display_slice(reference,surfaces,z,data)
-
-
-
-
 
 
 
@@ -82,8 +78,10 @@ for h in ['lh','rh']:
 			img[int(f[i,0]),int(f[i,1])] = max(rmask[surfaces[h][l][i,0],surfaces[h][l][i,1],surfaces[h][l][i,2]],img[int(f[i,0]),int(f[i,1])])
 	mi(img,h)
 
-
-
+roi_flatmask = img.copy()
+roi_flatmask[:int(f.max()*0.7),:int(f.max()*0.7)] = 0
+roi_flatmask[roi_flatmask<1] = 0
+mi(roi_flatmask,'roi_flatmask')
 
 """
 tksurfer S12015 lh smoothwm
