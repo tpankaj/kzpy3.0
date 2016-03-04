@@ -47,7 +47,7 @@ def get_surfaces(subject,xfm):
 	surfaces['rh']['flat'] = r[0]
 	return surfaces
 
-
+Z = 25
 def display_slice(reference,surfaces,Z,data,img_title=Z):
 	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = img_title)
 	#pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['mid'],surfaces['rh']['mid'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
@@ -101,7 +101,7 @@ for h in ['lh','rh']:
 	#roi_flatmask[h][:,int(f.max()*0.5):] = 0
 	roi_flatmasks[h][roi_flatmasks[h]<1] = 0
 	if h == 'rh':
-		roi_flatmasks[h] = v1mask
+		pass#roi_flatmasks[h] = v1mask
 	mi(roi_flatmasks[h],'roi_flatmask '+h)
 	roi_masks[h] = 0*reference
 	r = np.where(roi_flatmasks[h] > 0)
@@ -112,6 +112,32 @@ for h in ['lh','rh']:
 		for xyz in XYZs:
 			roi_masks[h][xyz[0],xyz[1],xyz[2]] = 1
 	display_slice(reference,surfaces,25,roi_masks[h],'roi '+h)
+
+
+
+
+
+
+"""
+K =  0.035
+surfaces = get_surfaces(subject,xfm)
+b = surfaces['lh']['pia'].copy()
+for i in range(len(b[:,0])):
+	if b[i,1] < 20:
+		b[i,1] += K*(b[i,1]-65)
+surfaces['lh']['pia'] = b
+c = surfaces['lh']['wm'].copy()
+for i in range(len(b[:,0])):
+	if c[i,1] < 20:
+		c[i,1] += K*(c[i,1]-65)
+surfaces['lh']['wm'] = c
+display_slice(reference,surfaces,20,data,'data')
+
+
+"""
+
+
+
 
 """
 tksurfer S12015 lh smoothwm
