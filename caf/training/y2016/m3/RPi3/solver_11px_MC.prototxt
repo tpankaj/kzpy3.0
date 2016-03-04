@@ -9,7 +9,7 @@ test_iter: 1
 test_interval: 10000
 # The base learning rate, momentum and the weight decay of the network.
 #base_lr: 0.0001  # for CPU
-base_lr: 0.00001 # for GPU
+base_lr: 0.000001 # for GPU
 momentum: 0.01
 weight_decay: 0.000005
 # The learning rate policy
