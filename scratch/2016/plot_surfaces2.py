@@ -71,10 +71,12 @@ for i in range(len(rfx)):
 	rf_ori[i] = math.degrees(theta)
 	rf_ecc[i] = d
 
-data = zeros((106,106,60)) * np.nan
+ori_data = zeros((106,106,60)) * np.nan
+ecc_data = zeros((106,106,60)) * np.nan
 for i in range(shape(selected_voxel_xyzs)[1]):
 	x,y,z = selected_voxel_xyzs[:,i]
-	data[x,y,z] = rf_ecc[i] #hor_ver(rf_ori[i])
+	ori_data[x,y,z] = hor_ver(rf_ori[i])/90.0 #rf_ecc[i] #
+	ecc_data[x,y,z] = rf_ecc[i]/64.0
 #data = zeroToOneRange(data)
 #
 #################################
@@ -138,22 +140,18 @@ def display_slice(reference,surfaces,Z,data,img_title=None):
 	piay = pts_lst[:,1]
 	plt.plot(piay,piax,'.',markersize=2)
 
+def red_green(v):
+	return [v,1.0-v,0]
+def yellow_blue(v):
+	return [v,v,1.0-v]
 
-####################
 
-surfaces = get_surfaces(subject,xfm)
-
-
-display_slice(reference,surfaces,25,data)
-
-pix_dics = get_pixel_voxel_mappings(surfaces)
-
-def get_flat_images(surfaces,pix_dics,data):
+def get_flat_images(surfaces,pix_dics,data,colorizer=red_green):
 	flat_imgs = {}
 	for h in ['lh','rh']:
 		f = surfaces[h]['flat'].copy()
 		f -= f.min()
-		flat_imgs[h] = np.zeros((f.max()+1,f.max()+1))
+		flat_imgs[h] = np.zeros((f.max()+1,f.max()+1,3))
 		for xy in pix_dics[h]:
 			x,y = xy
 			vox_lst = pix_dics[h][xy]
@@ -165,13 +163,27 @@ def get_flat_images(surfaces,pix_dics,data):
 					accum += data[X,Y,Z]
 					ctr +=1.0
 			if ctr > 0:
-				flat_imgs[h][xy[0],xy[1]] = accum / ctr
+				flat_imgs[h][xy[0],xy[1],:] = colorizer(accum/ctr)
+			else:
+				flat_imgs[h][xy[0],xy[1],:] = 0.5
 	return flat_imgs
 
-flat_imgs = get_flat_images(surfaces,pix_dics,data)
+####################
+
+surfaces = get_surfaces(subject,xfm)
+
+#display_slice(reference,surfaces,25,data)
+
+pix_dics = get_pixel_voxel_mappings(surfaces)
+
+ori_flat_imgs = get_flat_images(surfaces,pix_dics,ori_data,red_green)
+ecc_flat_imgs = get_flat_images(surfaces,pix_dics,ecc_data,yellow_blue)
 
 for h in ['lh','rh']:
-	mi(flat_imgs[h],h+' ecc data',do_clf=True,toolBar=True,do_axis=True)
+	mi(ori_flat_imgs[h],h+' ori_data',do_clf=True,toolBar=True,do_axis=True)
+
+for h in ['lh','rh']:
+	mi(ecc_flat_imgs[h],h+' ecc_data',do_clf=True,toolBar=True,do_axis=True)
 
 
 
