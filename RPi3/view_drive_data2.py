@@ -102,9 +102,10 @@ def get_all_runs_dic(RPi3_data_path):
     return all_runs_dic
 
 def imread_from_img_dic(img_dic,path,fname):
-    if fname not in img_dic:
-        img_dic[fname] = imread(opj(path,fname))
-    return img_dic[fname]
+#    if fname not in img_dic:
+#        img_dic[fname] = imread(opj(path,fname))
+#    return img_dic[fname]
+    return imread(opj(path,fname))
 
 def run_to_scaled_BW(img_dic,run_data_dic,scale_percent,mirror=False):
     mirror_str = '_mir=0'
