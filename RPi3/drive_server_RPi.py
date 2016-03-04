@@ -229,7 +229,7 @@ def update_driving(buf):
         
         speed = cruise_speed
 
-    if True:
+    if False:  # rand_control
         if time.time() - rand_control_on_t > 2 and cruise_control and not rand_control: # was 2 before 2/13/16
             print "rand_control!!!!"
             rand_control = True
