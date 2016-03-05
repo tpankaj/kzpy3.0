@@ -1,7 +1,7 @@
 """
 run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 f=opjh('scratch/2016/3/RPi3/11px_MC_train_on_first_set/11px_MC_iter_4700000.caffemodel')
-solver.net.copy_from('f')
+solver.net.copy_from(f)
 safe_solver_step(solver)
 test_solver(solver,200,0)
 """
