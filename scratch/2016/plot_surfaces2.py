@@ -49,20 +49,6 @@ def get_pixel_voxel_mappings(surfaces):
 					pix_dics[h][(x,y)].append((X,Y,Z))
 	return pix_dics
 
-def display_slice(reference,surfaces,Z,data,img_title=None):
-	if not img_title:
-		img_title = Z
-	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = img_title)
-	pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
-	pts_lst = []
-	for p in range(shape(pts)[0]):
-	    if pts[p,2] >= Z-0.5 and pts[p,2] < Z+0.5:
-	        pts_lst.append(pts[p,:])
-	pts_lst = np.array(pts_lst)
-	piax = pts_lst[:,0]
-	piay = pts_lst[:,1]
-	plt.plot(piay,piax,'.',markersize=2)
-
 def red_green(v):
 	return [v,1.0-v,0]
 def yellow_blue(v):
@@ -90,6 +76,32 @@ def get_flat_images(surfaces,pix_dics,data,colorizer=red_green):
 			else:
 				flat_imgs[h][xy[0],xy[1],:] = 0.5
 	return flat_imgs
+
+def get_voxel_ROI_mask(binary_flatmask,hemisphere,reference_shape,pix_dics):
+	roi_vol_mask = np.zeros(reference_shape)
+	nonzeros = np.where(binary_flatmask > 0)
+	for x,y in zip(nonzeros[0],nonzeros[1]):
+		XYZs = pix_dics[hemisphere][(x,y)]
+		for xyz in XYZs:
+			roi_vol_mask[xyz[0],xyz[1],xyz[2]] = 1
+	return roi_vol_mask
+
+def display_slice(reference,surfaces,Z,data,img_title=None):
+	if not img_title:
+		img_title = Z
+	mi(data[:,:,Z]+reference[:,:,Z]/reference.max(),do_clf=True,toolBar=True,do_axis=True,figure_num = img_title)
+	pts = np.concatenate((surfaces['lh']['pia'],surfaces['rh']['pia'],surfaces['lh']['wm'],surfaces['rh']['wm']),axis=0)
+	pts_lst = []
+	for p in range(shape(pts)[0]):
+	    if pts[p,2] >= Z-0.5 and pts[p,2] < Z+0.5:
+	        pts_lst.append(pts[p,:])
+	pts_lst = np.array(pts_lst)
+	piax = pts_lst[:,0]
+	piay = pts_lst[:,1]
+	plt.plot(piay,piax,'.',markersize=2)
+
+def pycortex_transpose(vol):
+	return vol.transpose(2,1,0)
 #
 ###################################################
 
@@ -129,16 +141,18 @@ for x in range(31):
 mi(test_img,'test_img')
 """
 #
-#############################################
+###################################################
 
 
-##############################################################################
-##############################################################################
-##############################################################################
-##############################################################################
 
 
-########## general data #########
+
+
+
+
+
+
+########## general data ###########################
 #
 db_path = '/anaconda/share/pycortex/db'
 subject = 'S12015'
@@ -192,70 +206,47 @@ pix_dics = get_pixel_voxel_mappings(surfaces)
 
 ori_flat_imgs = get_flat_images(surfaces,pix_dics,ori_data,red_green)
 ecc_flat_imgs = get_flat_images(surfaces,pix_dics,ecc_data,yellow_blue)
-
 for h in ['lh','rh']:
-	mi(ori_flat_imgs[h],h+' ori_data',do_clf=True,toolBar=True,do_axis=True)
-
+	mi(ori_flat_imgs[h],h+' ori_data ',do_clf=True,toolBar=True,do_axis=True)
+	imsave(opjD(d2f('-',subject,h,'ori')+'.png'),ori_flat_imgs[h])
 for h in ['lh','rh']:
-	mi(ecc_flat_imgs[h],h+' ecc_data',do_clf=True,toolBar=True,do_axis=True)
+	mi(ecc_flat_imgs[h],h+' ecc_data ',do_clf=True,toolBar=True,do_axis=True)
 
 
+binary_flat_masks = {}
+voxel_ROI_masks = {}
+h = 'lh'
+voxel_ROI_masks[h] = {}
+for a in ['V1','V2','V3','V4','Vhigher1','Vhigher2']:
+	print a
+	binary_flat_masks[h] = {}
+	binary_flat_masks[h][a] = zeroToOneRange(imread(opjD('S12015-lh-'+a+'.png'))[:,:,0])
+	voxel_ROI_masks[h][a] = get_voxel_ROI_mask(binary_flat_masks[h][a],h,shape(reference),pix_dics)
 
-def get_voxel_ROI_masks(binary_flatmask_lh,binary_flatmask_rh):
-	binary_flatmasks = {}
-	binary_flatmasks['lh'] = binary_flatmask_lh
-	binary_flatmasks['rh'] = binary_flatmask_rh
-	for h in ['lh','rh']:
-		nonzeros = np.where(binary_flatmasks[h] > 0)
-		for x,y in zip(nonzeros[0],nonzeros[1]):
-			XYZs = pix_
+for a in ['V1','V2','V3','V4','Vhigher1','Vhigher2']:
+	display_slice(reference,surfaces,25,voxel_ROI_masks['lh'][a],a)
 
+m = 0*reference
+f = 1.0
+mask_previous = []
+for a in ['V1','V2','V3','V4','Vhigher1','Vhigher2']:
+	roi_mask = voxel_ROI_masks['lh'][a].copy();
+	if len(shape(mask_previous)) == 3:
+		print('here')
+		nonzeros = np.where(mask_previous > 0)
+		for x,y,z in zip(nonzeros[0],nonzeros[1],nonzeros[2]):
+			roi_mask[x,y,z] = 0
+	mask_previous = roi_mask
+	m += f * roi_mask
+	f += 0.5
+display_slice(reference,surfaces,20,m,'multi-ROI')	
+cortex.webshow((pycortex_transpose(m),subject,transform_name))
+ori = ori_data.copy()
+ori[np.isnan(ori)]=0
+cortex.webshow((pycortex_transpose(ori),subject,transform_name))
 
+# Freesurfer commands to prepare flat surfaces:
 """
-roi_flatmasks = {}
-roi_masks = {}
-for h in ['lh','rh']:
-	roi_flatmasks[h] = flat_imgs[h].copy()
-	#roi_flatmask[h][:,int(f.max()*0.5):] = 0
-	roi_flatmasks[h][roi_flatmasks[h]<1] = 0
-	if h == 'rh':
-		pass#roi_flatmasks[h] = v1mask
-	mi(roi_flatmasks[h],'roi_flatmask '+h)
-	roi_masks[h] = 0*reference
-	r = np.where(roi_flatmasks[h] > 0)
-	for i in range(len(r[0])):
-		x = r[0][i]
-		y = r[1][i]
-		XYZs = pix_dics[h][(x,y)]
-		for xyz in XYZs:
-			roi_masks[h][xyz[0],xyz[1],xyz[2]] = 1
-	display_slice(reference,surfaces,25,roi_masks[h],'roi '+h)
-"""
-
-
-
-
-
-"""
-surfaces = get_surfaces(subject,xfm)
-K =  0.25
-X = 20
-for h in ['lh','rh']:
-	for l in ['wm','mid2','mid1','mid0','pia']:
-		s = surfaces[h][l]
-		for i in range(len(s[:,0])):
-			if s[i,2] >= 28.5 and s[i,2] < 29.5:
-				if s[i,1] < X:
-					s[i,1] += K*(s[i,1]-X)
-
-"""
-
-
-
-
-"""
-Commands to prepare flat surfaces:
-
 tksurfer S12015 lh smoothwm
 save patch as: lh.S12015_flat.patch.3d
 cd freesurfer/subjects/S12015/surf/
@@ -269,3 +260,8 @@ cd freesurfer/subjects/S12015/surf/
 mris_flatten rh.S12015_flat.patch.3d rh.S12015_flat.flat.patch.3d
 mris_convert -p rh.S12015_flat.flat.patch.3d.out flat_rh.gii
 """
+
+
+
+
+

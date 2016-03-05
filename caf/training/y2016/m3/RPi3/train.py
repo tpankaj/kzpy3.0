@@ -108,3 +108,49 @@ def test_solver(solver,n,fig=100):
 	plt.xlim((0,1))
 	plt.title((np.median(a),np.median(b),np.median(b)-np.median(a)))
 	return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
+
+
+
+
+
+def view_M_filters(solver,fig=1):
+	filters = solver.net.params['M_conv1'][0].data
+	blnk = np.zeros((27,27*10))
+	blnk[0,0] = -0.333/2.0
+	blnk[0,1] = 0.333/2.0
+
+	for f in range(96):
+		for i in range(0,9): #(8,-1,-1):
+			plt.clf()
+			blnk[7:18,(1*14+7):(1*14+18)] = filters[f,i,:,:]
+			mi(blnk,figure_num=fig,img_title=d2s(f))
+			plt.pause(0.05)
+		blnk *= 0
+		blnk[0,0] = -0.333/4.0
+		blnk[0,1] = 0.333/4.0
+		#mi(blnk,figure_num=fig,img_title=d2s(f))
+		plt.pause(0.5)
+
+def view_C_filters(solver,fig=2):
+	filters = solver.net.params['C_conv1'][0].data
+	for i in range(96):
+		a=filters[i,:,:,:]
+		a=np.transpose(a,(1,2,0))
+		a -= a.min()
+		a /= a.max()
+		plt.clf()
+		mi(a,img_title=d2s(i))
+		plt.pause(0.5)
+
+
+
+
+
+
+
+
+
+
+
+
+
