@@ -1,5 +1,7 @@
 """
 run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
+solver.net.copy_from('')
+test_solver(solver,200,0)
 """
 
 import caffe
