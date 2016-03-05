@@ -228,6 +228,9 @@ for a in ['V1','V2','V3','V4','Vhigher1','Vhigher2']:
 
 m = 0*reference
 f = 1.0
+
+
+
 mask_previous = []
 for a in ['V1','V2','V3','V4','Vhigher1','Vhigher2']:
 	roi_mask = voxel_ROI_masks['lh'][a].copy();
