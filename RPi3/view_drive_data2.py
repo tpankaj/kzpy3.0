@@ -10,7 +10,7 @@ MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW_2nd_set')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
 run_mode = MC_CAFFE_TRAINING_MODE
@@ -174,6 +174,11 @@ def scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,scale_percent,to_BW=Fal
         for mirror in [False,True]:
             print mirror
             run_to_scaled_color_mod(img_dic,all_runs_dic[k],scale_percent,mirror,to_BW)
+
+###### To process to 50% scale BW and 100% scale RGB #######################
+# scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,50,to_BW=True)
+# scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,100,to_BW=False)
+###########################################################################
 
 def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
     m = 0 * run_data_dic['steer']
@@ -402,7 +407,7 @@ elif run_mode == CAFFE_DEPLOY_MODE:
 
 elif run_mode == USE_GRAPHICS:
     from kzpy3.vis import *
-    all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_new'))
+    all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_checked'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,15*15)
     some_data = {}
