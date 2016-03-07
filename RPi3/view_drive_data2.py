@@ -362,7 +362,10 @@ if run_mode == CAFFE_CAT_TRAINING_MODE:
         assert(S>=0)
         assert(S<=1)
         steer_lst = [0,0,0,0,0,0,0]
-        steer_lst[categorize_steer(S)] = 1.0
+        c = categorize_steer(S)
+        assert(c<len(steer_lst))
+        assert(c>=0)
+        steer_lst[c] = 1.0
         return img_lst,steer_lst
 
 # e.g.s for transforming filenames
