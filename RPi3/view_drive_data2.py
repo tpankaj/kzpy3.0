@@ -347,6 +347,9 @@ if run_mode == CAFFE_TRAINING_MODE:
 if run_mode == CAFFE_CAT_TRAINING_MODE:
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
+    def categorize_steer(s):
+        bs = s * 7
+        return np.int(np.floor(bs))
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
@@ -358,16 +361,9 @@ if run_mode == CAFFE_CAT_TRAINING_MODE:
         S = steer/200.0 + 0.5
         assert(S>=0)
         assert(S<=1)
-        F = frames_to_next_turn/45.0
-        F = min(F,1.0)
-        assert(F>=0)
-        assert(F<=1)
-        R = rps/75.0
-        R = min(R,1.0)
-        assert(R>=0)
-        assert(R<=1)
-        return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
-        #return img_lst,[S,F,R]
+        steer_lst = [0,0,0,0,0,0,0]
+        steer_lst[categorize_steer(S)] = 1.0
+        return img_lst,steer_lst
 
 # e.g.s for transforming filenames
 # C_f='/Users/karlzipser/Desktop/RPi3_data/runs_scl_100_RGB/09Feb16_13h33m51s_scl=100_mir=0/0_1455053641.36_str=-6_spd=52_rps=0_lrn=125_rrn=105_rnd=0_scl=100_mir=0_.jpg'
