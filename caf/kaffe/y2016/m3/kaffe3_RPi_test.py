@@ -148,13 +148,13 @@ inception_layers = ['inception_3a/1x1',
 
 MODEL_NUM = 5
 solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_kaffe_11px.prototxt"))
-solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_11100000.caffemodel'))
+#solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_11100000.caffemodel'))
 net = solver.net
 
 """
 for i in net.params.keys():
     net.params[i][0].data[0] = np.random.random(shape(net.params[i][0].data[0]))
-"""
+
 print(np.shape(net.blobs['py_image_data'].data))
 src = net.blobs['py_image_data']
 #src.reshape(1,3,227,227)
@@ -162,9 +162,9 @@ print(np.shape(net.blobs['py_image_data'].data))
 
 for i in range(96):
     print i
-    for l in ['conv2']:#['inception_4e/output']:#['fc8']:
+    for l in ['ip1']:#['inception_4e/output']:#['fc8']:
         do_it3('scratch/2016/3/6',l,net,1000,i)
     time.sleep(1)
     show_py_image_data(net)
-
+"""
 

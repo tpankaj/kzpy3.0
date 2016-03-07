@@ -19,7 +19,8 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
-solver_name = 'solver_11px_MC.prototxt'
+#solver_name = 'solver_11px_MC.prototxt'
+solver_name = 'solver_kaffe_11px.prototxt'
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:

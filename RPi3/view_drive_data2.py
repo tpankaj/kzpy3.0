@@ -6,14 +6,15 @@ steer_bins = {}
 all_runs_dic = {}
 
 CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'
+CAFFE_CAT_TRAINING_MODE = 'CAFFE_CAT_TRAINING_MODE'
 MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs')#runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
-run_mode = MC_CAFFE_TRAINING_MODE
+run_mode = CAFFE_CAT_TRAINING_MODE
 
 print(d2s('*** run_mode =',run_mode))
 
@@ -319,6 +320,31 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
 
 
 if run_mode == CAFFE_TRAINING_MODE:
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    steer_bins = get_steer_bins(all_runs_dic)
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        img_lst = []
+        for f in frame_names:
+            img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+        if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
+            img = img_lst[0]
+            img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]
+        S = steer/200.0 + 0.5
+        assert(S>=0)
+        assert(S<=1)
+        F = frames_to_next_turn/45.0
+        F = min(F,1.0)
+        assert(F>=0)
+        assert(F<=1)
+        R = rps/75.0
+        R = min(R,1.0)
+        assert(R>=0)
+        assert(R<=1)
+        return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
+        #return img_lst,[S,F,R]
+
+if run_mode == CAFFE_CAT_TRAINING_MODE:
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
