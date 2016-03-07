@@ -1,25 +1,25 @@
-#name: "RPi"
-#input: "ddata"
-#input_dim: 1
-#input_dim: 9
-#input_dim: 112
-#input_dim: 150
-#force_backward: true
+name: "RPi"
+input: "ddata"
+input_dim: 1
+input_dim: 9
+input_dim: 112
+input_dim: 150
+force_backward: true
 #####################
 # Dummy data to make place for images
-layer {
-  name: "ddata"
-  type: "DummyData"
-  top: "ddata"
-  dummy_data_param {
-    shape {
-      dim: 1
-      dim: 9
-      dim: 112
-      dim: 150
-    }
-  }
-}
+#layer {
+#  name: "ddata"
+#  type: "DummyData"
+#  top: "ddata"
+#  dummy_data_param {
+#    shape {
+#      dim: 1
+#      dim: 9
+#      dim: 112
+#      dim: 150
+#    }
+#  }
+#}
 # Dummy data to make place for multiple target values
 layer {
   name: "ddata2"
@@ -43,8 +43,8 @@ layer {
   top: 'py_image_data'
   
   python_param {
-    module: 'kz_layers2'
-    layer: 'SimpleLayer4'
+    module: 'kz_layers0'
+    layer: 'SimpleLayer0'
     #force_backward: true
   }
 }
@@ -56,8 +56,8 @@ layer {
   bottom: 'ddata2'
   top: 'py_target_data'
   python_param {
-    module: 'kz_layers2'
-    layer: 'SimpleLayer5'
+    module: 'kz_layers0'
+    layer: 'SimpleLayer0'
   }
 }
 #####################
