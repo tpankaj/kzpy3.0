@@ -11,7 +11,7 @@ MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs')#_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 
 run_mode = CAFFE_CAT_TRAINING_MODE
@@ -348,7 +348,7 @@ if run_mode == CAFFE_CAT_TRAINING_MODE:
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
     def categorize_steer(s):
-        bs = s * 7
+        bs = s * 7 * 0.9999
         return np.int(np.floor(bs))
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
