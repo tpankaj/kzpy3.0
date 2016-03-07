@@ -102,6 +102,7 @@ def mi(
 
     f = plt.figure(figure_num)
     if do_clf:
+        #print('plt.clf()')
         plt.clf()
 
     if True:

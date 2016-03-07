@@ -44,14 +44,14 @@ def objective_L2(dst):
 
 
 def make_step(net, step_size=1.5, end='inception_4c/output', 
-              jitter=1, clip=False, objective=objective_L2):
+              jitter=0, clip=False, objective=objective_L2):
     '''Basic gradient ascent step.'''
 
     src = net.blobs['py_image_data'] # input image is stored in Net's 'py_image_data' blob
     dst = net.blobs[end]
 
-    ox, oy = np.random.randint(-jitter, jitter+1, 2)
-    src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
+    #ox, oy = np.random.randint(-jitter, jitter+1, 2)
+    #src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
             
     net.forward(start='py_image_data',end=end)
     objective(dst)  # specify the optimization objective
@@ -60,9 +60,13 @@ def make_step(net, step_size=1.5, end='inception_4c/output',
     # apply normalized ascent step to the input image
     src.data[:] += step_size/np.abs(g).mean() * g
 
-    src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+    #src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
  
 
+def show_py_image_data(net):
+    for i in range(9): 
+        mi(net.blobs['py_image_data'].data[0,i,:,:])
+        plt.pause(0.2)
 
 
 def do_it3(dst_path,layer,net,iter_n,start=0):
@@ -98,9 +102,8 @@ def do_it3(dst_path,layer,net,iter_n,start=0):
 
         net.blobs['py_image_data'].data[0,:,0,0]=net.blobs['py_image_data'].data[:].max()
         net.blobs['py_image_data'].data[0,:,0,1]=net.blobs['py_image_data'].data[:].min()
-        for i in range(9): 
-            mi(net.blobs['py_image_data'].data[0,i,:,:])
-            plt.pause(0.2)
+
+        show_py_image_data(net)
 
 inception_layers = ['inception_3a/1x1',
         'inception_3a/3x3',
@@ -148,12 +151,20 @@ solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_w
 solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_11100000.caffemodel'))
 net = solver.net
 
+"""
+for i in net.params.keys():
+    net.params[i][0].data[0] = np.random.random(shape(net.params[i][0].data[0]))
+"""
 print(np.shape(net.blobs['py_image_data'].data))
 src = net.blobs['py_image_data']
 #src.reshape(1,3,227,227)
 print(np.shape(net.blobs['py_image_data'].data))
 
-for l in ['ip1']:#['inception_4e/output']:#['fc8']:
-    do_it3('scratch/2016/3/6',l,net,1000,0)
+for i in range(96):
+    print i
+    for l in ['conv2']:#['inception_4e/output']:#['fc8']:
+        do_it3('scratch/2016/3/6',l,net,1000,i)
+    time.sleep(1)
+    show_py_image_data(net)
 
 
