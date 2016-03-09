@@ -43,7 +43,7 @@ layer {
   top: 'C_py_image_data'
   
   python_param {
-    module: 'kz_layers3'
+    module: 'kz_layers2'
     layer: 'SimpleLayer4'
     #force_backward: true
   }
@@ -56,7 +56,7 @@ layer {
   bottom: 'C_ddata2'
   top: 'C_py_target_data'
   python_param {
-    module: 'kz_layers3'
+    module: 'kz_layers2'
     layer: 'SimpleLayer5'
   }
 }
