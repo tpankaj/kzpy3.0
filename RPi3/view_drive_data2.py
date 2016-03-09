@@ -303,7 +303,7 @@ def steer_bin_medians(steer_bins,all_runs_dic):
     return m
 
 def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=False):
-    sbks = steer_bins.keys() + ['center']
+    sbks = steer_bins.keys() + ['center'] # This + ['center'] has the effect of doubling the chance of center position result.
     b = sbks[np.random.randint(len(sbks))]
     ardks = all_runs_dic.keys()
     l = len(steer_bins[b])
