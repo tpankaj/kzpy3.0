@@ -1,6 +1,6 @@
 # The train/test net protocol buffer definition
 # run from ~
-net: "kzpy3/caf/training/y2016/m3/RPi3/train_val_kaffe_11px_RGB_force_pad_0.prototxt"
+net: "kzpy3/caf/training/y2016/m3/RPi3/train_val_kaffe_11px_RGB_force_pad_BVLCref.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
 # In the case of MNIST, we have test batch size 100 and 100 test iterations,
 # covering the full 10,000 testing images.
@@ -21,4 +21,4 @@ display: 10000
 max_iter: 1000000
 # snapshot intermediate results
 snapshot: 100000
-snapshot_prefix: "scratch/2016/3/8/caffe/models/from_mnist/original_with_accuracy_11px/train_val_kaffe_11px_RGB"
+snapshot_prefix: "scratch/2016/3/9/train_val_kaffe_11px"
