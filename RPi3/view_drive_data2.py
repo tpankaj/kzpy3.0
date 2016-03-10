@@ -16,7 +16,7 @@ USE_GRAPHICS = 'USE_GRAPHICS'
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
 CAFFE_FRAME_RANGE = (-7,-6)# 
 
-run_mode = CAFFE_CAT_TRAINING_MODE
+run_mode = MC_CAFFE_TRAINING_MODE
 
 print(d2s('*** run_mode =',run_mode))
 
