@@ -10,9 +10,10 @@ CAFFE_CAT_TRAINING_MODE = 'CAFFE_CAT_TRAINING_MODE'
 MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 MC_CAFFE_CAT_TRAINING_MODE = 'MC_CAFFE_CAT_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
+MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-run_mode = MC_CAFFE_CAT_TRAINING_MODE
+run_mode = MC_CAFFE_DEPLOY_MODE
 #run_mode = CAFFE_TRAINING_MODE
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
@@ -458,6 +459,42 @@ elif run_mode == CAFFE_DEPLOY_MODE:
             for i in range(9):
                 img_lst.append(dummy)
         return img_lst,[0,0,0]
+
+elif run_mode == MC_CAFFE_DEPLOY_MODE:
+    img_top_folder = opjh('Desktop/RPi_data')
+    _,img_dirs = dir_as_dic_and_list(img_top_folder)
+    ctimes = []
+    for d in img_dirs:
+        ctimes.append(os.path.getmtime(opj(img_top_folder,d)))
+    sort_indicies = [i[0] for i in sorted(enumerate(ctimes), key=lambda x:x[1])]
+    most_recent_img_dir = img_dirs[sort_indicies[-1]]
+    print most_recent_img_dir
+    unix(d2s('mkdir -p',opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
+    def get_caffe_input_target(img_dic,_ignore1_,_ignore2_,_ignore3_):
+        _,img_files = dir_as_dic_and_list(opj(img_top_folder,most_recent_img_dir))
+        if len(img_files) > 9:
+            M_img_lst = []
+            C_img_lst = []
+            for i in range(-10,-1): # = [-10, -9, -8, -7, -6, -5, -4, -3, -2]
+                # we avoid loading the most recent image to avoid 'race' conditions.
+                f = img_files[i]
+                #print f
+                img = imread_from_img_dic(img_dic,opj(img_top_folder,most_recent_img_dir),f)
+                if i == -1:
+                    C_img = img.copy()
+                    C_img_lst = [C_img[:,:,0],C_img[:,:,1],C_img[:,:,2]]
+                img = img.mean(axis=2)
+                img = imresize(img,50)/255.0-0.5
+                M_img_lst.append(img)
+            if len(img_files) > 10:
+                for f in img_files[:-10]:
+                    unix(d2s('mv',opj(img_top_folder,most_recent_img_dir,f),opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
+        else:
+            dummy = np.random.random((56,75))
+            for i in range(9):
+                img_lst.append(dummy)
+        return M_img_lst,C_img_lst,[0,0,0]
+
 
 elif run_mode == USE_GRAPHICS:
     from kzpy3.vis import *

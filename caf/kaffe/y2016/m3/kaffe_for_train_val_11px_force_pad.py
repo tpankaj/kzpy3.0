@@ -117,13 +117,14 @@ for 900000, percent correct = 48.1%
 for 2600000, percent correct = 51.4%
 chance = 14.2%
 """
-n = 100
+n = 500
 n_correct = 0
 for i in range(n):
 	print i
 	solver.net.forward()
 	if solver.net.blobs['MC_cat_ip2'].data[0].argmax(axis=0) == solver.net.blobs['MC_cat_py_target_data'].data[0].argmax(axis=0):
 		n_correct += 1
+
 print(d2s('percent correct =',n_correct,'/',n,'chance =',int(1/7.0*n),'/',n))
 print(d2s('percent correct =',n_correct/(1.0*n)))
 
