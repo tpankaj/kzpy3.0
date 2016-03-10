@@ -73,8 +73,8 @@ def test_solver(solver,n,fig=100):
 	for i in range(n):
 		try:
 			solver.net.forward()
-			t = solver.net.blobs['MC_py_target_data'].data[0]
-			o = solver.net.blobs['MC_ip2'].data[0]
+			t = solver.net.blobs['M_py_target_data'].data[0]
+			o = solver.net.blobs['ip2'].data[0]
 			St_list.append(t[0])
 			So_list.append(o[0])
 			Ft_list.append(t[1])
@@ -105,7 +105,7 @@ def test_solver(solver,n,fig=100):
 	#plt.legend()
 	plt.ion()
 	plt.show()
-	plt.figure(100+fig,(5,7))
+	plt.figure(100+fig,(5,5))
 	plt.clf()
 	a=[]
 	b=[]
@@ -115,8 +115,8 @@ def test_solver(solver,n,fig=100):
 	for tt,oo in zip(St_list,So_list):
 		if tt >0.9:
 			b.append(oo)
-	plt.hist(a,bins=25,alpha=0.5);
-	plt.hist(b,bins=25,alpha=0.5);
+	#plt.hist(a,bins=25,alpha=0.5);
+	#plt.hist(b,bins=25,alpha=0.5);
 	plt.xlim((0,1))
 	plt.title((np.median(a),np.median(b),np.median(b)-np.median(a)))
 	#return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
