@@ -8,10 +8,12 @@ all_runs_dic = {}
 CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'
 CAFFE_CAT_TRAINING_MODE = 'CAFFE_CAT_TRAINING_MODE'
 MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
+MC_CAFFE_CAT_TRAINING_MODE = 'MC_CAFFE_CAT_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-run_mode = CAFFE_TRAINING_MODE
+run_mode = MC_CAFFE_CAT_TRAINING_MODE
+#run_mode = CAFFE_TRAINING_MODE
 CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
@@ -319,7 +321,9 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
         frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
     return (b,r,n,steer,frames_to_next_turn,rps,frame_names)
 
-
+def categorize_steer(s):
+    bs = s * 7 * 0.9999
+    return np.int(np.floor(bs))
 
 
 if run_mode == CAFFE_TRAINING_MODE:
@@ -350,9 +354,6 @@ if run_mode == CAFFE_TRAINING_MODE:
 elif run_mode == CAFFE_CAT_TRAINING_MODE:
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
-    def categorize_steer(s):
-        bs = s * 7 * 0.9999
-        return np.int(np.floor(bs))
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
@@ -401,6 +402,31 @@ elif run_mode == MC_CAFFE_TRAINING_MODE:
         assert(R>=0)
         assert(R<=1)
         return M_img_lst,C_img_lst,[S,0*F,0*R]
+
+elif run_mode == MC_CAFFE_CAT_TRAINING_MODE:
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    steer_bins = get_steer_bins(all_runs_dic)
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        M_img_lst = []
+        C_img_lst = []
+        for M_f in frame_names:
+            M_img_lst.append(imread_from_img_dic(img_dic,'',M_f)/255.0-0.5)
+        c_f = M_f # last frame is most recent
+        c_f = c_f.replace('scale_50_BW','scl_100_RGB')
+        c_f = c_f.replace('scl=50','scl=100')
+        C_f = c_f.replace('png','jpg')
+        C_img = imread_from_img_dic(img_dic,'',C_f)/255.0-0.5
+        C_img_lst = [C_img[:,:,0],C_img[:,:,1],C_img[:,:,2]]
+        S = steer/200.0 + 0.5
+        assert(S>=0)
+        assert(S<=1)
+        steer_lst = [0,0,0,0,0,0,0]
+        c = categorize_steer(S)
+        assert(c<len(steer_lst))
+        assert(c>=0)
+        steer_lst[c] = 1.0
+        return M_img_lst,C_img_lst,steer_lst
 
 elif run_mode == CAFFE_DEPLOY_MODE:
     img_top_folder = opjh('Desktop/RPi_data')
