@@ -53,14 +53,13 @@ mi(C,3)
 
 
 def safe_solver_step(solver):
-	ctr = 0
-    while True:
-        try:
-            solver.step(1000)
-            for k in solver.net.blobs.keys():
+	while True:
+		try:
+			solver.step(1000)
+			for k in solver.net.blobs.keys():
 				print (k, solver.net.blobs[k].data.max())
-        except Exception, e: 
-            print e
+		except Exception, e: 
+			print e
 
 
 def test_solver(solver,n,fig=100):
