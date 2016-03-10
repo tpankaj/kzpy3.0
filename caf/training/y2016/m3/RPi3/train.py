@@ -55,7 +55,7 @@ mi(C,3)
 def safe_solver_step(solver):
 	while True:
 		try:
-			solver.step(1000)
+			solver.step(10000)
 			for k in solver.net.blobs.keys():
 				print (k, solver.net.blobs[k].data.max())
 		except Exception, e: 
@@ -115,8 +115,8 @@ def test_solver(solver,n,fig=100):
 	for tt,oo in zip(St_list,So_list):
 		if tt >0.9:
 			b.append(oo)
-	#plt.hist(a,bins=25,alpha=0.5);
-	#plt.hist(b,bins=25,alpha=0.5);
+	plt.hist(a,bins=25,alpha=0.5);
+	plt.hist(b,bins=25,alpha=0.5);
 	plt.xlim((0,1))
 	plt.title((np.median(a),np.median(b),np.median(b)-np.median(a)))
 	#return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
