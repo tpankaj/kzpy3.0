@@ -10,10 +10,6 @@ test_solver(solver,200,0)
 import caffe
 from kzpy3.vis import *
 
-if host_name == 'redwood2':
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
-	print("************** using GPU *************")
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
@@ -22,13 +18,19 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
 #solver_name = 'solver_11px_MC.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
-solver_name = 'solver_kaffe_11px_RGB.prototxt'
+#solver_name = 'solver_kaffe_11px_RGB.prototxt'
+solver_name = 'solver_11px_MC_slim.prototxt'
+
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
 		print(l)
+	if host_name == 'redwood2':
+		caffe.set_device(0)
+		caffe.set_mode_gpu()
+		print("************** using GPU *************")
 	return solver
 
 solver = setup_solver()
