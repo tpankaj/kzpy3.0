@@ -263,16 +263,57 @@ layer {
   }
 }
 
+layer {
+  name: "MC_cccp1"
+  type: "Convolution"
+  bottom: "MC_pool3"
+  top: "MC_cccp1"
+  convolution_param {
+    num_output: 96
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "MC_cccp1_relu3"
+  type: "ReLU"
+  bottom: "MC_cccp1"
+  top: "MC_cccp1"
+}
+
+layer {
+  name: "MC_cccp2"
+  type: "Convolution"
+  bottom: "MC_cccp1"
+  top: "MC_cccp2"
+  convolution_param {
+    num_output: 96
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "MC_cccp2_relu3"
+  type: "ReLU"
+  bottom: "MC_cccp2"
+  top: "MC_cccp2"
+}
 
 
 ##################### inner product layers #############
 layer {
   name: "MC_ip1"
   type: "InnerProduct"
-  bottom: "MC_pool3"
+  bottom: "MC_cccp2"
   top: "MC_ip1"
   inner_product_param {
-    num_output: 128
+    num_output: 96
     weight_filler {
       type: "xavier"
     }
@@ -290,7 +331,7 @@ layer {
   bottom: "MC_ip1"
   top: "MC_ip2"
   inner_product_param {
-    num_output: 3
+    num_output: 24
     weight_filler {
       type: "xavier"
     }
@@ -303,24 +344,35 @@ layer {
   top: "MC_ip2"
 }
 
+layer {
+  name: "MC_ip3"
+  type: "InnerProduct"
+  bottom: "MC_ip3"
+  top: "MC_ip3"
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "MC_relu5"
+  type: "ReLU"
+  bottom: "MC_ip3"
+  top: "MC_ip3"
+}
+
 
 
 ##################### output layer ##################
 layer {
   name: "identity"
   type: "EuclideanLoss"
-  bottom: "MC_ip2"
+  bottom: "MC_ip3"
   bottom: "MC_py_target_data"
   top: "identity"
   loss_weight: 1
 }
 
-#####################
-# output layer
-#layer {
-#  name: "MC_loss"
-#  type: "SoftmaxWithLoss"
-#  bottom: "MC_ip2"
-#  bottom: "MC_py_target_data"
-#  top: "MC_loss"
-#}
+

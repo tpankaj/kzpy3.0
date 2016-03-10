@@ -19,8 +19,8 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_MC.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
 #solver_name = 'solver_kaffe_11px_RGB.prototxt'
-solver_name = 'solver_11px_MC_slim.prototxt'
-
+#solver_name = 'solver_11px_MC_slim.prototxt'
+solver_name = 'solver_scl50_nin0.prototxt'
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
@@ -84,7 +84,7 @@ def test_solver(solver,n,fig=100):
 		except Exception,e:
 			print e
 	print(d2s('Speed =',n/(time.time()-start_t),'trials per second.'))
-	plt.figure(fig,(5,7))
+	plt.figure(fig,(5,5))
 	plt.clf()
 	plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
 	plt.plot(Rt_list,Ro_list,'rx',label='rot')
@@ -119,7 +119,7 @@ def test_solver(solver,n,fig=100):
 	plt.hist(b,bins=25,alpha=0.5);
 	plt.xlim((0,1))
 	plt.title((np.median(a),np.median(b),np.median(b)-np.median(a)))
-	return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
+	#return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
 
 
 
