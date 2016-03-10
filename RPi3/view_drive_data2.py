@@ -11,9 +11,9 @@ MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 #CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
+#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
 CAFFE_FRAME_RANGE = (-7,-6)# 
 
 run_mode = MC_CAFFE_TRAINING_MODE
