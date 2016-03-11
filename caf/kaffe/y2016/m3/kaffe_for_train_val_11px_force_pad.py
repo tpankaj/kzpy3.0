@@ -9,7 +9,6 @@ def show_py_image_data(data,fig=1):
 	d[:,0,1] = 0
 	for j in range(1):
 	    for i in range(9):
-
 	        mi(d[i,:,:],fig)
 	        plt.pause(0.1)
 def img_from_caffe_data(data):
@@ -23,8 +22,8 @@ def img_from_caffe_data(data):
 
 #solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
 #f=opjD('train_val_kaffe_11px_iter_2600000.caffemodel')
-solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px_RGB.prototxt"))
-f=opjD('train_val_kaffe_11px_iter_100000.caffemodel')
+solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
+f=opjD('deep_dream_directions/BW/train_val_kaffe_11px_iter_3900000.caffemodel')
 solver.net.copy_from(f)
 
 
@@ -217,20 +216,21 @@ for k in range(0,512):
 	for i in range(3):
 		solver.net.blobs['C_ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['C_ddata'].data[0][1,:,:]))-0.5
 	jitter = 3
-	for j in range(100):
+	for j in range(60):
 		ox, oy = np.random.randint(-jitter, jitter+1, 2)
 		solver.net.blobs['M_ddata'].data[0] = np.roll(np.roll(solver.net.blobs['M_ddata'].data[0], ox, -1), oy, -2) # apply jitter shift
 		
 		solver.net.forward()#start='ddata')
 	#	p = solver.net.blobs['M_cccp2'].data[0,:]; p = (p*100).astype(int)/100.0; print p
 	#	print  solver.net.blobs['ip2'].data[:]
-		solver.net.blobs['MC_conv3'].diff[0] *= 0
-	#	solver.net.blobs['MC_ip1'].diff[0,k]=1
-		solver.net.blobs['MC_conv3'].diff[0,0,10,10]=1
+		solver.net.blobs['MC_cat_ip2'].diff[0] *= 0
+		solver.net.blobs['MC_cat_ip2'].diff[0,k]=1
+	#	solver.net.blobs['MC_conv3'].diff[0]*=0
+	#	solver.net.blobs['MC_conv3'].diff[0,0,10,10]=1
 	#	solver.net.blobs['conv1'].diff[0] *= 0
 	#	solver.net.blobs['conv1'].diff[0,30,8,15] = 1
 	#	solver.net.blobs['conv2'].diff[0,2,15,15] = 1
-		solver.net.backward(start='MC_conv3')
+		solver.net.backward(start='MC_cat_ip2')
 	#	solver.net.backward(start='conv2')
 		for l in ['M_ddata','C_ddata']:
 			g = solver.net.blobs[l].diff[0]
@@ -240,12 +240,73 @@ for k in range(0,512):
 			solver.net.blobs[l].data[:] *= 0.95
 			#solver.net.blobs['ddata'].data[0][i,:,:] += 0.001*(np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5)
 			solver.net.blobs[l].data[0] = np.roll(np.roll(solver.net.blobs[l].data[0], -ox, -1), -oy, -2) # unshift image
-
-	print  solver.net.blobs['MC_ip2'].data[:]
+	print  solver.net.blobs['MC_cat_ip2'].data[:]
 	# use this for ~/Desktop/deep_dream_directions
 	results[k] = (solver.net.blobs['M_ddata'].data.copy(),solver.net.blobs['C_ddata'].data.copy())
 	mi(img_from_caffe_data(results[k][1]),'C_ddata',img_title=d2s('C_ddata',k))
 	show_py_image_data(results[k][0],'M_ddata')
+
+
 	
+for k in range(7):
+	mi(img_from_caffe_data(results[k][1]),'C_ddata',img_title=d2s('C_ddata',k))
+	show_py_image_data(results[k][0],'M_ddata')
+	time.sleep(1)
+
+
+
+
+
+
+
+
+img = img.mean(axis=2)
+img = imresize(img,50)
+img = z2o(img)
+
+results = {}
+
+for k in [0,3,6]:#range(0,7):
+	for i in range(9):
+		#solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
+		solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
+	jitter = 3
+	for j in range(200):
+		ox, oy = np.random.randint(-jitter, jitter+1, 2)
+		solver.net.blobs['ddata'].data[0] = np.roll(np.roll(solver.net.blobs['ddata'].data[0], ox, -1), oy, -2) # apply jitter shift
+		
+		solver.net.forward()#start='ddata')
+	#	p = solver.net.blobs['M_cccp2'].data[0,:]; p = (p*100).astype(int)/100.0; print p
+	#	print  solver.net.blobs['ip2'].data[:]
+		solver.net.blobs['ip2'].diff[0] *= 0
+		solver.net.blobs['ip2'].diff[0,k]=1
+	#	solver.net.blobs['MC_conv3'].diff[0]*=0
+	#	solver.net.blobs['MC_conv3'].diff[0,0,10,10]=1
+	#	solver.net.blobs['conv1'].diff[0] *= 0
+	#	solver.net.blobs['conv1'].diff[0,30,8,15] = 1
+	#	solver.net.blobs['conv2'].diff[0,2,15,15] = 1
+		solver.net.backward(start='ip2')
+	#	solver.net.backward(start='conv2')
+		for l in ['ddata']:
+			g = solver.net.blobs[l].diff[0]
+			solver.net.blobs[l].data[:] += 0.005/np.abs(g).mean() * g
+			
+			solver.net.blobs[l].data[:] = z2o(solver.net.blobs[l].data[:]) - 0.5
+			solver.net.blobs[l].data[:] *= 0.95
+			#solver.net.blobs['ddata'].data[0][i,:,:] += 0.001*(np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5)
+			solver.net.blobs[l].data[0] = np.roll(np.roll(solver.net.blobs[l].data[0], -ox, -1), -oy, -2) # unshift image
+		#solver.net.blobs['ddata'].data[0,1:,:,:] = z2o(solver.net.blobs['ddata'].data[0,1:,:,:])
+		#solver.net.blobs['ddata'].data[0,0,:,:] = img.copy() - 0.5
+
+	print  solver.net.blobs['ip2'].data[:]
+	# use this for ~/Desktop/deep_dream_directions
+	results[k] = (solver.net.blobs['ddata'].data.copy(),solver.net.blobs['ddata'].data.copy())
+	show_py_image_data(results[k][0],'ddata')
+
+
+	
+for k in [0,0,0,0,0,0,3,3,3,3,3,3,6,6,6,6,6,6]:
+	show_py_image_data(results[k][0],'ddata')
+	time.sleep(0.5)
 
 

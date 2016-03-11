@@ -16,7 +16,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
-solver_name = 'solver_11px_MC.prototxt'
+solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
 #solver_name = 'solver_kaffe_11px_RGB.prototxt'
 #solver_name = 'solver_11px_MC_slim.prototxt'
