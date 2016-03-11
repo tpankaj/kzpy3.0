@@ -268,10 +268,10 @@ results = {}
 
 for k in [0,3,6]:#range(0,7):
 	for i in range(9):
-		#solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
-		solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
+		solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
+		#solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
 	jitter = 3
-	for j in range(200):
+	for j in range(60):
 		ox, oy = np.random.randint(-jitter, jitter+1, 2)
 		solver.net.blobs['ddata'].data[0] = np.roll(np.roll(solver.net.blobs['ddata'].data[0], ox, -1), oy, -2) # apply jitter shift
 		
