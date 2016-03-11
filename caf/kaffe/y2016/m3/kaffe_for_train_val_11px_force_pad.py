@@ -134,7 +134,7 @@ n_correct = 0
 for i in range(n):
 	print i
 	solver.net.forward()
-	if solver.net.blobs['C_ip2'].data[0].argmax(axis=0) == solver.net.blobs['C_py_target_data'].data[0].argmax(axis=0):
+	if solver.net.blobs['ip2'].data[0].argmax(axis=0) == solver.net.blobs['py_target_data'].data[0].argmax(axis=0):
 		n_correct += 1
 print(d2s('percent correct =',n_correct,'/',n,'chance =',int(1/7.0*n),'/',n))
 print(d2s('percent correct =',n_correct/(1.0*n))
@@ -268,10 +268,10 @@ results = {}
 
 for k in [0,3,6]:#range(0,7):
 	for i in range(9):
-		solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
-		#solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
+		#solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
+		solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
 	jitter = 3
-	for j in range(60):
+	for j in range(200):
 		ox, oy = np.random.randint(-jitter, jitter+1, 2)
 		solver.net.blobs['ddata'].data[0] = np.roll(np.roll(solver.net.blobs['ddata'].data[0], ox, -1), oy, -2) # apply jitter shift
 		
@@ -291,7 +291,7 @@ for k in [0,3,6]:#range(0,7):
 			g = solver.net.blobs[l].diff[0]
 			solver.net.blobs[l].data[:] += 0.005/np.abs(g).mean() * g
 			
-			solver.net.blobs[l].data[:] = z2o(solver.net.blobs[l].data[:]) - 0.5
+			#solver.net.blobs[l].data[:] = z2o(solver.net.blobs[l].data[:]) - 0.5
 			solver.net.blobs[l].data[:] *= 0.95
 			#solver.net.blobs['ddata'].data[0][i,:,:] += 0.001*(np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5)
 			solver.net.blobs[l].data[0] = np.roll(np.roll(solver.net.blobs[l].data[0], -ox, -1), -oy, -2) # unshift image
