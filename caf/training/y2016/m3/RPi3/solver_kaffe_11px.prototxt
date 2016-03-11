@@ -21,4 +21,4 @@ display: 10000
 max_iter: 1000000
 # snapshot intermediate results
 snapshot: 100000
-snapshot_prefix: "scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px/train_val_kaffe_11px"
+snapshot_prefix: "scratch/2016/3/RPi/11px_force_pad"
