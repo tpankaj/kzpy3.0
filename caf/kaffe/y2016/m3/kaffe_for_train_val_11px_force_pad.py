@@ -2,14 +2,14 @@ from kzpy3.vis import *
 import caffe
 
 
-def show_py_image_data(data,fig=1):
+def show_py_image_data(data,fig=1,img_title=''):
 	d = data[0].copy()
 	d = z2o(d)
 	d[:,0,0] = 1
 	d[:,0,1] = 0
 	for j in range(1):
 	    for i in range(9):
-	        mi(d[i,:,:],fig)
+	        mi(d[i,:,:],fig,img_title=img_title)
 	        plt.pause(0.1)
 def img_from_caffe_data(data):
 	img = np.zeros((shape(data)[2],shape(data)[3],3))
@@ -23,7 +23,7 @@ def img_from_caffe_data(data):
 #solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
 #f=opjD('train_val_kaffe_11px_iter_2600000.caffemodel')
 solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
-f=opjD('deep_dream_directions/BW/train_val_kaffe_11px_iter_3900000.caffemodel')
+f=opjh('Google_Drive/2016-1/deep_dream_directions/BW/train_val_kaffe_11px_iter_3900000.caffemodel')
 solver.net.copy_from(f)
 
 
@@ -70,7 +70,7 @@ for j in range(100):
 sample_sequence = np.load(opjD('pid.npy'))
 
 solver.net.blobs['ddata'].data[:] = sample_sequence.copy()
-jitter = 3
+jitter = 0
 for j in range(1000):
 	solver.net.blobs['ddata'].data[0,0,:,:] = sample_sequence[0,0,:,:].copy()
 	ox, oy = np.random.randint(-jitter, jitter+1, 2)
@@ -79,13 +79,13 @@ for j in range(1000):
 	solver.net.forward()#start='ddata')
 	p = solver.net.blobs['ip2'].data[0,:]; p = (p*100).astype(int)/100.0; print p
 #	print  solver.net.blobs['ip2'].data[:]
-	solver.net.blobs['ip2'].diff[0] *= 0
-	solver.net.blobs['ip2'].diff[0,6]=1
-#	solver.net.blobs['conv1'].diff[0] *= 0
-#	solver.net.blobs['conv1'].diff[0,30,8,15] = 1
+#	solver.net.blobs['ip2'].diff[0] *= 0
+#	solver.net.blobs['ip2'].diff[0,6]=1
+	solver.net.blobs['conv1'].diff[0] *= 0
+	solver.net.blobs['conv1'].diff[0,30,8,15] = 1
 #	solver.net.blobs['conv2'].diff[0,2,15,15] = 1
-	solver.net.backward(start='ip2')
-#	solver.net.backward(start='conv2')
+#	solver.net.backward(start='ip2')
+	solver.net.backward(start='conv1')
 	g = solver.net.blobs['ddata'].diff[0]
 	solver.net.blobs['ddata'].data[:] += 0.005/np.abs(g).mean() * g
 	
@@ -270,23 +270,23 @@ for k in [0,3,6]:#range(0,7):
 	for i in range(9):
 		#solver.net.blobs['ddata'].data[0,i,:,:] = img[:,:].copy()-0.5
 		solver.net.blobs['ddata'].data[0][i,:,:] = np.random.random(np.shape(solver.net.blobs['ddata'].data[0][1,:,:]))-0.5
-	jitter = 3
-	for j in range(200):
+	jitter = 0
+	for j in range(100):
 		ox, oy = np.random.randint(-jitter, jitter+1, 2)
 		solver.net.blobs['ddata'].data[0] = np.roll(np.roll(solver.net.blobs['ddata'].data[0], ox, -1), oy, -2) # apply jitter shift
 		
 		solver.net.forward()#start='ddata')
 	#	p = solver.net.blobs['M_cccp2'].data[0,:]; p = (p*100).astype(int)/100.0; print p
 	#	print  solver.net.blobs['ip2'].data[:]
-		solver.net.blobs['ip2'].diff[0] *= 0
-		solver.net.blobs['ip2'].diff[0,k]=1
-	#	solver.net.blobs['MC_conv3'].diff[0]*=0
-	#	solver.net.blobs['MC_conv3'].diff[0,0,10,10]=1
+	#	solver.net.blobs['ip1'].diff[0] *= 0
+	#	solver.net.blobs['ip1'].diff[0,k]=1
+		solver.net.blobs['conv1'].diff[0]*=0
+		solver.net.blobs['conv1'].diff[0,k,10,10]=1
 	#	solver.net.blobs['conv1'].diff[0] *= 0
 	#	solver.net.blobs['conv1'].diff[0,30,8,15] = 1
 	#	solver.net.blobs['conv2'].diff[0,2,15,15] = 1
-		solver.net.backward(start='ip2')
-	#	solver.net.backward(start='conv2')
+	#	solver.net.backward(start='ip1')
+		solver.net.backward(start='conv1')
 		for l in ['ddata']:
 			g = solver.net.blobs[l].diff[0]
 			solver.net.blobs[l].data[:] += 0.005/np.abs(g).mean() * g
@@ -297,16 +297,21 @@ for k in [0,3,6]:#range(0,7):
 			solver.net.blobs[l].data[0] = np.roll(np.roll(solver.net.blobs[l].data[0], -ox, -1), -oy, -2) # unshift image
 		#solver.net.blobs['ddata'].data[0,1:,:,:] = z2o(solver.net.blobs['ddata'].data[0,1:,:,:])
 		#solver.net.blobs['ddata'].data[0,0,:,:] = img.copy() - 0.5
-
 	print  solver.net.blobs['ip2'].data[:]
 	# use this for ~/Desktop/deep_dream_directions
 	results[k] = (solver.net.blobs['ddata'].data.copy(),solver.net.blobs['ddata'].data.copy())
 	show_py_image_data(results[k][0],'ddata')
 
 
-	
-for k in [0,0,0,0,0,0,3,3,3,3,3,3,6,6,6,6,6,6]:
-	show_py_image_data(results[k][0],'ddata')
-	time.sleep(0.5)
+#results = motion_ip1_j3.copy()
+#results = motion_conv1_j0.copy()
+#results = motion_ip1_j3.copy()
+
+def show_results(results,img_title):
+	for k in [0,3,6,]:
+		for l in range(5):
+			show_py_image_data(results[k][0],100,d2s(img_title,k))
+			time.sleep(0.5)
+		time.sleep(1.0)
 
 
