@@ -7,6 +7,7 @@ all_runs_dic = {}
 
 CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'
 CAFFE_BVLC_REF_CAT_TRAINING_MODE = 'CAFFE_BVLC_REF_CAT_TRAINING_MODE'
+CAFFE_BVLC_REF_CAT_TRAINING_MODE = 'CAFFE_BVLC_REF_TRAINING_MODE'
 CAFFE_CAT_TRAINING_MODE = 'CAFFE_CAT_TRAINING_MODE'
 MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 MC_CAFFE_CAT_TRAINING_MODE = 'MC_CAFFE_CAT_TRAINING_MODE'
@@ -15,7 +16,7 @@ MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 
-run_mode = CAFFE_BVLC_REF_CAT_TRAINING_MODE
+run_mode = CAFFE_BVLC_REF_TRAINING_MODE
 #run_mode = CAFFE_TRAINING_MODE
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 #CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
@@ -395,7 +396,7 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
 
 
 
-elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
+elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_TRAINING_MODE:
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
     # for the pretrained bvlc_reference net
@@ -424,12 +425,24 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
         S = steer/200.0 + 0.5
         assert(S>=0)
         assert(S<=1)
-        steer_lst = [0,0,0,0,0,0,0]
-        c = categorize_steer(S)
-        assert(c<len(steer_lst))
-        assert(c>=0)
-        steer_lst = blurred_steer(c)
-        return img_lst,steer_lst
+        if run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
+            steer_lst = [0,0,0,0,0,0,0]
+            c = categorize_steer(S)
+            assert(c<len(steer_lst))
+            assert(c>=0)
+            steer_lst = blurred_steer(c)
+            return img_lst,steer_lst
+        else:
+            F = frames_to_next_turn/45.0
+            F = min(F,1.0)
+            assert(F>=0)
+            assert(F<=1)
+            R = rps/75.0
+            R = min(R,1.0)
+            assert(R>=0)
+            assert(R<=1)
+            return img_lst,[S,0*F,0*R]
+        
 
 # e.g.s for transforming filenames
 # C_f='/Users/karlzipser/Desktop/RPi3_data/runs_scl_100_RGB/09Feb16_13h33m51s_scl=100_mir=0/0_1455053641.36_str=-6_spd=52_rps=0_lrn=125_rrn=105_rnd=0_scl=100_mir=0_.jpg'

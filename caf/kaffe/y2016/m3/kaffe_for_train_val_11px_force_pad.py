@@ -22,9 +22,10 @@ def img_from_caffe_data(data):
 
 #solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
 #f=opjD('train_val_kaffe_11px_iter_2600000.caffemodel')
-solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
-f=opjh('Google_Drive/2016-1/deep_dream_directions/BW/train_val_kaffe_11px_iter_3900000.caffemodel')
-solver.net.copy_from(f)
+#solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m3/RPi3/solver_kaffe_11px.prototxt"))
+#f=opjh('Google_Drive/2016-1/deep_dream_directions/BW/train_val_kaffe_11px_iter_3900000.caffemodel')
+#solver.net.copy_from(f)
+
 
 
 
@@ -141,7 +142,7 @@ print(d2s('percent correct =',n_correct,'/',n,'chance =',int(1/7.0*n),'/',n))
 print(d2s('percent correct =',n_correct/(1.0*n)))
 
 
-n=100
+n=1000
 results = np.zeros((7,7))
 ctrs = np.zeros(7)
 for i in range(n):
@@ -320,5 +321,71 @@ def show_results(results,img_title):
 			show_py_image_data(results[k][0],100,d2s(img_title,k))
 			time.sleep(0.5)
 		time.sleep(1.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from kzpy3.vis import *
+import caffe
+# scp kzipser@redwood2.dyn.berkeley.edu:'scratch/2016/3/RPi3/bvlc_ref_mod_iter_400000.caffemodel' ~/Desktop
+training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
+solver_name = 'bvlc_solver_0.prototxt'
+solver = caffe.SGDSolver(opj(training_path,solver_name))
+model = opjD('bvlc_ref_mod_iter_400000.caffemodel')
+solver.net.copy_from(model)
+
+
+
+
+results = {}
+ctr = 0
+f='/Users/karlzipser/Desktop/RPi3_data/runs_scl_100_RGB/09Feb16_14h03m20s_scl=100_mir=0/3091_1455055614.01_str=0_spd=48_rps=28_lrn=0_rrn=0_rnd=0_scl=100_mir=0_.jpg'
+for k in [0,3,6]:
+	caffe_root = opjh('caffe')  # this file is expected to be in {caffe_root}/examples
+	transformer = caffe.io.Transformer({'data': (1, 3, 227, 227)})
+	transformer.set_transpose('data', (2,0,1))
+	transformer.set_mean('data', np.load(opj(caffe_root,'python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
+	transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
+	transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
+	solver.net.blobs['data'].data[...] = transformer.preprocess('data', caffe.io.load_image(f))
+	jitter = 3
+	for j in range(150):
+		ox, oy = np.random.randint(-jitter, jitter+1, 2)
+		solver.net.blobs['data'].data[0] = np.roll(np.roll(solver.net.blobs['data'].data[0], ox, -1), oy, -2) # apply jitter shift
+		solver.net.forward()
+		solver.net.blobs['ip3'].diff[0] *= 0
+		solver.net.blobs['ip3'].diff[0,k] = 1
+		solver.net.backward(start='ip3')
+		g = solver.net.blobs['py_image_data'].diff[0]
+		solver.net.blobs['data'].data[:] += 0.1/np.abs(g).mean() * g
+		#solver.net.blobs['data'].data[:] = z2o(solver.net.blobs['data'].data[:]) - 0.5
+		solver.net.blobs['data'].data[0] = np.roll(np.roll(solver.net.blobs['data'].data[0], -ox, -1), -oy, -2) # unshift image
+	results[ctr] = img_from_caffe_data(solver.net.blobs['data'].data)
+	mi(results[ctr],ctr,img_title=d2s(k))
+	ctr += 1
+	plt.pause(0.01)
+
 
 

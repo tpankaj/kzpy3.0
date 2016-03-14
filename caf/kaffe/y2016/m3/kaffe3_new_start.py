@@ -9,7 +9,7 @@ import caffe
 
 model_folders = ['bvlc_googlenet','googlenet_places205','bvlc_reference_caffenet',
 'finetune_BarryLyndon_8Sept2015','VGG_ILSVRC_16_layers','person_clothing_bigger_18Sept2015',
-'bvlc_googlenet_person']
+'bvlc_googlenet_person','temp']
 
 def get_net(MODEL_NUM = 2):
     model_folder = model_folders[MODEL_NUM]
@@ -43,7 +43,7 @@ def objective_L2(dst):
     dst.diff[:] = dst.data 
 
 
-def make_step(net, step_size=1.5, end='inception_4c/output', 
+def make_step(net, step_size=0.1, end='inception_4c/output', 
               jitter=32, clip=True, objective=objective_L2):
     '''Basic gradient ascent step.'''
 
@@ -58,7 +58,11 @@ def make_step(net, step_size=1.5, end='inception_4c/output',
     net.backward(start=end)
     g = src.diff[0]
     # apply normalized ascent step to the input image
-    src.data[:] += step_size/np.abs(g).mean() * g
+    g_abs_mean = np.abs(g).mean()
+    if not g_abs_mean == 0:
+        src.data[:] += step_size/g_abs_mean * g
+    else:
+        print('np.abs(g).mean() == 0')
 
     src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
             
@@ -183,8 +187,8 @@ inception_layers = ['inception_3a/1x1',
 
 
 #############################
-if False:
-    MODEL_NUM = 5
+if True:
+    MODEL_NUM = 7
     net = get_net(MODEL_NUM)
 
     print(np.shape(net.blobs['data'].data))
@@ -192,7 +196,7 @@ if False:
     src.reshape(1,3,227,227)
     print(np.shape(net.blobs['data'].data))
 
-    for l in ['conv2']:#['inception_4e/output']:#['fc8']:
-        do_it3('scratch/2016/3/6',l,net,100,0)
+    for l in ['ip3']:#['inception_4e/output']:#['fc8']:
+        do_it3('scratch/2016/3/14',l,net,4000,2)
 
 
