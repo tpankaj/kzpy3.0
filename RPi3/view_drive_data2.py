@@ -426,7 +426,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
             assert len(np.shape(img_lst[0])) == 3
         except:
             print "BIG PROBLEM!"
-        img = img_lst[0] * img_mask
+        img = img_lst[0]
         img_lst = [img[0,:,:],img[1,:,:],img[2,:,:]]
         S = steer/200.0 + 0.5
         assert(S>=0)
