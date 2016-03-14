@@ -1,4 +1,4 @@
-
+from kzpy3.utils import *
 n=100
 results = np.zeros((7,7))
 ctrs = np.zeros(7)
