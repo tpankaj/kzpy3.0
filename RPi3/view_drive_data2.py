@@ -433,7 +433,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
             steer_lst = blurred_steer(c)
             return img_lst,steer_lst
         else:
-            F = frames_to_next_turn/45.0
+            F = frames_to_next_turn/90.0
             F = min(F,1.0)
             assert(F>=0)
             assert(F<=1)
@@ -441,7 +441,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
             R = min(R,1.0)
             assert(R>=0)
             assert(R<=1)
-            return img_lst,[S,0*F,0*R]
+            return img_lst,[S,F,0*R]
         
 
 # e.g.s for transforming filenames

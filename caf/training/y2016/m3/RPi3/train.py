@@ -4,6 +4,7 @@ run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 #f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
 f=opjh('caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 f=opjh('scratch/2016/3/RPi3/bvlc_ref_mod_iter_2600000.caffemodel')
+f=opjD('bvlc_ref_mod_str_iter_100000.caffemodel')
 solver.net.copy_from(f)
 blobs = solver.net.blobs
 params = solver.net.params
@@ -80,8 +81,8 @@ def test_solver(solver,n,fig=100):
 	for i in range(n):
 		try:
 			solver.net.forward()
-			t = solver.net.blobs['MC_py_target_data'].data[0]
-			o = solver.net.blobs['MC_ip2'].data[0]
+			t = solver.net.blobs['py_target_data'].data[0]
+			o = solver.net.blobs['ip4'].data[0]
 			St_list.append(t[0])
 			So_list.append(o[0])
 			Ft_list.append(t[1])
