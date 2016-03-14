@@ -189,6 +189,8 @@ def scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,scale_percent,to_BW=Fal
 # scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,50,to_BW=True)
 # scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,100,to_BW=False)
 ###########################################################################
+# all_runs_dic = get_all_runs_dic('/Users/karlzipser/Desktop/RPi3_data/runs_original')
+# scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,25,to_BW=True)
 
 def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
     m = 0 * run_data_dic['steer']
@@ -397,6 +399,8 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
 
 
 elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_TRAINING_MODE:
+    img_mask = np.zeros((3,227,227))+1.0
+    img_mask[:,:100,:] = 0.0
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
     # for the pretrained bvlc_reference net
@@ -420,7 +424,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
             assert len(np.shape(img_lst[0])) == 3
         except:
             print "BIG PROBLEM!"
-        img = img_lst[0]
+        img = img_lst[0] * img_mask
         img_lst = [img[0,:,:],img[1,:,:],img[2,:,:]]
         S = steer/200.0 + 0.5
         assert(S>=0)

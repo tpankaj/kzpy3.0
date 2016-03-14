@@ -28,6 +28,7 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_MC_slim.prototxt'
 #solver_name = 'solver_scl50_nin0.prototxt'
 solver_name = 'bvlc_solver_str.prototxt'
+#solver_name = 'solver_11px_scl25.prototxt'
 
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
