@@ -129,7 +129,7 @@ print(d2s('percent correct =',n_correct/(1.0*n)))
 
 
 
-n = 100
+n = 1000
 n_correct = 0
 for i in range(n):
 	print i
@@ -141,12 +141,18 @@ print(d2s('percent correct =',n_correct,'/',n,'chance =',int(1/7.0*n),'/',n))
 print(d2s('percent correct =',n_correct/(1.0*n)))
 
 
+n=100
+results = np.zeros((7,7))
+ctrs = np.zeros(7)
+for i in range(n):
+	solver.net.forward()
+	j = solver.net.blobs['py_target_data'].data[0].argmax(axis=0)
+	results[j,:] += solver.net.blobs['ip3'].data[0]
+	ctrs[j] += 1.0
+for i in range(7):
+	results[i,:] /= ctrs[i]
 
-
-
-
-
-
+print results
 
 
 

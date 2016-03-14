@@ -17,7 +17,7 @@ class SimpleLayer4(caffe.Layer):
     def forward(self, bottom, top):
         global target_lst
         global ctr,last_time
-        if np.mod(ctr,100) == 0:
+        if np.mod(ctr,1000) == 0:
             print time.time()-last_time
             last_time = time.time()
         img_lst,target_lst=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,CAFFE_FRAME_RANGE)

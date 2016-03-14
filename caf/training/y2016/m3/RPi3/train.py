@@ -4,7 +4,10 @@ run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 #f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
 f=opjh('caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 solver.net.copy_from(f)
+blobs = solver.net.blobs
+params = solver.net.params
 safe_solver_step(solver)
+
 test_solver(solver,200,0)
 """
 
