@@ -375,6 +375,26 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
         steer_lst[c] = 1.0
         return img_lst,steer_lst
 
+def blurred_steer(c):
+    if c == 0:
+        s = [5,2,1,0,0,0,0]
+    elif c == 1:
+        s = [2,5,2,1,0,0,0]
+    elif c == 2:
+        s = [1,2,5,2,1,0,0]
+    elif c == 3:
+        s = [0,1,2,5,2,1,0]
+    elif c == 4:
+        s = [0,0,1,2,5,2,1]
+    elif c == 5:
+        s = [0,0,0,1,2,5,2]
+    elif c == 6:
+        s = [0,0,0,0,1,2,5]
+    else:
+        assert(False)
+    assert len(s) == 7
+    return list(z2o(np.array(s)))
+
 elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
@@ -408,7 +428,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
         c = categorize_steer(S)
         assert(c<len(steer_lst))
         assert(c>=0)
-        steer_lst[c] = 1.0
+        steer_lst = blurred_steer(c)
         return img_lst,steer_lst
 
 # e.g.s for transforming filenames
