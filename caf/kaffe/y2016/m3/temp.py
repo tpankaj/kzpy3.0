@@ -1,6 +1,6 @@
 from kzpy3.utils import *
 def temp(solver):
-	n=100
+	n=1000
 	results = np.zeros((7,7))
 	ctrs = np.zeros(7)
 	for i in range(n):
@@ -10,5 +10,4 @@ def temp(solver):
 		ctrs[j] += 1.0
 	for i in range(7):
 		results[i,:] /= ctrs[i]
-
 	print results
