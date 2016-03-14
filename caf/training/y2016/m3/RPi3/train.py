@@ -1,7 +1,7 @@
 """
 run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
-f=opjh('scratch/2016/3/RPi3/11px_MC_train_on_first_set/11px_MC_iter_4700000.caffemodel')
-f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
+#f=opjh('scratch/2016/3/RPi3/11px_MC_train_on_first_set/11px_MC_iter_4700000.caffemodel')
+#f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
 f=opjh('caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 solver.net.copy_from(f)
 safe_solver_step(solver)
