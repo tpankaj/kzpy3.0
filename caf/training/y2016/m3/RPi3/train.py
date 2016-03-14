@@ -2,6 +2,7 @@
 run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 f=opjh('scratch/2016/3/RPi3/11px_MC_train_on_first_set/11px_MC_iter_4700000.caffemodel')
 f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
+f=opjh('caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
 solver.net.copy_from(f)
 safe_solver_step(solver)
 test_solver(solver,200,0)
@@ -16,11 +17,13 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
-solver_name = 'solver_kaffe_11px.prototxt'
+#solver_name = 'solver_kaffe_11px.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
 #solver_name = 'solver_kaffe_11px_RGB.prototxt'
 #solver_name = 'solver_11px_MC_slim.prototxt'
 #solver_name = 'solver_scl50_nin0.prototxt'
+solver_name = 'bvlc_solver.prototxt'
+
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
@@ -157,7 +160,32 @@ def view_C_filters(solver,fig=2):
 
 
 
+"""
 
+caffe_root = opjh('caffe')  # this file is expected to be in {caffe_root}/examples
+transformer = caffe.io.Transformer({'data': solver.net.blobs['data'].data.shape})
+transformer.set_transpose('data', (2,0,1))
+transformer.set_mean('data', np.load(opj(caffe_root,'python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
+transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
+transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
+
+f = opjD('RPi3_data/runs_scl_100_RGB/09Feb16_13h33m51s_scl=100_mir=0/310_1455053662.01_str=0_spd=66_rps=29_lrn=55_rrn=67_rnd=0_scl=100_mir=0_.jpg')
+
+
+solver.net.blobs['data'].data[...] = transformer.preprocess('data', caffe.io.load_image(f)) 
+out = solver.net.forward()
+
+feat = net.blobs['ip3'].data[0]
+plt.subplot(2, 1, 1)
+plt.plot(feat.flat)
+plt.subplot(2, 1, 2)
+_ = plt.hist(feat.flat[feat.flat > 0], bins=100)
+
+
+
+
+
+"""
 
 
 

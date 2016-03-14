@@ -6,6 +6,7 @@ steer_bins = {}
 all_runs_dic = {}
 
 CAFFE_TRAINING_MODE = 'CAFFE_TRAINING_MODE'
+CAFFE_BVLC_REF_CAT_TRAINING_MODE = 'CAFFE_BVLC_REF_CAT_TRAINING_MODE'
 CAFFE_CAT_TRAINING_MODE = 'CAFFE_CAT_TRAINING_MODE'
 MC_CAFFE_TRAINING_MODE = 'MC_CAFFE_TRAINING_MODE'
 MC_CAFFE_CAT_TRAINING_MODE = 'MC_CAFFE_CAT_TRAINING_MODE'
@@ -13,14 +14,14 @@ CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 
-run_mode = CAFFE_CAT_TRAINING_MODE
+run_mode = CAFFE_BVLC_REF_CAT_TRAINING_MODE
 #run_mode = CAFFE_TRAINING_MODE
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
-CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
-#CAFFE_FRAME_RANGE = (-7,-6)# 
+#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+#CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
+CAFFE_FRAME_RANGE = (-7,-6)# 
 
-
+# all_runs_dic = load_objh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW')
 
 print(d2s('*** run_mode =',run_mode))
 
@@ -363,6 +364,42 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
         if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
             img = img_lst[0]
             img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]
+        S = steer/200.0 + 0.5
+        assert(S>=0)
+        assert(S<=1)
+        steer_lst = [0,0,0,0,0,0,0]
+        c = categorize_steer(S)
+        assert(c<len(steer_lst))
+        assert(c>=0)
+        steer_lst[c] = 1.0
+        return img_lst,steer_lst
+
+elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
+    import caffe
+    # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
+    # for the pretrained bvlc_reference net
+    #all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scl_100_RGB'))
+    steer_bins = get_steer_bins(all_runs_dic)
+    caffe_root = opjh('caffe')  # this file is expected to be in {caffe_root}/examples
+    transformer = caffe.io.Transformer({'data': (1, 3, 227, 227)})
+    transformer.set_transpose('data', (2,0,1))
+    transformer.set_mean('data', np.load(opj(caffe_root,'python/caffe/imagenet/ilsvrc_2012_mean.npy')).mean(1).mean(1)) # mean pixel
+    transformer.set_raw_scale('data', 255)  # the reference model operates on images in [0,255] range instead of [0,1]
+    transformer.set_channel_swap('data', (2,1,0))  # the reference model has channels in BGR order instead of RGB
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-7,-6)):
+        assert frame_range == (-7,-6) # i.e., we will only work with a single RGB image.
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        img_lst = []
+        for f in frame_names:
+            img_lst.append(transformer.preprocess('data', caffe.io.load_image(f)))
+        try:
+            assert len(img_lst) == 1
+            assert len(np.shape(img_lst[0])) == 3
+        except:
+            print "BIG PROBLEM!"
+        img = img_lst[0]
+        img_lst = [img[0,:,:],img[1,:,:],img[2,:,:]]
         S = steer/200.0 + 0.5
         assert(S>=0)
         assert(S<=1)

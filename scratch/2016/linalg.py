@@ -77,3 +77,24 @@ R = mtrx('R',[[1,2],[3,4],[5,6]])
 V.multiply(R,'VR');
 
 
+
+
+# http://www.wikihow.com/Calculate-Pi
+_pi = 0
+sign = 1.0
+N = 100000000
+for i in range(1,N,2):
+	_pi += sign * 4/(1.*i)
+	if sign == 1:
+		sign = -1
+	else:
+		sign = 1
+
+print _pi
+print np.pi - _pi
+
+
+
+
+
+

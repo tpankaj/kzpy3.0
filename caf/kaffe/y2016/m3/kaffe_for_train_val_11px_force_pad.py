@@ -129,15 +129,16 @@ print(d2s('percent correct =',n_correct/(1.0*n)))
 
 
 
-n = 2000
+n = 100
 n_correct = 0
 for i in range(n):
 	print i
 	solver.net.forward()
-	if solver.net.blobs['ip2'].data[0].argmax(axis=0) == solver.net.blobs['py_target_data'].data[0].argmax(axis=0):
+	if solver.net.blobs['ip3'].data[0].argmax(axis=0) == solver.net.blobs['py_target_data'].data[0].argmax(axis=0):
 		n_correct += 1
+
 print(d2s('percent correct =',n_correct,'/',n,'chance =',int(1/7.0*n),'/',n))
-print(d2s('percent correct =',n_correct/(1.0*n))
+print(d2s('percent correct =',n_correct/(1.0*n)))
 
 
 
