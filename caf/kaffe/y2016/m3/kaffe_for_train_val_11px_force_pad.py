@@ -13,9 +13,9 @@ def show_py_image_data(data,fig=1,img_title=''):
 	        plt.pause(0.1)
 def img_from_caffe_data(data):
 	img = np.zeros((shape(data)[2],shape(data)[3],3))
-	img[:,:,0] = data[0,0,:,:]
+	img[:,:,2] = data[0,0,:,:]
 	img[:,:,1] = data[0,1,:,:]
-	img[:,:,2] = data[0,2,:,:]
+	img[:,:,0] = data[0,2,:,:]
 	return z2o(img)
 
 

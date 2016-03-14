@@ -13,6 +13,7 @@ MC_CAFFE_CAT_TRAINING_MODE = 'MC_CAFFE_CAT_TRAINING_MODE'
 CAFFE_DEPLOY_MODE = 'CAFFE_DEPLOY_MODE'
 MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
+SAVE_ALL_RUN_DIC = SAVE_ALL_RUN_DIC
 
 run_mode = CAFFE_BVLC_REF_CAT_TRAINING_MODE
 #run_mode = CAFFE_TRAINING_MODE
@@ -378,8 +379,8 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
     # for the pretrained bvlc_reference net
-    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
-    #all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scl_100_RGB'))
+    #all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scl_100_RGB'))
     steer_bins = get_steer_bins(all_runs_dic)
     caffe_root = opjh('caffe')  # this file is expected to be in {caffe_root}/examples
     transformer = caffe.io.Transformer({'data': (1, 3, 227, 227)})
@@ -542,6 +543,11 @@ elif run_mode == USE_GRAPHICS:
     some_data['current_key'] = k[0]
     some_data['all_runs_dic'] = all_runs_dic
     some_data['play_range'] = play_range
+
+elif run_mode == SAVE_ALL_RUN_DIC:
+    from kzpy3.vis import *
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    save_obj(all_runs_dic,opjD('all_runs_dic'))
 
 else:
     print('Unknown mode')
