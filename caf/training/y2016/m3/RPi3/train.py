@@ -3,6 +3,7 @@ run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
 #f=opjh('scratch/2016/3/RPi3/11px_MC_train_on_first_set/11px_MC_iter_4700000.caffemodel')
 #f=opjD('train_val_kaffe_11px_iter_900000.caffemodel')
 f=opjh('caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel')
+f=opjh('scratch/2016/3/RPi3/bvlc_ref_mod_iter_2600000.caffemodel')
 solver.net.copy_from(f)
 blobs = solver.net.blobs
 params = solver.net.params
@@ -25,7 +26,7 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_kaffe_11px_RGB.prototxt'
 #solver_name = 'solver_11px_MC_slim.prototxt'
 #solver_name = 'solver_scl50_nin0.prototxt'
-solver_name = 'bvlc_solver.prototxt'
+solver_name = 'bvlc_solver_str.prototxt'
 
 def setup_solver():
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
