@@ -327,7 +327,25 @@ def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=Fa
 def categorize_steer(s):
     bs = s * 7 * 0.9999
     return np.int(np.floor(bs))
-
+def blurred_steer(c):
+    if c == 0:
+        s = [5,2,1,0,0,0,0]
+    elif c == 1:
+        s = [2,5,2,1,0,0,0]
+    elif c == 2:
+        s = [1,2,5,2,1,0,0]
+    elif c == 3:
+        s = [0,1,2,5,2,1,0]
+    elif c == 4:
+        s = [0,0,1,2,5,2,1]
+    elif c == 5:
+        s = [0,0,0,1,2,5,2]
+    elif c == 6:
+        s = [0,0,0,0,1,2,5]
+    else:
+        assert(False)
+    assert len(s) == 7
+    return list(z2o(np.array(s)))
 
 if run_mode == CAFFE_TRAINING_MODE:
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
@@ -375,25 +393,7 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
         steer_lst[c] = 1.0
         return img_lst,steer_lst
 
-def blurred_steer(c):
-    if c == 0:
-        s = [5,2,1,0,0,0,0]
-    elif c == 1:
-        s = [2,5,2,1,0,0,0]
-    elif c == 2:
-        s = [1,2,5,2,1,0,0]
-    elif c == 3:
-        s = [0,1,2,5,2,1,0]
-    elif c == 4:
-        s = [0,0,1,2,5,2,1]
-    elif c == 5:
-        s = [0,0,0,1,2,5,2]
-    elif c == 6:
-        s = [0,0,0,0,1,2,5]
-    else:
-        assert(False)
-    assert len(s) == 7
-    return list(z2o(np.array(s)))
+
 
 elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE:
     import caffe
