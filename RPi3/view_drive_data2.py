@@ -547,7 +547,7 @@ elif run_mode == USE_GRAPHICS:
 elif run_mode == SAVE_ALL_RUN_DIC:
     from kzpy3.vis import *
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
-    save_obj(all_runs_dic,opjD('all_runs_dic'))
+    save_obj(all_runs_dic,opjD('RPi3_data/all_runs_dics',CAFFE_DATA.split('/')[-1]))
 
 else:
     print('Unknown mode')
