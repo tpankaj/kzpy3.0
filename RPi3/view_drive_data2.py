@@ -419,7 +419,7 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
         img_lst = []
         for f in frame_names:
             cimg = caffe.io.load_image(f)
-            cimg = cimg[90:,:,:]
+            cimg = cimg[105:,:,:]
             img_lst.append(transformer.preprocess('data',cimg))
         try:
             assert len(img_lst) == 1
