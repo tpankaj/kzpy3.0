@@ -535,7 +535,7 @@ elif run_mode == MC_CAFFE_DEPLOY_MODE:
 
 
 elif run_mode == USE_GRAPHICS:
-    from kzpy3.utils import *
+    from kzpy3.vis import *
     all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_checked'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,15*15)
@@ -545,7 +545,7 @@ elif run_mode == USE_GRAPHICS:
     some_data['play_range'] = play_range
 
 elif run_mode == SAVE_ALL_RUN_DIC:
-    from kzpy3.vis import *
+    from kzpy3.utils import *
     all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     save_obj(all_runs_dic,opjD('RPi3_data/all_runs_dics',CAFFE_DATA.split('/')[-1]))
 
