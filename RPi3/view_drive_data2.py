@@ -399,8 +399,8 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
 
 
 elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_TRAINING_MODE:
-    img_mask = np.zeros((3,227,227))+1.0
-    img_mask[:,:100,:] = 0.0
+    #img_mask = np.zeros((3,227,227))+1.0
+    #img_mask[:,:100,:] = 0.0
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
     # for the pretrained bvlc_reference net
@@ -418,7 +418,9 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
         for f in frame_names:
-            img_lst.append(transformer.preprocess('data', caffe.io.load_image(f)))
+            cimg = caffe.io.load_image(f)
+            cimg = cimg[90:,:,:]
+            img_lst.append(transformer.preprocess('data',cimg))
         try:
             assert len(img_lst) == 1
             assert len(np.shape(img_lst[0])) == 3
