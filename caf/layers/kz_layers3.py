@@ -1,6 +1,6 @@
 # These examples are from various files distributed with caffe
 
-from kzpy3.RPi3.view_drive_data2 import *
+from kzpy3.RPi3.view_drive_data_caffe import *
 import caffe
 from kzpy3.utils import *
 
