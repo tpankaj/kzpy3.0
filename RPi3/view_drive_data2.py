@@ -20,7 +20,7 @@ run_mode = CAFFE_BVLC_REF_TRAINING_MODE
 #run_mode = CAFFE_TRAINING_MODE
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 #CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
 CAFFE_FRAME_RANGE = (-7,-6)# 
 
 # all_runs_dic = load_objh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW')
@@ -404,8 +404,8 @@ elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_
     import caffe
     # Here I use the image transformer code from the bvlc_reference net to get my images in the correct scaling and format
     # for the pretrained bvlc_reference net
-    #all_runs_dic = get_all_runs_dic(CAFFE_DATA)
-    all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scl_100_RGB'))
+    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    #all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scl_100_RGB'))
     steer_bins = get_steer_bins(all_runs_dic)
     caffe_root = opjh('caffe')  # this file is expected to be in {caffe_root}/examples
     transformer = caffe.io.Transformer({'data': (1, 3, 227, 227)})
