@@ -19,5 +19,6 @@ ffmpeg -r 15 -i %d.jpg -vcodec mpeg4 -b 990k video.avi
 
 
 ffmpeg -i %d.png -pix_fmt yuv420p -r 30 -b:v 14000k temp.mpg
+
 """
 
