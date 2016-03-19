@@ -1,10 +1,10 @@
-
 from kzpy3.utils import *
+from kzpy3.vis import *
 
 img_dic = {}
 steer_bins = {}
 all_runs_dic = {}
-
+some_data = {}
 
 def get_run_data(run_path):
     print('get_run_data')
@@ -245,65 +245,35 @@ def button_press_event(event):
     run_data_dic = all_runs_dic[current_key]
     animate_frames(run_data_dic,np.int(np.floor(event.xdata))+play_range[0],np.int(np.floor(event.xdata))+play_range[1],2)
 
-def get_steer_bins(all_runs_dic):
-    steer_bins = {}
-    steer_bins['left_max'] = []
-    steer_bins['left'] = []
-    steer_bins['left_min'] = []
-    steer_bins['center'] = []
-    steer_bins['right_min'] = []
-    steer_bins['right'] = []
-    steer_bins['right_max'] = []
-    for k in all_runs_dic:
-        print k
-        run_data_dic = all_runs_dic[k]
-        for i in range(len(run_data_dic['train_frames'])):
-            t = run_data_dic['train_frames'][i]
-            if t:
-                #f = run_data_dic['img_lst'][i]
-                if run_data_dic['steer'][i] < -0.6:
-                    steer_bins['left_max'].append((k,i))
-                elif run_data_dic['steer'][i] < -0.3:
-                    steer_bins['left'].append((k,i))
-                elif run_data_dic['steer'][i] < -0.05:
-                    steer_bins['left_min'].append((k,i))
-                elif run_data_dic['steer'][i] <= 0.05:
-                    steer_bins['center'].append((k,i))
-                elif run_data_dic['steer'][i] <= 0.3:
-                    steer_bins['right_min'].append((k,i))
-                elif run_data_dic['steer'][i] <= 0.6:
-                    steer_bins['right'].append((k,i))
-                elif run_data_dic['steer'][i] <= 1:
-                    steer_bins['right_max'].append((k,i))
-                else:
-                    raise Exception('get_steer_bins error!')
-    return steer_bins
 
-def steer_bin_medians(steer_bins,all_runs_dic):
-    m = []
-    for b in steer_bins:
-        lst = []
-        for q in steer_bins[b]:
-            lst.append(all_runs_dic[q[0]]['steer'][q[1]])
-        m.append((b,np.median(lst),len(steer_bins[b])))
-    return m
+def get_frame_pairs(all_runs_dic,key_index,dst):
+    """
+    all_runs_dic = get_all_runs_dic('/Users/karlzipser/Desktop/RPi3_data/runs_caffe')
+    k = sorted(all_runs_dic.keys())
+    indx = 0
+    dst = opjD(all_runs_dic[k[indx]]['run_path'].split('/')[-1]+'_frames')
+    get_frame_pairs(all_runs_dic,indx,dst)
 
-def get_rand_frame_data(steer_bins,all_runs_dic,frame_range=(-15,-6),Graphics=False):
-    sbks = steer_bins.keys() + ['center'] # This + ['center'] has the effect of doubling the chance of center position result.
-    b = sbks[np.random.randint(len(sbks))]
-    ardks = all_runs_dic.keys()
-    l = len(steer_bins[b])
-    e = steer_bins[b][np.random.randint(l)]
-    r = e[0]
-    n = e[1]
-    steer = int(100.0*all_runs_dic[r]['steer'][n])
-    frames_to_next_turn = int(all_runs_dic[r]['frames_to_next_turn'][n])
-    rps = int(10.0*all_runs_dic[r]['rps'][n])
-    frame_names = []
-    for i in range(frame_range[0]+n,frame_range[1]+n):
-        frame_names.append(opj(all_runs_dic[r]['run_path'],all_runs_dic[r]['img_lst'][i]))
-    return (b,r,n,steer,frames_to_next_turn,rps,frame_names)
-
+    """
+    global some_data
+    unix(d2s('mkdir -p',dst))
+    ky = sorted(all_runs_dic.keys())[key_index]
+    print ky
+    some_data['current_key'] = ky
+    run_data_dic = all_runs_dic[ky]
+    #frame_lst = []
+    for i in range(len(run_data_dic['img_lst'])):
+        print i
+        r = imread(opj(run_data_dic['run_path'],run_data_dic['img_lst'][i]))
+        r = z2o(r)
+        bw = z2o(imresize(imresize(r.mean(axis=2),25),(225,300),'nearest'))
+        c = np.zeros((225,620,3))
+        c[:,:300,:] = r
+        for j in [0,1,2]:
+            c[:,320:,j]=bw
+        c = c[:-1,:,:]
+        imsave(opj(dst,d2n(i,'.png')),c)
+    #return frame_lst
 
 """
 elif run_mode == USE_GRAPHICS:
@@ -311,7 +281,7 @@ elif run_mode == USE_GRAPHICS:
     all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_checked'))
     k = sorted(all_runs_dic.keys())
     play_range = (0,15*15)
-    some_data = {}
+    
     some_data['current_key'] = k[0]
     some_data['all_runs_dic'] = all_runs_dic
     some_data['play_range'] = play_range
