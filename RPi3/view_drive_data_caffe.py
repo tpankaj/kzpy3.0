@@ -11,12 +11,14 @@ MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 
-run_mode = CAFFE_DEPLOY_MODE
-#run_mode = CAFFE_TRAINING_MODE
+#run_mode = CAFFE_DEPLOY_MODE
+run_mode = CAFFE_TRAINING_MODE
+CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW_test')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
-#CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
-CAFFE_FRAME_RANGE = (-7,-6)# 
+CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
+#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
+#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_25_BW_test')
+#CAFFE_FRAME_RANGE = (-7,-6)# 
 
 # all_runs_dic = load_objh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW')
 
@@ -102,7 +104,10 @@ def blurred_steer(c):
     return list(z2o(np.array(s)))
 
 if run_mode == CAFFE_TRAINING_MODE:
-    all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    if 'all_runs_dics' in CAFFE_DATA:
+        all_runs_dic = load_obj(CAFFE_DATA)
+    else: 
+        all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
