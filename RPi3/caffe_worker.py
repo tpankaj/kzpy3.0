@@ -10,6 +10,11 @@ solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_w
 #solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_scl50_steer_only/original_with_accuracy_11px_scl50_iter_1200000.caffemodel'))
 #solver.net.copy_from(opjh('scratch/2016/3/RPi3/11px_MC_rw2/11px_MC_iter_6800000.caffemodel'))
 solver.net.copy_from(opjh('/Users/karlzipser/scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_11100000.caffemodel'))
+for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
+    print(l)
+for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
+    print(l)
+
 
 while True:
     try:
