@@ -1,16 +1,31 @@
 from kzpy3.vis import *
 import caffe
 
-
-def show_py_image_data(data,fig=1,img_title=''):
+# show_py_image_data(bb,fig=1,img_title='',dst=opjD('temp_conv2'),start_num=0,blanks=5,repeats=3)
+def show_py_image_data(data,fig=1,img_title='',dst='',start_num=0,blanks=0,repeats=1):
 	d = data[0].copy()
 	d = z2o(d)
-	d[:,0,0] = 1
-	d[:,0,1] = 0
-	for j in range(1):
-	    for i in range(9):
-	        mi(d[i,:,:],fig,img_title=img_title)
-	        plt.pause(0.1)
+	print shape(d)
+	if len(dst) > 0:
+		unix(d2s('mkdir -p',dst),False)
+	img = np.zeros((shape(d)[1],shape(d)[2],3))
+	img = 0*img + 0.5#d[0,0,0]
+	ctr = 0
+	for j in range(repeats):
+		for i in range(-blanks,9):
+			
+			if i >= 0:
+				for l in range(3):
+					img[:,:,l] = d[i,:,:]
+			img[0,0] = 0
+			img[0,1] = 1
+
+			mi(img,fig,img_title=img_title)
+			plt.pause(0.1)
+			if len(dst) > 0:
+				imsave(opj(dst,d2n(start_num+ctr,'.png')),imresize(img,400,'nearest'))
+				ctr += 1
+
 def img_from_caffe_data(data):
 	img = np.zeros((shape(data)[2],shape(data)[3],3))
 	img[:,:,2] = data[0,0,:,:]

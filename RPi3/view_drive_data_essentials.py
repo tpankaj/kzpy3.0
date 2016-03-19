@@ -1,5 +1,6 @@
 from kzpy3.utils import *
-from kzpy3.vis import *
+if host_name != 'redwood2':
+    from kzpy3.vis import *
 
 img_dic = {}
 steer_bins = {}
