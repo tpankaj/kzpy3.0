@@ -21,8 +21,8 @@ from kzpy3.vis import *
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
-training_path = opjh('kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy')
-#training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
+#training_path = opjh('kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy')
+training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3/scl25')
 #solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
