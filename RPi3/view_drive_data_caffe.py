@@ -13,7 +13,7 @@ SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 
 #run_mode = CAFFE_DEPLOY_MODE
 run_mode = CAFFE_TRAINING_MODE
-CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW_test')
+CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
