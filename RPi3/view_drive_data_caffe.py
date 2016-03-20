@@ -13,7 +13,7 @@ SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 
 #run_mode = CAFFE_DEPLOY_MODE
 run_mode = CAFFE_TRAINING_MODE
-CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
+CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW_test')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
@@ -113,7 +113,9 @@ if run_mode == CAFFE_TRAINING_MODE:
         b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
         img_lst = []
         for f in frame_names:
-            img_lst.append(imread_from_img_dic(img_dic,'',f)/255.0-0.5)
+            img = imread_from_img_dic(img_dic,'',f)/255.0-0.5
+            #img = -img # temp
+            img_lst.append(img)
         if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
             img = img_lst[0]
             img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]

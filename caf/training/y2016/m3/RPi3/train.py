@@ -139,15 +139,15 @@ def test_solver(solver,n,fig=100):
 
 
 def view_M_filters(solver,fig=1):
-	filters = solver.net.params['M_conv1'][0].data
-	blnk = np.zeros((27,27*10))
+	filters = solver.net.params['conv1'][0].data
+	blnk = np.zeros((27,27))
 	blnk[0,0] = -0.333/2.0
 	blnk[0,1] = 0.333/2.0
 
-	for f in range(96):
+	for f in range(shape(filters)[0]):
 		for i in range(0,9): #(8,-1,-1):
 			plt.clf()
-			blnk[7:18,(1*14+7):(1*14+18)] = filters[f,i,:,:]
+			blnk[7:18,7:18] = filters[f,i,:,:]
 			mi(blnk,figure_num=fig,img_title=d2s(f))
 			plt.pause(0.05)
 		blnk *= 0

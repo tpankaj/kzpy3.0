@@ -227,15 +227,50 @@ def animate_frames(run_data_dic,start_frame,end_frame,fig,title=''):
         r = run_data_dic['rand_control'][x]
         dlo = run_data_dic['data_lockout'][x]
         img = imread(opj(run_data_dic['run_path'],f))
+        #print((img.max(),img.min()))
         if len(np.shape(img)) > 2:
             if r > 0:
                 img[:,:,1:] *= 0.5
             if dlo == 0:
                 img[:,:,[0,1]] *= 0.5
+        #img = 255-img
+        #img = img[-28:,:]
         plt.figure(fig)
         plt.clf()
         mi(img,fig,img_title=title)
         plt.pause(0.0001)
+
+def animate_and_save_frames(run_data_dic,start_frame,end_frame,fig,title='',save_path=''):
+    ctr = 0
+    if len(save_path) > 0:
+        unix(d2n('mkdir -p ',save_path))
+    if end_frame < 0:
+        end_frame = len(run_data_dic['img_lst'])
+    img = zeros((250,300,3))
+    for x in range(start_frame,end_frame):
+        f = run_data_dic['img_lst'][x]
+        r = run_data_dic['rand_control'][x]
+        dlo = run_data_dic['data_lockout'][x]
+        img_ = imread(opj(run_data_dic['run_path'],f))
+        img *= 0
+        s = (run_data_dic['steer'][x] + run_data_dic['steer'][x-1] ) /2.0
+        #print s
+        if s >= 0:
+            a,b = 150,150+300*s
+        else:
+            a,b = 150+(300*s),150
+        #print a,b
+        img[224:,a:b,0] = 1
+        img[224:,149:151,2] = 1
+        img[0:225,:,:] = img_ / 255.0
+        plt.figure(fig)
+        plt.clf()
+        mi(img,fig,img_title=title)
+        if len(save_path) > 0:
+            imsave(opj(save_path,d2n(ctr,'.png')),img)
+        ctr += 1
+        plt.pause(0.0001)
+
 
 def button_press_event(event):
     current_key = some_data['current_key']
@@ -281,7 +316,7 @@ elif run_mode == USE_GRAPHICS:
     from kzpy3.vis import *
     all_runs_dic = get_all_runs_dic(opjD('/Users/karlzipser/Desktop/RPi3_data/runs_checked'))
     k = sorted(all_runs_dic.keys())
-    play_range = (0,15*15)
+    play_range = (0,15*1)
     
     some_data['current_key'] = k[0]
     some_data['all_runs_dic'] = all_runs_dic

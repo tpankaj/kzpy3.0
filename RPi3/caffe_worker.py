@@ -26,8 +26,9 @@ while True:
         steer -= 0.5
         steer *= 100
         steer = int(steer)
+
         np.save(opjh('Desktop/caffe_command.npy'),steer)
-        print steer
+        print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][1])))
     except Exception, e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
 
