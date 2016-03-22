@@ -99,8 +99,8 @@ def test_solver(solver,n,fig=100):
 	print(d2s('Speed =',n/(time.time()-start_t),'trials per second.'))
 	plt.figure(fig,(5,5))
 	plt.clf()
-	plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
-	plt.plot(Rt_list,Ro_list,'rx',label='rot')
+	#plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
+	#plt.plot(Rt_list,Ro_list,'rx',label='rot')
 	plt.plot(St_list,So_list,'bo',label='steer')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
@@ -114,7 +114,8 @@ def test_solver(solver,n,fig=100):
 	try:
 		cR = int(1000.0*np.corrcoef(Rt_list,Ro_list)[0,1])/1000.0
 	except: pass
-	plt.title((cS,cF,cR))
+	plt.title(cS)
+	#plt.title((cS,cF,cR))
 	#plt.legend()
 	plt.ion()
 	plt.show()
