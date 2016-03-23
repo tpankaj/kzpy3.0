@@ -162,7 +162,22 @@ cgps -s
 
 
 ##############################################################
-#
+# 22 March 2016 # fails with unchecked things
+http://www.knight-of-pi.org/deepdreaming-on-a-raspberry-pi-2/
+√sudo apt-get update
+√sudo apt-get upgrade
+√sudo apt-get upgrade --fix-missing
+√sudo apt-get install python-pip python-dev
+√sudo apt-get install python-pip python-dev --fix-missing
+√sudo pip install numpy scipy ipython jupyter
+√sudo apt-get install gfortran
+sudo apt-get install -y libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libhdf5-serial-dev protobuf-compiler git
+√sudo apt-get install --no-install-recommends libboost-all-dev
+sudo apt-get install -y python-dev libgflags-dev libgoogle-glog-dev liblmdb-dev libatlas-base-dev
+√sudo pip install numpy scipy
+sudo pip install pyzmq jsonschema pillow
+
+http://raspberrypi.stackexchange.com/questions/27479/cannot-connect-to-mirrordirector-raspbian
 #
 ##############################################################
 

@@ -22,7 +22,7 @@ from kzpy3.vis import *
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 #training_path = opjh('kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy')
-training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3/scl25')
+training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3')
 #solver_name = 'solver_11px_scl50.prototxt'
 #solver_name = 'solver_11px_scl100_RGB.prototxt'
 #solver_name = 'solver_kaffe_11px.prototxt'
@@ -31,7 +31,7 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3/scl25')
 #solver_name = 'solver_11px_MC_slim.prototxt'
 #solver_name = 'solver_scl50_nin0.prototxt'
 #solver_name = 'bvlc_solver_str.prototxt'
-solver_name = 'solver_11px.prototxt'
+solver_name = 'solver_11px_scl25_0.prototxt'
 #solver_name = 'solver_11px_scl25.prototxt'
 
 def setup_solver():
@@ -99,8 +99,8 @@ def test_solver(solver,n,fig=100):
 	print(d2s('Speed =',n/(time.time()-start_t),'trials per second.'))
 	plt.figure(fig,(5,5))
 	plt.clf()
-	#plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
-	#plt.plot(Rt_list,Ro_list,'rx',label='rot')
+	plt.plot(Ft_list,Fo_list,'gx',label='frames to turn')
+	plt.plot(Rt_list,Ro_list,'rx',label='rot')
 	plt.plot(St_list,So_list,'bo',label='steer')
 	plt.xlim((0,1))
 	plt.ylim((0,1))
@@ -114,8 +114,8 @@ def test_solver(solver,n,fig=100):
 	try:
 		cR = int(1000.0*np.corrcoef(Rt_list,Ro_list)[0,1])/1000.0
 	except: pass
-	plt.title(cS)
-	#plt.title((cS,cF,cR))
+	#plt.title(cS)
+	plt.title((cS,cF,cR))
 	#plt.legend()
 	plt.ion()
 	plt.show()

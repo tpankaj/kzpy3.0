@@ -13,7 +13,7 @@ SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 
 #run_mode = CAFFE_DEPLOY_MODE
 run_mode = CAFFE_TRAINING_MODE
-CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
+CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW_test')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
@@ -102,6 +102,47 @@ def blurred_steer(c):
         assert(False)
     assert len(s) == 7
     return list(z2o(np.array(s)))
+def package_caffe_data_for_single_forward_pass(blobs,layer_name_list):
+    layer_dic = {}
+    for l in layer_name_list:
+        layer_dic[l] = blobs[l].data
+    return layer_dic
+  
+def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_range):
+"""
+run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
+all_runs_dic = load_obj('/Users/karlzipser/Desktop/RPi3_data/all_runs_dics/runs_scl_25_BW')
+k = all_runs_dic.keys()
+net = solver.net
+run_data_dic = all_runs_dic[k[0]]
+img_dic={}
+from kzpy3.RPi3.view_drive_data_essentials import *
+"""
+    frame_range=(-15,-6) 
+    layer_dic = {}
+
+    for i in range(len(run_data_dic['train_frames'])):
+        img_lst = []
+        print i
+        t = run_data_dic['train_frames'][i]
+        for j in range(frame_range[0]+i,frame_range[1]+i):
+            f = run_data_dic['img_lst'][j]
+            img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],f))
+        for j in range(len(img_lst)):
+            net.blobs['ddata'].data[0,j,:,:] = img_lst[j]
+        net.forward()
+        plt.figure('ip1')
+        plt.clf()
+        #plt.ylim(0,2)
+        plot(net.blobs['ip1'].data.T)
+        mi(net.blobs['conv2'].data[0,4,:,:],0)
+        mi(net.blobs['conv2'].data[0,5,:,:],1)
+        mi(net.blobs['py_image_data'].data[0,3,:,:],3)
+        #mi(img_lst[0],2)
+        #
+        plt.pause(0.01)
+
+
 
 if run_mode == CAFFE_TRAINING_MODE:
     if 'all_runs_dics' in CAFFE_DATA:
@@ -363,8 +404,8 @@ second RPi
 desktop linux machine
 K40 GPU
 budget (materials vs salary)
-Jetson GPU
-
+Jetson GPU -- ordered, 22 March 2016
+install caffe on RPi: http://www.knight-of-pi.org/deepdreaming-on-a-raspberry-pi-2/
 """
 
     
