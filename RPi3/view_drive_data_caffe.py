@@ -102,45 +102,68 @@ def blurred_steer(c):
         assert(False)
     assert len(s) == 7
     return list(z2o(np.array(s)))
-def package_caffe_data_for_single_forward_pass(blobs,layer_name_list):
-    layer_dic = {}
-    for l in layer_name_list:
-        layer_dic[l] = blobs[l].data
-    return layer_dic
   
 def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_range):
-"""
-run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
-all_runs_dic = load_obj('/Users/karlzipser/Desktop/RPi3_data/all_runs_dics/runs_scl_25_BW')
-k = all_runs_dic.keys()
-net = solver.net
-run_data_dic = all_runs_dic[k[0]]
-img_dic={}
-from kzpy3.RPi3.view_drive_data_essentials import *
-"""
-    frame_range=(-15,-6) 
-    layer_dic = {}
+    """
+    run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
+    all_runs_dic = load_obj('/Users/karlzipser/Desktop/RPi3_data/all_runs_dics/runs_scl_25_BW')
+    k = all_runs_dic.keys()
+    net = solver.net
+    run_data_dic = all_runs_dic[k[1]]
+    img_dic={}
+    from kzpy3.RPi3.view_drive_data_essentials import *
 
-    for i in range(len(run_data_dic['train_frames'])):
+    ('ddata', (1, 9, 56, 75))
+    ('ddata2', (1, 3))
+    ('py_image_data', (1, 9, 56, 75))
+    ('py_target_data', (1, 3))
+    ('conv1', (1, 96, 16, 22))
+    ('pool1', (1, 96, 8, 11))
+    ('conv2', (1, 256, 4, 7))
+    ('pool2', (1, 256, 2, 3))
+    ('ip1', (1, 512))
+    ('ip2', (1, 3))
+    ('identity', ())
+    ('conv1', (96, 9, 11, 11))
+    ('conv2', (256, 48, 5, 5))
+    ('ip1', (512, 1536))
+    ('ip2', (3, 512))
+
+    """
+    frame_range=(-15,-6) 
+    caffe_data_dic = {}
+    len_train_frames = len(run_data_dic['train_frames'])
+
+    for l in layer_name_list:
+        shp = list(shape(net.blobs[l]))
+        shp[0] = len_train_frames
+        print shp
+        caffe_data_dic[l] = zeros(shp)
+
+    for i in range(len_train_frames):
         img_lst = []
         print i
         t = run_data_dic['train_frames'][i]
         for j in range(frame_range[0]+i,frame_range[1]+i):
             f = run_data_dic['img_lst'][j]
-            img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],f))
+            img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],f,True))
         for j in range(len(img_lst)):
             net.blobs['ddata'].data[0,j,:,:] = img_lst[j]
         net.forward()
-        plt.figure('ip1')
-        plt.clf()
-        #plt.ylim(0,2)
-        plot(net.blobs['ip1'].data.T)
-        mi(net.blobs['conv2'].data[0,4,:,:],0)
-        mi(net.blobs['conv2'].data[0,5,:,:],1)
-        mi(net.blobs['py_image_data'].data[0,3,:,:],3)
-        #mi(img_lst[0],2)
-        #
-        plt.pause(0.01)
+
+        if np.mod(i,10) == 0:
+            plt.figure('ip1')
+            plt.clf()
+            plot(net.blobs['ip1'].data.T)
+            mi(net.blobs['conv1'].data[0,13,:,:],100)
+            mi(net.blobs['conv2'].data[0,14,:,:],101)
+            mi(net.blobs['py_image_data'].data[0,3,:,:],99)
+            plt.pause(0.01)
+        for l in layer_name_list:
+            #mi(net.blobs[l].data[0,13,:,:],88)
+            caffe_data_dic[l][i,:] = net.blobs[l].data
+
+    return caffe_data_dic
 
 
 

@@ -93,6 +93,8 @@ def imread_from_img_dic(img_dic,path,fname,use_dic=False):
     if use_dic:
         if fname not in img_dic:
             img_dic[fname] = imread(opj(path,fname))
+        else:
+            print(fname)
         return img_dic[fname]
     else:
         return imread(opj(path,fname))
