@@ -107,12 +107,14 @@ def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_ran
     """
     run "kzpy3/caf/training/y2016/m3/RPi3/train.py"
     all_runs_dic = load_obj('/Users/karlzipser/Desktop/RPi3_data/all_runs_dics/runs_scl_25_BW')
+    solver.net.copy_from('/Users/karlzipser/Google_Drive/2016-3/original_with_accuracy_11px_iter_11100000.caffemodel')
     k = all_runs_dic.keys()
     net = solver.net
     run_data_dic = all_runs_dic[k[1]]
     img_dic={}
     from kzpy3.RPi3.view_drive_data_essentials import *
-
+    frame_range=(-15,-6)
+    layer_name_list = ['conv2','ip1','ip2']
     ('ddata', (1, 9, 56, 75))
     ('ddata2', (1, 3))
     ('py_image_data', (1, 9, 56, 75))
@@ -130,7 +132,7 @@ def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_ran
     ('ip2', (3, 512))
 
     """
-    frame_range=(-15,-6) 
+    
     caffe_data_dic = {}
     len_train_frames = len(run_data_dic['train_frames'])
 
@@ -148,15 +150,15 @@ def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_ran
             f = run_data_dic['img_lst'][j]
             img_lst.append(imread_from_img_dic(img_dic,run_data_dic['run_path'],f,True))
         for j in range(len(img_lst)):
-            net.blobs['ddata'].data[0,j,:,:] = img_lst[j]
+            net.blobs['ddata'].data[0,j,:,:] = img_lst[j]/255.0-0.5
         net.forward()
 
         if np.mod(i,10) == 0:
             plt.figure('ip1')
             plt.clf()
             plot(net.blobs['ip1'].data.T)
-            mi(net.blobs['conv1'].data[0,13,:,:],100)
-            mi(net.blobs['conv2'].data[0,14,:,:],101)
+            mi(net.blobs['conv1'].data[0,15,:,:],100)
+            mi(net.blobs['conv2'].data[0,16,:,:],101)
             mi(net.blobs['py_image_data'].data[0,3,:,:],99)
             plt.pause(0.01)
         for l in layer_name_list:
@@ -164,6 +166,34 @@ def package_caffe_data_for_single_run(run_data_dic,net,layer_name_list,frame_ran
             caffe_data_dic[l][i,:] = net.blobs[l].data
 
     return caffe_data_dic
+
+def package_caffe_data_for_multi_runs(all_runs_dic,net,layer_name_list,frame_range):
+    for k in sorted(all_runs_dic.keys()):
+        p = package_caffe_data_for_single_run(all_runs_dic[k],net,layer_name_list,frame_range)
+        save_obj(p,opjD(k+'_caffe_data'))
+
+
+"""
+f = '09Feb16_14h19m10s_scl=25_mir=0'
+d=load_obj('/Users/karlzipser/Desktop/'+f+'_caffe_data')
+r = all_runs_dic[f]
+i = d['ip2'][:,0]-0.5
+s = r['steer']
+plt.figure(1)
+plot(i)
+plot(s)
+plt.title(np.corrcoef(s,i)[0,1])
+t = r['train_frames']
+s2 = t*s
+i2 = t*i
+plt.figure(2)
+plot(i2)
+plot(s2)
+plt.title(np.corrcoef(s2,i2)[0,1])
+plt.figure(3)
+plt.scatter(s2,i2)
+plt.title(np.corrcoef(s2,i2)[0,1])
+"""
 
 
 
