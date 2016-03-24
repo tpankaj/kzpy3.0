@@ -7,7 +7,7 @@ target_lst = []
 ctr = 0
 last_time = time.time()
 
-
+N = 1000
 
 class SimpleLayer4(caffe.Layer):
     def setup(self, bottom, top):
@@ -17,8 +17,8 @@ class SimpleLayer4(caffe.Layer):
     def forward(self, bottom, top):
         global target_lst
         global ctr,last_time
-        if np.mod(ctr,1000) == 0:
-            print time.time()-last_time
+        if np.mod(ctr,N) == 0:
+            print(d2s(N/(time.time()-last_time)), 'iterations per second.')
             last_time = time.time()
         img_lst,target_lst=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,CAFFE_FRAME_RANGE)
         for i in range(len(img_lst)): #range(9):
