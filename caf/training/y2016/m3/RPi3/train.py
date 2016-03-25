@@ -150,7 +150,7 @@ def view_M_filters(solver,fig=1):
 			plt.clf()
 			blnk[7:18,7:18] = filters[f,i,:,:]
 			mi(blnk,figure_num=fig,img_title=d2s(f))
-			plt.pause(0.05)
+			plt.pause(0.1)
 		blnk *= 0
 		blnk[0,0] = -0.333/4.0
 		blnk[0,1] = 0.333/4.0
@@ -193,12 +193,29 @@ plt.subplot(2, 1, 2)
 _ = plt.hist(feat.flat[feat.flat > 0], bins=100)
 
 
+for j in range(100):
+	solver.step(1)
+	print solver.net.blobs['py_target_data'].data[:][0]
+	for i in range(9):
+		mi(solver.net.blobs['py_image_data'].data[0,i,:,:])
+		plt.pause(0.2)
 
-solver.step(1)
-print solver.net.blobs['py_target_data'].data[:][0]
-for i in range(9):
-	mi(solver.net.blobs['py_image_data'].data[0,i,:,:])
-	plt.pause(0.2)
+n=1000
+t=[]
+o=[]
+for i in range(n):
+	solver.net.forward()
+	t.append(solver.net.blobs['py_target_data'].data.copy())
+	o.append(solver.net.blobs['ip2'].data.copy())
+plt.clf()
+t=np.array(t)
+o=np.array(o)
+plt.plot(t[:,0,0],o[:,0,0],'o')
+plt.plot(t[:,0,1],o[:,0,1],'o')
+plt.xlim(0,1)
+plt.ylim(0,1)
+print np.corrcoef(t[:,0,0],o[:,0,0])
+print np.corrcoef(t[:,0,1],o[:,0,1])
 
 
 """

@@ -1,6 +1,7 @@
 # The train/test net protocol buffer definition
 # run from ~
-net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
+net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch.prototxt"
+#net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_16_64.prototxt"
@@ -13,7 +14,8 @@ test_interval: 1000000
 # The base learning rate, momentum and the weight decay of the network.
 base_lr: 0.0001  # 0.00005
 momentum: 0.01
-weight_decay: 0.000005
+#weight_decay: 0.000005
+weight_decay: 0.0005
 # The learning rate policy
 lr_policy: "inv"
 gamma: 0.0001
@@ -27,4 +29,5 @@ snapshot: 100000
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c16c64"
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512"
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512trajectory"
-snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512patch"
+#snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512patch"
+snapshot_prefix: "scratch/2016/3/RPi/scl25/c24c128i256patch"
