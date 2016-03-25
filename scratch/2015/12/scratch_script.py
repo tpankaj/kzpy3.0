@@ -22,6 +22,12 @@ Mult__ = function([x_,y_],w_)
 print A.dot(x)
 print Mult__(A,x)
 
+############
+
+def dp(f,n):
+    f *= 10.0**n
+    f = int(f)
+    return f/(10.0**n)
 
 ############
 l = txt_file_to_list_of_strings(opjh('scratch/2015/11/RPi_images/25Jan16_09h02m20s/session_list-25Jan16_09h02m20s.txt'))

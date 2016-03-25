@@ -1,6 +1,7 @@
 # The train/test net protocol buffer definition
 # run from ~
-net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
+net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
+#net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_16_64.prototxt"
 # test_iter specifies how many forward passes the test should carry out.
@@ -8,7 +9,7 @@ net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajector
 # covering the full 10,000 testing images.
 test_iter: 1
 # Carry out testing every 500 training iterations.
-test_interval: 10000
+test_interval: 1000000
 # The base learning rate, momentum and the weight decay of the network.
 base_lr: 0.0001  # 0.00005
 momentum: 0.01
@@ -25,4 +26,5 @@ max_iter: 1000000
 snapshot: 100000
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c16c64"
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512"
-snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512trajectory"
+#snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512trajectory"
+snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512patch"

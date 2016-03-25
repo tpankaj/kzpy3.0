@@ -11,12 +11,13 @@ MC_CAFFE_DEPLOY_MODE = 'MC_CAFFE_DEPLOY_MODE'
 USE_GRAPHICS = 'USE_GRAPHICS'
 SAVE_ALL_RUN_DIC = 'SAVE_ALL_RUN_DIC'
 CAFFE_TRAJECTORY_TRAINING_MODE = 'CAFFE_TRAJECTORY_TRAINING_MODE'
+CAFFE_PATCH_TRAINING_MODE = 'CAFFE_PATCH_TRAINING_MODE'
 #run_mode = CAFFE_DEPLOY_MODE
-run_mode = CAFFE_TRAJECTORY_TRAINING_MODE
-CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
+run_mode = CAFFE_PATCH_TRAINING_MODE
+#CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scl_100_RGB_test')
+CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scl_100_RGB')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_25_BW_test')
 #CAFFE_FRAME_RANGE = (-7,-6)# 
 
@@ -243,7 +244,39 @@ if run_mode == CAFFE_TRAINING_MODE:
         #return img_lst,[S,0*F,0*R] #steer only, 17 Feb 2015 trianing
         return img_lst,[S,F,R]
 
-if run_mode == CAFFE_TRAJECTORY_TRAINING_MODE:
+elif run_mode == CAFFE_PATCH_TRAINING_MODE:
+    if 'all_runs_dics' in CAFFE_DATA:
+        all_runs_dic = load_obj(CAFFE_DATA)
+    else: 
+        all_runs_dic = get_all_runs_dic(CAFFE_DATA)
+    steer_bins = get_steer_bins(all_runs_dic)
+    img_shape = (225, 300, 3)
+    patch_width = int(img_shape[1]/4.0)
+    x1x2y1y2_lst = []
+    for x1 in range(img_shape[1]-patch_width):
+        for y1 in range(img_shape[0]-patch_width):
+            x2 = x1+patch_width
+            y2 = y1+patch_width
+            assert(x1>=0 and x1<=img_shape[1]-patch_width)
+            assert(y1>=0 and y1<=img_shape[0]-patch_width)
+            assert(x2<=img_shape[1])
+            assert(y2<=img_shape[0])
+            print(x1,x2,y1,y2)
+            x1x2y1y2_lst.append((x1,x2,y1,y2))
+    def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
+        j = np.random.randint(len(x1x2y1y2_lst))
+        (x1,x2,y1,y2) = x1x2y1y2_lst[j]
+        b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+        img_lst = []
+        for f in frame_names:
+            img = imread_from_img_dic(img_dic,'',f)/255.0-0.5
+            img = img.mean(axis=2)
+            img2 = img[y1:y2,x1:x2]
+            img_lst.append(img2)
+        return img_lst,[(x1+x2)/2.0,(y1+y2)/2.0]
+
+
+elif run_mode == CAFFE_TRAJECTORY_TRAINING_MODE:
     if 'all_runs_dics' in CAFFE_DATA:
         all_runs_dic = load_obj(CAFFE_DATA)
     else: 
@@ -290,6 +323,7 @@ elif run_mode == CAFFE_CAT_TRAINING_MODE:
         assert(c>=0)
         steer_lst[c] = 1.0
         return img_lst,steer_lst
+
 
 elif run_mode == CAFFE_BVLC_REF_CAT_TRAINING_MODE or run_mode == CAFFE_BVLC_REF_TRAINING_MODE:
     #img_mask = np.zeros((3,227,227))+1.0

@@ -18,7 +18,7 @@ class SimpleLayer4(caffe.Layer):
         global target_lst
         global ctr,last_time
         if np.mod(ctr,N) == 0:
-            print(d2s(N/(time.time()-last_time)), 'iterations per second.')
+            print(d2s(dp(N/(time.time()-last_time),1), 'iterations per second.'))
             last_time = time.time()
         img_lst,target_lst=get_caffe_input_target(img_dic,steer_bins,all_runs_dic,CAFFE_FRAME_RANGE)
         for i in range(len(img_lst)): #range(9):

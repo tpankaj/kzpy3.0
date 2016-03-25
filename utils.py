@@ -132,6 +132,16 @@ def d2n(*args):
 def d2f(*args):
     return d2s_spacer(args[1:],spacer=args[0])
 
+def dp(f,n=2):
+    """
+    get floats to the right number of decimal places, for display purposes
+    """
+    assert(n>=0)
+    if n == 0:
+        return int(np.round(f))
+    f *= 10.0**n
+    f = int(np.round(f))
+    return f/(10.0**n)
    
 
 def save_obj(obj, name ):
