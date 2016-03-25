@@ -261,7 +261,7 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
             assert(y1>=0 and y1<=img_shape[0]-patch_width)
             assert(x2<=img_shape[1])
             assert(y2<=img_shape[0])
-            print(x1,x2,y1,y2)
+            #print(x1,x2,y1,y2)
             x1x2y1y2_lst.append((x1,x2,y1,y2))
     def get_caffe_input_target(img_dic,steer_bins,all_runs_dic,frame_range=(-15,-6)):
         j = np.random.randint(len(x1x2y1y2_lst))
@@ -270,8 +270,9 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
         img_lst = []
         for f in frame_names:
             img = imread_from_img_dic(img_dic,'',f)/255.0-0.5
-            img = img.mean(axis=2)
-            img2 = img[y1:y2,x1:x2]
+            #img = img.mean(axis=2)
+            img2 = img[y1:y2,x1:x2,1]
+            assert(len(shape(img2))==2)
             img_lst.append(img2)
         return img_lst,[(x1+x2)/2.0,(y1+y2)/2.0]
 

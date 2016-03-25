@@ -194,6 +194,11 @@ _ = plt.hist(feat.flat[feat.flat > 0], bins=100)
 
 
 
+solver.step(1)
+print solver.net.blobs['py_target_data'].data[:][0]
+for i in range(9):
+	mi(solver.net.blobs['py_image_data'].data[0,i,:,:])
+	plt.pause(0.2)
 
 
 """
