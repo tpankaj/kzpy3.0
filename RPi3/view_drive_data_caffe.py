@@ -275,7 +275,7 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
             img2 = img[y1:y2,x1:x2]
             assert(len(shape(img2))==2)
             img_lst.append(img2)
-        return img_lst,[(x1+x2)/2.0,(y1+y2)/2.0]
+        return img_lst,[(x1+x2)/2.0/(1.0*img_shape[1]),(y1+y2)/2.0/(1.0*img_shape[1])]
 
 
 elif run_mode == CAFFE_TRAJECTORY_TRAINING_MODE:
