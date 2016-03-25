@@ -15,9 +15,9 @@ CAFFE_PATCH_TRAINING_MODE = 'CAFFE_PATCH_TRAINING_MODE'
 #run_mode = CAFFE_DEPLOY_MODE
 run_mode = CAFFE_PATCH_TRAINING_MODE
 #CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
-#CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW')
+CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
-CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scl_100_RGB')
+#CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scl_100_RGB')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_25_BW_test')
 #CAFFE_FRAME_RANGE = (-7,-6)# 
 
@@ -250,8 +250,9 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
     else: 
         all_runs_dic = get_all_runs_dic(CAFFE_DATA)
     steer_bins = get_steer_bins(all_runs_dic)
-    img_shape = (225, 300, 3)
-    patch_width = int(img_shape[1]/4.0)
+    #img_shape = (225, 300, 3)
+    img_shape = (112, 150)
+    patch_width = 75#int(img_shape[1]/4.0)
     x1x2y1y2_lst = []
     for x1 in range(img_shape[1]-patch_width):
         for y1 in range(img_shape[0]-patch_width):
@@ -271,7 +272,7 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
         for f in frame_names:
             img = imread_from_img_dic(img_dic,'',f)/255.0-0.5
             #img = img.mean(axis=2)
-            img2 = img[y1:y2,x1:x2,1]
+            img2 = img[y1:y2,x1:x2]
             assert(len(shape(img2))==2)
             img_lst.append(img2)
         return img_lst,[(x1+x2)/2.0,(y1+y2)/2.0]
