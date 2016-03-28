@@ -1,5 +1,6 @@
 # The train/test net protocol buffer definition
 # run from ~
+#net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_deconv.prototxt"
 net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
@@ -15,6 +16,7 @@ test_interval: 1000000
 base_lr: 0.0001  # 0.00005
 momentum: 0.01
 #weight_decay: 0.000005
+#weight_decay: 0.05
 weight_decay: 0.0005
 # The learning rate policy
 lr_policy: "inv"

@@ -15,7 +15,8 @@ CAFFE_PATCH_TRAINING_MODE = 'CAFFE_PATCH_TRAINING_MODE'
 #run_mode = CAFFE_DEPLOY_MODE
 run_mode = CAFFE_PATCH_TRAINING_MODE
 #CAFFE_DATA = opjD('RPi3_data/all_runs_dics/runs_scl_25_BW')
-CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW')
+#CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW_test')
+CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_50_BW_test')
 CAFFE_FRAME_RANGE = (-15,-6) # (-7,-6)# 
 #CAFFE_DATA = opjh('Desktop/RPi3_data/all_runs_dics/runs_scl_100_RGB')
 #CAFFE_DATA = opjh('Desktop/RPi3_data/runs_scale_25_BW_test')
@@ -245,7 +246,7 @@ if run_mode == CAFFE_TRAINING_MODE:
         return img_lst,[S,F,R]
 
 elif run_mode == CAFFE_PATCH_TRAINING_MODE:
-    if 'all_runs_dics' in CAFFE_DATA:
+    if False:#'all_runs_dics' in CAFFE_DATA:
         all_runs_dic = load_obj(CAFFE_DATA)
     else: 
         all_runs_dic = get_all_runs_dic(CAFFE_DATA)

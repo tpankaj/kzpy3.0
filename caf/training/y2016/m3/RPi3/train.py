@@ -34,12 +34,17 @@ training_path = opjh('kzpy3/caf/training/y2016/m3/RPi3/scl25')
 solver_name = 'solver_11px.prototxt'
 #solver_name = 'solver_11px_scl25.prototxt'
 
-def setup_solver():
-	solver = caffe.SGDSolver(opj(training_path,solver_name))
+def show_solver(solver):
+	print('blobs')
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
+	print('\nparams')
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
 		print(l)
+
+def setup_solver():
+	solver = caffe.SGDSolver(opj(training_path,solver_name))
+	show_solver(solver)
 	if host_name == 'redwood2':
 		caffe.set_device(0)
 		caffe.set_mode_gpu()
@@ -196,11 +201,12 @@ _ = plt.hist(feat.flat[feat.flat > 0], bins=100)
 for j in range(100):
 	solver.step(1)
 	print solver.net.blobs['py_target_data'].data[:][0]
-	for i in range(9):
+	mi(solver.net.blobs['py_target_data'].data[0,0,:,:],2)
+	for i in range(8):
 		mi(solver.net.blobs['py_image_data'].data[0,i,:,:])
 		plt.pause(0.2)
 
-n=1000
+n=5000
 t=[]
 o=[]
 for i in range(n):
