@@ -19,3 +19,32 @@ net.blobs['data'].reshape(1,3,224,224)
 
 
 plt.plot(net.blobs['pool4'].data[0,:,0,0])
+
+
+
+
+
+
+###########
+
+
+n = 1000
+xs_target = []
+ys_target = []
+xs_out = []
+ys_out = []
+
+for i in range(n):
+	solver.net.forward()
+	xs_target.append(solver.net.blobs['py_target_data'].data[0,0])
+	ys_target.append(solver.net.blobs['py_target_data'].data[0,1])
+	xs_out.append(solver.net.blobs['ip2'].data[0,0])
+	ys_out.append(solver.net.blobs['ip2'].data[0,1])
+plt.figure('xs')
+plt.clf()
+plt.plot(xs_target,xs_out,'bo')
+plt.figure('ys')
+plt.clf()
+plt.plot(ys_target,ys_out,'ro')
+
+
