@@ -10,7 +10,7 @@ layer {
   dummy_data_param {
     shape {
       dim: 1
-      dim: 9
+      dim: 1
       dim: 75
       dim: 75
     }
