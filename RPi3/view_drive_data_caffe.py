@@ -271,8 +271,8 @@ elif run_mode == CAFFE_PATCH_TRAINING_MODE:
         img_lst = []
         for f in frame_names:
             img = imread_from_img_dic(img_dic,'',f)/255.0-0.5
-            img = img.mean(axis=2)
-            img2 = img[y1:y2,x1:x2]
+            img2 = img[y1:y2,x1:x2,:]
+            img2 = img2.mean(axis=2)
             assert(len(shape(img2))==2)
             img_lst.append(img2)
         return img_lst,[(x1+x2)/2.0/(1.0*img_shape[1]),(y1+y2)/2.0/(1.0*img_shape[1])]

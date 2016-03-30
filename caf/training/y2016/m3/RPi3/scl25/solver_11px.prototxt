@@ -1,8 +1,8 @@
 # The train/test net protocol buffer definition
 # run from ~
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_deconv.prototxt"
-net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch_scl100.prototxt"
-#net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
+#net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch_scl100.prototxt"
+net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch_scl100.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_16_64.prototxt"
@@ -32,4 +32,5 @@ snapshot: 100000
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512"
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512trajectory"
 #snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512patch"
-snapshot_prefix: "scratch/2016/3/RPi/scl25/c24c128i256patch"
+snapshot_prefix: "scratch/2016/3/RPi/scl25/c96c256i512patch_scl100"
+#snapshot_prefix: "scratch/2016/3/RPi/scl25/c24c128i256patch"

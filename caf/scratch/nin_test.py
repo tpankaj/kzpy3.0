@@ -48,3 +48,35 @@ plt.clf()
 plt.plot(ys_target,ys_out,'ro')
 
 
+
+# take an array of shape (n, height, width) or (n, height, width, channels)
+# and visualize each (height, width) thing in a grid of size approx. sqrt(n) by sqrt(n)
+def vis_square(data, padsize=1, padval=0):
+	data -= data.min()
+	data /= data.max()
+
+	# force the number of filters to be square
+	n = int(np.ceil(np.sqrt(data.shape[0])))
+	padding = ((0, n ** 2 - data.shape[0]), (0, padsize), (0, padsize)) + ((0, 0),) * (data.ndim - 3)
+	data = np.pad(data, padding, mode='constant', constant_values=(padval, padval))
+
+	# tile the filters into an image
+	data = data.reshape((n, n) + data.shape[1:]).transpose((0, 2, 1, 3) + tuple(range(4, data.ndim + 1)))
+	data = data.reshape((n * data.shape[1], n * data.shape[3]) + data.shape[4:])
+
+	plt.imshow(data)
+
+padsize = 5
+n = int(np.ceil(np.sqrt(data.shape[0])))
+fx = np.shape(data)[2]
+fz = np.shape(data)[1]
+img = np.zeros((padsize+(padsize+fx)*n,padsize+(padsize+fx)*n))+0.5
+for x in range(n):
+	for y in range(n):
+		if y+x*n < data.shape[0]:
+			img[(padsize*(1+x)+(x*(fx))):(padsize*(1+x)+((x+1)*fx)),(padsize*y+(y*fx)):(padsize*y+((y+1)*fx))] = data[y+x*n,0,:,:]
+mi(img)
+
+
+
+
