@@ -1,7 +1,7 @@
 # The train/test net protocol buffer definition
 # run from ~
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_deconv.prototxt"
-net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch.prototxt"
+net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_24_128_256_patch_scl100.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_patch.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512_trajectory.prototxt"
 #net: "kzpy3/caf/training/y2016/m3/RPi3/scl25/train_val_11px_96_256_512.prototxt"
