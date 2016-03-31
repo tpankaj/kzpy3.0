@@ -1,6 +1,6 @@
 from kzpy3.caf2.utils.protos import *
 """
-from kzpy3.caf2.<MODEL_NAME>.define import *
+from kzpy3.caf2.models.<MODEL_NAME>.define import *
 """
 #############################################################
 #  
@@ -10,14 +10,14 @@ Test the ability of my new wrapper system to generate and train models.
 I've been working on getting everything directed from a single file.
 ###############################
 blobs
-('ddata', (1, 9, 112, 150))
+('ddata', (1, 9, 56, 150))
 ('ddata2', (1, 3))
-('py_image_data', (1, 9, 112, 150))
+('py_image_data', (1, 9, 56, 150))
 ('py_target_data', (1, 3))
-('conv1', (1, 96, 34, 47))
-('conv1_pool', (1, 96, 17, 23))
-('conv2', (1, 256, 5, 7))
-('conv2_pool', (1, 256, 2, 3))
+('conv1', (1, 96, 16, 47))
+('conv1_pool', (1, 96, 8, 23))
+('conv2', (1, 256, 2, 7))
+('conv2_pool', (1, 256, 1, 3))
 ('ip1', (1, 512))
 ('ip2', (1, 3))
 ('euclidian', ())
@@ -25,7 +25,7 @@ blobs
 params
 ('conv1', (96, 9, 11, 11))
 ('conv2', (256, 48, 5, 5))
-('ip1', (512, 1536))
+('ip1', (512, 768))
 ('ip2', (3, 512))
 ###############################
 """
@@ -33,20 +33,27 @@ params
 c = """
 CAFFE_MODE = 'train'
 CAFFE_TRAIN_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
-CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
+CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW') # note, no separate test data at this moment.
 CAFFE_FRAME_RANGE = (-15,-6)
+USE_REVERSE_CONTRAST = True
+USE_BOTTOM_HALF = True
+USE_NOISE = True
+USE_JITTER = True
+jitter = 3
+input_size = (1,9,56-(2*jitter),150-(2*jitter))
 """
 #copy_from = 'latest'
 #
 #############################################################
 #
-quarter_size = (1,9,56,75)
-half_size = (1,9,112,150)
+
+exec(c)
+
 n_targets = 3
 p = '# ' + model_name + '\n'
 p = p + '# ' + time_str()
 p = p + '\n# '.join(purpose.split('\n'))
-p = p + dummy('ddata',half_size)
+p = p + dummy('ddata',input_size)
 p = p + dummy('ddata2',(1,n_targets))
 for phase in ['TRAIN','TEST']:
 	p = p + python('py_image_data','ddata','caf2_layers','SimpleLayer4_'+phase,phase)
@@ -56,7 +63,7 @@ p = p + conv_layer_set(
 	p_type='MAX',p_kernel_size=3,p_stride=2,p_pad=0,
 	weight_filler_type='gaussian',std=0.1)
 p = p + conv_layer_set(
-	c_top='conv2',c_bottom='conv1_pool',c_num_output=256,c_group=2,c_kernel_size=5,c_stride=3,c_pad=0,
+	c_top='conv2',c_bottom='conv1_pool',c_num_output=256,c_group=2,c_kernel_size=3,c_stride=2,c_pad=0,
 	p_type='MAX',p_kernel_size=3,p_stride=2,p_pad=0,
 	weight_filler_type='gaussian',std=0.1)
 p = p + ip_layer_set('ip1','conv2_pool',512,'xavier')
@@ -82,11 +89,11 @@ del s,c,p,s_path,p_path
 #
 #############################################################
 #
-if False:
+if True:
 	from kzpy3.caf2.utils.train import *
 	solver = setup_solver(model_name)
 #
 #############################################################
 
-
+#  for i in range(9):mi(solver.net.blobs['py_image_data'].data[0,i,:,:]);plt.pause(0.2)
 

@@ -195,14 +195,14 @@ test_interval: 1000000
 test_initialization: false
 base_lr: 0.0001  # 0.00005
 momentum: 0.01
-weight_decay: 0.0005
+weight_decay: 0.005
 lr_policy: "inv"
 gamma: 0.0001
 power: 0.75
 display: 10000
 max_iter: 1000000
 snapshot: 100000
-snapshot_prefix: "scratch/2016/caffemodels/MODEL_NAME"
+snapshot_prefix: "scratch/caf2_models/MODEL_NAME"
 	"""
 	p = p.replace('MODEL_NAME',model_name)
 	return p

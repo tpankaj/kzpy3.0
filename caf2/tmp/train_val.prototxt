@@ -1,17 +1,17 @@
 # m3d31_example_model
-# 31Mar16_09h28m58s
+# 31Mar16_12h44m12s
 # Test the ability of my new wrapper system to generate and train models.
 # I've been working on getting everything directed from a single file.
 # ###############################
 # blobs
-# ('ddata', (1, 9, 112, 150))
+# ('ddata', (1, 9, 56, 150))
 # ('ddata2', (1, 3))
-# ('py_image_data', (1, 9, 112, 150))
+# ('py_image_data', (1, 9, 56, 150))
 # ('py_target_data', (1, 3))
-# ('conv1', (1, 96, 34, 47))
-# ('conv1_pool', (1, 96, 17, 23))
-# ('conv2', (1, 256, 5, 7))
-# ('conv2_pool', (1, 256, 2, 3))
+# ('conv1', (1, 96, 16, 47))
+# ('conv1_pool', (1, 96, 8, 23))
+# ('conv2', (1, 256, 2, 7))
+# ('conv2_pool', (1, 256, 1, 3))
 # ('ip1', (1, 512))
 # ('ip2', (1, 3))
 # ('euclidian', ())
@@ -19,7 +19,7 @@
 # params
 # ('conv1', (96, 9, 11, 11))
 # ('conv2', (256, 48, 5, 5))
-# ('ip1', (512, 1536))
+# ('ip1', (512, 768))
 # ('ip2', (3, 512))
 # ###############################
 # 
@@ -31,8 +31,8 @@ layer {
 		shape {
 			dim: 1
 			dim: 9
-			dim: 112
-			dim: 150
+			dim: 50
+			dim: 144
 		}
 	}
 }
@@ -158,8 +158,8 @@ layer {
 	convolution_param {
 		num_output: 256
 		group: 2
-		kernel_size: 5
-		stride: 3
+		kernel_size: 3
+		stride: 2
 		pad: 0
 		weight_filler {
 			type: "gaussian" 
