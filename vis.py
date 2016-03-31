@@ -281,4 +281,13 @@ def load_img_folder_to_list(img_folder):
 
 
 
+def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
+    plt.figure(fig_name,(fig_wid,fig_wid))
+    plt.clf()
+    plt.plot(x,y,'bo')
+    plt.title(np.corrcoef(x,y)[0,1])
+    plt.xlim(xmin,xmax)
+    plt.ylim(xmin,xmax)
+
+
 

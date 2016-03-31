@@ -23,12 +23,19 @@ plt.plot(net.blobs['pool4'].data[0,:,0,0])
 
 
 
+def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
+	plt.figure(fig_name,(fig_wid,fig_wid))
+	plt.clf()
+	plt.plot(x,y,'bo')
+	plt.title(np.corrcoef(x,y)[0,1])
+	plt.xlim(xmin,xmax)
+	plt.ylim(xmin,xmax)
 
 
 ###########
 
 
-n = 1000
+n = 10000
 xs_target = []
 ys_target = []
 xs_out = []
@@ -40,13 +47,16 @@ for i in range(n):
 	ys_target.append(solver.net.blobs['py_target_data'].data[0,1])
 	xs_out.append(solver.net.blobs['ip2'].data[0,0])
 	ys_out.append(solver.net.blobs['ip2'].data[0,1])
-plt.figure('xs')
+plt.figure('xs',(5,5))
 plt.clf()
-plt.plot(xs_target,xs_out,'bo')
-plt.figure('ys')
+plt.plot(xs_target,xs_out,'bo');plt.title(np.corrcoef(xs_target,xs_out)[0,1])
+plt.xlim(0,1)
+plt.ylim(0,1)
+plt.figure('ys',(5,5))
 plt.clf()
-plt.plot(ys_target,ys_out,'ro')
-
+plt.plot(ys_target,ys_out,'ro');plt.title(np.corrcoef(ys_target,ys_out)[0,1])
+plt.xlim(0,1)
+plt.ylim(0,1)
 
 
 # take an array of shape (n, height, width) or (n, height, width, channels)
@@ -66,16 +76,18 @@ def vis_square(data, padsize=1, padval=0):
 
 	plt.imshow(data)
 
-padsize = 5
-n = int(np.ceil(np.sqrt(data.shape[0])))
-fx = np.shape(data)[2]
-fz = np.shape(data)[1]
-img = np.zeros((padsize+(padsize+fx)*n,padsize+(padsize+fx)*n))+0.5
-for x in range(n):
-	for y in range(n):
-		if y+x*n < data.shape[0]:
-			img[(padsize*(1+x)+(x*(fx))):(padsize*(1+x)+((x+1)*fx)),(padsize*y+(y*fx)):(padsize*y+((y+1)*fx))] = data[y+x*n,0,:,:]
-mi(img)
+def my_vis_square(data, padsize=5, padval=0):
+	data = data.copy()
+	data = z2o(data)
+	n = int(np.ceil(np.sqrt(data.shape[0])))
+	fx = np.shape(data)[2]
+	fz = np.shape(data)[1]
+	img = np.zeros((padsize+(padsize+fx)*n,padsize+(padsize+fx)*n))
+	for x in range(n):
+		for y in range(n):
+			if y+x*n < data.shape[0]:
+				img[(padsize*(1+x)+(x*(fx))):(padsize*(1+x)+((x+1)*fx)),(padsize*(1+y)+(y*fx)):(padsize*(1+y)+((y+1)*fx))] = data[y+x*n,0,:,:]
+	mi(img,2)
 
 
 

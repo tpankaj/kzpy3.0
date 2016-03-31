@@ -1,3 +1,6 @@
+"""
+Create prototxt strings
+"""
 
 import caffe
 from kzpy3.utils import *
@@ -98,18 +101,20 @@ layer {
 \tdummy_data_param {
 \t\tshape {
 DIMS
-    }
-  }
+\t\t}
+\t}
 }
 	"""
 	p = p.replace('TOP',top)
 	d = ""
 	for i in range(len(dims)):
-		d = d + d2s('\t\t\tdim:',dims[i],'\n')
+		d = d + d2s('\t\t\tdim:',dims[i])
+		if i < len(dims)-1:
+			d = d + '\n'
 	p = p.replace('DIMS',d)
 	return p
 
-def python(top,bottom,module,layer):
+def python(top,bottom,module,layer,phase):
 	p = """
 layer {
 \ttype: 'Python'
@@ -120,44 +125,8 @@ layer {
 \t\tmodule: 'MODULE'
 \t\tlayer: 'LAYER'
 \t}
-}
-	"""
-	p = p.replace('TOP',top)
-	p = p.replace('BOTTOM',bottom)
-	p = p.replace('MODULE',module)
-	p = p.replace('LAYER',layer)
-	return p
-
-def dummy(top,dims):
-	p = """
-layer {
-\tname: "TOP"
-\ttype: "DummyData"
-\ttop: "TOP"
-\tdummy_data_param {
-\t\tshape {
-DIMS
-    }
-  }
-}
-	"""
-	p = p.replace('TOP',top)
-	d = ""
-	for i in range(len(dims)):
-		d = d + d2s('\t\t\tdim:',dims[i],'\n')
-	p = p.replace('DIMS',d)
-	return p
-
-def python(top,bottom,module,layer):
-	p = """
-layer {
-\ttype: 'Python'
-\tname: 'TOP'
-\tbottom: 'BOTTOM'
-\ttop: 'TOP'
-\tpython_param {
-\t\tmodule: 'MODULE'
-\t\tlayer: 'LAYER'
+\tinclude {
+\t\tphase: PHASE
 \t}
 }
 	"""
@@ -165,6 +134,7 @@ layer {
 	p = p.replace('BOTTOM',bottom)
 	p = p.replace('MODULE',module)
 	p = p.replace('LAYER',layer)
+	p = p.replace('PHASE',phase)
 	return p
 
 def ip(top,bottom,num_output,weight_filler_type,std=0):
@@ -217,9 +187,9 @@ layer {
 
 
 
-def solver(model_name):
+def solver_proto(model_name):
 	p = """
-net: "Desktop/train_val.prototxt"
+net: "kzpy3/caf2/tmp/train_val.prototxt"
 test_iter: 1
 test_interval: 1000000
 test_initialization: false
