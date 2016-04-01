@@ -1,0 +1,57 @@
+Installing Caffe on Jetson TK1, 31 March 2016
+
+Install based primarily on this page:
+	http://planspace.org/20150614-the_nvidia_jetson_tk1_with_caffe_on_mnist/
+
+
+'flashed' Jetpack to the Jetson TK1
+
+ran ocv.sh to install openCV
+
+sudo apt-get install \
+    libprotobuf-dev protobuf-compiler gfortran \
+    libboost-dev cmake libleveldb-dev libsnappy-dev \
+    libboost-thread-dev libboost-system-dev \
+    libatlas-base-dev libhdf5-serial-dev libgflags-dev \
+    libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7
+
+
+sudo apt-get install libboost-filesystem-dev #
+sudo apt-get install python-dev #
+sudo apt-get  install libboost-python-dev #
+sudo apt-get install python-pip #
+
+sudo apt-get install python-numpy
+
+sudo easy_install cython #
+sudo pip install -U scikit-image #
+	[takes a long time]
+
+
+
+sudo apt-get install git
+git clone https://github.com/BVLC/caffe.git
+cd caffe
+cp Makefile.config.example Makefile.config
+
+make -j 4 all
+make -j 4 test
+make -j 4 runtest
+
+make pycaffe
+
+~/caffe/build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
+
+Results:
+caffe benchmarks:
+Macbook Pro: (2.7 GHz Intel Core i5)
+283 ms forward
+236 ms backward
+
+Jetson TK1 (CPU only):
+5414 ms forward
+5215 ms backward
+
+Jetson TK1 with GPU:
+240 ms forward
+304 ms backward
