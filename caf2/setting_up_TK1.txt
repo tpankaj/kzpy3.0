@@ -15,19 +15,7 @@ sudo apt-get install \
     libatlas-base-dev libhdf5-serial-dev libgflags-dev \
     libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7
 
-
-sudo apt-get install libboost-filesystem-dev #
-sudo apt-get install python-dev #
-sudo apt-get  install libboost-python-dev #
-sudo apt-get install python-pip #
-
 sudo apt-get install python-numpy
-
-sudo easy_install cython #
-sudo pip install -U scikit-image #
-	[takes a long time]
-
-
 
 sudo apt-get install git
 git clone https://github.com/BVLC/caffe.git
@@ -37,6 +25,17 @@ cp Makefile.config.example Makefile.config
 make -j 4 all
 make -j 4 test
 make -j 4 runtest
+
+
+sudo apt-get install libboost-filesystem-dev #
+sudo apt-get install python-dev #
+sudo apt-get  install libboost-python-dev #
+sudo apt-get install python-pip #
+
+
+sudo easy_install cython #
+sudo pip install -U scikit-image #
+	[takes a long time, is required for import caffe to work]
 
 make pycaffe
 
@@ -55,3 +54,13 @@ Jetson TK1 (CPU only):
 Jetson TK1 with GPU:
 240 ms forward
 304 ms backward
+
+
+
+# after all this, setting PYTHON_LAYERS to TRUE and doing make clean and make -j 4 all killed caffe.
+
+I will start over tomorrow. Maybe installing ipython in two different ways was a problem
+
+
+
+http://jetsonhacks.com/2015/05/26/install-grinch-kernel-for-l4t-21-3-on-nvidia-jetson-tk1/
