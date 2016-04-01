@@ -173,6 +173,7 @@ def scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,scale_percent,to_BW=Fal
 ###########################################################################
 # all_runs_dic = get_all_runs_dic('/Users/karlzipser/Desktop/RPi3_data/runs_original')
 # scale_color_mod_mirror_all_runs(img_dic,all_runs_dic,25,to_BW=True)
+#  save_obj(all_runs_dic,'/Users/karlzipser/Desktop/RPi3_data/all_runs_dics/runs_scale_50_BW_test')
 
 def frames_to_next_turn(run_data_dic,steer_thresh=0.1,max_thresh=100):
     m = 0 * run_data_dic['steer']

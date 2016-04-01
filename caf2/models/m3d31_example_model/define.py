@@ -33,7 +33,7 @@ params
 c = """
 CAFFE_MODE = 'train'
 CAFFE_TRAIN_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
-CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW') # note, no separate test data at this moment.
+CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test')
 CAFFE_FRAME_RANGE = (-15,-6)
 USE_REVERSE_CONTRAST = True
 USE_BOTTOM_HALF = True
