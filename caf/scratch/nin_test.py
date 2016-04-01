@@ -35,7 +35,7 @@ def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
 ###########
 
 
-n = 1000
+n = 10000
 xs_target = []
 ys_target = []
 xs_out = []

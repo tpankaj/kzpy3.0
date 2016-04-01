@@ -114,7 +114,7 @@ DIMS
 	p = p.replace('DIMS',d)
 	return p
 
-def python(top,bottom,module,layer,phase):
+def python(top,bottom,module,layer,phase=False):
 	p = """
 layer {
 \ttype: 'Python'
@@ -125,16 +125,20 @@ layer {
 \t\tmodule: 'MODULE'
 \t\tlayer: 'LAYER'
 \t}
+		"""
+	if phase:
+		p = p + """
 \tinclude {
 \t\tphase: PHASE
 \t}
-}
-	"""
+"""
+	p = p + "\n}"
 	p = p.replace('TOP',top)
 	p = p.replace('BOTTOM',bottom)
 	p = p.replace('MODULE',module)
 	p = p.replace('LAYER',layer)
-	p = p.replace('PHASE',phase)
+	if phase:
+		p = p.replace('PHASE',phase)
 	return p
 
 def ip(top,bottom,num_output,weight_filler_type,std=0):
@@ -169,7 +173,7 @@ def ip_layer_set(top,bottom,num_output,weight_filler_type,std=0):
 	p = p + '\n############################################################\n\n'
 	return p
 
-def euclidian(top,bottom1,bottom2):
+def euclidean(top,bottom1,bottom2):
 	p = """
 layer {
 \tname: "TOP"
@@ -185,11 +189,9 @@ layer {
 	p = p.replace("BOTTOM2",bottom2)
 	return p
 
-
-
 def solver_proto(model_name):
 	p = """
-net: "kzpy3/caf2/tmp/train_val.prototxt"
+net: "kzpy3/caf2/models/MODEL_NAME/tmp/train_val.prototxt"
 test_iter: 1
 test_interval: 1000000
 test_initialization: false

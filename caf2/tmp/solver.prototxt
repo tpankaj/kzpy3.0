@@ -1,5 +1,5 @@
 
-net: "kzpy3/caf2/tmp/train_val.prototxt"
+net: "kzpy3/caf2/models/m3d31_example_model/tmp/train_val.prototxt"
 test_iter: 1
 test_interval: 1000000
 test_initialization: false

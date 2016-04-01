@@ -42,6 +42,10 @@ Jetson TK1 with GPU:
 240 ms forward
 304 ms backward
 
+hiMac (3.5 GHz Intel Core i7)
+182 ms forward
+154 ms backward
+
 
 
 

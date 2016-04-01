@@ -8,7 +8,9 @@ solver = setup_solver('y2016m3.zeroth_model')
 from kzpy3.utils import *
 import caffe
 
-def setup_solver(model_name,training_path=opjh('kzpy3/caf2/tmp'),solver_name='solver.prototxt'):
+def setup_solver(model_name,training_path='default',solver_name='solver.prototxt'):
+	if training_path == 'default':
+		training_path=opjh('kzpy3/caf2/models',model_name,'tmp')
 	exec('import '+'kzpy3.caf2.models.'+model_name)
 	solver = caffe.SGDSolver(opj(training_path,solver_name))
 	show_solver(solver)
@@ -123,8 +125,8 @@ def test_solver(solver,n,fig=100):
 
 
 
-def my_vis_square(solver,layer_name, padsize=5, padval=0):
-	data = solver.params[layer_name][0].data.copy()
+def my_vis_square(solver,layer_name, padsize=5, padval=0.5):
+	data = solver.net.params[layer_name][0].data.copy()
 	data = z2o(data)
 	n = int(np.ceil(np.sqrt(data.shape[0])))
 	fx = np.shape(data)[2]
@@ -137,6 +139,25 @@ def my_vis_square(solver,layer_name, padsize=5, padval=0):
 	mi(img,layer_name)
 
 
+
+
+def view_M_filters(solver,fig=1):
+	filters = solver.net.params['conv1'][0].data
+	blnk = np.zeros((27,27))
+	blnk[0,0] = -0.333/2.0
+	blnk[0,1] = 0.333/2.0
+
+	for f in range(shape(filters)[0]):
+		for i in range(0,9): #(8,-1,-1):
+			plt.clf()
+			blnk[7:18,7:18] = filters[f,i,:,:]
+			mi(blnk,figure_num=fig,img_title=d2s(f))
+			plt.pause(0.1)
+		blnk *= 0
+		blnk[0,0] = -0.333/1.0
+		blnk[0,1] = 0.333/1.0
+		#mi(blnk,figure_num=fig,img_title=d2s(f))
+		plt.pause(0.5)
 
 
 
