@@ -39,8 +39,8 @@ USE_REVERSE_CONTRAST = True
 USE_BOTTOM_HALF = True
 USE_NOISE = True
 USE_JITTER = True
-jitter = 3
-input_size = (1,9,56-(2*jitter),150-(2*jitter))
+jitter = 6
+input_size = (1,9,56-jitter,150-jitter)
 """
 #copy_from = 'latest'
 #
@@ -95,5 +95,5 @@ if True:
 #
 #############################################################
 
-#  for i in range(9):mi(solver.net.blobs['py_image_data'].data[0,i,:,:]);plt.pause(0.2)
-
+# for i in range(9):mi(solver.net.blobs['py_image_data'].data[0,i,:,:]);plt.pause(0.2)
+# my_vis_square(solver.net.params['conv1'][0].data)

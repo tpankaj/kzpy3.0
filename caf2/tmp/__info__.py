@@ -7,6 +7,6 @@ USE_REVERSE_CONTRAST = True
 USE_BOTTOM_HALF = True
 USE_NOISE = True
 USE_JITTER = True
-jitter = 3
-input_size = (1,9,56-(2*jitter),150-(2*jitter))
+jitter = 6
+input_size = (1,9,56-jitter,150-jitter)
 

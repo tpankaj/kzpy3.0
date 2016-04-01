@@ -35,7 +35,7 @@ def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
 ###########
 
 
-n = 10000
+n = 1000
 xs_target = []
 ys_target = []
 xs_out = []
@@ -82,7 +82,7 @@ def my_vis_square(data, padsize=5, padval=0):
 	n = int(np.ceil(np.sqrt(data.shape[0])))
 	fx = np.shape(data)[2]
 	fz = np.shape(data)[1]
-	img = np.zeros((padsize+(padsize+fx)*n,padsize+(padsize+fx)*n))
+	img = np.zeros((padsize+(padsize+fx)*n,padsize+(padsize+fx)*n))+padval
 	for x in range(n):
 		for y in range(n):
 			if y+x*n < data.shape[0]:
