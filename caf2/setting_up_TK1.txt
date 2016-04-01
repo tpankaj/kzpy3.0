@@ -52,11 +52,14 @@ Jetson TK1 with GPU:
 sudo apt-get install libboost-filesystem-dev #
 sudo apt-get install python-dev #
 sudo apt-get  install libboost-python-dev #
+
+make pycaffe
+
 sudo apt-get install python-pip #
 sudo easy_install cython #
 sudo pip install -U scikit-image # [takes a long time, is required for import caffe to work]
 
-make pycaffe
+# at this point, caffe appears to work in python.
 
 
 
@@ -66,5 +69,5 @@ make pycaffe
 I will start over tomorrow. Maybe installing ipython in two different ways was a problem
 
 
-
+This seems important:
 http://jetsonhacks.com/2015/05/26/install-grinch-kernel-for-l4t-21-3-on-nvidia-jetson-tk1/
