@@ -26,21 +26,8 @@ make -j 4 all
 make -j 4 test
 make -j 4 runtest
 
-
-sudo apt-get install libboost-filesystem-dev #
-sudo apt-get install python-dev #
-sudo apt-get  install libboost-python-dev #
-sudo apt-get install python-pip #
-
-
-sudo easy_install cython #
-sudo pip install -U scikit-image #
-	[takes a long time, is required for import caffe to work]
-
-make pycaffe
-
+# benchmark test:
 ~/caffe/build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
-
 Results:
 caffe benchmarks:
 Macbook Pro: (2.7 GHz Intel Core i5)
@@ -54,6 +41,23 @@ Jetson TK1 (CPU only):
 Jetson TK1 with GPU:
 240 ms forward
 304 ms backward
+
+
+
+
+
+# I installed the following to get python to work with caffe. Perhaps something
+# in here caused a problem when I attempted to make all later.
+
+sudo apt-get install libboost-filesystem-dev #
+sudo apt-get install python-dev #
+sudo apt-get  install libboost-python-dev #
+sudo apt-get install python-pip #
+sudo easy_install cython #
+sudo pip install -U scikit-image # [takes a long time, is required for import caffe to work]
+
+make pycaffe
+
 
 
 
