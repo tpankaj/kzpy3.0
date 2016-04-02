@@ -77,7 +77,7 @@ s = solver_proto(model_name)
 #############################################################
 #
 tmp_path = opjh('kzpy3/caf2/models',model_name,'tmp')
-list_of_strings_to_txt_file(opj(tmp_path,'__info__.py'),c.split('\n'))
+#list_of_strings_to_txt_file(opj(tmp_path,'__info__.py'),c.split('\n'))
 s_path = opj(tmp_path,'solver.prototxt')
 p_path = opj(tmp_path,'train_val.prototxt')
 list_of_strings_to_txt_file(p_path,p.split('\n'))
@@ -107,7 +107,7 @@ blobs = solver.net.blobs
 
 from kzpy3.caf2.utils.data import *
 
-all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW'))
+all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test'))
 steer_bins = get_steer_bins(all_runs_dic)
 frame_range = (-15,-6)
 
@@ -179,7 +179,7 @@ def step_train(solver=solver,steer_bins=steer_bins,all_runs_dic=all_runs_dic):
 		solver.net.blobs['py_image_data'].data[0,i,:,:] = img_lst[i]
 	for i in range(len(target_lst)):
 		solver.net.blobs['py_target_data'].data[0,i] = target_lst[i]
-	solver.net.forward()#solver.step(1)#
+	solver.step(1)#solver.net.forward()#
 	return solver.net.blobs['py_target_data'].data[0,:],solver.net.blobs['ip2'].data[0,:]
 
 
@@ -209,10 +209,9 @@ def train_solver(solver=solver):
 			step_train()
 		print 1000.0/(time.time()-t)
 
-def look_at_frames(solver=solver):
-	d = solver.net.blobs['py_image_data'].data
-	for i in range(shape(d)[1]):
-		mi(d[0,i,:,:],1,img_title=d2s(i))
+def look_at_frames(solver):
+	for i in range(shape(solver.net.blobs['py_image_data'].data)[1]):
+		mi(solver.net.blobs['py_image_data'].data[0,i,:,:],1,img_title=d2s(i))
 		plt.pause(0.2)
 
 

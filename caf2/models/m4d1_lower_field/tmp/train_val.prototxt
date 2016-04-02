@@ -1,5 +1,5 @@
 # m4d1_lower_field
-# 01Apr16_18h39m36s
+# 01Apr16_21h18m01s
 # A model that looks at lower half of scale 50 BW image sequences,
 # frame range (-15,-6) to predict steer at frame 0.
 # tested with jitter, reverse contrast, and noise.

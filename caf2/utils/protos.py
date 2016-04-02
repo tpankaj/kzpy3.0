@@ -203,8 +203,8 @@ gamma: 0.0001
 power: 0.75
 display: 10000
 max_iter: 1000000
-snapshot: 100000
-snapshot_prefix: "scratch/caf2_models/MODEL_NAME"
+snapshot: 10000
+snapshot_prefix: "scratch/caf2_models/MODEL_NAME/MODEL_NAME"
 	"""
 	p = p.replace('MODEL_NAME',model_name)
 	return p
