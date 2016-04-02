@@ -14,7 +14,7 @@ A first attempt at making a conv-deconv network
 """
 CAFFE_TRAIN_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
 CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test')
-CAFFE_FRAME_RANGE = (-1,1)
+CAFFE_FRAME_RANGE = (-9,1)
 USE_REVERSE_CONTRAST = False
 USE_BOTTOM_HALF = True
 USE_NOISE = False
@@ -105,7 +105,7 @@ def process_frames(frame_names):
 def get_caffe_input_target(steer_bins,all_runs_dic,frame_range):
     b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
     img_lst = process_frames(frame_names)
-    return [img_lst[0]],[img_lst[1]]
+    return img_lst[:-1],[img_lst[-1]]
 
 
 def step_train(solver=solver,steer_bins=steer_bins,all_runs_dic=all_runs_dic):
