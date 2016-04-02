@@ -6,6 +6,12 @@ import caffe
 from kzpy3.utils import *
 
 def conv(top,bottom,num_output,group,kernel_size,stride,pad,weight_filler_type,std=0):
+	if type(pad) == int:
+		pad_h = pad
+		pad_w = pad
+	else:
+		pad_h = pad[0]
+		pad_w = pad[1]
 	p = """
 layer {
 \tname: "TOP"
@@ -17,7 +23,8 @@ layer {
 \t\tgroup: NUM_GROUP
 \t\tkernel_size: KERNEL_SIZE
 \t\tstride: STRIDE
-\t\tpad: PAD
+\t\tpad_h: PAD_H
+\t\tpad_w: PAD_W
 \t\tweight_filler {
 \t\t\ttype: "WEIGHT_FILLER_TYPE" STD
 \t\t}
@@ -30,7 +37,8 @@ layer {
 	p = p.replace("NUM_GROUP",str(group))
 	p = p.replace("KERNEL_SIZE",str(kernel_size))
 	p = p.replace("STRIDE",str(stride))
-	p = p.replace("PAD",str(pad))
+	p = p.replace("PAD_H",str(pad_h))
+	p = p.replace("PAD_W",str(pad_w))
 	p = p.replace("WEIGHT_FILLER_TYPE",weight_filler_type)
 	if weight_filler_type == 'gaussian':
 		p = p.replace("STD","\n\t\t\tstd: "+str(std))
@@ -50,7 +58,16 @@ layer {
 	p = p.replace("BOTTOM",bottom)
 	return p
 
+def deconv(top,bottom,num_output,group,kernel_size,stride,pad,weight_filler_type,std=0):
+	return conv(top,bottom,num_output,group,kernel_size,stride,pad,weight_filler_type,std).replace('Convolution','Deconvolution')
+
 def pool(bottom,p_type,kernel_size,stride,pad=0):
+	if type(pad) == int:
+		pad_h = pad
+		pad_w = pad
+	else:
+		pad_h = pad[0]
+		pad_w = pad[1]
 	p = """
 layer {
 \tname: "BOTTOM_pool"
@@ -61,7 +78,8 @@ layer {
 \t\tpool: POOL_TYPE
 \t\tkernel_size: KERNEL_SIZE
 \t\tstride: STRIDE
-\t\tpad: PAD
+\t\tpad_h: PAD_H
+\t\tpad_w: PAD_W
 \t}
 }
 	"""
@@ -69,7 +87,8 @@ layer {
 	p = p.replace("POOL_TYPE",p_type)
 	p = p.replace("KERNEL_SIZE",str(kernel_size))
 	p = p.replace("STRIDE",str(stride))
-	p = p.replace("PAD",str(pad))
+	p = p.replace("PAD_H",str(pad_h))
+	p = p.replace("PAD_W",str(pad_w))
 	return p
 
 def conv_layer_set(

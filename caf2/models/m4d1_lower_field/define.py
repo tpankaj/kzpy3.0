@@ -1,6 +1,6 @@
 from kzpy3.caf2.utils.protos import *
 """
-from kzpy3.caf2.models.<MODEL_NAME>.define import *
+from kzpy3.caf2.models.m4d1_lower_field.define import *
 """
 #############################################################
 #  

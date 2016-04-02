@@ -77,3 +77,10 @@ I will start over tomorrow. Maybe installing ipython in two different ways was a
 
 This seems important:
 http://jetsonhacks.com/2015/05/26/install-grinch-kernel-for-l4t-21-3-on-nvidia-jetson-tk1/
+
+
+arduino radio control:
+https://www.sparkfun.com/tutorials/348
+* http://playground.arduino.cc/Code/ReadReceiver
+* http://www.camelsoftware.com/2015/12/25/reading-pwm-signals-from-an-rc-receiver-with-arduino/
+* http://www.benripley.com/diy/arduino/three-ways-to-read-a-pwm-signal-with-arduino/
