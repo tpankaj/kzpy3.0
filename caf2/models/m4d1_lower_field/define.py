@@ -36,7 +36,7 @@ CAFFE_MODE = 'train'
 CAFFE_TRAIN_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
 CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test')
 CAFFE_FRAME_RANGE = (-15,-6)
-USE_REVERSE_CONTRAST = True
+USE_REVERSE_CONTRAST = False
 USE_BOTTOM_HALF = True
 USE_NOISE = True
 USE_JITTER = True
@@ -99,3 +99,120 @@ blobs = solver.net.blobs
 # for i in range(9):mi(solver.net.blobs['py_image_data'].data[0,i,:,:]);plt.pause(0.2)
 # my_vis_square(solver.net.params['conv1'][0].data)
 # solver.net.copy_from('/Users/karlzipser/scratch/caf2_models/m3d31_example_model_iter_2500000.caffemodel')
+
+
+
+
+
+
+from kzpy3.caf2.utils.data import *
+
+all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW'))
+steer_bins = get_steer_bins(all_runs_dic)
+frame_range = (-15,-6)
+
+def process_frames(frame_names):
+    img_lst = []
+    reverse_contrast = False
+    if USE_JITTER:
+        jitx = np.floor(np.random.random()*jitter)
+        jity = np.floor(np.random.random()*jitter)
+    if USE_REVERSE_CONTRAST:
+        if np.random.random() < 0.5:
+            reverse_contrast = True
+    for f in frame_names:
+        img = imread(f)/255.0-0.5
+        if reverse_contrast:
+            img = -img
+        if USE_BOTTOM_HALF:
+            img = img[np.floor(shape(img)[0]/2):,:]
+        if USE_JITTER:
+            img = img[jity:(jity+input_size[2]),jitx:(jitx+input_size[3])]
+        img_lst.append(img)
+    if len(img_lst) == 1 and len(np.shape(img_lst[0])) == 3:
+        img = img_lst[0]
+        img_lst = [img[:,:,0],img[:,:,1],img[:,:,2]]
+    return img_lst
+
+def get_caffe_input_target(steer_bins,all_runs_dic,frame_range):
+    b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+    b_,r_,n_,steer_,frames_to_next_turn_,rps_,noise_frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+    img_lst = process_frames(frame_names)
+    noise_img_lst = process_frames(noise_frame_names)
+    noise_p1 = 0.33333
+    noise_p2 = np.random.random()*noise_p1
+    for i in range(len(img_lst)):
+        img_lst[i] = (1.0-noise_p2)*img_lst[i] + noise_p2*noise_img_lst[i]
+    S = steer/200.0 + 0.5
+    assert(S>=0)
+    assert(S<=1)
+    F = frames_to_next_turn/45.0
+    F = min(F,1.0)
+    assert(F>=0)
+    assert(F<=1)
+    R = rps/75.0
+    R = min(R,1.0)
+    assert(R>=0)
+    assert(R<=1)
+    return img_lst,[S,0,0]
+
+def get_caffe_input_target(steer_bins,all_runs_dic,frame_range):
+    b,r,n,steer,frames_to_next_turn,rps,frame_names = get_rand_frame_data(steer_bins,all_runs_dic,frame_range)
+    img_lst = process_frames(frame_names)
+    S = steer/200.0 + 0.5
+    assert(S>=0)
+    assert(S<=1)
+    F = frames_to_next_turn/45.0
+    F = min(F,1.0)
+    assert(F>=0)
+    assert(F<=1)
+    R = rps/75.0
+    R = min(R,1.0)
+    assert(R>=0)
+    assert(R<=1)
+    return img_lst,[S,0,0]
+
+
+def step_train(solver=solver,steer_bins=steer_bins,all_runs_dic=all_runs_dic):
+	img_lst,target_lst = get_caffe_input_target(steer_bins,all_runs_dic,frame_range)
+	for i in range(len(img_lst)):
+		solver.net.blobs['py_image_data'].data[0,i,:,:] = img_lst[i]
+	for i in range(len(target_lst)):
+		solver.net.blobs['py_target_data'].data[0,i] = target_lst[i]
+	solver.net.forward()#solver.step(1)#
+	return solver.net.blobs['py_target_data'].data[0,:],solver.net.blobs['ip2'].data[0,:]
+
+
+def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
+	plt.figure(fig_name,(fig_wid,fig_wid))
+	plt.clf()
+	plt.plot(x,y,'bo')
+	plt.title(np.corrcoef(x,y)[0,1])
+	plt.xlim(xmin,xmax)
+	plt.ylim(xmin,xmax)
+
+def test_solver(n=1000):
+	t0 = time.time()
+	t_lst = []
+	o_lst = []
+	for i in range(n):
+		t,o = step_train()
+		t_lst.append(t[0])
+		o_lst.append(o[0])
+	print(dp(n/(time.time()-t0)))
+	my_scatter(t_lst,o_lst,0,1,5,'test_solver test data normal contrast only')
+
+def train_solver(solver=solver):
+	for i in range(1000000):
+		t = time.time()
+		for j in range(1000):
+			step_train()
+		print 1000.0/(time.time()-t)
+
+def look_at_frames(solver=solver):
+	d = solver.net.blobs['py_image_data'].data
+	for i in range(shape(d)[1]):
+		mi(d[0,i,:,:],1,img_title=d2s(i))
+		plt.pause(0.2)
+
+

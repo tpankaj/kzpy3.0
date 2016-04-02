@@ -160,6 +160,9 @@ def view_M_filters(solver,fig=1):
 		plt.pause(0.5)
 
 
+def load_latest(solver,model_name,model_path=opjh('scratch/caf2_models')):
+	_,l = dir_as_dic_and_list(opj(model_path,model_name))
+	solver.net.copy_from(opj(model_path,model_name,l[-1]))
 
 """
 #####################
@@ -170,7 +173,6 @@ layer module
 trained model files, appropriate directories 
 I find that deep directory structures are hard to deal with, better to have just model name folders
 #####################
-
 
 """
 
