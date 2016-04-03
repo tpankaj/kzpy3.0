@@ -1,12 +1,13 @@
 Installing Caffe on Jetson TK1, 31 March 2016
+#
+# Install based primarily on this page:
+#	http://planspace.org/20150614-the_nvidia_jetson_tk1_with_caffe_on_mnist/
 
-Install based primarily on this page:
-	http://planspace.org/20150614-the_nvidia_jetson_tk1_with_caffe_on_mnist/
 
+# 'flashed' Jetpack to the Jetson TK1
+# [2nd time, unselected samples and visionworks]
 
-'flashed' Jetpack to the Jetson TK1
-
-ran ocv.sh to install openCV
+# ran ocv.sh in ~/OpenCV4Tegra to install openCV
 
 sudo apt-get install \
     libprotobuf-dev protobuf-compiler gfortran \
@@ -14,19 +15,54 @@ sudo apt-get install \
     libboost-thread-dev libboost-system-dev \
     libatlas-base-dev libhdf5-serial-dev libgflags-dev \
     libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7
-
 sudo apt-get install python-numpy
+sudo apt-get install libboost-filesystem-dev 
+sudo apt-get install python-dev 
+sudo apt-get  install libboost-python-dev 
+
 
 sudo apt-get install git
 git clone https://github.com/BVLC/caffe.git
 cd caffe
 cp Makefile.config.example Makefile.config
 
+# Don't use the python layer. No changes necessary to Makefile.config
+
 make -j 4 all
 make -j 4 test
 make -j 4 runtest
 
-# benchmark test (from caffe dir)
+sudo apt-get install python-pip 
+sudo easy_install cython 
+
+# this was necessary after I didn't include all NVIDA visionworks packages in the install.
+sudo apt-get install libfreetype6-dev
+
+# [takes a long time, is required for import caffe to work]
+sudo pip install -U scikit-image
+sudo pip install protobuf
+
+make pycaffe
+
+# add to .bashrc, at end:
+export PYTHONPATH=~/caffe/python:$PYTHONPATH 
+# at this point, caffe appears to work in python.
+
+
+###################################
+# ###
+# first time:
+# after all this, setting PYTHON_LAYERS to TRUE and doing make clean and make -j 4 all killed caffe.
+# I think I also set USE_CUDNN to TRUE, which is bad.
+#####
+
+I will start over tomorrow. Maybe installing ipython in two different ways was a problem
+
+
+
+
+# benchmark test (Run from!!! ~/caffe
+)
 build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
 Results:
 caffe benchmarks:
@@ -50,29 +86,7 @@ K40 cortex cluster
 27 ms forward
 30 ms backward
 
-
-
-# I installed the following to get python to work with caffe. Perhaps something
-# in here caused a problem when I attempted to make all later.
-
-sudo apt-get install libboost-filesystem-dev #
-sudo apt-get install python-dev #
-sudo apt-get  install libboost-python-dev #
-
-make pycaffe
-
-sudo apt-get install python-pip #
-sudo easy_install cython #
-sudo pip install -U scikit-image # [takes a long time, is required for import caffe to work]
-
-# at this point, caffe appears to work in python.
-
-
-
-
-# after all this, setting PYTHON_LAYERS to TRUE and doing make clean and make -j 4 all killed caffe.
-
-I will start over tomorrow. Maybe installing ipython in two different ways was a problem
+git clone https://
 
 
 This seems important:
