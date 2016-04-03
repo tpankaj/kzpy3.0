@@ -4,6 +4,25 @@ from kzpy3.caf2.utils.data import *
 """
 from kzpy3.caf2.models.m4d2_deconv_first_attempt.define import *
 python kzpy3/caf2/models/m4d2_deconv_first_attempt/define.py
+###############################
+blobs
+('py_image_data', (1, 9, 44, 138))
+('py_target_data', (1, 1, 44, 138))
+('conv1', (1, 96, 15, 45))
+('conv1_conv1_relu_0_split_0', (1, 96, 15, 45))
+('conv1_conv1_relu_0_split_1', (1, 96, 15, 45))
+('conv2', (1, 256, 5, 15))
+('deconv1', (1, 96, 15, 45))
+('concat', (1, 192, 15, 45))
+('deconv2', (1, 1, 44, 138))
+('euclidean', ())
+###############################
+params
+('conv1', (96, 9, 5, 5))
+('conv2', (256, 48, 5, 5))
+('deconv1', (256, 96, 5, 5))
+('deconv2', (192, 1, 6, 6))
+###############################
 
 """
 #############################################################
@@ -11,7 +30,8 @@ python kzpy3/caf2/models/m4d2_deconv_first_attempt/define.py
 model_name = os.path.dirname(os.path.realpath(__file__)).split('/')[-1]
 purpose = """
 A first attempt at making a conv-deconv network
-CAFFE_FRAME_RANGE = (-11,1)
+CAFFE_FRAME_RANGE = (-11,1), predict 2 frames ahead
+In fact I want to use trajectories as input as well as frame
 """
 CAFFE_TRAIN_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW')
 CAFFE_TEST_DATA = opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test')
