@@ -94,9 +94,9 @@ blobs = solver.net.blobs
 # my_vis_square(solver.net.params['conv1'][0].data)
 # solver.net.copy_from('/Users/karlzipser/scratch/caf2_models/m3d31_example_model_iter_2500000.caffemodel')
 
-all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW'))
-steer_bins = get_steer_bins(all_runs_dic)
-frame_range = CAFFE_FRAME_RANGE
+#all_runs_dic = load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW'))
+#steer_bins = get_steer_bins(all_runs_dic)
+#frame_range = CAFFE_FRAME_RANGE
 
 def process_frames(frame_names):
     img_lst = []
