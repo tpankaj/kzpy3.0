@@ -38,6 +38,7 @@ def process_nums(a,NEUTRAL,MIN,MAX):
     b = int(100*b)
     return b
 def decode_serial_string(s):
+    print s
     s = s.replace('\t',' ')
     s = s.replace('\r\n',' ')
     n = s.split(' ')
