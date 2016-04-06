@@ -6,7 +6,7 @@ sudo python kzpy3/RPi3/RPi_server.py
 python kzpy3/RPi3/osx_client.py
 
 """
-CAFFE_DRIVE = True
+CAFFE_DRIVE = False
 from kzpy3.utils import *
 print os.path.basename(sys.argv[0])
 
