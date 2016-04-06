@@ -86,7 +86,7 @@ K40 cortex cluster
 27 ms forward
 30 ms backward
 
-git clone https://
+git clone https:// ??
 
 
 This seems important:
@@ -98,3 +98,19 @@ https://www.sparkfun.com/tutorials/348
 * http://playground.arduino.cc/Code/ReadReceiver
 * http://www.camelsoftware.com/2015/12/25/reading-pwm-signals-from-an-rc-receiver-with-arduino/
 * http://www.benripley.com/diy/arduino/three-ways-to-read-a-pwm-signal-with-arduino/
+http://rcarduino.blogspot.com/2012/01/how-to-read-rc-receiver-with.html
+
+Arduino code of importance:
+	Read PWM values from RC:
+		PinChangeInterrupt_HowItWorks_kz
+	Servo contro:
+		sketch_apr06k (see webpage about capacitors https://learn.adafruit.com/adafruit-arduino-lesson-14-servo-motors/arduino-code-for-sweep)
+	Timer and interrupts:
+		sketch_apr06i
+
+https://gist.github.com/jetsonhacks/32ec5977782dcea055e8
+#!/bin/sh
+# Install Gstreamer 1.0 on the NVIDIA Jetson TK1
+apt-get install gstreamer1.0-tools gstreamer1.0-alsa \
+  gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+  gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-libav -y
