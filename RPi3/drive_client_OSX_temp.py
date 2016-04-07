@@ -61,12 +61,17 @@ ctr = 0
 sent_t = time.time()
 wait_t = 0.1
 while True:
-    ser_line = ser.readline()
-    t = unpack_serial_data_as_tuple(ser_line)
-    if validate_tuple_values(t):
-        print t
-        ser_str = d2s(get_steer(t[0]),get_throttle(t[1]),'\n')
-        print ser_str
-        ser.write(ser_str)
-    else:
-        print(d2s('invalid data:',t))
+    try:
+        ser_line = ser.readline()
+        t = unpack_serial_data_as_tuple(ser_line)
+        if validate_tuple_values(t):
+            print t
+            ser_str = d2s(get_steer(t[0]),get_throttle(t[1]),'\n')
+            print ser_str
+            ser.write(ser_str)
+        else:
+            print(d2s('invalid data:',t))
+    except Exception,e:
+        print e
+
+        
