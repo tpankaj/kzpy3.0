@@ -1,5 +1,7 @@
 from kzpy3.utils import *
 
+
+
 state_names = ['capture','deep drive','trim','quit']
 states = {}
 
@@ -15,10 +17,14 @@ def display_states():
 		ctr += 1
 
 
-init_states()
 
-def menu_choice():
+
+def menu_choice(load=False):
 	global states
+	if load:
+		states = load_obj(opjD('states'))
+	else:
+		init_states()
 	while states['quit'] == False:
 		display_states()
 		i = input(">> ")
@@ -28,5 +34,6 @@ def menu_choice():
 		else:
 			sn = state_names[i]
 			states[sn] = not states[sn]
+		save_obj(states,opjD('states'))
 
-menu_choice()
+#menu_choice()
