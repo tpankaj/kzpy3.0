@@ -1,5 +1,10 @@
 import matplotlib
-matplotlib.use(u'MacOSX')
+
+if '/Users/' in home_path:
+    MacOSX = True
+
+if MacOSX:
+    matplotlib.use(u'MacOSX')
 
 from kzpy3.utils import *
 ###########
@@ -34,7 +39,8 @@ def kzpy_vis_test():
 from cStringIO import StringIO
 import scipy.ndimage as nd
 import PIL.Image
-from IPython.display import clear_output, Image, display
+if MacOSX:
+    from IPython.display import clear_output, Image, display
 def showarray(a, fmt='jpeg'):
     a = np.uint8(np.clip(255.0*z2o(a), 0, 255))
     f = StringIO()
