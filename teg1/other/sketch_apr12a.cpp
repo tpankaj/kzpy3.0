@@ -1,3 +1,5 @@
+// This sketch produces unstable behavior -- the car jerks and moves with no input command.
+
 #include "PinChangeInterrupt.h"
 #include <Servo.h> 
 
@@ -59,7 +61,11 @@ void setup()
   attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(pin_in_rc_button), button_interrupt, CHANGE);
 
   servo.attach(pin_out_servo); 
-  motor.attach(pin_out_motor); 
+  motor.attach(pin_out_motor);
+
+  motor.writeMicroseconds(motor_pwm_value);
+  servo.writeMicroseconds(servo_pwm_value);
+
 }
 
 
@@ -141,8 +147,7 @@ void lock_stop(void) {
   lock = 1;
   motor.writeMicroseconds(motor_null);
   servo.writeMicroseconds(servo_null);
-  digitalWrite(pin_out_led, HIGH);
-  Serial.println("lock_stop");
+
 }
 
 void unlock(void) {

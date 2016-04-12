@@ -34,9 +34,12 @@ volatile int button_pwm_value = 1204;
 volatile int button_prev_time = 0;
 volatile int lock = 1;
 
+int cpu_lock = 0;
+
 void setup()
 {
   Serial.begin(9600);
+  Serial.setTimeout(100);
 
   pinMode(pinTick, INPUT_PULLUP);
   pinMode(pinTock, INPUT_PULLUP);
@@ -47,18 +50,28 @@ void setup()
   attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(pinButtonIn), button_interrupt, CHANGE);
 
   servo.attach(servoPin); 
-  motor.attach(motorPin); 
+  motor.attach(motorPin);
 }
 
 void loop() {
-  delay(10);
+  lock_stop_if_signal_break();
+  
+  int cpu_int = Serial.parseInt();
+
+  if (cpu_int == 6) cpu_lock = 1;
+  if (cpu_int == 7) cpu_lock = 0;
+
   Serial.print("(");
   Serial.print(motor_pwm_value);
   Serial.print(",");
   Serial.print(servo_pwm_value);
   Serial.print(",");
   Serial.print(button_pwm_value);
+  Serial.print(",");
+  Serial.print(cpu_lock);
   Serial.println(")");
+  
+  delay(100);
 }
 
 void motor_interrupt(void) {
@@ -67,8 +80,11 @@ void motor_interrupt(void) {
   if (dt>motor_min && dt<motor_max) {
     motor_pwm_value = dt;
     if(!lock) {
-      motor.writeMicroseconds(motor_pwm_value);
+      if (!cpu_lock) {
+        motor.writeMicroseconds(motor_pwm_value);
+      }
     }
+    if (cpu_lock) lock_stop();
   } 
   motor_prev_time = m;
 }
@@ -78,8 +94,11 @@ void servo_interrupt(void) {
   if (dt>servo_min && dt<servo_max) {
     servo_pwm_value = dt;
     if (!lock) {
-      servo.writeMicroseconds(servo_pwm_value);
+      if (!cpu_lock) {
+        servo.writeMicroseconds(servo_pwm_value);
+      }
     }
+    if (cpu_lock) lock_stop();
   } 
   servo_prev_time = m;
 }
@@ -89,14 +108,37 @@ void button_interrupt(void) {
   if (dt>button_min && dt<button_max) {
     button_pwm_value = dt;
     if (abs(button_pwm_value-bottom_button)<50) {
-      lock = 1;
-      motor.writeMicroseconds(motor_null);
-      servo.writeMicroseconds(servo_null);
+      lock_stop();
     }
     if (abs(button_pwm_value-top_button)<50) {
       lock = 0;
     }
-    
   } 
   button_prev_time = m;
 }
+
+
+
+
+
+void lock_stop_if_signal_break(void) {
+  int m = micros();
+  if (m - servo_prev_time > 100000) lock_stop();
+  if (m - motor_prev_time > 100000) lock_stop();
+  if (m - button_prev_time > 100000) lock_stop();
+}
+
+void lock_stop(void) {
+  lock = 1;
+  motor.writeMicroseconds(motor_null);
+  servo.writeMicroseconds(servo_null);
+}
+
+void unlock(void) {
+  lock = 0;
+}
+
+
+
+
+
