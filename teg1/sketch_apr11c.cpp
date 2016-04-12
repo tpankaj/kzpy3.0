@@ -1,4 +1,4 @@
-
+// This sketch drives the Jetson car well, use as starting point for next step.
 
 #include "PinChangeInterrupt.h"
 #include <Servo.h> 

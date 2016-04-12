@@ -1,3 +1,5 @@
+from kzpy3.utils import *
+
 import matplotlib
 
 if '/Users/' in home_path:
@@ -6,7 +8,7 @@ if '/Users/' in home_path:
 if MacOSX:
     matplotlib.use(u'MacOSX')
 
-from kzpy3.utils import *
+
 ###########
 '''
 e.g.
