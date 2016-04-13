@@ -67,21 +67,15 @@ long int last_cpu_int_read_time = 0;
 
 void loop() {
   lock_stop_if_signal_break();
-  //Serial.print(micros()/1000 - last_cpu_int_read_time);
+
   if (!control_human) {
-    // during cpu control, we need to test for transmission failure
-    // not sure the best way to do this right now
-    // this is important because cpu control is not interrupt driven
-    // the question is how to recover from the lock. as written below,
-    // it will require manual intervention.
 
     if (micros()/1000 - last_cpu_int_read_time > 100) {
-      //Serial.print("micros()/1000 - last_cpu_int_read_time > 50*1000)");
-      //lock_stop();
+
       cpu_lock = 1;
       cpu_motor_pwm_value = motor_null;
       cpu_servo_pwm_value = servo_null;
-      cpu_mode = -3;
+      cpu_mode = 2;
       cpu_steer = 49;
       cpu_motor = 49;
     }
@@ -109,12 +103,11 @@ void loop() {
     else cpu_servo_pwm_value = (cpu_steer - 50)/50.0 * (servo_null - servo_min_cpu) + servo_null;
     if (cpu_motor >= 49) cpu_motor_pwm_value = (cpu_motor-49)/50.0 * (motor_max_cpu - motor_null) + motor_null;
     else cpu_motor_pwm_value = (cpu_motor - 50)/50.0 * (motor_null - motor_min_cpu) + motor_null;
+    if (cpu_motor_pwm_value > motor_max_cpu) cpu_lock = 1;
+    if (cpu_motor_pwm_value < motor_min_cpu) cpu_lock = 1;
+    if (cpu_servo_pwm_value > servo_max_cpu) cpu_lock = 1;
+    if (cpu_servo_pwm_value < servo_min_cpu) cpu_lock = 1;
   }
-  if (cpu_motor_pwm_value > motor_max_cpu) cpu_lock = 1;
-  if (cpu_motor_pwm_value < motor_min_cpu) cpu_lock = 1;
-  if (cpu_servo_pwm_value > servo_max_cpu) cpu_lock = 1;
-  if (cpu_servo_pwm_value < servo_min_cpu) cpu_lock = 1;
-  
 
   Serial.print("(");
   Serial.print(motor_pwm_value);
@@ -182,6 +175,7 @@ void button_interrupt(void) {
     if (abs(button_pwm_value-top_button)<50) {
       control_human = 1;
       cpu_lock = 0;
+      cpu_mode = 0;
       lock = 0;
     }
     if (abs(button_pwm_value-1000)<50) {
