@@ -20,6 +20,35 @@ def setup_solver(model_name,training_path='default',solver_name='solver.prototxt
 		print("************** using GPU *************")
 	return solver
 
+def step_train(solver):
+	solver.step(1)
+	return solver.net.blobs['py_target_data'].data[0,:],solver.net.blobs['ip2'].data[0,:]
+
+def step_test(solver):
+	solver.net.forward()
+	return solver.net.blobs['py_target_data'].data[0,:],solver.net.blobs['ip2'].data[0,:]
+
+def test_solver(solver,n,nt=10):
+	t0 = time.time()
+	t_lst = []
+	o_lst = []
+	for i in range(n/nt):
+		t = time.time()
+		for j in range(nt):
+			t,o = step_test(solver)
+			t_lst.append(t[0])
+			o_lst.append(o[0])
+		print nt/(time.time()-t)
+	print(dp(n/(time.time()-t0)))
+	#my_scatter(t_lst,o_lst,0,1,5,'test_solver test data normal contrast only')
+
+def train_solver(solver,n,nt=10):
+	for i in range(n/nt):
+		t = time.time()
+		for j in range(nt):
+			step_train(solver)
+		print nt/(time.time()-t)
+
 def show_solver(solver):
 	print('###############################')
 	print('blobs')
@@ -55,15 +84,10 @@ def my_vis_square(data,padsize=5,padval=0,fig_num='my_vis_square'):
 				img[(padsize*(1+x)+(x*(fx))):(padsize*(1+x)+((x+1)*fx)),(padsize*(1+y)+(y*fx)):(padsize*(1+y)+((y+1)*fx))] = data[y+x*n,0,:,:]
 	mi(img,fig_num)
 
-
 def scp_weights_from_redwood2(model_path):
 	unix(d2s("""scp kzipser@redwood2.dyn.berkeley.edu:'""" + model_path + """' ~/Desktop""" ))
 
-
-
-
-
-def test_solver(solver,n,fig=100):
+def test_solver_old(solver,n,fig=100):
 	St_list = []
 	Ft_list = []
 	Rt_list = []
@@ -123,8 +147,6 @@ def test_solver(solver,n,fig=100):
 	plt.title((np.median(a),np.median(b),np.median(b)-np.median(a)))
 	#return (St_list,So_list,Ft_list,Fo_list,Rt_list,Ro_list)
 
-
-
 def my_vis_square(solver,layer_name, padsize=5, padval=0.5):
 	data = solver.net.params[layer_name][0].data.copy()
 	data = z2o(data)
@@ -138,8 +160,10 @@ def my_vis_square(solver,layer_name, padsize=5, padval=0.5):
 				img[(padsize*(1+x)+(x*(fx))):(padsize*(1+x)+((x+1)*fx)),(padsize*(1+y)+(y*fx)):(padsize*(1+y)+((y+1)*fx))] = data[y+x*n,0,:,:]
 	mi(img,layer_name)
 
-
-
+def look_at_frames(solver,layer='py_image_data'):
+	for i in range(shape(solver.net.blobs[layer].data)[1]):
+		mi(solver.net.blobs[layer].data[0,i,:,:],1,img_title=d2s(i))
+		plt.pause(0.2)
 
 def view_M_filters(solver,fig=1):
 	filters = solver.net.params['conv1'][0].data
@@ -159,10 +183,23 @@ def view_M_filters(solver,fig=1):
 		#mi(blnk,figure_num=fig,img_title=d2s(f))
 		plt.pause(0.5)
 
+def load_latest(solver,model_name,model_path=opjh('scratch/caf2_models'),data_type='.caffemodel'):
+	_,l_ = dir_as_dic_and_list(opj(model_path,model_name))
+	l = []
+	for m in l_:
+		if data_type in m:
+			l.append(m)
+	m = opj(model_path,model_name,l[-1])
+	print('Reading from:\n'+opj(model_path,model_name,l[-1]))
+	solver.net.copy_from(m)
+	return solver
 
-def load_latest(solver,model_name,model_path=opjh('scratch/caf2_models')):
-	_,l = dir_as_dic_and_list(opj(model_path,model_name))
-	solver.net.copy_from(opj(model_path,model_name,l[-1]))
+def scp_latest(model_name,model_path=opj('scratch/caf2_models'),user_host='kzipser@redwood2.dyn.berkeley.edu'):
+	l = unix('ssh '+user_host+' ls '+model_path+'/'+model_name+'/*.caffemodel')
+	f = sorted(l,key=natural_keys)[-1]
+	unix('mkdir -p '+opj(model_path,model_name))
+	unix("""scp """+user_host+""":'"""+f+"""' """+opjh(model_path,model_name))
+
 
 """
 #####################
