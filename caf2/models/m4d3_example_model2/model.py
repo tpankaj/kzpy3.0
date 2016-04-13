@@ -23,6 +23,7 @@ Each should be set up to be run from the command line. This is a bit tricky, but
 #############################################################
 #
 def define():
+	unix('mkdir -p scratch/caf2_models/'+dis['model_name'])
 	dis['input_size'] = (1,1,90,160)
 	dis['n_targets'] = 1
 	dis['CAFFE_TRAIN_DATA'] = 'random'
