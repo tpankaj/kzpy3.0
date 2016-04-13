@@ -70,7 +70,7 @@ void loop() {
   
   int cpu_int = Serial.parseInt();
 
-
+  // here we decode three signals from single int
   if (cpu_int > 0) {
     cpu_mode = cpu_int/10000;
     cpu_steer = (cpu_int-cpu_mode*10000)/100;
@@ -100,7 +100,7 @@ void loop() {
   Serial.print(cpu_motor);
   Serial.println(")");
   
-
+/*
 int motor_null = 1528;
 int servo_null = 1376;
 
@@ -111,7 +111,7 @@ int motor_min_cpu = 1100; //1220
 
 
   cpu_steer = 
-
+*/
 
   delay(100);
 }
