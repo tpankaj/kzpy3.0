@@ -22,7 +22,6 @@ int bottom_button = 1204;
 
 int motor_null = 1528;
 int servo_null = 1376;
-
 int servo_max_cpu = 1888; //1888
 int servo_min_cpu = 928; //928
 int motor_max_cpu = 2012; //2012
@@ -119,7 +118,7 @@ void loop() {
   Serial.print(control_human);
   Serial.println(")");
 
-  delay(100); // how long should this be?
+  delay(10); // how long should this be?
 }
 
 void motor_interrupt(void) {
@@ -161,6 +160,9 @@ void button_interrupt(void) {
       lock_stop();
     }
     if (abs(button_pwm_value-top_button)<50) {
+      lock = 0;
+    }
+    if (abs(button_pwm_value-1000)<50) {
       lock = 0;
     }
   } 
