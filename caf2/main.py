@@ -1,4 +1,12 @@
 from argparse import ArgumentParser
+"""
+e.g.s,
+
+python kzpy3/caf2/main.py --deploy --model m4d3_example_model2
+
+python kzpy3/caf2/main.py --train 100 --model m4d3_example_model2
+
+"""
 
 #############################################################
 #
