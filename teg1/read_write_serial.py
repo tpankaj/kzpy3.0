@@ -17,14 +17,14 @@ t0 = time.time()
 while True:
     ctr += 1
     try:
-        t1 = np.int16(1000*(time.time()-t0))
+        #t1 = np.int16(1000*(time.time()-t0))
         #print ctr
-        ser.write(d2s('(',t1,')'))
-        ser_line = ser.readline()
+        ser.write('(-30000)')
+        #ser_line = ser.readline()
         #t2 = int(ser_line.split("""\\""")[0])
         #print (t1,t2,t2-t1)
         #time.sleep(0.001)
-        print ser_line
+        print ser.readline()
     except Exception,e:
         print e
 
