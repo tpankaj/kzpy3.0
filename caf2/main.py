@@ -8,6 +8,7 @@ if __name__ == '__main__':
 	parser.add_argument("--define", action="store_true", help="--define")
 	parser.add_argument("--train", type=int, help="--train")
 	parser.add_argument("--test", type=int, help="--test")
+	parser.add_argument("--deploy", action="store_true", help="Deploy model")
 	parser.add_argument("--latest", action="store_true", help="Load latest model")
 	args = parser.parse_args()
 	if args.model:
@@ -22,14 +23,16 @@ if __name__ == '__main__':
 		if args.latest:
 			print('--latest')
 			solver = load_latest(solver,dis['model_name'],'.caffemodel')
-		collect_data()
+		collect_train_data()
 		train_solver(solver,args.train)
 	if args.test:
 		solver = setup_solver(dis['model_name'])
 		if args.latest:
 			print('--latest')
 			solver = load_latest(solver,dis['model_name'])
-		collect_data()
+		collect_test_data()
 		test_solver(solver,args.test)
+	if args.deploy:
+		print 'deploy it!'
 #
 #############################################################

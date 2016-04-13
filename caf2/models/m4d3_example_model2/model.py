@@ -61,7 +61,11 @@ def define():
 #
 #############################################################
 #
-def collect_data(data_path=""):
+def collect_train_data(data_path=""):
+	dis['all_runs_dic'] = []#load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test'))
+	dis['steer_bins'] = []#get_steer_bins(all_runs_dic)
+
+def collect_test_data(data_path=""):
 	dis['all_runs_dic'] = []#load_obj(opjD('RPi3_data/all_runs_dics/runs_scale_50_BW_test'))
 	dis['steer_bins'] = []#get_steer_bins(all_runs_dic)
 
