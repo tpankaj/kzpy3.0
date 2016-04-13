@@ -16,6 +16,14 @@ int motor_min = 1100; //1220
 int top_button = 1710;
 int bottom_button = 1204;
 
+int motor_null = 1528;
+int servo_null = 1376;
+
+int servo_max_cpu = 2000; //1888
+int servo_min_cpu = 800; //928
+int motor_max_cpu = 2100; //2012
+int motor_min_cpu = 1100; //1220
+
 Servo servo;  
 Servo motor;  
  
@@ -24,8 +32,8 @@ Servo motor;
 #define pinTock 11 // steer radio in
 #define pinButtonIn 12 // steer radio in
 
-#define motor_null  1528
-#define servo_null  1376
+
+
 volatile int motor_pwm_value = motor_null;
 volatile int motor_prev_time = 0;
 volatile int servo_pwm_value = servo_null;
@@ -53,13 +61,28 @@ void setup()
   motor.attach(motorPin);
 }
 
+int cpu_mode = 0;
+int cpu_steer = 0;
+int cpu_motor = 0;
+
 void loop() {
   lock_stop_if_signal_break();
   
   int cpu_int = Serial.parseInt();
 
-  if (cpu_int == 6) cpu_lock = 1;
-  if (cpu_int == 7) cpu_lock = 0;
+
+  if (cpu_int > 0) {
+    cpu_mode = cpu_int/10000;
+    cpu_steer = (cpu_int-cpu_mode*10000)/100;
+    cpu_motor = (cpu_int-cpu_steer*100-cpu_mode*10000);
+  } else if (cpu_int < 0) {
+    cpu_mode = cpu_int/10000;
+  }
+
+  if (cpu_mode == -3) cpu_lock = 1;
+  else cpu_lock = 0;
+
+
 
   Serial.print("(");
   Serial.print(motor_pwm_value);
@@ -67,10 +90,29 @@ void loop() {
   Serial.print(servo_pwm_value);
   Serial.print(",");
   Serial.print(button_pwm_value);
-  Serial.print(",");
+  Serial.print(", ");
   Serial.print(cpu_lock);
+  Serial.print(", ");
+  Serial.print(cpu_mode);
+  Serial.print(",");
+  Serial.print(cpu_steer);
+  Serial.print(",");
+  Serial.print(cpu_motor);
   Serial.println(")");
   
+
+int motor_null = 1528;
+int servo_null = 1376;
+
+int servo_max_cpu = 2000; //1888
+int servo_min_cpu = 800; //928
+int motor_max_cpu = 2100; //2012
+int motor_min_cpu = 1100; //1220
+
+
+  cpu_steer = 
+
+
   delay(100);
 }
 
