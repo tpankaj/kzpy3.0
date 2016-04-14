@@ -1,7 +1,7 @@
 import caffe
 
-caffe.set_device(0)
-caffe.set_mode_gpu()
+#caffe.set_device(0)
+caffe.set_mode_cpu()
 
 from kzpy3.vis import *
 
@@ -51,25 +51,26 @@ def get_caffe_input_target():
             img_lst.append(dummy)
     return img_lst
 
-while True:
-    try:
-        img_lst = get_caffe_input_target()
-        for i in range(len(img_lst)):
-            solver.net.blobs['py_image_data'].data[0,i,:,:] = img_lst[i]
-        solver.net.forward();
-    except Exception, e:
-        print(d2s(os.path.basename(sys.argv[0]),':',e))
-    try:
-        steer = solver.net.blobs['ip2'].data[0][0]
-        steer -= 0.5
-        steer *= 100
-        steer = int(steer)
-        print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][2])))
-    except Exception, e:
-        print(d2s(os.path.basename(sys.argv[0]),':',e))
-    if len(img_dic) > 100:
-        del img_dic
-        img_dic = {}
+if __name__ == '__main__':
+    while True:
+        try:
+            img_lst = get_caffe_input_target()
+            for i in range(len(img_lst)):
+                solver.net.blobs['py_image_data'].data[0,i,:,:] = img_lst[i]
+            solver.net.forward();
+        except Exception, e:
+            print(d2s(os.path.basename(sys.argv[0]),':',e))
+        try:
+            steer = solver.net.blobs['ip2'].data[0][0]
+            steer -= 0.5
+            steer *= 100
+            steer = int(steer)
+            print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][2])))
+        except Exception, e:
+            print(d2s(os.path.basename(sys.argv[0]),':',e))
+        if len(img_dic) > 100:
+            del img_dic
+            img_dic = {}
 
 
 
