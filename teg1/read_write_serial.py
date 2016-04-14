@@ -8,11 +8,14 @@ python kzpy3/RPi3/osx_client.py
 """
 
 from kzpy3.utils import *
-from kzpy3.RPi3.caffe_worker_no_py_layers_local import *
+
 
 import serial
 
-ser = serial.Serial('/dev/tty.usbmodem1461',9600)#115200)#
+if '/Users/' in home_path:
+    ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
+else:
+    ser = serial.Serial('/dev/ttyAMC0',9600)
 ctr = 0
 t0 = time.time()
 
@@ -60,35 +63,12 @@ while True:
             cpu_mode = 2 # cpu control
             scale_factor = 0.25
 
-######################
-        steer = 0
-        try:
-            img_lst = get_caffe_input_target()
-            for i in range(len(img_lst)):
-                solver.net.blobs['py_image_data'].data[0,i,:,:] = img_lst[i]
-            solver.net.forward();
-        except Exception, e:
-            print(d2s(os.path.basename(sys.argv[0]),':',e))
-        try:
-            steer = solver.net.blobs['ip2'].data[0][0]
-            steer -= 0.5
-            steer *= 100
-            steer = int(steer)
-            print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][2])))
-        except Exception, e:
-            print(d2s(os.path.basename(sys.argv[0]),':',e))
-        if len(img_dic) > 100:
-            del img_dic
-            img_dic = {}
-#########################
+
+        caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
 
 
-
-
-
-
-        out_steer = 49+steer #pwm_to_percent(in_steer_pwm,servo_min_cpu,servo_null,servo_max_cpu)
-        out_motor = in_motor_pwm #pwm_to_percent(in_motor_pwm,motor_min_cpu,motor_null,motor_max_cpu,scale_factor)
+        out_steer = 49+caffe_steer #pwm_to_percent(in_steer_pwm,servo_min_cpu,servo_null,servo_max_cpu)
+        out_motor = pwm_to_percent(in_motor_pwm,motor_min_cpu,motor_null,motor_max_cpu,scale_factor)
        #print (out_steer,out_motor)
         cpu_int = encode_int_signal(cpu_mode,out_steer,out_motor)
     except Exception,e:
