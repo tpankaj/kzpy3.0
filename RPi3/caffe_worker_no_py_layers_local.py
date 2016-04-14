@@ -39,7 +39,8 @@ def get_caffe_input_target():
             img_lst.append(img)
         if len(img_files) > 10:
             for f in img_files[:-10]:
-                unix(d2s('mv',opj(img_top_folder,most_recent_img_dir,f),opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
+                os.rename(opj(img_top_folder,most_recent_img_dir,f),opj(img_top_folder,most_recent_img_dir+'_caffe',f))
+                #unix(d2s('mv',opj(img_top_folder,most_recent_img_dir,f),opj(img_top_folder,most_recent_img_dir+'_caffe')),False)
     else:
         dummy = np.random.random((56,75))
         for i in range(9):
