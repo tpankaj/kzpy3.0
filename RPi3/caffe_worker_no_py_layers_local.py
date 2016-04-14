@@ -1,4 +1,8 @@
 import caffe
+
+caffe.set_device(0)
+caffe.set_mode_gpu()
+
 from kzpy3.vis import *
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
