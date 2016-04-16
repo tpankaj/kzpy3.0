@@ -24,3 +24,5 @@ while 1:
    ctr += 1
    time.sleep(0.1)
 
+# see: http://effbot.org/zone/thread-synchronization.htm
+
