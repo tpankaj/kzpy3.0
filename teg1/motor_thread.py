@@ -57,14 +57,19 @@ while True:
             if camera_off_flag:
                 camera_on(opjh('Desktop/teg_data',time_str()))
                 camera_off_flag = False
+                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif abs(in_button_pwm - 1200) < 50:
             if camera_off_flag == False:
                 camera_off()
+                camera_off_flag = True
+                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif abs(in_button_pwm - 1000) < 50:
             cpu_mode = 2 # cpu control
             if camera_off_flag:
                 camera_on(opjh('Desktop/teg_data',time_str()))
                 camera_off_flag = False
+                np.save(opjh('Desktop/caffe_quit_command.npy'),0)
+                subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_thread.py')])
             #thread.start_new_thread( caffe_thread )
 
         elif abs(in_button_pwm - 888) < 50:

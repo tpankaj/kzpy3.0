@@ -56,8 +56,16 @@ def get_caffe_input_target():
             img_lst.append(dummy)
     return img_lst
 
-while True:
+command_time = time.time()
+Quit = 0
+while Quit == 0:
     t0 = time.time()
+    if t0 - command_time > 1.0:
+        command_time = t0
+        try:
+            Quit = np.load('Desktop/caffe_quit_command.npy')
+        except:
+            pass
     try:
         img_lst = get_caffe_input_target()
         for i in range(len(img_lst)):
