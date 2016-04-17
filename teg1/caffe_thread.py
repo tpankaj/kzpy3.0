@@ -6,7 +6,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 solver = caffe.SGDSolver(opjh("kzpy3/caf/training/y2016/m2/from_mnist/original_with_accuracy/solver_11px_no_py_layers.prototxt"))
 solver.net.copy_from(opjh('scratch/2016/2/16/caffe/models/from_mnist/original_with_accuracy_11px_iter_11100000.caffemodel'))
 
-caffe.set_mode_cpu()
+caffe.set_mode_gpu()
 #caffe.set_device(0)
 
 for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
