@@ -1,5 +1,13 @@
 from kzpy3.utils import *
 
+def camera_on(data_dir=opjD('teg_data/temp')):
+	unix('mkdir -p ' + data_dir)
+	os.chdir(data_dir)
+	subprocess.Popen([opjh('kzpy3/teg1/cam15Hz320x240.sh')])
+
+def camera_off():
+	kill_ps('gst-launch-0.10')
+
 def kill_ps(process_name_to_kill):
 
 	ax_ps_lst = unix('ps ax')
