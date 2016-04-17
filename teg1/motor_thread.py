@@ -66,7 +66,7 @@ while True:
             scale_factor = 0.25
 
 
-        caffe_steer = steer #int(np.load(opjh('Desktop/caffe_command.npy')))
+        caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
 
 
         out_steer = 49+caffe_steer #pwm_to_percent(in_steer_pwm,servo_min_cpu,servo_null,servo_max_cpu)
