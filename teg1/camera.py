@@ -23,3 +23,16 @@ def kill_ps(process_name_to_kill):
 	#print pid_lst
 	for p in pid_lst:
 		unix(d2s('kill',p))
+
+"""
+img_top_folder = opjD('teg_data/temp3')
+_,img_dirs = dir_as_dic_and_list(img_top_folder)
+ctimes = []
+dt = []
+for d in img_dirs:
+    ctimes.append(os.path.getmtime(opj(img_top_folder,d)))
+for i in range(len(ctimes)-1):
+    dt.append(ctimes[i+1]-ctimes[i])
+dt = np.array(dt)
+print dt.mean()
+"""
