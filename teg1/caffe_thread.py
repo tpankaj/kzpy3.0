@@ -62,9 +62,12 @@ def caffe_thread():
             for i in range(len(img_lst)):
                 solver.net.blobs['py_image_data'].data[0,i,:,:] = img_dic[img_lst[i]]
             solver.net.forward();
+            to_del = []
             for f in img_dic:
                 if f not in img_lst:
-                    del img_dic[f]
+                    to_del.append(f)
+            for f in to_del:
+                del img_dic[f]
         except Exception, e:
             print(d2s(os.path.basename(sys.argv[0]),':',e))
         try:
