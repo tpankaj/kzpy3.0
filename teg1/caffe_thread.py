@@ -81,8 +81,8 @@ def caffe_thread():
             img_dic = {}
         print time.time() - t0
 
-
-caffe_thread()
+if __name__ == '__main__':
+    caffe_thread()
 
 
 
