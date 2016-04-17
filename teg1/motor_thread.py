@@ -37,6 +37,8 @@ def encode_int_signal(cpu_mode,cpu_steer,cpu_motor):
     assert(cpu_motor >=0 and cpu_motor < 100)
     return 10000*cpu_mode + 100*cpu_steer + cpu_motor
 
+camera_off_flag = True
+
 while True:
     ctr += 1
     try:
@@ -52,13 +54,17 @@ while True:
         scale_factor = 1.0
         if abs(in_button_pwm - 1700) < 50:
             cpu_mode = 1 # human control
-            camera_on(opjh('Desktop/teg_data',time_str()))
+            if camera_off_flag:
+                camera_on(opjh('Desktop/teg_data',time_str()))
+                camera_off_flag = False
         elif abs(in_button_pwm - 1200) < 50:
-            camera_off()
+            if camera_off_flag == False:
+                camera_off()
         elif abs(in_button_pwm - 1000) < 50:
             cpu_mode = 2 # cpu control
-            camera_on(opjh('Desktop/teg_data',time_str()))
-            time.sleep(5)
+            if camera_off_flag:
+                camera_on(opjh('Desktop/teg_data',time_str()))
+                camera_off_flag = False
             #thread.start_new_thread( caffe_thread )
 
         elif abs(in_button_pwm - 888) < 50:
