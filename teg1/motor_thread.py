@@ -1,6 +1,6 @@
 from kzpy3.utils import *
 from kzpy3.teg1.camera import *
-from kzpy3.teg1.caffe_thread import *
+#from kzpy3.teg1.caffe_thread import *
 import serial
 import thread
 
@@ -59,7 +59,7 @@ while True:
             cpu_mode = 2 # cpu control
             camera_on(opjh('Desktop/teg_data',time_str()))
             time.sleep(5)
-            thread.start_new_thread( caffe_thread )
+            #thread.start_new_thread( caffe_thread )
 
         elif abs(in_button_pwm - 888) < 50:
             cpu_mode = 2 # cpu control
