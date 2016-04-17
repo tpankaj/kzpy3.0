@@ -9,7 +9,7 @@ def camera_off():
 	kill_ps('gst-launch-0.10')
 
 def kill_ps(process_name_to_kill):
-	ax_ps_lst = unix('ps ax')
+	ax_ps_lst = unix('ps ax',False)
 	ps_lst = []
 	for p in ax_ps_lst:
 		if process_name_to_kill in p:
