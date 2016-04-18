@@ -29,7 +29,7 @@ unix('mkdir -p ' + opjD('teg_data'))
 
 #subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
-f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
+f = open(opjD('teg_data','_'+time_str()+'.motor_servo.txt'), 'w')
 
 while True:
     try:

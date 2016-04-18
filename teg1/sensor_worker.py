@@ -12,7 +12,7 @@ else:
 ctr = 0
 t0 = time.time()
 
-f = open(opjD('teg_data',time_str()+'.GPS_acc.txt'), 'w')
+f = open(opjD('teg_data','_'+time_str()+'.GPS_acc.txt'), 'w')
 
 while True:
     ctr += 1
