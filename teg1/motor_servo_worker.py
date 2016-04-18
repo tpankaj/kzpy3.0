@@ -34,7 +34,7 @@ while True:
         s = ser.readline()
         exec('t = ' + s)
         assert(type(t) == tuple)
-        print t
+        #print t
         in_state = t[0]
         in_steer = t[1]
         in_motor = t[2]
@@ -58,6 +58,7 @@ while True:
                 subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
 
         caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
+        print caffe_steer
         out_steer = 49+caffe_steer
         out_motor = in_motor
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
