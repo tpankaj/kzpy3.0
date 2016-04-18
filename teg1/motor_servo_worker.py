@@ -63,5 +63,5 @@ while True:
         out_motor = in_motor
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
     except Exception,e:
-        print(d2s(os.path.basename(sys.argv[0]),':',e))
+        print(d2s(os.path.basename(sys.argv[0]),':',e,' ... ',t))
 
