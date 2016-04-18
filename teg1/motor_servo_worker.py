@@ -32,7 +32,7 @@ subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 #f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
 
 while True:
-    try:
+    if True:
         ser.write(d2s('(',caffe_int,')'))
         s = ser.readline()
         exec('t = ' + s)
@@ -66,6 +66,6 @@ while True:
         out_steer = 49+caffe_steer
         out_motor = in_motor
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
-    except Exception,e:
-        print(d2s(os.path.basename(sys.argv[0]),':',e))
+#    except Exception,e:
+#        print(d2s(os.path.basename(sys.argv[0]),':',e))
 
