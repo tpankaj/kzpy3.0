@@ -26,7 +26,7 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
     return 10000*caffe_mode + 100*caffe_steer + caffe_motor
 
 
-
+f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
 
 while True:
     try:
@@ -34,6 +34,7 @@ while True:
         s = ser.readline()
         exec('t = ' + s)
         assert(type(t) == tuple)
+        f.write(d2s(time.time(),t,'\n'))
         #print t
         in_state = t[0]
         in_steer = t[1]

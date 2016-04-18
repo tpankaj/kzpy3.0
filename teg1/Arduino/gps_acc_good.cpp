@@ -26,7 +26,7 @@ Adafruit_MMA8451 mma = Adafruit_MMA8451();
 void setup()  
 {
     
-  Serial.begin(115200);
+  Serial.begin(9600);
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
@@ -109,7 +109,7 @@ void loop() {
     
     if (1) {//(GPS.fix) {
 
-      Serial.print("('GPS',");
+      Serial.print("(123,");
       Serial.print(GPS.latitudeDegrees, 4);
       Serial.print(", "); 
       Serial.print(GPS.longitudeDegrees, 4);
@@ -124,12 +124,13 @@ void loop() {
 
   sensors_event_t event; 
   mma.getEvent(&event);
-  Serial.print("('acc',");
+  Serial.print("(456,");
   Serial.print(event.acceleration.x); Serial.print(",");
   Serial.print(event.acceleration.y); Serial.print(",");
   Serial.print(event.acceleration.z); Serial.print(")");
   Serial.println();
-  delay(500);
+  delay(1000/100);
+
   /*
   delay(50);                     // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
   Serial.print("('ping', ");
