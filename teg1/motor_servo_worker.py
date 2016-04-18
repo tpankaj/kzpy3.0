@@ -38,7 +38,7 @@ while True:
         exec('t = ' + s)
         assert(type(t) == tuple)
         f.write(d2s(time.time(),t,'\n'))
-        #print t
+        print t
         in_state = t[0]
         in_steer = t[1]
         in_motor = t[2]
