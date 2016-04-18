@@ -27,7 +27,7 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
 
 unix('mkdir -p ' + opjD('teg_data'))
 
-#subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
+subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
 f = open(opjD('teg_data','_'+time_str()+'.motor_servo.txt'), 'w')
 
