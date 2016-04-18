@@ -91,7 +91,7 @@ while Quit == 0:
     if len(img_dic) > 20: # this shouldn't happen
         del img_dic
         img_dic = {}
-    print time.time() - t0
+    #print time.time() - t0
 
 
 
