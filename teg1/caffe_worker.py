@@ -33,7 +33,7 @@ img_dic = {}
 def get_caffe_input_target():
     img_lst = []
     _,img_files = dir_as_dic_and_list(opj(img_top_folder,most_recent_img_dir))
-    print d2s(len(img_files),'image files')
+    #print d2s(len(img_files),'image files')
     if len(img_files) > 9:
         img_lst = []
         for i in range(-10,-1): # = [-10, -9, -8, -7, -6, -5, -4, -3, -2]
@@ -85,7 +85,7 @@ while Quit == 0:
         steer *= 100
         steer = int(steer)
         np.save(opjh('Desktop/caffe_command.npy'),steer)
-        print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][2])))
+        #print (steer,int(100*(solver.net.blobs['ip2'].data[0][1])),int(100*(solver.net.blobs['ip2'].data[0][2])))
     except Exception, e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
     if len(img_dic) > 20: # this shouldn't happen
