@@ -22,6 +22,10 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
+        if t[0] == 456:
+            t[0] = 'acc'
+        elif t[0] == 123:
+            t[0] = 'GPS'
         f.write(d2s(t,'\n'))
         #print t
         
