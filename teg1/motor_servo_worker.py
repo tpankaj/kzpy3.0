@@ -57,8 +57,7 @@ while True:
                 np.save(opjh('Desktop/caffe_quit_command.npy'),0)
                 subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
 
-        #caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
-        caffe_steer = 5
+        caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
         out_steer = 49+caffe_steer
         out_motor = in_motor
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
