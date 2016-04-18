@@ -27,9 +27,9 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
 
 unix('mkdir -p ' + opjD('teg_data'))
 
-#subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
+subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
-f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
+#f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
 
 while True:
     try:
@@ -37,8 +37,8 @@ while True:
         s = ser.readline()
         exec('t = ' + s)
         assert(type(t) == tuple)
-        f.write(d2s(time.time(),t,'\n'))
-        print t
+        #f.write(d2s(time.time(),t,'\n'))
+        #print t
         in_state = t[0]
         in_steer = t[1]
         in_motor = t[2]

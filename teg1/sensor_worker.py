@@ -21,7 +21,7 @@ while True:
         exec('t = ' + s)
         assert(type(t) == tuple)
         f.write(d2s(time.time(),t,'\n'))
-        print t
+        #print t
         
     except Exception,e:
         print e
