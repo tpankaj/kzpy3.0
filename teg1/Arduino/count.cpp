@@ -5,7 +5,7 @@ volatile byte state = LOW;
 volatile int count = 0;
 volatile long int prev_blink = micros();
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   pinMode(ledPin, OUTPUT);
   pinMode(interruptPin, INPUT_PULLUP);
@@ -16,14 +16,14 @@ void setup() {
 
 void loop() {
   digitalWrite(ledPin, state);
-  delay(10);
+  delay(50);
   
   Serial.println(count);
 }
 
 void blink() {
   long int m = micros();
-  if (m - prev_blink > 1000) { 
+  if (m - prev_blink > 10) { 
     state = !state;
     count += 1;
   }

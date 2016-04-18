@@ -1,8 +1,7 @@
 from kzpy3.utils import *
 from kzpy3.teg1.camera import *
-#from kzpy3.teg1.caffe_thread import *
 import serial
-import thread
+
 
 
 
