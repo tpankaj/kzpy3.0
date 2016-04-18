@@ -20,7 +20,9 @@ while True:
         s = ser.readline()
         exec('t = ' + s)
         assert(type(t) == tuple)
-        f.write(d2s(time.time(),t,'\n'))
+        t = list(t)
+        t.append(time.time())
+        f.write(d2s(t,'\n'))
         #print t
         
     except Exception,e:
