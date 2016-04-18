@@ -5,7 +5,7 @@ import serial
 if '/Users/' in home_path:
     ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
 else:
-    ser = serial.Serial('/dev/ttyACM0',9600)
+    ser = serial.Serial('/dev/ttyACM1',9600)
 
 STATE_LOCK = 2
 STATE_LOCK_CALIBRATE = 4
@@ -25,6 +25,9 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
     assert(caffe_motor >=0 and caffe_motor < 100)
     return 10000*caffe_mode + 100*caffe_steer + caffe_motor
 
+unix('mkdir -p ' + opjD('teg_data'))
+
+#subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
 f = open(opjD('teg_data',time_str()+'.motor_servo.txt'), 'w')
 
