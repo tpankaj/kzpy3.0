@@ -42,20 +42,20 @@ while True:
         scale_factor = 1.0
         if in_state == STATE_HUMAN_FULL_CONTROL:
             if camera_off_flag:
-        #        camera_on(opjh('Desktop/teg_data',time_str()))
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 camera_off_flag = False
-        #        np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif in_state == STATE_LOCK or in_state == STATE_LOCK_CALIBRATE:
             if camera_off_flag == False:
                 camera_off()
                 camera_off_flag = True
-        #        np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif in_state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR or in_state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR:
             if camera_off_flag:
-        #        camera_on(opjh('Desktop/teg_data',time_str()))
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 camera_off_flag = False
-        #        np.save(opjh('Desktop/caffe_quit_command.npy'),0)
-        #        subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_thread.py')])
+                np.save(opjh('Desktop/caffe_quit_command.npy'),0)
+                subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
 
         #caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
         caffe_steer = 5
