@@ -5,7 +5,7 @@ import serial
 if '/Users/' in home_path:
     ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
 else:
-    ser = serial.Serial('/dev/ttyACM1',9600)
+    ser = serial.Serial('/dev/ttyACM0',9600)
 
 STATE_LOCK = 2
 STATE_LOCK_CALIBRATE = 4
