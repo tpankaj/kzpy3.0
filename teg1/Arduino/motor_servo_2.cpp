@@ -329,7 +329,7 @@ void loop() {
     }
   }
   else {
-    ;
+    caffe_servo_pwm_value = servo_null_pwm_value;
   }
 
   // Compute command signal percents from signals from the handheld radio controller
@@ -382,7 +382,7 @@ void loop() {
     Serial.print(",");
     Serial.print(motor_percent);
     Serial.print(",");
-    Serial.print(state_transition_time_ms);
+    Serial.print(millis() - state_transition_time_ms);
     Serial.println(")");
   }
   else {

@@ -1,214 +1,297 @@
-
 #include "PinChangeInterrupt.h"
 #include <Servo.h> 
 
-#define pin_motor_in 10
-#define pin_servo_in 11
-#define pin_button_in 12
-#define pin_servo_out 9
-#define pin_motor_out 8
 
-int servo_max = 2000; //1888
-int servo_min = 800; //928
-int button_max = 2000; //1888
-int button_min = 800; //928
-int motor_max = 2100; //2012
-int motor_min = 1100; //1220
-int top_button = 1710;
-int bottom_button = 1204;
+#define PIN_SERVO_IN 11
+#define PIN_MOTOR_IN 10
+#define PIN_SERVO_OUT 9
+#define PIN_MOTOR_OUT 8
+#define PIN_BUTTON_IN 12
 
-int motor_null = 1528;
-int servo_null = 1376;
-int servo_max_cpu = 1888; //1888
-int servo_min_cpu = 928; //928
-int motor_max_cpu = 2012; //2012
-int motor_min_cpu = 1220; //1220
+#define BUTTON_MAX 2000
+#define BUTTON_MIN 500
+#define SERVO_MAX 2000
+#define SERVO_MIN 500
+#define MOTOR_MAX 2000
+#define MOTOR_MIN 500
 
-Servo servo;  
-Servo motor;  
- 
-volatile int motor_pwm_value = motor_null;
-volatile long int motor_prev_time = 0;
-volatile int servo_pwm_value = servo_null;
-volatile long int servo_prev_time = 0;
-volatile int button_pwm_value = 1204;
-volatile long int button_prev_time = 0;
-volatile int lock = 1;
-volatile int control_human = 1;
+#define STATE_LOCK 2
+#define STATE_LOCK_CALIBRATE 4
+#define STATE_HUMAN_FULL_CONTROL 1
+#define STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR 3
+#define STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR 5
 
-int cpu_lock = 0;
+volatile int servo_null_pwm_value = 1500;
+volatile int servo_max_pwm_value = 1600;
+volatile int servo_min_pwm_value = 1400;
+
+volatile int motor_null_pwm_value = 1528;
+volatile int motor_max_pwm_value = 1600;
+volatile int motor_min_pwm_value = 1400;
+
+volatile int button_pwm_value;
+volatile int servo_pwm_value;
+volatile int motor_pwm_value;
+
+
+
+volatile long int button_prev_interrupt_time = 0;
+volatile long int servo_prev_interrupt_time = 0;
+volatile long int motor_prev_interrupt_time = 0;
+
+volatile int state = STATE_LOCK;
+volatile int previous_state = 0;
+volatile int state_transition_time = 0;
+
+
+long int caffe_last_int_read_time;
+int caffe_mode;
+int caffe_steer;
+int caffe_motor;
+int caffe_servo_pwm_value = servo_null_pwm_value;
+int caffe_motor_pwm_value = motor_null_pwm_value;
+
+int servo_percent;
+int motor_percent;
+
+Servo servo;
+Servo motor; 
 
 void setup()
 {
   Serial.begin(9600);
-  Serial.setTimeout(20); // was 100 during successful test
+  Serial.setTimeout(5);
 
-  pinMode(pin_motor_in, INPUT_PULLUP);
-  pinMode(pin_servo_in, INPUT_PULLUP);
-  pinMode(pin_button_in, INPUT_PULLUP);
+  pinMode(PIN_BUTTON_IN, INPUT_PULLUP);
+  pinMode(PIN_SERVO_IN, INPUT_PULLUP);
+  pinMode(PIN_MOTOR_IN, INPUT_PULLUP);
 
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(pin_motor_in), motor_interrupt, CHANGE);
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(pin_servo_in), servo_interrupt, CHANGE);
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(pin_button_in), button_interrupt, CHANGE);
+  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(PIN_BUTTON_IN),
+    button_interrupt_service_routine, CHANGE);
+  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(PIN_SERVO_IN),
+    servo_interrupt_service_routine, CHANGE);
+  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(PIN_MOTOR_IN),
+    motor_interrupt_service_routine, CHANGE);
 
-  servo.attach(pin_servo_out); 
-  motor.attach(pin_motor_out);
+  servo.attach(PIN_SERVO_OUT); 
+  motor.attach(PIN_MOTOR_OUT); 
 }
 
-int cpu_mode = -3;
-int cpu_steer = 49;
-int cpu_motor = 49;
-volatile int cpu_servo_pwm_value = servo_null;
-volatile int cpu_motor_pwm_value = motor_null;
-long int last_cpu_int_read_time = 0;
 
-void loop() {
-  lock_stop_if_signal_break();
 
-  if (!control_human) {
-
-    if (micros()/1000 - last_cpu_int_read_time > 100) {
-
-      cpu_lock = 1;
-      cpu_motor_pwm_value = motor_null;
-      cpu_servo_pwm_value = servo_null;
-      cpu_mode = 2;
-      cpu_steer = 49;
-      cpu_motor = 49;
+void button_interrupt_service_routine(void) {
+  long int m = micros();
+  int dt = m-button_prev_interrupt_time;
+  if (dt>BUTTON_MIN && dt<BUTTON_MAX) {
+    button_pwm_value = dt;
+    if (abs(button_pwm_value-1710)<50) {
+      if (state != STATE_HUMAN_FULL_CONTROL) {
+        previous_state = state;
+        state = STATE_HUMAN_FULL_CONTROL;
+        state_transition_time = m;
+      }
+    }
+    else if (abs(button_pwm_value-1200)<50) {
+      if (state != STATE_LOCK) {
+        previous_state = state;
+        state = STATE_LOCK;
+        state_transition_time = m;
+      }
+    }
+    else if (abs(button_pwm_value-1000)<50) {
+      if (state != STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
+        previous_state = state;
+        state = STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR;
+        state_transition_time = m;
+      }
+    }
+    else if (abs(button_pwm_value-888)<50) {
+      if (state != STATE_LOCK_CALIBRATE) {
+        previous_state = state;
+        state = STATE_LOCK_CALIBRATE;
+        state_transition_time = m;
+        servo_null_pwm_value = servo_pwm_value;
+        servo_max_pwm_value = servo_null_pwm_value;
+        servo_min_pwm_value = servo_null_pwm_value;
+        motor_null_pwm_value = motor_pwm_value;
+        motor_max_pwm_value = motor_null_pwm_value;
+        motor_min_pwm_value = motor_null_pwm_value;
+      }
+      if (servo_pwm_value > servo_max_pwm_value) {
+        servo_max_pwm_value = servo_pwm_value;
+      }
+      if (servo_pwm_value < servo_min_pwm_value) {
+        servo_min_pwm_value = servo_pwm_value;
+      }
+      if (motor_pwm_value > motor_max_pwm_value) {
+        motor_max_pwm_value = motor_pwm_value;
+      }
+      if (motor_pwm_value < motor_min_pwm_value) {
+        motor_min_pwm_value = motor_pwm_value;
+      }
     }
   }
-  int cpu_int = Serial.parseInt();
-  
-  // here we decode three signals from single int
-  if (cpu_int > 0) {
-      last_cpu_int_read_time = micros()/1000;
-      cpu_mode = cpu_int/10000;
-      cpu_steer = (cpu_int-cpu_mode*10000)/100;
-      cpu_motor = (cpu_int-cpu_steer*100-cpu_mode*10000);
-    } else if (cpu_int < 0) {
-      cpu_mode = cpu_int/10000;
-  }  
+  button_prev_interrupt_time = m;
+}
 
-  if (cpu_mode == -3) cpu_lock = 1;
-  else cpu_lock = 0;
 
-  if (cpu_mode == 2) control_human = 0;
-  else control_human = 1;
 
-  if (cpu_mode > 0) {
-    if (cpu_steer >= 49) cpu_servo_pwm_value = (cpu_steer-49)/50.0 * (servo_max_cpu - servo_null) + servo_null;
-    else cpu_servo_pwm_value = (cpu_steer - 50)/50.0 * (servo_null - servo_min_cpu) + servo_null;
-    if (cpu_motor >= 49) cpu_motor_pwm_value = (cpu_motor-49)/50.0 * (motor_max_cpu - motor_null) + motor_null;
-    else cpu_motor_pwm_value = (cpu_motor - 50)/50.0 * (motor_null - motor_min_cpu) + motor_null;
-    if (cpu_motor_pwm_value > motor_max_cpu) cpu_lock = 1;
-    if (cpu_motor_pwm_value < motor_min_cpu) cpu_lock = 1;
-    if (cpu_servo_pwm_value > servo_max_cpu) cpu_lock = 1;
-    if (cpu_servo_pwm_value < servo_min_cpu) cpu_lock = 1;
+void servo_interrupt_service_routine(void) {
+  long int m = micros();
+  int dt = m-servo_prev_interrupt_time;
+  if (dt>SERVO_MIN && dt<SERVO_MAX) {
+    servo_pwm_value = dt;
+    if (state == STATE_HUMAN_FULL_CONTROL) {
+      servo.writeMicroseconds(servo_pwm_value);
+    }
+    else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
+      if (abs(servo_pwm_value-servo_null_pwm_value)<=50 && (m-state_transition_time)>500*1000) {
+        previous_state = state;
+        state = STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR;
+        state_transition_time = m;
+        servo.writeMicroseconds((caffe_servo_pwm_value+servo_pwm_value)/2);
+      }
+      else {
+        servo.writeMicroseconds(servo_pwm_value);
+      }
+    }
+    else if (state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
+      if (abs(servo_pwm_value-servo_null_pwm_value)>50) {
+        previous_state = state;
+        state = STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR;
+        state_transition_time = m;
+        servo.writeMicroseconds(servo_pwm_value);   
+      }
+      else {
+        servo.writeMicroseconds(caffe_servo_pwm_value);
+      }
+    }
+    else {
+      servo.writeMicroseconds(servo_null_pwm_value);
+    }
+  } 
+  servo_prev_interrupt_time = m;
+}
+
+
+
+void motor_interrupt_service_routine(void) {
+  long int m = micros();
+  int dt = m-motor_prev_interrupt_time;
+  if (dt>MOTOR_MIN && dt<MOTOR_MAX) {
+    motor_pwm_value = dt;
+    if (state == STATE_HUMAN_FULL_CONTROL) {
+      motor.writeMicroseconds(motor_pwm_value);
+    }
+    else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
+      motor.writeMicroseconds(motor_pwm_value);
+    }
+    else if (state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
+      motor.writeMicroseconds(motor_pwm_value);
+    }
+    else {
+      motor.writeMicroseconds(motor_null_pwm_value);
+    }
+  } 
+  motor_prev_interrupt_time = m;
+}
+
+
+
+
+
+
+
+
+
+void loop() {
+
+  int caffe_int = Serial.parseInt();
+
+  if (caffe_int > 0) {
+      caffe_last_int_read_time = micros()/1000;
+      caffe_mode = caffe_int/10000;
+      caffe_steer = (caffe_int-caffe_mode*10000)/100;
+      caffe_motor = (caffe_int-caffe_steer*100-caffe_mode*10000);
+    } else if (caffe_int < 0) {
+      caffe_mode = caffe_int/10000;
   }
 
-  Serial.print("(");
-  Serial.print(motor_pwm_value);
-  Serial.print(",");
-  Serial.print(servo_pwm_value);
-  Serial.print(",");
-  Serial.print(button_pwm_value);
-  Serial.print(", ");
-  Serial.print(cpu_lock);
-  Serial.print(", ");
-  Serial.print(cpu_mode);
-  Serial.print(",");
-  Serial.print(cpu_steer);
-  Serial.print(",");
-  Serial.print(cpu_motor);
-  Serial.print(",");
-  Serial.print(cpu_servo_pwm_value);
-  Serial.print(",");
-  Serial.print(cpu_motor_pwm_value);
-  Serial.print(",");
-  Serial.print(control_human);
-  Serial.println(")");
+
+  if (caffe_mode > 0) {
+    if (caffe_steer >= 49) {
+      caffe_servo_pwm_value = (caffe_steer-49)/50.0 * (servo_max_pwm_value - servo_null_pwm_value) + servo_null_pwm_value;
+    }
+    else {
+      caffe_servo_pwm_value = (caffe_steer - 50)/50.0 * (servo_null_pwm_value - servo_min_pwm_value) + servo_null_pwm_value;
+    }
+    if (caffe_motor >= 49) {
+      caffe_motor_pwm_value = (caffe_motor-49)/50.0 * (motor_max_pwm_value - motor_null_pwm_value) + motor_null_pwm_value;
+    }
+    else {
+      caffe_motor_pwm_value = (caffe_motor - 50)/50.0 * (motor_null_pwm_value - motor_min_pwm_value) + motor_null_pwm_value;
+    }
+  }
+
+
+
+
+  if (servo_pwm_value >= servo_null_pwm_value) {
+    servo_percent = 49+50.0*(servo_pwm_value-servo_null_pwm_value)/(servo_max_pwm_value-servo_null_pwm_value);
+  }
+  else {
+    servo_percent = 49 - 49.0*(servo_null_pwm_value-servo_pwm_value)/(servo_null_pwm_value-servo_min_pwm_value);
+  }
+
+  if (motor_pwm_value >= motor_null_pwm_value) {
+    motor_percent = 49+50.0*(motor_pwm_value-motor_null_pwm_value)/(motor_max_pwm_value-motor_null_pwm_value);
+  }
+  else {
+    motor_percent = 49 - 49.0*(motor_null_pwm_value-motor_pwm_value)/(motor_null_pwm_value-motor_min_pwm_value);
+  }
+
+
+  if (false) {
+    Serial.print("(");
+    Serial.print(state);
+    Serial.print(",");
+    Serial.print(button_pwm_value);
+    Serial.print(",");
+    Serial.print(servo_pwm_value);
+    Serial.print(",[");
+    Serial.print(servo_min_pwm_value);
+    Serial.print(",");
+    Serial.print(servo_null_pwm_value);
+    Serial.print(",");
+    Serial.print(servo_max_pwm_value);  
+    Serial.print("],[");
+    Serial.print(motor_min_pwm_value);
+    Serial.print(",");
+    Serial.print(motor_null_pwm_value);
+    Serial.print(",");
+    Serial.print(motor_max_pwm_value);
+    Serial.print("],");
+    Serial.print(caffe_mode);
+    Serial.print(",");
+    Serial.print(caffe_steer);
+    Serial.print(",");
+    Serial.print(caffe_motor);
+    Serial.print(",");
+    Serial.print(caffe_servo_pwm_value);
+    Serial.print(",");
+    Serial.print(caffe_motor_pwm_value);
+    Serial.println(")");
+  }
+  else {
+    Serial.print("(");
+    Serial.print(state);
+    Serial.print(",");
+    Serial.print(servo_percent);
+    Serial.print(",");
+    Serial.print(motor_percent);
+    Serial.println(")");
+  }
 
   delay(10); // how long should this be?
 }
-
-void motor_interrupt(void) {
-  long int m = micros();
-  int dt = m - motor_prev_time;
-  if (dt>motor_min && dt<motor_max) {
-    motor_pwm_value = dt;
-    if(!lock) {
-      if (!cpu_lock) {
-        if (control_human) motor.writeMicroseconds(motor_pwm_value);
-        else motor.writeMicroseconds(cpu_motor_pwm_value);
-      }
-    }
-    if (cpu_lock) lock_stop();
-  } 
-  motor_prev_time = m;
-}
-void servo_interrupt(void) {
-  long int m = micros();
-  int dt = m-servo_prev_time;
-  if (dt>servo_min && dt<servo_max) {
-    servo_pwm_value = dt;
-    if (!lock) {
-      if (!cpu_lock) {
-        if (control_human) servo.writeMicroseconds(servo_pwm_value);
-        else servo.writeMicroseconds(cpu_servo_pwm_value);
-      }
-    }
-    if (cpu_lock) lock_stop();
-  } 
-  servo_prev_time = m;
-}
-void button_interrupt(void) {
-  long int m = micros();
-  int dt = m-servo_prev_time;
-  if (dt>button_min && dt<button_max) {
-    button_pwm_value = dt;
-    if (abs(button_pwm_value-bottom_button)<50) {
-      lock_stop();
-    }
-    if (abs(button_pwm_value-top_button)<50) {
-      control_human = 1;
-      cpu_lock = 0;
-      cpu_mode = 0;
-      lock = 0;
-    }
-    if (abs(button_pwm_value-1000)<50) {
-      lock = 0;
-      control_human = 0;
-    }
-    if (abs(button_pwm_value-888)<50) {
-      lock = 0;
-      control_human = 0;
-    }
-  } 
-  button_prev_time = m;
-}
-
-
-
-
-
-void lock_stop_if_signal_break(void) {
-  long int m = micros();
-  if (m - servo_prev_time > 100000) lock_stop();
-  if (m - motor_prev_time > 100000) lock_stop();
-  if (m - button_prev_time > 100000) lock_stop();
-}
-
-void lock_stop(void) {
-  lock = 1;
-  motor.writeMicroseconds(motor_null);
-  servo.writeMicroseconds(servo_null);
-}
-
-void unlock(void) {
-  lock = 0;
-}
-
-
-
-
 

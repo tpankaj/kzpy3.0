@@ -1,4 +1,5 @@
 #include "PinChangeInterrupt.h"
+// Unfortunately this code seems to conflict with the other sensor code.
 const byte ledPin = 13;
 const byte interruptPin = 7;
 volatile byte state = LOW;
