@@ -2,6 +2,11 @@ from kzpy3.utils import *
 from kzpy3.teg1.camera import *
 import serial
 
+"""
+Communication between this control program and Caffe is done via text files
+Desktop/caffe_quit_command.npy and Desktop/caffe_command.npy .
+"""
+
 # Two kinds of complications with serial communication with multple Arduinos.
 # OsX and ubuntu have different ways of 
 # specifying serial port. And, on ubuntu, the ACM1 depends on both
