@@ -162,6 +162,8 @@ void button_interrupt_service_routine(void) {
         motor_null_pwm_value = motor_pwm_value;
         motor_max_pwm_value = motor_null_pwm_value;
         motor_min_pwm_value = motor_null_pwm_value;
+        caffe_servo_pwm_value = servo_null_pwm_value;
+        caffe_motor_pwm_value = motor_null_pwm_value;
       }
       if (servo_pwm_value > servo_max_pwm_value) {
         servo_max_pwm_value = servo_pwm_value;
@@ -193,7 +195,8 @@ void servo_interrupt_service_routine(void) {
       servo.writeMicroseconds(servo_pwm_value);
     }
     else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
-      if (abs(servo_pwm_value-servo_null_pwm_value)<=30 ){//&& (m-1000*state_transition_time_ms)>1000) {
+      // If steer is close to neutral, let Caffe take over.
+      if (abs(servo_pwm_value-servo_null_pwm_value)<=30 ){
         previous_state = state;
         state = STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR;
         state_transition_time_ms = m/1000.0;
@@ -203,6 +206,7 @@ void servo_interrupt_service_routine(void) {
         servo.writeMicroseconds(servo_pwm_value);
       }
     }
+    // If human makes strong steer command, let human take over.
     else if (state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
       if (abs(servo_pwm_value-servo_null_pwm_value)>70) {
         previous_state = state;
@@ -249,7 +253,7 @@ void motor_interrupt_service_routine(void) {
 
 int check_for_error_conditions(void) {
 // Check state of all of these variables for out of bound conditions
-// Make LED blink if error state (to do)
+// Make LED blink if error state is arrive at.
   if (
     safe_pwm_range(servo_null_pwm_value) &&
     safe_pwm_range(servo_max_pwm_value) &&
@@ -324,6 +328,9 @@ void loop() {
       caffe_motor_pwm_value = (caffe_motor_percent - 50)/50.0 * (motor_null_pwm_value - motor_min_pwm_value) + motor_null_pwm_value;
     }
   }
+  else {
+    ;
+  }
 
   // Compute command signal percents from signals from the handheld radio controller
   // to be sent to host computer, which doesn't bother with PWM values
@@ -340,32 +347,8 @@ void loop() {
     motor_percent = 49 - 49.0*(motor_null_pwm_value-motor_pwm_value)/(motor_null_pwm_value-motor_min_pwm_value);
   }
 
-/*
-    safe_pwm_range(servo_null_pwm_value) &&
-    safe_pwm_range(servo_max_pwm_value) &&
-    safe_pwm_range(servo_min_pwm_value) &&
-    safe_pwm_range(motor_null_pwm_value) &&
-    safe_pwm_range(motor_max_pwm_value) &&
-    safe_pwm_range(motor_min_pwm_value) &&
-    safe_pwm_range(servo_pwm_value) &&
-    safe_pwm_range(motor_pwm_value) &&
-    safe_pwm_range(button_pwm_value) &&
-    button_prev_interrupt_time >= 0 &&
-    servo_prev_interrupt_time >= 0 &&
-    motor_prev_interrupt_time >= 0 &&
-    state_transition_time_ms >= 0 && 
-    safe_percent_range(caffe_servo_percent) &&
-    safe_percent_range(caffe_motor_percent) &&
-    safe_percent_range(servo_percent) &&
-    safe_percent_range(motor_percent) &&
-    safe_pwm_range(caffe_servo_pwm_value) &&
-    safe_pwm_range(caffe_motor_pwm_value) &&
-    caffe_last_int_read_time >= 0 &&
-    caffe_mode >= -3 && caffe_mode <= 9 &&
-    state >=0 && state <= 100 &&
-    previous_state >=0 && previous_state <= 100 */
-
-  if (true) {
+  int debug = true
+  if (debug) {
     Serial.print("(");
     Serial.print(state);
     Serial.print(",");
@@ -417,6 +400,7 @@ void loop() {
 
   delay(10); // How long should this be? Note, this is in ms, whereas most other times are in micro seconds.
 
+  // Blink LED if in error state.
   if (state == STATE_ERROR) {
     digitalWrite(PIN_LED_OUT, HIGH);
     delay(100);

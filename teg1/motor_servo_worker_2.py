@@ -3,28 +3,45 @@ from kzpy3.teg1.camera import *
 import serial
 
 """
-Communication between this control program and Caffe is done via text files
-Desktop/caffe_quit_command.npy and Desktop/caffe_command.npy .
+Communication between this control program and Caffe is done via text files:
+
+    ~/Desktop/caffe_quit_command.npy (command to Caffe to issue quit command)
+    ~/Desktop/caffe_command.npy (Caffe's commands to be sent to the car via Arduino)
+
+This is for simplicity. In the future, a more mature mutli-process or threading
+approach would be appropriate.
 """
 
-# Two kinds of complications with serial communication with multple Arduinos.
-# OsX and ubuntu have different ways of 
-# specifying serial port. And, on ubuntu, the ACM1 depends on both
-# the order of the USBs in the ports and the order in which they
-# are plugged in (if plugged in after booting. 
-# Thus, it would be good to have some error checking to insure the correct
-# device is connected to the correct host program.
+"""
+Two kinds of complications with serial communication with multple Arduinos.
+OsX and ubuntu have different ways of 
+specifying serial port. And, on ubuntu, the ACM# depends on both
+the order of the USBs in the ports and the order in which they
+are plugged in (if plugged in after booting.) 
+Thus, it would be good to have some error checking to insure the correct
+device is connected to the correct host program. If not, the wrong Arduino will provide
+serial input to a given host program.
+"""
 if '/Users/' in home_path:
     ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
 else:
     ser = serial.Serial('/dev/ttyACM0',9600)
 
 # These state codes must match those in the motor_servo Arduino code.
-STATE_LOCK = 2
-STATE_LOCK_CALIBRATE = 4
-STATE_HUMAN_FULL_CONTROL = 1
+"""
+#define STATE_HUMAN_FULL_CONTROL            1
+#define STATE_LOCK                          2
+#define STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR 3
+#define STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR 5
+#define STATE_LOCK_CALIBRATE                4
+#define STATE_ERROR                         -1
+"""
+STATE_HUMAN_FULL_CONTROL     =       1
+STATE_LOCK                   =      2
 STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR = 3
 STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR = 5
+STATE_LOCK_CALIBRATE              =  4
+STATE_ERROR                       =  -1
 
 # Some intial variable values
 caffe_int = -30000
