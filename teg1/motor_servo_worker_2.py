@@ -42,7 +42,7 @@ subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 # Data file for motor servo data
 f = open(opjD('teg_data','_'+time_str()+'.motor_servo.txt'), 'w')
 
-
+ctr = 0
 while True:
     try:
         ser.write(d2s('(',caffe_int,')'))
@@ -53,7 +53,9 @@ while True:
         t = list(t)
         t.append(time.time())
         f.write(d2s(t,'\n'))
-        #print t
+        if np.mod(ctr,10) == 0:
+            print t
+        ctr += 1
         in_state = t[0]
         in_steer = t[1]
         in_motor = t[2]
