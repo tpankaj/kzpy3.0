@@ -193,8 +193,7 @@ void servo_interrupt_service_routine(void) {
       servo.writeMicroseconds(servo_pwm_value);
     }
     else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
-      
-      if (abs(servo_pwm_value-servo_null_pwm_value)<=50 ){//&& (m-1000*state_transition_time_ms)>1000) {
+      if (abs(servo_pwm_value-servo_null_pwm_value)<=30 ){//&& (m-1000*state_transition_time_ms)>1000) {
         previous_state = state;
         state = STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR;
         state_transition_time_ms = m/1000.0;
@@ -205,7 +204,7 @@ void servo_interrupt_service_routine(void) {
       }
     }
     else if (state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
-      if (abs(servo_pwm_value-servo_null_pwm_value)>50) {
+      if (abs(servo_pwm_value-servo_null_pwm_value)>70) {
         previous_state = state;
         state = STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR;
         state_transition_time_ms = m/1000.0;
