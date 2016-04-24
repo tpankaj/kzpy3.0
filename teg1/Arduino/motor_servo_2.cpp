@@ -1,6 +1,15 @@
 /*
-Code written for Arduino Uno. The purpose is to read PWM signals coming out of a radio receiver
+Code written for Arduino Uno.
+
+The purpose is to read PWM signals coming out of a radio receiver
 and either relay them unchanged to ESC/servo or substitute signals from a host system.
+
+The steering servo and ESC(motor) are controlled with PWM signals. These meaning of these signals
+may vary with time, and across devices. To get uniform behavior, the user calibrates with each session.
+The host system deals only in percent control signals that are assumed to be based on calibrated PWM
+signals. Thus, 0 should always mean 'extreme left', 49 should mean 'straight ahead', and 99 'extreme right'
+in the percent signals, whereas absolute values of the PWM can vary for various reasons.
+
 April 2016
 */
 
@@ -264,8 +273,6 @@ void check_for_error_conditions(void) {
 */
 
 // Make LED blink if error state
-
-
 }
 
 
@@ -274,9 +281,10 @@ void check_for_error_conditions(void) {
 
 void loop() {
 
-  // Try to read the "caffe_int" sent by the host system (there is a timeout on serial reads.)
+  // Try to read the "caffe_int" sent by the host system (there is a timeout on serial reads, so the Arduino
+  // doesn't wait long to get one -- in which case the caffe_int is set to zero.)
   int caffe_int = Serial.parseInt();
-  // If one is received, decode it to yield three values (caffe_mode, caffe_steer, and caffe_motor)
+  // If it is received, decode it to yield three control values (i.e., caffe_mode, caffe_steer, and caffe_motor)
   if (caffe_int > 0) {
       caffe_last_int_read_time = micros()/1000;
       caffe_mode = caffe_int/10000;
@@ -302,7 +310,8 @@ void loop() {
     }
   }
 
-  // Compute percents to be sent to host computer, which doesn't bother with PWM values
+  // Compute command signal percents from signals from the handheld radio controller
+  // to be sent to host computer, which doesn't bother with PWM values
   if (servo_pwm_value >= servo_null_pwm_value) {
     servo_percent = 49+50.0*(servo_pwm_value-servo_null_pwm_value)/(servo_max_pwm_value-servo_null_pwm_value);
   }
@@ -361,6 +370,6 @@ void loop() {
     Serial.println(")");
   }
 
-  delay(10); // How long should this be? Note, this is in ms, whereas other times are in micro seconds.
+  delay(10); // How long should this be? Note, this is in ms, whereas most other times are in micro seconds.
 }
 
