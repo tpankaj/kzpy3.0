@@ -94,9 +94,9 @@ void loop() {
     if (1) {//(GPS.fix) {
 
       Serial.print("(123,");
-      Serial.print(GPS.latitudeDegrees, 4);
+      Serial.print(GPS.latitudeDegrees, 6);
       Serial.print(", "); 
-      Serial.print(GPS.longitudeDegrees, 4);
+      Serial.print(GPS.longitudeDegrees, 6);
       Serial.print(",");
       Serial.print(GPS.speed);
       Serial.print(",");
