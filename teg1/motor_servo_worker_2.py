@@ -28,7 +28,7 @@ serial input to a given host program.
 if '/Users/' in home_path:
     ser = serial.Serial('/dev/tty.usbmodem1461',115200)
 else:
-    ser = serial.Serial('/dev/ttyACM0',9600)
+    ser = serial.Serial('/dev/ttyACM0',115200)
 
 # These state codes must match those in the motor_servo Arduino code.
 """
