@@ -62,7 +62,7 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
 unix('mkdir -p ' + opjD('teg_data'))
 
 # The GPS+ Arduino host program is set running here.
-subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
+##subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
 # Data file for motor/servo data
 f = open(opjD('teg_data','_'+time_str()+'.motor_servo.txt'), 'w')
@@ -91,23 +91,26 @@ while True:
         if in_state == STATE_HUMAN_FULL_CONTROL:
             # Wait half a second before turning on camera.
             if camera_off_flag and in_state_change_time >= 500:
-                camera_on(opjh('Desktop/teg_data',time_str()))
+                ##camera_on(opjh('Desktop/teg_data',time_str()))
+                print 'camera on'
                 camera_off_flag = False
                 np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif in_state == STATE_LOCK or in_state == STATE_LOCK_CALIBRATE:
             if camera_off_flag == False:
-                camera_off()
+                ##camera_off()
+                print 'camera off'
                 camera_off_flag = True
                 np.save(opjh('Desktop/caffe_quit_command.npy'),1)
         elif in_state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR or in_state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR:
             # Wait half a second before turning on camera and Caffe.
-            if camera_off_flag and in_state_change_time >= 500::
-                camera_on(opjh('Desktop/teg_data',time_str()))
+            if camera_off_flag and in_state_change_time >= 500:
+                ##camera_on(opjh('Desktop/teg_data',time_str()))
+                print 'camera on'
                 camera_off_flag = False
                 np.save(opjh('Desktop/caffe_quit_command.npy'),0)
-                subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
-
-        caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
+                ##subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
+        caffe_steer = input()
+        ##caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
         #print caffe_steer
         out_steer = 49+caffe_steer
         out_motor = in_motor

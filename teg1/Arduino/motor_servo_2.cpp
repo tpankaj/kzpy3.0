@@ -116,8 +116,8 @@ void setup()
 // allows for reaching separate PWM levels: ~ 1710, 1200, 1000, and 888
 // These are used for different control states.
 void button_interrupt_service_routine(void) {
-  long int m = micros();
-  long int dt = m - button_prev_interrupt_time;
+  volatile long int m = micros();
+  volatile long int dt = m - button_prev_interrupt_time;
   button_prev_interrupt_time = m;
   // Human in full control of driving
   if (dt>BUTTON_MIN && dt<BUTTON_MAX) {
@@ -184,8 +184,8 @@ void button_interrupt_service_routine(void) {
 // Servo interrupt service routine. This would be very short except that the human can take
 // control from Caffe, and Caffe can take back control if steering left in neutral position.
 void servo_interrupt_service_routine(void) {
-  long int m = micros();
-  long int dt = m - servo_prev_interrupt_time;
+  volatile long int m = micros();
+  volatile long int dt = m - servo_prev_interrupt_time;
   servo_prev_interrupt_time = m;
   if (state == STATE_ERROR) return; // no action if in error state
   if (dt>SERVO_MIN && dt<SERVO_MAX) {
@@ -226,8 +226,8 @@ void servo_interrupt_service_routine(void) {
 
 // Motor interrupt service routine. This is simple because right now only human controls motor.
 void motor_interrupt_service_routine(void) {
-  long int m = micros();
-  long int dt = m - motor_prev_interrupt_time;
+  volatile long int m = micros();
+  volatile long int dt = m - motor_prev_interrupt_time;
   motor_prev_interrupt_time = m;
   if (state == STATE_ERROR) return; // no action if in error state
   if (dt>MOTOR_MIN && dt<MOTOR_MAX) {
