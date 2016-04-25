@@ -90,7 +90,7 @@ void setup()
 {
   // Establishing serial communication with host system. The best values for these parameters
   // is an open question.
-  Serial.begin(115200);
+  Serial.begin(9600);//115200);
   Serial.setTimeout(5);
 
   // Setting up three input pins
@@ -345,7 +345,7 @@ void loop() {
     motor_percent = 49 - 49.0*(motor_null_pwm_value-motor_pwm_value)/(motor_null_pwm_value-motor_min_pwm_value);
   }
 
-  int debug = true;
+  int debug = false;
   if (debug) {
     Serial.print("(");
     Serial.print(state);

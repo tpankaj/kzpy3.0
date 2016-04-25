@@ -47,7 +47,7 @@ STATE_LOCK_CALIBRATE              =  4
 STATE_ERROR                       =  -1
 
 # Some intial variable values
-caffe_int = -30000
+caffe_int = -30000 # i.e., mode = -3, steer = 0, motor = 0
 camera_off_flag = True
 caffe_mode = 1 # no function for now
 
@@ -76,6 +76,8 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
+        print t
+        
         f.write(d2s(t,'\n'))
         if np.mod(ctr,10) == 0: # Print output, but not too much of it.
             print t
@@ -109,13 +111,13 @@ while True:
                 camera_off_flag = False
                 np.save(opjh('Desktop/caffe_quit_command.npy'),0)
                 ##subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
-        caffe_steer = input()
         ##caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
-        #print caffe_steer
-        out_steer = 49+caffe_steer
-        out_motor = in_motor
+        ##out_steer = 49+caffe_steer
+        ##out_motor = in_motor
         # Error checking on these control values occurs in encode_int_signal.
-        caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
+        print "enter caffe_int => "; caffe_int = input()
+        ##caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
+        
     except Exception,e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
 
