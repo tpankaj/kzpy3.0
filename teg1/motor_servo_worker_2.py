@@ -93,7 +93,7 @@ while True:
         assert( in_state_change_time >= 0 )
         if in_state == STATE_HUMAN_FULL_CONTROL:
             # Wait before turning on camera.
-            if camera_off_flag and in_state_change_time >= 1000:
+            if camera_off_flag and in_state_change_time >= 1:
                 camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False
@@ -108,7 +108,7 @@ while True:
                 np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
         elif in_state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR or in_state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR:
             # Wait before turning on camera and Caffe.
-            if camera_off_flag and in_state_change_time >= 1000:
+            if camera_off_flag and in_state_change_time >= 1:
                 camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False

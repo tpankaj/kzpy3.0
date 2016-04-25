@@ -394,7 +394,7 @@ void loop() {
     Serial.print(",");
     Serial.print(motor_percent);
     Serial.print(",");
-    Serial.print((millis() - state_transition_time_ms)/100); //10th of second resolution
+    Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution
     Serial.println(")");
   }
 
