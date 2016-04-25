@@ -49,6 +49,7 @@ STATE_ERROR                       =  -1
 # Some intial variable values
 caffe_int = -30000 # i.e., mode = -3, steer = 0, motor = 0
 camera_off_flag = True
+quit_caffe = 1
 caffe_mode = 1 # no function for now
 
 # Put three numbers into an int to send to Arduino
@@ -76,11 +77,11 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
-        print t
+        #print t
         
         f.write(d2s(t,'\n'))
-        #if np.mod(ctr,10) == 0: # Print output, but not too much of it.
-        #    print t
+        if np.mod(ctr,10) == 0: # Print output, but not too much of it.
+            print t
         ctr += 1
         in_state = t[0]
         in_steer = t[1]
@@ -91,32 +92,36 @@ while True:
         assert( in_motor >= 0 and in_motor < 100)
         assert( in_state_change_time >= 0 )
         if in_state == STATE_HUMAN_FULL_CONTROL:
-            # Wait half a second before turning on camera.
-            if camera_off_flag and in_state_change_time >= 500:
-                ##camera_on(opjh('Desktop/teg_data',time_str()))
+            # Wait before turning on camera.
+            if camera_off_flag and in_state_change_time >= 1000:
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False
-                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                quit_caffe = 1
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
         elif in_state == STATE_LOCK or in_state == STATE_LOCK_CALIBRATE:
             if camera_off_flag == False:
-                ##camera_off()
+                camera_off()
                 print 'camera off'
                 camera_off_flag = True
-                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                quit_caffe = 1
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
         elif in_state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR or in_state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR:
-            # Wait half a second before turning on camera and Caffe.
-            if camera_off_flag and in_state_change_time >= 500:
-                ##camera_on(opjh('Desktop/teg_data',time_str()))
+            # Wait before turning on camera and Caffe.
+            if camera_off_flag and in_state_change_time >= 1000:
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False
-                np.save(opjh('Desktop/caffe_quit_command.npy'),0)
-                ##subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
-        ##caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
-        ##out_steer = 49+caffe_steer
-        out_steer = 49
+                quit_caffe = 0
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
+                subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
+        if camera_off_flag == False and quit_caffe == 0:
+            caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
+        else:
+            caffe_steer = 0
+        out_steer = 49+caffe_steer
         out_motor = in_motor
         # Error checking on these control values occurs in encode_int_signal.
-        #print "enter caffe_int => "; caffe_int = input()
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
         
     except Exception,e:
