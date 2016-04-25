@@ -119,7 +119,8 @@ while True:
             caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
         else:
             caffe_steer = 0
-        out_steer = 49+caffe_steer
+        #out_steer = 49 + caffe_steer # Note, polarity can flip depending on RC transmitter settings!
+        out_steer = 49 - caffe_steer # Note, polarity can flip depending on RC transmitter settings!
         out_motor = in_motor
         # Error checking on these control values occurs in encode_int_signal.
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
