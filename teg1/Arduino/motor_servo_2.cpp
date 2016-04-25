@@ -113,7 +113,7 @@ void setup()
 }
 
 // The hand-held radio controller has two buttons. Pressing the upper or lower
-// allows for reaching for separate PWM levels: 1710, 1200, 1000, and 888
+// allows for reaching separate PWM levels: ~ 1710, 1200, 1000, and 888
 // These are used for different control states.
 void button_interrupt_service_routine(void) {
   long int m = micros();
