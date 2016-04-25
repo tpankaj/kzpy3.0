@@ -10,7 +10,6 @@ Adafruit_GPS GPS(&mySerial);
 boolean usingInterrupt = true;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 
-
 Adafruit_MMA8451 mma = Adafruit_MMA8451();
 
 #include <NewPing.h>
@@ -18,14 +17,8 @@ Adafruit_MMA8451 mma = Adafruit_MMA8451();
 #define ECHO_PIN     11  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define MAX_DISTANCE 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 
-
-
-
-
-
 void setup()  
 {
-    
   Serial.begin(9600);
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
@@ -45,9 +38,7 @@ void setup()
   mma.setRange(MMA8451_RANGE_2_G);
   Serial.print("Range = "); Serial.print(2 << mma.getRange());  
   Serial.println("G");
-
 }
-
 
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
@@ -68,14 +59,7 @@ void useInterrupt(boolean v) {
 }
 //////////////////////////////////////////////////////
 
-
-
-
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
-
-
-
-
 
 uint32_t timer = millis();
 void loop() {
@@ -118,7 +102,6 @@ void loop() {
       Serial.print(",");
       Serial.print((int)GPS.fixquality); 
       Serial.println(")");
-
     }
   }
 
