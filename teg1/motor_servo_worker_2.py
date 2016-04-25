@@ -26,7 +26,7 @@ device is connected to the correct host program. If not, the wrong Arduino will 
 serial input to a given host program.
 """
 if '/Users/' in home_path:
-    ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
+    ser = serial.Serial('/dev/tty.usbmodem1461',115200)
 else:
     ser = serial.Serial('/dev/ttyACM0',9600)
 
@@ -79,8 +79,8 @@ while True:
         print t
         
         f.write(d2s(t,'\n'))
-        if np.mod(ctr,10) == 0: # Print output, but not too much of it.
-            print t
+        #if np.mod(ctr,10) == 0: # Print output, but not too much of it.
+        #    print t
         ctr += 1
         in_state = t[0]
         in_steer = t[1]
@@ -113,10 +113,11 @@ while True:
                 ##subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
         ##caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
         ##out_steer = 49+caffe_steer
-        ##out_motor = in_motor
+        out_steer = 49
+        out_motor = in_motor
         # Error checking on these control values occurs in encode_int_signal.
-        print "enter caffe_int => "; caffe_int = input()
-        ##caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
+        #print "enter caffe_int => "; caffe_int = input()
+        caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
         
     except Exception,e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
