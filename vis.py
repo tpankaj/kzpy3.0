@@ -2,6 +2,7 @@ from kzpy3.utils import *
 
 import matplotlib
 
+MacOSX = False
 if '/Users/' in home_path:
     MacOSX = True
 

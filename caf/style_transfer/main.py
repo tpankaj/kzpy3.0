@@ -104,8 +104,8 @@ content_ls = [
     "inception_5b/3x3",
     "inception_5b/5x5"]
 content_ws = [1.0]
-content_file = opjh('Desktop/cat.jpg')
-style_file = opjh('Desktop/cat.jpg')
+content_file = opjh('Desktop/face.jpg')
+style_file = opjh('Desktop/board.jpg')
 sc_ratio
 """
 
@@ -119,8 +119,8 @@ if __name__ == '__main__':
         ['--n_itr',         int,    10000,                      'Number of iterations to run descent'],
         ['--data_folder',   str,    opjh('Desktop'),            'Folder containing the data'],
         ['--output_dir',    str,    opjh('Desktop'),            'Directory to save images'],
-        ['--content_file',  str,    opjh('Desktop/cat.jpg'),    'Filename for content image'],
-        ['--style_file',    str,    opjh('Desktop/cat.jpg'),  'Filename for style image'],
+        ['--content_file',  str,    opjh('Desktop/face.jpg'),    'Filename for content image'],
+        ['--style_file',    str,    opjh('Desktop/board.jpg'),  'Filename for style image'],
         ['--sc_ratio',      float,  1.,                         'Ratio of style weight to content weight'],
         ['--img_scale',     int,    1,                          'Ratio to scale size of input. Try 1 or 2']]
 
