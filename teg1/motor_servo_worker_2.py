@@ -26,9 +26,9 @@ device is connected to the correct host program. If not, the wrong Arduino will 
 serial input to a given host program.
 """
 if '/Users/' in home_path:
-    ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
+    ser = serial.Serial('/dev/tty.usbmodem1461',115200)
 else:
-    ser = serial.Serial('/dev/ttyACM0',9600)
+    ser = serial.Serial('/dev/ttyACM0',115200)
 
 # These state codes must match those in the motor_servo Arduino code.
 """
@@ -47,8 +47,9 @@ STATE_LOCK_CALIBRATE              =  4
 STATE_ERROR                       =  -1
 
 # Some intial variable values
-caffe_int = -30000
+caffe_int = -30000 # i.e., mode = -3, steer = 0, motor = 0
 camera_off_flag = True
+quit_caffe = 1
 caffe_mode = 1 # no function for now
 
 # Put three numbers into an int to send to Arduino
@@ -62,7 +63,7 @@ def encode_int_signal(caffe_mode,caffe_steer,caffe_motor):
 unix('mkdir -p ' + opjD('teg_data'))
 
 # The GPS+ Arduino host program is set running here.
-##subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
+subprocess.Popen(['python',opjh('kzpy3/teg1/sensor_worker.py')])
 
 # Data file for motor/servo data
 f = open(opjD('teg_data','_'+time_str()+'.motor_servo.txt'), 'w')
@@ -76,6 +77,8 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
+        #print t
+        
         f.write(d2s(t,'\n'))
         if np.mod(ctr,10) == 0: # Print output, but not too much of it.
             print t
@@ -89,33 +92,39 @@ while True:
         assert( in_motor >= 0 and in_motor < 100)
         assert( in_state_change_time >= 0 )
         if in_state == STATE_HUMAN_FULL_CONTROL:
-            # Wait half a second before turning on camera.
-            if camera_off_flag and in_state_change_time >= 500:
-                ##camera_on(opjh('Desktop/teg_data',time_str()))
+            # Wait before turning on camera.
+            if camera_off_flag and in_state_change_time >= 1:
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False
-                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                quit_caffe = 1
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
         elif in_state == STATE_LOCK or in_state == STATE_LOCK_CALIBRATE:
             if camera_off_flag == False:
-                ##camera_off()
+                camera_off()
                 print 'camera off'
                 camera_off_flag = True
-                np.save(opjh('Desktop/caffe_quit_command.npy'),1)
+                quit_caffe = 1
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
         elif in_state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR or in_state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR:
-            # Wait half a second before turning on camera and Caffe.
-            if camera_off_flag and in_state_change_time >= 500:
-                ##camera_on(opjh('Desktop/teg_data',time_str()))
+            # Wait before turning on camera and Caffe.
+            if camera_off_flag and in_state_change_time >= 1:
+                camera_on(opjh('Desktop/teg_data',time_str()))
                 print 'camera on'
                 camera_off_flag = False
-                np.save(opjh('Desktop/caffe_quit_command.npy'),0)
-                ##subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
-        caffe_steer = input()
-        ##caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
-        #print caffe_steer
-        out_steer = 49+caffe_steer
+                quit_caffe = 0
+                np.save(opjh('Desktop/caffe_quit_command.npy'),quit_caffe)
+                subprocess.Popen(['python',opjh('kzpy3/teg1/caffe_worker.py')])
+        if camera_off_flag == False and quit_caffe == 0:
+            caffe_steer = int(np.load(opjh('Desktop/caffe_command.npy')))
+        else:
+            caffe_steer = 0
+        #out_steer = 49 + caffe_steer # Note, polarity can flip depending on RC transmitter settings!
+        out_steer = 49 - caffe_steer # Note, polarity can flip depending on RC transmitter settings!
         out_motor = in_motor
         # Error checking on these control values occurs in encode_int_signal.
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
+        
     except Exception,e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
 

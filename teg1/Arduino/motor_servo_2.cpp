@@ -150,7 +150,6 @@ void button_interrupt_service_routine(void) {
     }
     // Calibration of steering and motor control ranges
     else if (abs(button_pwm_value-850)<50) {
-      if (state == STATE_ERROR) return;
       if (state != STATE_LOCK_CALIBRATE) {
         previous_state = state;
         state = STATE_LOCK_CALIBRATE;
@@ -251,6 +250,7 @@ void motor_interrupt_service_routine(void) {
 int check_for_error_conditions(void) {
 // Check state of all of these variables for out of bound conditions
 // Make LED blink if error state is arrive at.
+  if (state == STATE_LOCK_CALIBRATE) return(1);
   if (
     safe_pwm_range(servo_null_pwm_value) &&
     safe_pwm_range(servo_max_pwm_value) &&
@@ -345,7 +345,7 @@ void loop() {
     motor_percent = 49 - 49.0*(motor_null_pwm_value-motor_pwm_value)/(motor_null_pwm_value-motor_min_pwm_value);
   }
 
-  int debug = true;
+  int debug = false;
   if (debug) {
     Serial.print("(");
     Serial.print(state);
@@ -394,7 +394,7 @@ void loop() {
     Serial.print(",");
     Serial.print(motor_percent);
     Serial.print(",");
-    Serial.print(state_transition_time_ms);
+    Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution
     Serial.println(")");
   }
 
