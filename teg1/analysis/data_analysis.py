@@ -183,6 +183,17 @@ def smooth(x,window_len=11,window='hanning'):
         return y[window_len:-window_len+1]
 
 
+def mark_ctimes():
+	dirs = next(os.walk('.'))[1]
+	for d in dirs:
+		print d
+		_,l = dir_as_dic_and_list(d)
+		clst = []
+		for m in l:
+			c = os.path.getctime(opj(d,m))
+			clst.append(d2s(c,m))
+		list_of_strings_to_txt_file('ctimes_'+d,clst)
+
 """
 def frame_ct(path_to_data,frame_folder):
 	frame_to_ctime_dic = {}
