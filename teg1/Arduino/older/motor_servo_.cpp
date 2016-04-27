@@ -13,6 +13,7 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 24 April 2016
 */
 
+
 #include "PinChangeInterrupt.h" // Adafruit library
 #include <Servo.h> // Arduino library
 
@@ -24,8 +25,6 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 // These go out to ESC (motor controller) and steer servo via black-red-white ribbons.
 #define PIN_SERVO_OUT 9
 #define PIN_MOTOR_OUT 8
-
-// On-board LED, used to signal error state
 #define PIN_LED_OUT 13
 
 // These define extreme min an max values that should never be broken.
@@ -37,7 +36,7 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 #define BUTTON_MIN  SERVO_MIN
 
 // These are the possible states of the control system.
-// States are reached by button presses or drive commands, except for error state.
+// States are reached by button presses or drive commands.
 #define STATE_HUMAN_FULL_CONTROL            1
 #define STATE_LOCK                          2
 #define STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR 3
@@ -45,32 +44,31 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 #define STATE_LOCK_CALIBRATE                4
 #define STATE_ERROR                         -1
 
-//////////////
-// Below are variables that hold ongoing signal data. I try to initalize them to
-// to sensible values, but they will immediately be reset in the running program.
-//
 // These volatile variables are set by interrupt service routines
 // tied to the servo and motor input pins. These values will be reset manually in the
-// STATE_LOCK_CALIBRATE state, so conservative values are given here.
+// STATE_LOCK_CALIBRATE state, so conservative values given here.
 volatile int servo_null_pwm_value = 1500;
 volatile int servo_max_pwm_value  = 1600;
 volatile int servo_min_pwm_value  = 1400;
 volatile int motor_null_pwm_value = 1528;
 volatile int motor_max_pwm_value  = 1600;
 volatile int motor_min_pwm_value  = 1400;
-// These are three key values indicating current incoming signals.
-// These are set in interrupt service routines.
+
+// These are three key values indicating incoming signals.
 volatile int button_pwm_value = 1210;
 volatile int servo_pwm_value = servo_null_pwm_value;
 volatile int motor_pwm_value = motor_null_pwm_value;
+
 // These are used to interpret interrupt signals.
 volatile long int button_prev_interrupt_time = 0;
 volatile long int servo_prev_interrupt_time  = 0;
 volatile long int motor_prev_interrupt_time  = 0;
 volatile long int state_transition_time_ms = 0;
+
 // Some intial conditions, putting the system in lock state.
 volatile int state = STATE_LOCK;
 volatile int previous_state = 0;
+
 // Variable to receive caffe data and format it for output.
 long int caffe_last_int_read_time;
 int caffe_mode = -3;
@@ -78,28 +76,20 @@ int caffe_servo_percent = 49;
 int caffe_motor_percent = 49;
 int caffe_servo_pwm_value = servo_null_pwm_value;
 int caffe_motor_pwm_value = motor_null_pwm_value;
+
 // The host computer is not to worry about PWM values. These variables hold percent values
 // that are passed up to host.
-int servo_percent = 49;
-int motor_percent = 49;
-//
-/////////////////////
+int servo_percent;
+int motor_percent;
 
-
-// Servo classes. ESC (motor) is treated as a servo for signaling purposes.
+// Servo classes.
 Servo servo;
 Servo motor; 
 
-
-
-
-
-////////////////////////////////////////
-//
 void setup()
 {
   // Establishing serial communication with host system. The best values for these parameters
-  // is an open question. At 9600 baud rate, data can be missed.
+  // is an open question.
   Serial.begin(115200);
   Serial.setTimeout(5);
 
@@ -107,8 +97,6 @@ void setup()
   pinMode(PIN_BUTTON_IN, INPUT_PULLUP);
   pinMode(PIN_SERVO_IN, INPUT_PULLUP);
   pinMode(PIN_MOTOR_IN, INPUT_PULLUP);
-
-  // LED out
   pinMode(PIN_LED_OUT, OUTPUT);
 
   // Attach interrupt service routines to pins. A change in signal triggers interrupts.
@@ -123,24 +111,10 @@ void setup()
   servo.attach(PIN_SERVO_OUT); 
   motor.attach(PIN_MOTOR_OUT); 
 }
-//
-////////////////////////////////////////
 
-
-
-
-
-
-////////////////////////////////////////
-//
 // The hand-held radio controller has two buttons. Pressing the upper or lower
 // allows for reaching separate PWM levels: ~ 1710, 1200, 1000, and 888
 // These are used for different control states.
-#define BUTTON_A 1710 // Human in full control of driving
-#define BUTTON_B 1200 // Lock state
-#define BUTTON_C 964  // Caffe steering, human on accelerator
-#define BUTTON_D 850  // Calibration of steering and motor control ranges
-#define BUTTON_DELTA 50 // range around button value that is considered in that value
 void button_interrupt_service_routine(void) {
   volatile long int m = micros();
   volatile long int dt = m - button_prev_interrupt_time;
@@ -148,7 +122,7 @@ void button_interrupt_service_routine(void) {
   // Human in full control of driving
   if (dt>BUTTON_MIN && dt<BUTTON_MAX) {
     button_pwm_value = dt;
-    if (abs(button_pwm_value-BUTTON_A)<BUTTON_DELTA) {
+    if (abs(button_pwm_value-1710)<50) {
       if (state == STATE_ERROR) return;
       if (state != STATE_HUMAN_FULL_CONTROL) {
         previous_state = state;
@@ -157,7 +131,7 @@ void button_interrupt_service_routine(void) {
       }
     }
     // Lock state
-    else if (abs(button_pwm_value-BUTTON_B)<BUTTON_DELTA) {
+    else if (abs(button_pwm_value-1200)<50) {
       if (state == STATE_ERROR) return;
       if (state != STATE_LOCK) {
         previous_state = state;
@@ -166,7 +140,7 @@ void button_interrupt_service_routine(void) {
       }
     }
     // Caffe steering, human on accelerator
-    else if (abs(button_pwm_value-BUTTON_C)<BUTTON_DELTA) {
+    else if (abs(button_pwm_value-964)<50) {
       if (state == STATE_ERROR) return;
       if (state != STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR && state != STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
         previous_state = state;
@@ -175,7 +149,7 @@ void button_interrupt_service_routine(void) {
       }
     }
     // Calibration of steering and motor control ranges
-    else if (abs(button_pwm_value-BUTTON_D)<BUTTON_DELTA) {
+    else if (abs(button_pwm_value-850)<50) {
       if (state != STATE_LOCK_CALIBRATE) {
         previous_state = state;
         state = STATE_LOCK_CALIBRATE;
@@ -203,15 +177,9 @@ void button_interrupt_service_routine(void) {
       }
     }
   }
+  
 }
-//
-////////////////////////////////////////
 
-
-
-
-////////////////////////////////////////
-//
 // Servo interrupt service routine. This would be very short except that the human can take
 // control from Caffe, and Caffe can take back control if steering left in neutral position.
 void servo_interrupt_service_routine(void) {
@@ -249,25 +217,18 @@ void servo_interrupt_service_routine(void) {
       }
     }
     else {
-      ;//servo.writeMicroseconds(servo_null_pwm_value);
+      servo.writeMicroseconds(servo_null_pwm_value);
     }
   } 
 }
-//
-////////////////////////////////////////
 
 
-
-
-////////////////////////////////////////
-//
 // Motor interrupt service routine. This is simple because right now only human controls motor.
 void motor_interrupt_service_routine(void) {
   volatile long int m = micros();
   volatile long int dt = m - motor_prev_interrupt_time;
   motor_prev_interrupt_time = m;
-  // Locking out in error state has bad results -- cannot switch off motor manually if it is on.
-  // if (state == STATE_ERROR) return;
+  // if (state == STATE_ERROR) return; // no action if in error state -- but as long as we have human control, we should not lock out.
   if (dt>MOTOR_MIN && dt<MOTOR_MAX) {
     motor_pwm_value = dt;
     if (state == STATE_HUMAN_FULL_CONTROL) {
@@ -280,21 +241,15 @@ void motor_interrupt_service_routine(void) {
       motor.writeMicroseconds(motor_pwm_value);
     }
     else {
-      ;//motor.writeMicroseconds(motor_null_pwm_value);
+      motor.writeMicroseconds(motor_null_pwm_value);
     }
   } 
 }
-//
-////////////////////////////////////////
 
 
-
-
-////////////////////////////////////////
-//
 int check_for_error_conditions(void) {
-// Check state of all of these variables for out-of-bound conditions
-  // If in calibration state, ignore potential errors in order to attempt to correct.
+// Check state of all of these variables for out of bound conditions
+// Make LED blink if error state is arrive at.
   if (state == STATE_LOCK_CALIBRATE) return(1);
   if (
     safe_pwm_range(servo_null_pwm_value) &&
@@ -323,36 +278,26 @@ int check_for_error_conditions(void) {
     
   ) return(1);
   else {
-    if (state != STATE_ERROR) {
-      // On first entering error state, attempt to null steering and motor
-      servo_pwm_value = servo_null_pwm_value
-      motor_pwm_value = motor_null_pwm_value
-      servo.writeMicroseconds(servo_null_pwm_value);
-      motor.writeMicroseconds(motor_null_pwm_value);
-    }
     state = STATE_ERROR;
+    servo.writeMicroseconds(servo_null_pwm_value); // can we trust these values in case of error?
+    //motor.writeMicroseconds(motor_null_pwm_value);
     return(0);
   }
 }
+
 int safe_pwm_range(int p) {
   if (p < SERVO_MIN) return 0;
   if (p > SERVO_MAX) return 0;
   return(1);
 }
+
 int safe_percent_range(int p) {
   if (p > 99) return 0;
   if (p < 0) return 0;
   return(1);
 }
-//
-////////////////////////////////////////
 
 
-
-
-
-////////////////////////////////////////
-//
 void loop() {
   check_for_error_conditions();
   // Try to read the "caffe_int" sent by the host system (there is a timeout on serial reads, so the Arduino
@@ -386,6 +331,7 @@ void loop() {
   else {
     caffe_servo_pwm_value = servo_null_pwm_value;
   }
+
   // Compute command signal percents from signals from the handheld radio controller
   // to be sent to host computer, which doesn't bother with PWM values
   if (servo_pwm_value >= servo_null_pwm_value) {
@@ -453,7 +399,9 @@ void loop() {
     Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution
     Serial.println(")");
   }
+
   delay(10); // How long should this be? Note, this is in ms, whereas most other times are in micro seconds.
+
   // Blink LED if in error state.
   if (state == STATE_ERROR) {
     digitalWrite(PIN_LED_OUT, HIGH);
@@ -461,5 +409,7 @@ void loop() {
     digitalWrite(PIN_LED_OUT, LOW);
     delay(100);
   }
+
+
 }
 
