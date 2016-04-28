@@ -33,6 +33,21 @@ def motor_servo_data_to_dic(path_to_data,data_file,data_dic):
 		except Exception,e:
 			print e
 
+
+def ctimes_to_dic(path_to_data):
+	l = gg(opj(path_to_data,'ctimes_*'))
+	print len(l)
+	ct_dic = {}
+	for m in l:
+		original = m.replace('ctimes_','').replace(path_to_data,'')
+		n = txt_file_to_list_of_strings(opj(path_to_data,m))
+		for o in n:
+			p = o.split(' ')
+			ct_dic[np.float(p[0])] = [original,p[1]]
+	return ct_dic
+
+
+
 # Manually open each of the .txt files to look for corrupt beginnings and endings.
 # First, load data into data_dic, which holds GPS, acc, motor and servo data.
 # Each type of data is separately keyed on the timestamp. 
@@ -194,7 +209,7 @@ def mark_ctimes():
 		for m in l:
 			c = os.path.getctime(opj(d,m))
 			clst.append(d2s(c,m))
-		list_of_strings_to_txt_file('ctimes_'+d,clst)
+		list_of_strings_to_txt_file('ctimes_'+d+'.txt',clst)
 
 """
 def frame_ct(path_to_data,frame_folder):
