@@ -325,8 +325,8 @@ int check_for_error_conditions(void) {
   else {
     if (state != STATE_ERROR) {
       // On first entering error state, attempt to null steering and motor
-      servo_pwm_value = servo_null_pwm_value
-      motor_pwm_value = motor_null_pwm_value
+      servo_pwm_value = servo_null_pwm_value;
+      motor_pwm_value = motor_null_pwm_value;
       servo.writeMicroseconds(servo_null_pwm_value);
       motor.writeMicroseconds(motor_null_pwm_value);
     }

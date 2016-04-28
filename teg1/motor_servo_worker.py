@@ -77,11 +77,7 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
-        #print t
         
-        f.write(d2s(t,'\n'))
-        if np.mod(ctr,10) == 0: # Print output, but not too much of it.
-            print t
         ctr += 1
         in_state = t[0]
         in_steer = t[1]
@@ -124,7 +120,12 @@ while True:
         out_motor = in_motor
         # Note, error checking on these control values occurs in encode_int_signal.
         caffe_int = encode_int_signal(caffe_mode,out_steer,out_motor)
-        
+        t.append(caffe_mode)
+        t.append(out_steer)
+        t.append(out_motor)
+        f.write(d2s(t,'\n'))
+        if np.mod(ctr,100) == 0: # Print output, but not too much of it.
+            print t
     except Exception,e:
         print(d2s(os.path.basename(sys.argv[0]),':',e))
 
