@@ -6,7 +6,7 @@ data_dic['acc'] = {}
 data_dic['mo_sr'] = {}
 
 path_to_data = '/Volumes/ZBDD_4TB/teg_data_27April2016'
-frame_folder = '_18Apr16_16h53m04s_caffe'
+frame_folder = '_28Apr16_14h40m43s_caffe'
 gps_acc_files = ['_27Apr16_19h16m08s.GPS_acc.txt','_27Apr16_20h02m08s.GPS_acc.txt']
 mot_sr_files = ['_27Apr16_19h15m12s.motor_servo.txt','_27Apr16_19h16m08s.motor_servo.txt','_27Apr16_20h02m07s.motor_servo.txt']
 
@@ -24,12 +24,13 @@ def gps_acc_data_to_dic(path_to_data,data_file,data_dic):
 			exec('c='+b)
 			data_dic['acc'][c[-1]] = c[1:-1]
 
+
 def motor_servo_data_to_dic(path_to_data,data_file,data_dic):
 	r = txt_file_to_list_of_strings(opj(path_to_data,data_file))
 	for b in r:
 		try:
 			exec('c='+b)
-			data_dic['mo_sr'][c[-1]] = c[:-1]
+			data_dic['mo_sr'][c[4]] = c[:-1]
 		except Exception,e:
 			print e
 
@@ -39,7 +40,7 @@ def ctimes_to_dic(path_to_data):
 	print len(l)
 	ct_dic = {}
 	for m in l:
-		original = m.replace('ctimes_','').replace(path_to_data,'')
+		original = m.replace('ctimes_','').replace(path_to_data+'/','')
 		n = txt_file_to_list_of_strings(opj(path_to_data,m))
 		for o in n:
 			p = o.split(' ')
@@ -57,6 +58,15 @@ for d in gps_acc_files:
 for d in mot_sr_files:
 	motor_servo_data_to_dic(path_to_data,d,data_dic)
 
+ct_dic = ctimes_to_dic('/Volumes/ZBDD_4TB/teg_data_27April2016')
+ctimes = sorted(ct_dic)
+dctimes = []
+for i in range(len(ctimes)-1):
+	d = ctimes[i+1]-ctimes[i]
+	if d < 2: # we are only interested in short intervals for hist
+		dctimes.append(d)
+hist(dctimes,200);
+
 if True:
 	# look at motor, servo and mode data
 	m = []
@@ -65,8 +75,9 @@ if True:
 	for t in mst:
 		m.append(data_dic['mo_sr'][t])
 	m=np.array(m)
-	plot(ts,10*m[:,0]);plot(ts,m[:,1]);plot(ts,m[:,2]);
-
+	plot(ts,10*m[:,0]);plot(ts,m[:,1]);plot(ts,m[:,2]);#plot(ts,m[:,6],'k');
+	ct = np.array(ctimes) - mst[0]
+	plot(ct,np.arange(len(ct))/(1.0*len(ct))*10-20,'.')
 	# look at acc data
 	acc_t = sorted(data_dic['acc'])
 	xa = []
@@ -79,7 +90,7 @@ if True:
 		ya.append(xyz[1])
 		za.append(xyz[2])
 
-	plt.plot(acc_t,za,'b')
+	plt.plot(np.array(acc_t)-mst[0],xa,'g')
 	#plt.plot(smooth(np.array(za),window_len=50),'r')
 
 	# look at GPS data
