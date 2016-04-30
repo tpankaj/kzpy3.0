@@ -11,8 +11,10 @@ def frames_to_video_with_ffmpeg(input_dir,img_range=()):
 	for i in range(img_range[0],img_range[1]):
 		unix(d2s('ln -s',opj(input_dir,fnames[i]),opj(temp_dir,d2n(ctr,'.jpg'))),False)
 		ctr+=1
-	#unix('ffmpeg -i '+temp_dir+'/%d.jpg -pix_fmt yuv420p -r 15 -b:v 14000k '+opjD(frames_folder)+'.mpg')
-	unix('ffmpeg -r 15 -i '+temp_dir+'/%d.jpg -vcodec mpeg4 -b 14000k '+opjD(frames_folder)+'.avi')
+	# note 30 fps rate. 15 fps may not be accepted, so for display this must be fixed in iMovies
+	unix('ffmpeg -i '+temp_dir+'/%d.jpg -pix_fmt yuv420p -r 30 -b:v 14000k '+opjD(frames_folder)+'.mp4')
+	# this works, but makes .avi which iMovie doesn't like
+	#unix('ffmpeg -r 15 -i '+temp_dir+'/%d.jpg -vcodec mpeg4 -b 14000k '+opjD(frames_folder)+'.avi')
 
 
 """
