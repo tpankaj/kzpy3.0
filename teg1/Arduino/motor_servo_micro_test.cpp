@@ -401,7 +401,7 @@ void loop() {
     motor_percent = 49 - 49.0*(motor_null_pwm_value-motor_pwm_value)/(motor_null_pwm_value-motor_min_pwm_value);
   }
 
-  int debug = true;
+  int debug = false;
   if (debug) {
     Serial.print("(");
     Serial.print(state);
