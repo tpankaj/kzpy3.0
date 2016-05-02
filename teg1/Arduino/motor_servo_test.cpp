@@ -19,11 +19,11 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 // These come from the radio receiver via three black-red-white ribbons.
 #define PIN_SERVO_IN 11
 #define PIN_MOTOR_IN 10
-#define PIN_BUTTON_IN 12
+#define PIN_BUTTON_IN 8//12
 
 // These go out to ESC (motor controller) and steer servo via black-red-white ribbons.
 #define PIN_SERVO_OUT 9
-#define PIN_MOTOR_OUT 8
+#define PIN_MOTOR_OUT 12//8
 
 // On-board LED, used to signal error state
 #define PIN_LED_OUT 13
@@ -222,7 +222,7 @@ void servo_interrupt_service_routine(void) {
   if (dt>SERVO_MIN && dt<SERVO_MAX) {
     servo_pwm_value = dt;
     if (state == STATE_HUMAN_FULL_CONTROL) {
-      servo.writeMicroseconds(servo_pwm_value);
+      //servo.writeMicroseconds(servo_pwm_value);
     }
     else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
       // If steer is close to neutral, let Caffe take over.
@@ -233,7 +233,7 @@ void servo_interrupt_service_routine(void) {
         //servo.writeMicroseconds((caffe_servo_pwm_value+servo_pwm_value)/2);
       }
       else {
-        servo.writeMicroseconds(servo_pwm_value);
+        //servo.writeMicroseconds(servo_pwm_value);
       }
     }
     // If human makes strong steer command, let human take over.
@@ -245,7 +245,7 @@ void servo_interrupt_service_routine(void) {
         //servo.writeMicroseconds(servo_pwm_value);   
       }
       else {
-        servo.writeMicroseconds(caffe_servo_pwm_value);
+        //servo.writeMicroseconds(caffe_servo_pwm_value);
       }
     }
     else {
@@ -271,13 +271,13 @@ void motor_interrupt_service_routine(void) {
   if (dt>MOTOR_MIN && dt<MOTOR_MAX) {
     motor_pwm_value = dt;
     if (state == STATE_HUMAN_FULL_CONTROL) {
-      motor.writeMicroseconds(motor_pwm_value);
+      //motor.writeMicroseconds(motor_pwm_value);
     }
     else if (state == STATE_CAFFE_HUMAN_STEER_HUMAN_MOTOR) {
-      motor.writeMicroseconds(motor_pwm_value);
+      //motor.writeMicroseconds(motor_pwm_value);
     }
     else if (state == STATE_CAFFE_CAFFE_STEER_HUMAN_MOTOR) {
-      motor.writeMicroseconds(motor_pwm_value);
+      //motor.writeMicroseconds(motor_pwm_value);
     }
     else {
       ;//motor.writeMicroseconds(motor_null_pwm_value);
@@ -354,7 +354,7 @@ int safe_percent_range(int p) {
 ////////////////////////////////////////
 //
 void loop() {
-  check_for_error_conditions();
+  //check_for_error_conditions();
   // Try to read the "caffe_int" sent by the host system (there is a timeout on serial reads, so the Arduino
   // doesn't wait long to get one -- in which case the caffe_int is set to zero.)
   int caffe_int = Serial.parseInt();

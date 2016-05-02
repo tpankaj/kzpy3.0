@@ -19,11 +19,11 @@ in the percent signals, whereas absolute values of the PWM can vary for various 
 // These come from the radio receiver via three black-red-white ribbons.
 #define PIN_SERVO_IN 11
 #define PIN_MOTOR_IN 10
-#define PIN_BUTTON_IN 12
+#define PIN_BUTTON_IN 8
 
 // These go out to ESC (motor controller) and steer servo via black-red-white ribbons.
 #define PIN_SERVO_OUT 9
-#define PIN_MOTOR_OUT 8
+#define PIN_MOTOR_OUT 12
 
 // On-board LED, used to signal error state
 #define PIN_LED_OUT 13
