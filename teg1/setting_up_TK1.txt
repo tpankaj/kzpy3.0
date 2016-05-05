@@ -125,3 +125,26 @@ using ubuntu software center, installed:
 using screen: http://askubuntu.com/questions/8653/how-to-keep-processes-running-after-ending-ssh-session
 
 using tmux: https://gist.github.com/MohamedAlaa/2961058
+https://robots.thoughtbot.com/a-tmux-crash-course
+install tmux using ubuntu software center
+# tmux shortcuts & cheatsheet
+
+start new:
+
+    tmux
+
+start new with session name:
+
+    tmux new -s myname
+
+attach:
+
+    tmux a  #  (or at, or attach)
+
+attach to named:
+
+    tmux a -t myname
+
+list sessions:
+
+    tmux ls
