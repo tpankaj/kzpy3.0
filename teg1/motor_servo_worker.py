@@ -25,10 +25,12 @@ Thus, it would be good to have some error checking to insure the correct
 device is connected to the correct host program. If not, the wrong Arduino will provide
 serial input to a given host program.
 """
+BAUD = 115200
+TIMEOUT = 0.25
 if '/Users/' in home_path:
-    ser = serial.Serial('/dev/tty.usbmodem1461',115200)
+    ser = serial.Serial('/dev/tty.usbmodem1461',BAUD,timeout=TIMEOUT)
 else:
-    ser = serial.Serial('/dev/ttyACM0',115200)
+    ser = serial.Serial('/dev/ttyACM0',BAUD,timeout=TIMEOUT)
 
 # These state codes must match those in the motor_servo Arduino code.
 """

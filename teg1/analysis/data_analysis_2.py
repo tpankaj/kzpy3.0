@@ -5,13 +5,10 @@ data_dic['GPS'] = {}
 data_dic['acc'] = {}
 data_dic['mo_sr'] = {}
 
-path_to_data = '/Volumes/ZBDD_4TB/teg_data_27April2016'
-frame_folder = '_28Apr16_14h40m43s_caffe'
-gps_acc_files = ['_27Apr16_19h16m08s.GPS_acc.txt','_27Apr16_20h02m08s.GPS_acc.txt']
-mot_sr_files = ['_27Apr16_19h15m12s.motor_servo.txt','_27Apr16_19h16m08s.motor_servo.txt','_27Apr16_20h02m07s.motor_servo.txt']
+path_to_data = '/Volumes/ZBDD_4TB/teg_data_1May2016'
 
-def gps_acc_data_to_dic(path_to_data,data_file,data_dic):
-	r = txt_file_to_list_of_strings(opj(path_to_data,data_file))
+def gps_acc_data_to_dic(path_to_data_file,data_dic):
+	r = txt_file_to_list_of_strings(path_to_data_file)
 	for b in r:
 		if 'GPS' in b:
 			try:
@@ -25,8 +22,8 @@ def gps_acc_data_to_dic(path_to_data,data_file,data_dic):
 			data_dic['acc'][c[-1]] = c[1:-1]
 
 
-def motor_servo_data_to_dic(path_to_data,data_file,data_dic):
-	r = txt_file_to_list_of_strings(opj(path_to_data,data_file))
+def motor_servo_data_to_dic(path_to_data_file,data_dic):
+	r = txt_file_to_list_of_strings(path_to_data_file)
 	for b in r:
 		try:
 			exec('c='+b)
@@ -52,20 +49,22 @@ def ctimes_to_dic(path_to_data):
 # Manually open each of the .txt files to look for corrupt beginnings and endings.
 # First, load data into data_dic, which holds GPS, acc, motor and servo data.
 # Each type of data is separately keyed on the timestamp. 
+gps_acc_files = gg(opj(path_to_data,'*.GPS_acc.txt'))
 for d in gps_acc_files:
-	gps_acc_data_to_dic(path_to_data,d,data_dic)
+	gps_acc_data_to_dic(d,data_dic)
 
+mot_sr_files = gg(opj(path_to_data,'*.motor_servo.txt'))
 for d in mot_sr_files:
-	motor_servo_data_to_dic(path_to_data,d,data_dic)
+	motor_servo_data_to_dic(d,data_dic)
 
-ct_dic = ctimes_to_dic('/Volumes/ZBDD_4TB/teg_data_27April2016')
+ct_dic = ctimes_to_dic(path_to_data)
 ctimes = sorted(ct_dic)
 dctimes = []
 for i in range(len(ctimes)-1):
 	d = ctimes[i+1]-ctimes[i]
 	if d < 2: # we are only interested in short intervals for hist
 		dctimes.append(d)
-hist(dctimes,200);
+#hist(dctimes,200);
 
 if True:
 	# look at motor, servo and mode data
@@ -75,15 +74,15 @@ if True:
 	for t in mst:
 		m.append(data_dic['mo_sr'][t])
 	m=np.array(m)
-	plot(ts,10*m[:,0]);plot(ts,m[:,1]);plot(ts,m[:,2]);#plot(ts,m[:,6],'k');
+	plot(ts,10*m[:,0]);plot(ts,m[:,1]);plot(ts,m[:,2]);plot(ts,m[:,6],'k');
 	ct = np.array(ctimes) - mst[0]
 	plot(ct,np.arange(len(ct))/(1.0*len(ct))*10-20,'.')
+
 	# look at acc data
 	acc_t = sorted(data_dic['acc'])
 	xa = []
 	ya = []
 	za = []
-
 	for t in acc_t:
 		xyz = data_dic['acc'][t]
 		xa.append(xyz[0])
