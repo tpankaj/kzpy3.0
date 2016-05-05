@@ -183,16 +183,18 @@ def smooth(x,window_len=11,window='hanning'):
         return y[window_len:-window_len+1]
 
 
-def mark_ctimes():
-	dirs = next(os.walk('.'))[1]
-	for d in dirs:
-		print d
-		_,l = dir_as_dic_and_list(d)
-		clst = []
-		for m in l:
-			c = os.path.getctime(opj(d,m))
-			clst.append(d2s(c,m))
-		list_of_strings_to_txt_file('ctimes_'+d,clst)
+
+
+ts = []
+ds = []
+l = txt_file_to_list_of_strings('/Volumes/ZBDD_4TB/teg_data_26April2016/ctimes__26Apr16_16h47m55s_caffe')
+for m in l:
+	ts.append(np.float(m.split(' ')[0]))
+for i in range(len(ts)-1):
+	ds.append(ts[i+1]-ts[i])
+ds = np.array(ds)
+print ds.mean()
+hist(ds,100)
 
 """
 def frame_ct(path_to_data,frame_folder):
