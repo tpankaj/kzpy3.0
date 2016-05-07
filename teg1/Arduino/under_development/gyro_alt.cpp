@@ -1,5 +1,4 @@
-// http://forum.arduino.cc/index.php?topic=147351.0
-// http://www.livescience.com/40103-accelerometer-vs-gyroscope.html
+
 //
 // This is a simple program for testing the STMicroelectrics 3-axis gyroscope sold by Parallax.
 //
