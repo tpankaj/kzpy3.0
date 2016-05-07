@@ -38,5 +38,12 @@ Arduino Micro RC router
 ##########################
 
 
+Design concepts:
+Stick with Arduino Uno. The Micro is small and sexy, but it has subtle differences that waste a lot of my time. Also, it acts strangely with uploading. Most work is done with Uno, and code written for it.
+
+Stay away from soldering protoboards. It is fun, yes, but opaque and inflexible. Use connectors. Attach chips with screws to rigid support, rather than depending on header pins.
+
+
+
 
 http://makezine.com/projects/build-android-powered-autonomous-rc-car/
