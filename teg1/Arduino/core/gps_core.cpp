@@ -1,3 +1,6 @@
+//////////////////////////////////////////////////////////////////////
+// PINS: 2,3
+// Baud: 115200
 // Test code for Adafruit GPS modules using MTK3329/MTK3339 driver
 //    ------> http://www.adafruit.com/products/746
 #include <Adafruit_GPS.h>
@@ -7,10 +10,9 @@ Adafruit_GPS GPS(&mySerial);
 #define GPSECHO  true
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
-
-void setup()  
+void GPS_setup()  
 {
-  Serial.begin(115200);
+  //Serial.begin(115200);
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
@@ -18,12 +20,9 @@ void setup()
   useInterrupt(true);
   delay(1000);
 }
-
-
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
 }
-
 void useInterrupt(boolean v) {
   if (v) {
     OCR0A = 0xAF;
@@ -34,9 +33,8 @@ void useInterrupt(boolean v) {
     usingInterrupt = false;
   }
 }
-
 uint32_t timer = millis();
-void loop()
+void GPS_loop()
 {
   if (timer > millis())  timer = millis();
   if (millis() - timer > 1000) { 
@@ -52,3 +50,8 @@ void loop()
     }
   }
 }
+//
+////////////////////////////////////////////////////////////////////////
+
+
+

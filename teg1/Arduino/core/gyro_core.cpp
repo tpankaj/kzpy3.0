@@ -1,3 +1,6 @@
+//////////////////////////////////////////////////////////////////////
+// PINS: A4,A5
+// Baud: 115200
 // http://forum.arduino.cc/index.php?topic=147351.0
 // http://www.livescience.com/40103-accelerometer-vs-gyroscope.html
 #include <Wire.h>
@@ -16,15 +19,13 @@ int gyroThreshold[3];                   // Raw rate change data less than the st
 #define  NUM_GYRO_SAMPLES  50           // As recommended in STMicro doc
 #define  GYRO_SIGMA_MULTIPLE  3         // As recommended 
 float dpsPerDigit=.00875f;              // for conversion to degrees per second
-
-
-void setup() {
-  Serial.begin(115200);
+void gyro_setup() {
+  //Serial.begin(115200);
   Wire.begin();
   setupGyro();
   calibrateGyro();
 }
-void loop() {
+void gyro_loop() {
   updateGyroValues();
   updateHeadings();
   printDPS();
@@ -32,8 +33,6 @@ void loop() {
   printHeadings();
   Serial.println();
 }
-
-
 void printDPS()
 {
   Serial.print("DPS X: ");
@@ -156,3 +155,5 @@ int gyroWriteI2C( byte regAddr, byte val){
   Wire.write(val);
   Wire.endTransmission();
 }
+//
+//////////////////////////////////////////////////////////////////////
