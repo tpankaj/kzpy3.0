@@ -1,51 +1,61 @@
-//#define __use_GPS_instead_of_motor_servo__
 
 void setup() {
   Serial.begin(115200);
-  //GPS_setup();
+  GPS_setup();
   gyro_setup();
-  motor_servo_setup();
+  //motor_servo_setup();
   sonar_setup();
   encoder_setup();
 }
 
 void loop() {
-  //GPS_loop();
+  GPS_loop();
   gyro_loop();
-  motor_servo_loop();
+  //motor_servo_loop();
   sonar_loop();
   encoder_loop();
 }
 
 
 
-#ifdef __use_GPS_instead_of_motor_servo__
-////////// GPS ////////////////////////////////////////////////////////////
-// conflicts with motor_servo_core because of redundant includes.
-// PINS: 2,3
-// Baud: 115200
-// Test code for Adafruit GPS modules using MTK3329/MTK3339 driver
+
+
+
+
+
+
+
 //    ------> http://www.adafruit.com/products/746
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
-#define GPSECHO  true
+#define GPSECHO  false
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
+
 void GPS_setup()  
 {
   //Serial.begin(115200);
+  Serial.println("Adafruit GPS library basic test!");
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
   GPS.sendCommand(PGCMD_ANTENNA);
   useInterrupt(true);
   delay(1000);
+  mySerial.println(PMTK_Q_RELEASE);
 }
+
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
+
+#ifdef UDR0
+  if (GPSECHO)
+    if (c) UDR0 = c;  
+#endif
 }
+
 void useInterrupt(boolean v) {
   if (v) {
     OCR0A = 0xAF;
@@ -56,30 +66,38 @@ void useInterrupt(boolean v) {
     usingInterrupt = false;
   }
 }
+
 uint32_t timer = millis();
-void GPS_loop()
+void GPS_loop()                     // run over and over again
 {
+  if (! usingInterrupt) {
+    char c = GPS.read();
+    if (GPSECHO)
+      if (c) Serial.print(c);
+  }
+  
+  if (GPS.newNMEAreceived()) {
+    if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
+      return;  // we can fail to parse a sentence in which case we should just wait for another
+  }
   if (timer > millis())  timer = millis();
-  if (millis() - timer > 1000) { 
-    timer = millis();
-    if (1) {
-      Serial.print("('GPS',");
+  if (millis() - timer > 2000) { 
+    timer = millis(); // reset the timer
+    if (GPS.fix) {
+      Serial.print("{GPS,");
       Serial.print(GPS.latitudeDegrees, 4);
       Serial.print(", "); 
       Serial.print(GPS.longitudeDegrees, 4);
-      Serial.print(",");
-      Serial.print(GPS.speed);
-      Serial.println(")");
+      Serial.println("}"); 
     }
   }
 }
-//
-////////////////////////////////////////////////////////////////////////
 
 
 
 
-#else
+
+
 
 
 
@@ -98,6 +116,7 @@ signals. Thus, 0 should always mean 'extreme left', 49 should mean 'straight ahe
 in the percent signals, whereas absolute values of the PWM can vary for various reasons.
 24 April 2016
 */
+/*
 #include "PinChangeInterrupt.h" // Adafruit library
 #include <Servo.h> // Arduino library
 // These come from the radio receiver via three black-red-white ribbons.
@@ -512,7 +531,8 @@ int safe_percent_range(int p) {
 ////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////
-#endif
+*/
+
 
 
 
