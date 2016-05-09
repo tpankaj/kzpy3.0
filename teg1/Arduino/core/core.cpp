@@ -1,4 +1,8 @@
 
+
+
+
+
 void setup() {
   Serial.begin(115200);
   GPS_setup();
@@ -24,8 +28,14 @@ void loop() {
 
 
 
-
+///////////// GPS /////////////////////////////////////////////////////////
 //    ------> http://www.adafruit.com/products/746
+//Adafruit ultimage GPS
+//https://learn.adafruit.com/adafruit-ultimate-gps/arduino-wiring
+//VIN to +5V
+//GND to Ground
+//RX to digital 2
+//TX to digital 3
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(3, 2);
@@ -33,11 +43,10 @@ Adafruit_GPS GPS(&mySerial);
 #define GPSECHO  false
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
-
 void GPS_setup()  
 {
   //Serial.begin(115200);
-  Serial.println("Adafruit GPS library basic test!");
+  //Serial.println("Adafruit GPS library basic test!");
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
@@ -46,16 +55,13 @@ void GPS_setup()
   delay(1000);
   mySerial.println(PMTK_Q_RELEASE);
 }
-
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
-
 #ifdef UDR0
   if (GPSECHO)
     if (c) UDR0 = c;  
 #endif
 }
-
 void useInterrupt(boolean v) {
   if (v) {
     OCR0A = 0xAF;
@@ -66,7 +72,6 @@ void useInterrupt(boolean v) {
     usingInterrupt = false;
   }
 }
-
 uint32_t timer = millis();
 void GPS_loop()                     // run over and over again
 {
@@ -75,7 +80,6 @@ void GPS_loop()                     // run over and over again
     if (GPSECHO)
       if (c) Serial.print(c);
   }
-  
   if (GPS.newNMEAreceived()) {
     if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
       return;  // we can fail to parse a sentence in which case we should just wait for another
@@ -84,11 +88,11 @@ void GPS_loop()                     // run over and over again
   if (millis() - timer > 2000) { 
     timer = millis(); // reset the timer
     if (GPS.fix) {
-      Serial.print("{GPS,");
-      Serial.print(GPS.latitudeDegrees, 4);
+      Serial.print("(-1,");
+      Serial.print(GPS.latitudeDegrees, 5);
       Serial.print(", "); 
-      Serial.print(GPS.longitudeDegrees, 4);
-      Serial.println("}"); 
+      Serial.print(GPS.longitudeDegrees, 5);
+      Serial.println(")"); 
     }
   }
 }
@@ -106,7 +110,12 @@ void GPS_loop()                     // run over and over again
 // PINS: 8,9,10,11,12,13
 // Baud: 115200
 /*
-Code written for Arduino Uno.
+PIN_SERVO_IN 11
+PIN_MOTOR_IN 10
+PIN_BUTTON_IN 12 (or 8)
+PIN_SERVO_OUT 9
+PIN_MOTOR_OUT 8 (or 12)
+Code written for Arduino Uno. This code conflicts with the Adafruit GPS code.
 The purpose is to read PWM signals coming out of a radio receiver
 and either relay them unchanged to ESC/servo or substitute signals from a host system.
 The steering servo and ESC(motor) are controlled with PWM signals. These meaning of these signals
@@ -305,7 +314,7 @@ void motor_servo_loop() {
   }
   else {
     // Send data string which looks like a python tuple.
-    Serial.print("(");
+    Serial.print("(-2,");
     Serial.print(state);
     Serial.print(",");
     Serial.print(servo_percent);
@@ -542,6 +551,14 @@ int safe_percent_range(int p) {
 // Baud: 115200
 // http://forum.arduino.cc/index.php?topic=147351.0
 // http://www.livescience.com/40103-accelerometer-vs-gyroscope.html
+//Parallax Gyroscope Module 3-Axis L3G4200D
+//https://www.parallax.com/product/27911
+//http://forum.arduino.cc/index.php?topic=147351.msg1106879#msg1106879
+//VIN to +5V
+//GND to Ground
+//SCL line to pin A5
+//SDA line to pin A4
+
 #include <Wire.h>
 #define  CTRL_REG1  0x20
 #define  CTRL_REG2  0x21
@@ -566,11 +583,18 @@ void gyro_setup() {
 }
 void gyro_loop() {
   updateGyroValues();
-  updateHeadings();
-  printDPS();
-  Serial.print("   -->   ");
-  printHeadings();
-  Serial.println();
+  //updateHeadings();
+  Serial.print("(-3,");
+  Serial.print(gyroDPS[0]);
+  Serial.print(",");
+  Serial.print(gyroDPS[1]);
+  Serial.print(",");
+  Serial.print(gyroDPS[2]);
+  Serial.println(")");
+  //printDPS();
+  //Serial.print("   -->   ");
+  //printHeadings();
+  //Serial.println();
 }
 void printDPS()
 {
@@ -703,7 +727,7 @@ int gyroWriteI2C( byte regAddr, byte val){
 
 
 ///////////////////// max sonar /////////////////////////////////////////////////
-// PINS: 7
+// PINS: PW to pin 7
 // Baud: ---
 // http://playground.arduino.cc/Main/MaxSonar
 //Author: Bruce Allen
@@ -723,11 +747,12 @@ void sonar_loop()
   pulse = pulseIn(pwPin, HIGH);
   inches = pulse / 147;
   cm = inches * 2.54;
-  Serial.print(inches);
-  Serial.print("in, ");
+  //Serial.print(inches);
+  //Serial.print("in, ");
+  //Serial.print(cm);
+  Serial.print("(-4,");
   Serial.print(cm);
-  Serial.print("cm");
-  Serial.println();
+  Serial.println(")"); 
   delay(500);
 }
 //////////////////////////////////////////////////////////////////////
@@ -778,9 +803,9 @@ void encoder_loop()
  //your staff....ENJOY! :D
   //Serial.print('(');
   //Serial.print(b);
-  //Serial.print(' ');
+  Serial.print('(-5,)');
   Serial.println(rate_1);
-  //Serial.println(')');
+  Serial.println(')');
   delay(100);
 }
 //you may easily modify the code  get quadrature..
