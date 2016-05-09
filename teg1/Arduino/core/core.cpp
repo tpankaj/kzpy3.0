@@ -1,8 +1,3 @@
-
-
-
-
-
 void setup() {
   Serial.begin(115200);
   GPS_setup();
@@ -25,9 +20,6 @@ void loop() {
 
 
 
-
-
-
 ///////////// GPS /////////////////////////////////////////////////////////
 //    ------> http://www.adafruit.com/products/746
 //Adafruit ultimage GPS
@@ -41,7 +33,7 @@ void loop() {
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
 #define GPSECHO  false
-boolean usingInterrupt = false;
+boolean usingInterrupt = true; // Determine whether or not to use this
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 void GPS_setup()  
 {
@@ -96,6 +88,8 @@ void GPS_loop()                     // run over and over again
     }
   }
 }
+//
+///////////////////////////////////////////////////////////////////////////
 
 
 
@@ -109,23 +103,21 @@ void GPS_loop()                     // run over and over again
 ///////////// motor_servo /////////////////////////////////////////////////////////
 // PINS: 8,9,10,11,12,13
 // Baud: 115200
-/*
-PIN_SERVO_IN 11
-PIN_MOTOR_IN 10
-PIN_BUTTON_IN 12 (or 8)
-PIN_SERVO_OUT 9
-PIN_MOTOR_OUT 8 (or 12)
-Code written for Arduino Uno. This code conflicts with the Adafruit GPS code.
-The purpose is to read PWM signals coming out of a radio receiver
-and either relay them unchanged to ESC/servo or substitute signals from a host system.
-The steering servo and ESC(motor) are controlled with PWM signals. These meaning of these signals
-may vary with time, and across devices. To get uniform behavior, the user calibrates with each session.
-The host system deals only in percent control signals that are assumed to be based on calibrated PWM
-signals. Thus, 0 should always mean 'extreme left', 49 should mean 'straight ahead', and 99 'extreme right'
-in the percent signals, whereas absolute values of the PWM can vary for various reasons.
-24 April 2016
-*/
-/*
+//
+//PIN_SERVO_IN 11
+//PIN_MOTOR_IN 10
+//PIN_BUTTON_IN 12 (or 8)
+//PIN_SERVO_OUT 9
+//PIN_MOTOR_OUT 8 (or 12)
+//Code written for Arduino Uno. This code conflicts with the Adafruit GPS code.
+//The purpose is to read PWM signals coming out of a radio receiver
+//and either relay them unchanged to ESC/servo or substitute signals from a host system.
+//The steering servo and ESC(motor) are controlled with PWM signals. These meaning of these signals
+//may vary with time, and across devices. To get uniform behavior, the user calibrates with each session.
+//The host system deals only in percent control signals that are assumed to be based on calibrated PWM
+//signals. Thus, 0 should always mean 'extreme left', 49 should mean 'straight ahead', and 99 'extreme right'
+//in the percent signals, whereas absolute values of the PWM can vary for various reasons.
+//24 April 2016
 #include "PinChangeInterrupt.h" // Adafruit library
 #include <Servo.h> // Arduino library
 // These come from the radio receiver via three black-red-white ribbons.
@@ -202,15 +194,12 @@ void motor_servo_setup()
   // is an open question. At 9600 baud rate, data can be missed.
   //Serial.begin(115200);
   Serial.setTimeout(5);
-
   // Setting up three input pins
   pinMode(PIN_BUTTON_IN, INPUT_PULLUP);
   pinMode(PIN_SERVO_IN, INPUT_PULLUP);
   pinMode(PIN_MOTOR_IN, INPUT_PULLUP);
-
   // LED out
   pinMode(PIN_LED_OUT, OUTPUT);
-
   // Attach interrupt service routines to pins. A change in signal triggers interrupts.
   attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(PIN_BUTTON_IN),
     button_interrupt_service_routine, CHANGE);
@@ -218,7 +207,6 @@ void motor_servo_setup()
     servo_interrupt_service_routine, CHANGE);
   attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(PIN_MOTOR_IN),
     motor_interrupt_service_routine, CHANGE);
-
   // Attach output pins to ESC (motor) and steering servo.
   servo.attach(PIN_SERVO_OUT); 
   motor.attach(PIN_MOTOR_OUT); 
@@ -537,10 +525,8 @@ int safe_percent_range(int p) {
   return(1);
 }
 //
-////////////////////////////////////////
-//
 //////////////////////////////////////////////////////////////////////
-*/
+
 
 
 
@@ -558,7 +544,6 @@ int safe_percent_range(int p) {
 //GND to Ground
 //SCL line to pin A5
 //SDA line to pin A4
-
 #include <Wire.h>
 #define  CTRL_REG1  0x20
 #define  CTRL_REG2  0x21
@@ -648,14 +633,12 @@ void setupGyro()
   gyroWriteI2C(CTRL_REG1, 0x1F);        // Turn on all axes, disable power down
   gyroWriteI2C(CTRL_REG3, 0x08);        // Enable control ready signal
   setGyroSensitivity500();
-
   delay(100);
 }
 void calibrateGyro()
 {
   long int gyroSums[3]={0};
   long int gyroSigma[3]={0};
-
   for (int i=0;i<NUM_GYRO_SAMPLES;i++)
   {
     updateGyroValues();
