@@ -1,12 +1,26 @@
 from kzpy3.utils import *
 
 ports = serial_ports()
+print ports
 slist = []
-baud = 115200
+BAUD = 115200
+TIMEOUT = 0.01
 
 for p in ports:
-	slist.append(serial.Serial(p,baud))
+	if 'tty.usbmodem' in p or 'ttyACM' in p:
+		slist.append(serial.Serial(p,BAUD,timeout=TIMEOUT))
 
-while True:
-	for s in slist:
-		print s.readline()
+if len(slist) > 0:
+	while True:
+		for s in slist:
+			d = s.readline()
+			#print  (len(d),type(d))
+			if '(-4' in d:#len(d) > 1:
+				print d
+			time.sleep(0.0)
+else:
+	print 'no ports!!!'
+
+
+for s in slist:
+    s.close()
