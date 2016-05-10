@@ -4,19 +4,19 @@
 //
 void setup() {
   Serial.begin(115200);
-  GPS_setup();
+  //GPS_setup();
   gyro_setup();
   //motor_servo_setup();
   sonar_setup();
-  encoder_setup();
+  //encoder_setup();
 }
 
 void loop() {
-  GPS_loop();
+  //GPS_loop();
   gyro_loop();
   //motor_servo_loop();
   sonar_loop();
-  encoder_loop();
+  //encoder_loop();
 }
 //
 ///////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 void GPS_setup()  
 {
   //Serial.begin(115200);
-  //Serial.println("Adafruit GPS library basic test!");
+  Serial.println("Adafruit GPS library basic test!");
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
@@ -88,7 +88,7 @@ void GPS_loop()                     // run over and over again
   if (timer > millis())  timer = millis();
   if (millis() - timer > 2000) { 
     timer = millis(); // reset the timer
-    if (GPS.fix) {
+    if (1){//(GPS.fix) {
       Serial.print("(-1,");
       Serial.print(GPS.latitudeDegrees, 5);
       Serial.print(", "); 
@@ -755,7 +755,7 @@ void sonar_loop()
   Serial.print("(-4,");
   Serial.print(cm);
   Serial.println(")"); 
-  delay(500);
+  //delay(500);
 }
 //////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
@@ -812,7 +812,7 @@ void encoder_loop()
   Serial.print('(-5,)');
   Serial.println(rate_1);
   Serial.println(')');
-  delay(100);
+  //delay(100);
 }
 //you may easily modify the code  get quadrature..
 //..but be sure this whouldn't let Arduino back! 
