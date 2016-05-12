@@ -15,7 +15,7 @@ if len(slist) > 0:
 		for s in slist:
 			d = s.readline()
 			#print  (len(d),type(d))
-			if '(-4' in d:#len(d) > 1:
+			if '(' in d:#len(d) > 1:
 				print d
 			time.sleep(0.0)
 else:
