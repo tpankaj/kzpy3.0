@@ -16,11 +16,7 @@ if len(slist) > 0:
 		for s in slist:
 			d = s.readline()
 			#print  (len(d),type(d))
-<<<<<<< HEAD
-			if ')' in d:#len(d) > 1:
-=======
 			if '(' in d:#len(d) > 1:
->>>>>>> 83e141806922841897161e762cdb9f84217548cb
 				print d
 			time.sleep(0.0)
 else:

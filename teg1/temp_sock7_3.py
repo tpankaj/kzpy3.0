@@ -1,5 +1,5 @@
 from kzpy3.utils import *
-
+# lock and unlock files: http://tilde.town/~cristo/file-locking-in-python.html
 import socket
 n=3
 FIVEK = 5000+n
