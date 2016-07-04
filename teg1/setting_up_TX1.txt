@@ -32,7 +32,6 @@ sudo apt-get --assume-yes install \
     libboost-filesystem-dev \
     python-dev \
     libboost-python-dev 
-
 # above requires ~ 10 minutes
 
 git clone https://github.com/BVLC/caffe.git
@@ -44,6 +43,8 @@ cp Makefile.config.example Makefile.config
 make -j 4 all
 make -j 4 test
 make -j 4 runtest
+
+build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
 
 sudo apt-get --assume-yes install python-pip 
 sudo easy_install cython 
