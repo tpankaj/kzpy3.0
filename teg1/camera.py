@@ -9,5 +9,6 @@ def camera_on(data_dir=opjD('teg_data/temp')):
 	os.chdir(current_dir)
 
 def camera_off():
-	kill_ps('gst-launch-0.10')
+	kill_ps('gst-launch-1.0') # TX1
+	#kill_ps('gst-launch-0.10') #TK1
 
