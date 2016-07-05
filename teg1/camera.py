@@ -9,6 +9,11 @@ def camera_on(data_dir=opjD('teg_data/temp')):
 	os.chdir(current_dir)
 
 def camera_off():
-	kill_ps('gst-launch-1.0') # TX1
-	#kill_ps('gst-launch-0.10') #TK1
+	"""
+	On my first TX1, this worked fine, but on the second it became unreliable.
+	Therefore, I am disabling the camera off altogether.
+	"""
+	if  False:
+		kill_ps('gst-launch-1.0') # TX1
+		#kill_ps('gst-launch-0.10') #TK1
 
