@@ -1,10 +1,35 @@
+// 12 May 2016, here I have moved all pin definitions to the top so they can be seen together.
+// motor_servo
+
+// Note, millis() and micros() invitibly turn over. How should I deal with this?
+#define PIN_SERVO_IN 11
+#define PIN_MOTOR_IN 10
+#define PIN_BUTTON_IN 8
+#define PIN_SERVO_OUT 9
+#define PIN_MOTOR_OUT 12
+#define PIN_LED_OUT 13
+
+// GPS
+#define PIN_GPS_RX 2
+#define PIN_GPS_TX 3
+
+// gyro (somehow not referenced as pin numberes)
+//SCL line to pin A5
+//SDA line to pin A4
+
+// wheel encoder
+#define PIN_encoder_outA  4 //2
+#define PIN_encoder_outB  5 //3
+
+#define PIN_sonar_PW 7
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 //
 void setup() {
   Serial.begin(115200);
-  GPS_setup();
+  //GPS_setup();
   gyro_setup();
   //motor_servo_setup();
   sonar_setup();
@@ -12,7 +37,7 @@ void setup() {
 }
 
 void loop() {
-  GPS_loop();
+  //GPS_loop();
   gyro_loop();
   //motor_servo_loop();
   sonar_loop();
@@ -33,13 +58,9 @@ void loop() {
 //    ------> http://www.adafruit.com/products/746
 //Adafruit ultimage GPS
 //https://learn.adafruit.com/adafruit-ultimate-gps/arduino-wiring
-//VIN to +5V
-//GND to Ground
-//RX to digital 2
-//TX to digital 3
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(3, 2);
+SoftwareSerial mySerial(PIN_GPS_TX, PIN_GPS_RX);
 Adafruit_GPS GPS(&mySerial);
 #define GPSECHO  false
 boolean usingInterrupt = true; // Determine whether or not to use this
@@ -109,7 +130,7 @@ void GPS_loop()                     // run over and over again
 
 
 
-/*
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////// motor_servo /////////////////////////////////////////////////
@@ -132,15 +153,7 @@ void GPS_loop()                     // run over and over again
 //24 April 2016
 #include "PinChangeInterrupt.h" // Adafruit library
 #include <Servo.h> // Arduino library
-// These come from the radio receiver via three black-red-white ribbons.
-#define PIN_SERVO_IN 11
-#define PIN_MOTOR_IN 10
-#define PIN_BUTTON_IN 12
-// These go out to ESC (motor controller) and steer servo via black-red-white ribbons.
-#define PIN_SERVO_OUT 9
-#define PIN_MOTOR_OUT 8
-// On-board LED, used to signal error state
-#define PIN_LED_OUT 13
+
 // These define extreme min an max values that should never be broken.
 #define SERVO_MAX   2000
 #define MOTOR_MAX   SERVO_MAX
@@ -175,10 +188,10 @@ volatile int button_pwm_value = 1210;
 volatile int servo_pwm_value = servo_null_pwm_value;
 volatile int motor_pwm_value = motor_null_pwm_value;
 // These are used to interpret interrupt signals.
-volatile long int button_prev_interrupt_time = 0;
-volatile long int servo_prev_interrupt_time  = 0;
-volatile long int motor_prev_interrupt_time  = 0;
-volatile long int state_transition_time_ms = 0;
+volatile unsigned long int button_prev_interrupt_time = 0;
+volatile unsigned long int servo_prev_interrupt_time  = 0;
+volatile unsigned long int motor_prev_interrupt_time  = 0;
+volatile unsigned long int state_transition_time_ms = 0;
 // Some intial conditions, putting the system in lock state.
 volatile int state = STATE_LOCK;
 volatile int previous_state = 0;
@@ -321,7 +334,7 @@ void motor_servo_loop() {
     Serial.print(",");
     Serial.print(motor_percent);
     Serial.print(",");
-    Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution
+    Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution; what happpens when time rolls over?
     Serial.println(")");
   }
   delay(10); // How long should this be? Note, this is in ms, whereas most other times are in micro seconds.
@@ -349,6 +362,7 @@ void button_interrupt_service_routine(void) {
   volatile long int m = micros();
   volatile long int dt = m - button_prev_interrupt_time;
   button_prev_interrupt_time = m;
+  if (dt < 0) return; // this will occur when micros rolls over
   // Human in full control of driving
   if (dt>BUTTON_MIN && dt<BUTTON_MAX) {
     button_pwm_value = dt;
@@ -418,6 +432,7 @@ void servo_interrupt_service_routine(void) {
   volatile long int m = micros();
   volatile long int dt = m - servo_prev_interrupt_time;
   servo_prev_interrupt_time = m;
+  if (dt < 0) return; // this will occur when micros rolls over
   if (state == STATE_ERROR) return; // no action if in error state
   if (dt>SERVO_MIN && dt<SERVO_MAX) {
     servo_pwm_value = dt;
@@ -462,6 +477,7 @@ void motor_interrupt_service_routine(void) {
   volatile long int m = micros();
   volatile long int dt = m - motor_prev_interrupt_time;
   motor_prev_interrupt_time = m;
+  if (dt < 0) return; // this will occur when micros rolls over
   // Locking out in error state has bad results -- cannot switch off motor manually if it is on.
   // if (state == STATE_ERROR) return;
   if (dt>MOTOR_MIN && dt<MOTOR_MAX) {
@@ -540,7 +556,7 @@ int safe_percent_range(int p) {
 //////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-*/
+
 
 
 
@@ -735,7 +751,7 @@ int gyroWriteI2C( byte regAddr, byte val){
 //Author: Bruce Allen
 //Digital pin 7 for reading in the pulse width from the MaxSonar device.
 //This variable is a constant because the pin will not change throughout execution of this code.
-const int pwPin = 7;
+
 long pulse, inches, cm;
 void sonar_setup()
 {
@@ -745,8 +761,8 @@ void sonar_setup()
 }
 void sonar_loop()
 {
-  pinMode(pwPin, INPUT);
-  pulse = pulseIn(pwPin, HIGH);
+  pinMode(PIN_sonar_PW, INPUT);
+  pulse = pulseIn(PIN_sonar_PW, HIGH);
   inches = pulse / 147;
   cm = inches * 2.54;
   //Serial.print(inches);
@@ -770,8 +786,8 @@ void sonar_loop()
 //////////////////// wheel encoder //////////////////////////////////////////////////
 // PINS: 4,5 //2,3
 // Baud: 9600
-#define encoder0PinA  4 //2
-#define encoder0PinB  5 //3
+#define PIN_encoder_outA  4 //2
+#define PIN_encoder_outB  5 //3
 volatile int encoder0Pos = 0;
 volatile boolean PastA = 0;
 volatile boolean PastB = 0;
@@ -784,14 +800,14 @@ volatile float rate_1 = 0.0;
 void encoder_setup() 
 {
   //Serial.begin(9600);
-  pinMode(encoder0PinA, INPUT);
+  pinMode(PIN_encoder_outA, INPUT);
   //turn on pullup resistor
-  //digitalWrite(encoder0PinA, HIGH); //ONLY FOR SOME ENCODER(MAGNETIC)!!!! 
-  pinMode(encoder0PinB, INPUT); 
+  //digitalWrite(PIN_encoder_outA, HIGH); //ONLY FOR SOME ENCODER(MAGNETIC)!!!! 
+  pinMode(PIN_encoder_outB, INPUT); 
   //turn on pullup resistor
-  //digitalWrite(encoder0PinB, HIGH); //ONLY FOR SOME ENCODER(MAGNETIC)!!!! 
-  PastA = (boolean)digitalRead(encoder0PinA); //initial value of channel A;
-  PastB = (boolean)digitalRead(encoder0PinB); //and channel B
+  //digitalWrite(PIN_encoder_outB, HIGH); //ONLY FOR SOME ENCODER(MAGNETIC)!!!! 
+  PastA = (boolean)digitalRead(PIN_encoder_outA); //initial value of channel A;
+  PastB = (boolean)digitalRead(PIN_encoder_outB); //and channel B
 //To speed up even more, you may define manually the ISRs
 // encoder A channel on interrupt 0 (arduino's pin 2)
   attachInterrupt(0, doEncoderA, CHANGE);
