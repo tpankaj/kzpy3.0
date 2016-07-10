@@ -22,12 +22,15 @@ sudo apt-get --assume-yes install git
 git clone https://github.com/karlzipser/kzpy3.0.git
 mv kzpy3.0 kzpy3
 
+# in separate terminal,
+vi kzpy3/teg1/setting_up_TX1.txt
+
 sudo apt-get --assume-yes install \
     libprotobuf-dev protobuf-compiler gfortran \
     libboost-dev cmake libleveldb-dev libsnappy-dev \
     libboost-thread-dev libboost-system-dev \
     libatlas-base-dev libhdf5-serial-dev libgflags-dev \
-    libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7
+    libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7 \
     python-numpy \
     libboost-filesystem-dev \
     python-dev \
@@ -42,7 +45,7 @@ cp Makefile.config.example Makefile.config
 
 make -j 4 all
 make -j 4 test
-make -j 4 runtest
+# make -j 4 runtest # this takes forever
 
 build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
 
