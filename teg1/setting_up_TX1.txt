@@ -53,7 +53,7 @@ sudo apt-get --assume-yes install python-pip
 sudo easy_install cython 
 
 # this was necessary after I didn't include all NVIDA visionworks packages in the install.
-sudo apt-get --assume-yes install libfreetype6-dev
+# sudo apt-get --assume-yes install libfreetype6-dev
 
 # [takes a long time, is required for import caffe to work]
 sudo pip install -U scikit-image
