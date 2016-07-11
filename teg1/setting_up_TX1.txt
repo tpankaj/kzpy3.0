@@ -44,7 +44,7 @@ cp Makefile.config.example Makefile.config
 # Don't use the python layer. No changes necessary to Makefile.config
 
 make -j 4 all
-make -j 4 test
+# make -j 4 test
 # make -j 4 runtest # this takes forever
 
 build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
