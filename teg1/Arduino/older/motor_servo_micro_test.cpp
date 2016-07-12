@@ -448,6 +448,8 @@ void loop() {
     Serial.print(",");
     Serial.print(servo_percent);
     Serial.print(",");
+    //Serial.print(caffe_servo_percent);
+    //Serial.print(",");
     Serial.print(motor_percent);
     Serial.print(",");
     Serial.print((millis() - state_transition_time_ms)/1000); //one second resolution
