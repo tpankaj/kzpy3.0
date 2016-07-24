@@ -31,7 +31,7 @@ while True:
         elif t[0] == -4:
             t[0] = 'son'
         f.write(d2s(t,'\n'))
-        print t
+        # print t
         
     except Exception,e:
         print e
