@@ -6,9 +6,9 @@ This program simply gathers sensor data from an Arduino and saves it.
 """
 
 if '/Users/' in home_path:
-    ser = serial.Serial('/dev/tty.usbmodem1461',9600) #115200)
+    ser = serial.Serial('/dev/tty.usbmodem1411',115200) #115200)
 else:
-    ser = serial.Serial('/dev/ttyACM1',9600)
+    ser = serial.Serial('/dev/ttyACM1',115200)
     # Note, this is a numberically higher port than used by the motor_servo_worker_2.py program
     # If the order of the ports gets reversed for some reason, there will be general malfunctioning.
 ctr = 0
@@ -29,7 +29,7 @@ while True:
         elif t[0] == 123:
             t[0] = 'GPS'
         f.write(d2s(t,'\n'))
-        #print t
+        print t
         
     except Exception,e:
         print e
