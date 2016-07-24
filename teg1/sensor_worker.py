@@ -24,10 +24,12 @@ while True:
         assert(type(t) == tuple)
         t = list(t)
         t.append(time.time())
-        if t[0] == 456:
-            t[0] = 'acc'
-        elif t[0] == 123:
+        if t[0] == -3:
+            t[0] = 'gyr'
+        elif t[0] == -1:
             t[0] = 'GPS'
+        elif t[0] == -4:
+            t[0] = 'son'
         f.write(d2s(t,'\n'))
         print t
         
