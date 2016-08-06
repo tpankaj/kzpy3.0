@@ -74,7 +74,7 @@ def hist_diff_left_right_image_timestamps(A,ignore_threshold=0.1):
     d = np.array(l) - np.array(r)
     dd = []
     for i in range(len(d)):
-        if d[i] < ignore_threshold:
+        if np.abs(d[i]) < ignore_threshold:
             dd.append(d[i])
         else:
             print d2s("!!!WARNING, inverval =",d[i],"s. Ignoring this interval!!!")
