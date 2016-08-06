@@ -19,17 +19,8 @@ A['state'] = {}
 A['left_image'] = {}
 A['right_image'] = {}
 
-"""
-for m in bag.read_messages(topics=['/bair_car/state']):
-    print m
 
-for m in bag.read_messages(topics=['/bair_car/steer']):
-    n=m[1].data;print (n,type(n))
-
-
-for m in bag.read_messages(topics=['/bair_car/steer']):
-    n=m[1].data;print (n,type(n))
-"""
+bridge = cv_bridge.CvBridge()
 
 for m in bag.read_messages(topics=['/bair_car/steer']):
     A['steer'][m[2].to_time()] = m[1].data
@@ -38,7 +29,10 @@ for m in bag.read_messages(topics=['/bair_car/state']):
     A['state'][m[2].to_time()] = m[1].data
 
 for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
-    A['left_image'][m.timestamp.to_time()] = 1
+    A['left_image'][m.timestamp.to_time()] = bridge.imgmsg_to_cv2(m[1],"rgb8")
+
+for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
+    A['right_image'][m.timestamp.to_time()] = bridge.imgmsg_to_cv2(m[1],"rgb8")
 
 
 dt = []
