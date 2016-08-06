@@ -6,14 +6,17 @@ import sensor_msgs.msg
 import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
 
+bag_files = ['/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-29_74.bag',
+            '/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-58_75.bag']
 
+b = bag_files[1]
 
-b = '/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-29_74.bag'
 bag = rosbag.Bag(b)
 
 A = {}
 A['steer'] = {}
 
+"""
 for m in bag.read_messages(topics=['/bair_car/state']):
     print m
 
@@ -23,11 +26,11 @@ for m in bag.read_messages(topics=['/bair_car/steer']):
 
 for m in bag.read_messages(topics=['/bair_car/steer']):
     n=m[1].data;print (n,type(n))
-
+"""
 
 for m in bag.read_messages(topics=['/bair_car/steer']):
     A['steer'][m[2].to_time()] = m[1].data
-    print (m[0],m[1].data,m[2].to_time())
+
 
 
 
