@@ -49,22 +49,24 @@ def get_sorted_keys_and_data(dict):
         sdata.append(dict[k])
     return skeys,sdata
 
-def get_timestamp_intervals(timestamps,ignore_threshold=0.1):
+def get_timestamp_intervals(timestamps,ignore_threshold):
     d = []
     for i in range(0,len(timestamps)-1):
         interval = timestamps[i+1] - timestamps[i]
         if interval < ignore_threshold:
             d.append(interval)
         else:
-            print d2s("!!!WARNING, inverval = ",interval," s. Ignoring this interval!!! (timestamp = ",timestamps[i],")")
+            print d2s("!!!WARNING, inverval =",interval,"s. Ignoring this interval!!! ( timestamp =",timestamps[i],")")
     return d
 
-def hist_topics_timestamp_intervals(A,topics):
+def hist_topics_timestamp_intervals(A,topics,ignore_threshold=0.1):
     for s in topics:
         k,d = get_sorted_keys_and_data(A[s])
         i = get_timestamp_intervals(k)
         plt.figure(s)
-        hist(i,bins=100);
+        hist(i,bins=100)
+        plt.title(d2s(s,"intervals"))
+        plt.xlabel(d2s(s,"seconds"))
 
 
 
