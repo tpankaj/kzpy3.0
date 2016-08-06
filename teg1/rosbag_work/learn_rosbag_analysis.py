@@ -64,35 +64,36 @@ def hist_topics_timestamp_intervals(A,topics,ignore_threshold=0.1):
         k,d = get_sorted_keys_and_data(A[s])
         i = get_timestamp_intervals(k,ignore_threshold)
         plt.figure(s)
-        hist(d,bins=100)
+        hist(i,bins=100)
         plt.title(d2s(s,"intervals"))
         plt.xlabel("seconds")
 
-def hist_diff_left_right_image_timestamps(A):
+def hist_diff_left_right_image_timestamps(A,ignore_threshold=0.1):
     l,_ = get_sorted_keys_and_data(A['left_image'])
     r,_ = get_sorted_keys_and_data(A['right_image'])
     d = np.array(l) - np.array(r)
+    dd = []
+    for i in range(len(d)):
+        if d[i] < ignore_threshold:
+            dd.append(d[i])
+        else:
+            print d2s("!!!WARNING, inverval =",d[i],"s. Ignoring this interval!!!")
     plt.figure('hist_diff_left_right_image_timestamps')
-    hist(i,bins=100)
+    hist(dd,bins=100)
     plt.title("hist_diff_left_right_image_timestamps")
     plt.xlabel("seconds")
 
+def make_timestamp_diagnostic_histograms(A):
+    pass
 
-"""
-dt = []
-t0 = -1
-for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
-        t = m.timestamp.to_nsec()
-        if t0 > 0:
-                d = t-t0
-                if d < 15936582564:     
-                        dt.append(d)
-        t0 = t
-hist(dt,bins=100);
+def plot_topics(A):
+    """
+    pylab.plot(x, y1, '-b', label='sine')
+    pylab.plot(x, y2, '-r', label='cosine')
+    pylab.legend(loc='upper left')
+    pylab.ylim(-1.5, 2.0)
+    pylab.show()
+    """
+    pass
 
-
-bridge = cv_bridge.CvBridge()
-a = bridge.imgmsg_to_cv2(m[1],"rgb8")
-mi(a,2,img_title=d2s(m[0],m[2].to_time()))
-"""
 
