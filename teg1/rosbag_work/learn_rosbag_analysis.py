@@ -33,7 +33,7 @@ for b in bag_files:
 
     for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
         A['right_image'][m.timestamp.to_time()] = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
- 
+
 
 def get_sorted_keys_and_data(dict):
     skeys = sorted(dict.keys())
@@ -41,6 +41,12 @@ def get_sorted_keys_and_data(dict):
     for k in skeys:
         sdata.append(dict[k])
     return skeys,sdata
+
+def get_timestamp_intervals(timestamps):
+    d = []
+    for i in range(0,len(timestamps)-1):
+        d.append(timestamps[i+1] - timestamps[i])
+    return d
 
 """
 dt = []
