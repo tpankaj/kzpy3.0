@@ -7,10 +7,12 @@ import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
 
 A = {}
-A['left_image'] = {}
-A['right_image'] = {}
+
+image_topics = ['left_image','right_image']
 single_value_topics = ['steer','state','motor','encoder','sonar']
-for topic in single_value_topics:
+vector_topics = ['gps','gyro']
+all_topics = image_topics + single_value_topics + vector_topics
+for topic in all_topics:
     A[topic] = {}
 
 
@@ -50,15 +52,20 @@ def get_sorted_keys_and_data(dict):
 def get_timestamp_intervals(timestamps):
     d = []
     for i in range(0,len(timestamps)-1):
-        d.append(timestamps[i+1] - timestamps[i])
+        interval = timestamps[i+1] - timestamps[i]
+        if interval < 1:
+            d.append()
+        else:
+            print d2s("!!!WARNING, inverval = ",interval," s. Ignoring this interval!!!"
     return d
 
-def hist_single_value_topics_timestamp_intervals(A):
-    for s in single_value_topics:
+def hist_topics_timestamp_intervals(A,topics):
+    for s in topics:
         k,d = get_sorted_keys_and_data(A[s])
         i = get_timestamp_intervals(k)
         plt.figure(s)
         hist(i,bins=100);
+
 
 
 """
