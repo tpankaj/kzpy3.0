@@ -33,7 +33,7 @@ for b in bag_files:
 
     for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
         A['right_image'][m.timestamp.to_time()] = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-
+ 
 
 def get_sorted_keys_and_data(dict):
     skeys = sorted(dict.keys())
