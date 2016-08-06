@@ -7,10 +7,11 @@ import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
 
 A = {}
-A['steer'] = {}
-A['state'] = {}
 A['left_image'] = {}
 A['right_image'] = {}
+non_image_topics = ['steer','state','motor','gyro','gps','encoder','sonar']
+for topic in non_image_topics:
+    A[topic] = {}
 
 
 bridge = cv_bridge.CvBridge()
@@ -22,7 +23,6 @@ for b in bag_files:
 
     bag = rosbag.Bag(b)
 
-    non_image_topics = ['steer','state','motor','gyro','gps','encoder','sonar']
     for topic in non_image_topics:
         for m in bag.read_messages(topics=['/bair_car/'+topic]):
             A[topic][m.timestamp.to_time()] = m[1].data
