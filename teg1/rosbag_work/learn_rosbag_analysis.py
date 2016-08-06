@@ -64,17 +64,17 @@ def hist_topics_timestamp_intervals(A,topics,ignore_threshold=0.1):
         k,d = get_sorted_keys_and_data(A[s])
         i = get_timestamp_intervals(k,ignore_threshold)
         plt.figure(s)
-        hist(i,bins=100)
+        hist(d,bins=100)
         plt.title(d2s(s,"intervals"))
         plt.xlabel("seconds")
 
 def hist_diff_left_right_image_timestamps(A):
-    l,_ = get_sorted_keys_and_data(A[left_image])
-    r,_ = get_sorted_keys_and_data(A[right_image])
+    l,_ = get_sorted_keys_and_data(A['left_image'])
+    r,_ = get_sorted_keys_and_data(A['right_image'])
     d = np.array(l) - np.array(r)
     plt.figure('hist_diff_left_right_image_timestamps')
     hist(i,bins=100)
-    plt.title(d2s(s,"hist_diff_left_right_image_timestamps"))
+    plt.title("hist_diff_left_right_image_timestamps")
     plt.xlabel("seconds")
 
 
