@@ -84,14 +84,15 @@ def interpolate_single_values(A,topic):
 
 def interpolate_vector_values(A,topic):
     interp_dic = {}
-    k,dd = get_sorted_keys_and_data(A[topic])
-    dim = len(dd[0])
+    k,d = get_sorted_keys_and_data(A[topic])
+    d = np.array(d)
+    dim = len(d[0])
+
     for i in range(0,len(k)-1):
         for j in range(int(k[i]*1000),int(k[i+1]*1000)):
             v = []
             for u in range(dim):
-                d = dd[u]
-                v.append(  (d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i] )
+                v.append(  (d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u] )
             interp_dic[j/1000.] = v
     return interp_dic
 
