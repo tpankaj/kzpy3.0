@@ -67,7 +67,7 @@ export PYTHONPATH=~/caffe/python:$PYTHONPATH
 
 
 
-
+############# install ROS ################
 # ROS   http://wiki.ros.org/indigo/Installation/UbuntuARM
 # not necessary: uncomment lines in /etc/apt/sources.list
 sudo update-locale LANG=C LANGUAGE=C LC_ALL=C LC_MESSAGES=POSIX
@@ -75,106 +75,30 @@ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
 sudo apt-get update
 sudo apt-get install ros-indigo-desktop
+###################
+
+
+############## screen ########
+# http://www.howtogeek.com/howto/ubuntu/keep-your-ssh-session-running-when-you-disconnect/
+sudo apt-get install screen
+#
+# To disconnect (but leave the session running), Hit Ctrl + A and then Ctrl + D in immediate succession. You will see the message [detached]
+#
+# To reconnect to an already running session, screen -r
+##############
+
+####### sudo, no password #########
+# http://askubuntu.com/questions/147241/execute-sudo-without-password
+sudo visudo
+# add at or near end:
+username ALL=(ALL) NOPASSWD: ALL
+######
+
+
+
+########### SSH login without password, see: ############
+# http://www.linuxproblem.org/art_9.html
 
 
 
 
-###################################
-# ###
-# first time:
-# after all this, setting PYTHON_LAYERS to TRUE and doing make clean and make -j 4 all killed caffe.
-# I think I also set USE_CUDNN to TRUE, which is bad.
-#####
-
-I will start over tomorrow. Maybe installing ipython in two different ways was a problem
-
-
-
-
-# benchmark test (Run from!!! ~/caffe
-)
-build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
-Results:
-caffe benchmarks:
-Macbook Pro: (2.7 GHz Intel Core i5)
-283 ms forward
-236 ms backward
-
-Jetson TK1 (CPU only):
-5414 ms forward
-5215 ms backward
-
-Jetson TK1 with GPU:
-240 ms forward
-304 ms backward
-
-hiMac (3.5 GHz Intel Core i7)
-182 ms forward
-154 ms backward
-
-K40 cortex cluster
-27 ms forward
-30 ms backward
-
-git clone https:// ??
-
-
-This seems important:
-http://jetsonhacks.com/2015/05/26/install-grinch-kernel-for-l4t-21-3-on-nvidia-jetson-tk1/
-
-
-arduino radio control:
-https://www.sparkfun.com/tutorials/348
-* http://playground.arduino.cc/Code/ReadReceiver
-* http://www.camelsoftware.com/2015/12/25/reading-pwm-signals-from-an-rc-receiver-with-arduino/
-* http://www.benripley.com/diy/arduino/three-ways-to-read-a-pwm-signal-with-arduino/
-http://rcarduino.blogspot.com/2012/01/how-to-read-rc-receiver-with.html
-
-Arduino code of importance:
-	Read PWM values from RC:
-		PinChangeInterrupt_HowItWorks_kz
-	Servo contro:
-		sketch_apr06k (see webpage about capacitors https://learn.adafruit.com/adafruit-arduino-lesson-14-servo-motors/arduino-code-for-sweep)
-	Timer and interrupts:
-		sketch_apr06i
-
-https://gist.github.com/jetsonhacks/32ec5977782dcea055e8
-#!/bin/sh
-# Install Gstreamer 1.0 on the NVIDIA Jetson TK1
-apt-get install gstreamer1.0-tools gstreamer1.0-alsa \
-  gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
-  gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-libav -y
-
-http://wiki.oz9aec.net/index.php/Gstreamer_Cheat_Sheet#Single_frame_capture
-
-
-using ubuntu software center, installed:
-  tmux
-  arduino
-
-using screen: http://askubuntu.com/questions/8653/how-to-keep-processes-running-after-ending-ssh-session
-
-using tmux: https://gist.github.com/MohamedAlaa/2961058
-https://robots.thoughtbot.com/a-tmux-crash-course
-install tmux using ubuntu software center
-# tmux shortcuts & cheatsheet
-
-start new:
-
-    tmux
-
-start new with session name:
-
-    tmux new -s myname
-
-attach:
-
-    tmux a  #  (or at, or attach)
-
-attach to named:
-
-    tmux a -t myname
-
-list sessions:
-
-    tmux ls
