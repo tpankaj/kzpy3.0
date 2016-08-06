@@ -54,9 +54,9 @@ def get_timestamp_intervals(timestamps):
     for i in range(0,len(timestamps)-1):
         interval = timestamps[i+1] - timestamps[i]
         if interval < 1:
-            d.append()
+            d.append(interval)
         else:
-            print d2s("!!!WARNING, inverval = ",interval," s. Ignoring this interval!!!"
+            print d2s("!!!WARNING, inverval = ",interval," s. Ignoring this interval!!!")
     return d
 
 def hist_topics_timestamp_intervals(A,topics):
