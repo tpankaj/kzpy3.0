@@ -16,7 +16,7 @@ for topic in single_value_topics:
 
 bridge = cv_bridge.CvBridge()
 
-bag_files = glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag')
+bag_files = sorted(glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag'))
 #bag_files = ['/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-29_74.bag',
 #            '/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-58_75.bag']
 
@@ -52,6 +52,14 @@ def get_timestamp_intervals(timestamps):
     for i in range(0,len(timestamps)-1):
         d.append(timestamps[i+1] - timestamps[i])
     return d
+
+def hist_single_value_topics_timestamp_intervals(A):
+    for s in single_value_topics:
+        k,d = get_sorted_keys_and_data(A[s])
+        i = get_timestamp_intervals(k)
+        plt.figure(s)
+        hist(i,bins=100);
+
 
 """
 dt = []
