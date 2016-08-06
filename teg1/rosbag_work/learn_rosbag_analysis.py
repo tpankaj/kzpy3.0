@@ -9,8 +9,8 @@ from cv_bridge import CvBridge, CvBridgeError
 A = {}
 A['left_image'] = {}
 A['right_image'] = {}
-non_image_topics = ['steer','state','motor','gyro','gps','encoder','sonar']
-for topic in non_image_topics:
+single_value_topics = ['steer','state','motor','encoder','sonar']
+for topic in single_value_topics:
     A[topic] = {}
 
 
