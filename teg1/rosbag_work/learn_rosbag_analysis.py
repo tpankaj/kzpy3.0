@@ -23,7 +23,7 @@ for b in bag_files:
 
     bag = rosbag.Bag(b)
 
-    for topic in non_image_topics:
+    for topic in single_value_topics:
         for m in bag.read_messages(topics=['/bair_car/'+topic]):
             A[topic][m.timestamp.to_time()] = m[1].data
 
