@@ -1,11 +1,22 @@
-from kzpy3.vis import *
+"""
+Take rosbag files and have the option of doing any of the following:
+1) look at timestamp intervals
+2) look at difference in timestamps of left and right camera
+3) plot data versus timestamps
+4) save images to jpegs at reduced resolution
+5) bind data to left_image timestamps, so that one stream of timestamps is
+   bound to all data types
+"""
 
+from kzpy3.vis import *
 import rospy
 import rosbag
 import sensor_msgs.msg
 import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
 
+############## bagfile data to dictionary A ##############################
+#
 A = {}
 
 image_topics = ['left_image','right_image']
@@ -20,33 +31,41 @@ bridge = cv_bridge.CvBridge()
 
 bag_files = sorted(glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag'))
 
-bag_files = bag_files[:3] # TEMP!
+bag_files = bag_files[10:13] # TEMP!
+
 
 for b in bag_files:
     print b
     bag = rosbag.Bag(b)
-
     for topic in single_value_topics:
         for m in bag.read_messages(topics=['/bair_car/'+topic]):
             t = round(m.timestamp.to_time(),3)
             A[topic][t] = m[1].data
-
     for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
         t = round(m.timestamp.to_time(),3)
-        A['left_image'][t] = 1#imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-
+        A['left_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
     for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
         t = round(m.timestamp.to_time(),3)
-        A['right_image'][t] = 1#imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+        A['right_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+#
+######################################################################
+
+######################### binding data to left_image timestamps ######
+#
+def interpolate_single_values(A,topic):
+    interp_dic = {}
+    k,d = get_sorted_keys_and_data(A[topic])
+    for i in range(0,len(k)-1):
+        for j in range(int(k[i]*1000),int(k[i+1]*1000)):
+            v =  (d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i]
+            interp_dic[j/1000.] = v
+    return interp_dic
+#
+######################################################################
 
 
-def get_sorted_keys_and_data(dict):
-    skeys = sorted(dict.keys())
-    sdata = []
-    for k in skeys:
-        sdata.append(dict[k])
-    return skeys,sdata
-
+######################### diagnostic ####################
+#
 def get_timestamp_intervals(timestamps,ignore_threshold):
     d = []
     for i in range(0,len(timestamps)-1):
@@ -93,15 +112,8 @@ def plot_topics(A):
     pylab.show()
     """
     pass
+#
+######################################################################
 
-
-def interpolate_single_values(A,topic):
-    interp_dic = {}
-    k,d = get_sorted_keys_and_data(A[topic])
-    for i in range(0,len(k)-1):
-        for j in range(int(k[i]*1000),int(k[i+1]*1000)):
-            v =  (d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i]
-            interp_dic[j/1000.] = v
-    return interp_dic
 
 

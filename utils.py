@@ -189,6 +189,13 @@ def dict_to_sorted_list(d):
     return l
 
 
+def get_sorted_keys_and_data(dict):
+    skeys = sorted(dict.keys())
+    sdata = []
+    for k in skeys:
+        sdata.append(dict[k])
+    return skeys,sdata
+
 
 def zscore(m,thresh=np.nan):
     z = m - np.mean(m)
