@@ -15,6 +15,9 @@ bag = rosbag.Bag(b)
 
 A = {}
 A['steer'] = {}
+A['state'] = {}
+A['left_image'] = {}
+A['right_image'] = {}
 
 """
 for m in bag.read_messages(topics=['/bair_car/state']):
@@ -31,7 +34,11 @@ for m in bag.read_messages(topics=['/bair_car/steer']):
 for m in bag.read_messages(topics=['/bair_car/steer']):
     A['steer'][m[2].to_time()] = m[1].data
 
+for m in bag.read_messages(topics=['/bair_car/state']):
+    A['state'][m[2].to_time()] = m[1].data
 
+for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
+    A['left_image'][m.timestamp.to_time()] = 1
 
 
 dt = []
