@@ -11,7 +11,7 @@ A = {}
 image_topics = ['left_image','right_image']
 single_value_topics = ['steer','state','motor','encoder','sonar']
 vector_topics = ['gps','gyro']
-all_topics = image_topics + single_value_topics + vector_topics
+all_topics = image_topics + single_value_topics # + vector_topics
 for topic in all_topics:
     A[topic] = {}
 
