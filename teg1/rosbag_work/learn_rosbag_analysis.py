@@ -62,7 +62,7 @@ def get_timestamp_intervals(timestamps,ignore_threshold):
 def hist_topics_timestamp_intervals(A,topics,ignore_threshold=0.1):
     for s in topics:
         k,d = get_sorted_keys_and_data(A[s])
-        i = get_timestamp_intervals(k)
+        i = get_timestamp_intervals(k,ignore_threshold)
         plt.figure(s)
         hist(i,bins=100)
         plt.title(d2s(s,"intervals"))
