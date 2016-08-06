@@ -16,8 +16,9 @@ for topic in single_value_topics:
 
 bridge = cv_bridge.CvBridge()
 
-bag_files = ['/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-29_74.bag',
-            '/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-58_75.bag']
+bag_files = glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag')
+#bag_files = ['/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-29_74.bag',
+#            '/home/karlzipser/Desktop/rosbag_2Aug/bair_car_2016-08-02-18-23-58_75.bag']
 
 for b in bag_files:
 
