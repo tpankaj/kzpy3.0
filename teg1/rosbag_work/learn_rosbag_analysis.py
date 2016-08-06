@@ -99,8 +99,9 @@ def interpolate_single_values(A,topic):
     interp_dic = {}
     k,d = get_sorted_keys_and_data(A[topic])
     for i in range(0,len(k)-1):
-        for j in range(int(k[i]*1000),int(k[i+1]*1000):
+        for j in range(int(k[i]*1000),int(k[i+1]*1000)):
             v =  (d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i]
             interp_dic[j/1000.] = v
+    return interp_dic
 
 
