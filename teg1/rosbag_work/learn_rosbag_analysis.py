@@ -133,6 +133,31 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
 #
 ######################################################################
 
+import fnmatch
+import os
+def find_files_recursively(start_dir,pattern):
+    matches = []
+    for root, dirnames, filenames in os.walk(start_dir):
+        for filename in fnmatch.filter(filenames, pattern):
+            matches.append(os.path.join(root, filename))
+    return matches
+
+def link_files_into_one_dir(start_dir,pattern,end_dir):
+    """
+    start_dir must be one level above end_dir
+    """
+    matches = find_files_recursively(start_dir,pattern)
+    unix('mkdir -p ' + end_dir,False)
+    cwd = os.getcwd()
+    os.chdir(end_dir)
+    for fp in matches:
+        f = fp.split('/')[-1]
+        print f
+        unix('ln -s ' + '.' + fp + ' ' + f,False)
+    os.chdir(cwd)
+
+
+
 ######################### binding data to left_image timestamps ######
 #
 
