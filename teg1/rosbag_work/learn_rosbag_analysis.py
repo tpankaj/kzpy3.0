@@ -109,6 +109,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                             try:
                                 apply_rect_to_img(img,left_image_bound_to_data[t]['encoder'],0,15,[150,150,0],[0,0,0],0.8,0.03,center=False)
                             except:
+                                print t
                             try:
                                 gy = left_image_bound_to_data[t]['gyro']
                                 gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
