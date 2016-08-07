@@ -64,7 +64,7 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0):
             A[img][t] = ctr
             ctr += 1
     """
-    unix('mkdir -p ' + opj(bag_files_path,'png/left_image'))
+    
     ctr1 = 0
     ctr2 = 0
     for b in bag_files: # we don't assume we are geting them in chronological order
@@ -74,6 +74,7 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0):
             t = round(m.timestamp.to_time(),3)
             t_str = "%.3f"%t
             img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+            unix('mkdir -p ' + opj(bag_files_path,'png/left_image',str(ctr1)))
             imsave(opj(bag_files_path,'png/left_image',str(ctr1),t_str+'.png'), img)
             ctr2 += 1
             if ctr2 >= 300:
