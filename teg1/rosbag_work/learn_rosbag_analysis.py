@@ -84,6 +84,8 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_recta
                         img = bridge.imgmsg_to_cv2(m[1],"rgb8")
                     else:
                         img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),scale_factor)
+                    if apply_rectangles:
+                        pass
                     unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False)
                     imsave(opj(bag_files_path,'png/'+side+'_image',str(ctr1),t_str+'.png'), img)
                     ctr2 += 1
