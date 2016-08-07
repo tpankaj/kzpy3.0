@@ -14,6 +14,7 @@ import rosbag
 import sensor_msgs.msg
 import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
+bridge = cv_bridge.CvBridge()
 
 ############## bagfile data to dictionary A ##############################
 #
@@ -27,58 +28,56 @@ for topic in all_topics:
     A[topic] = {}
 
 
-bridge = cv_bridge.CvBridge()
+def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0):
 
-bag_files = sorted(glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag'))
+    bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))  #'/home/karlzipser/Desktop/rosbag_2Aug/*.bag'))
 
-# bag_files = bag_files[13:15] # TEMP!
+    for b in bag_files: # we don't assume we are geting them in chronological order
+        
+        print b
+
+        bag = rosbag.Bag(b)
+
+        for topic in single_value_topics:
+            for m in bag.read_messages(topics=['/bair_car/'+topic]):
+                t = round(m.timestamp.to_time(),3)
+                A[topic][t] = m[1].data
+
+        for topic in vector3_topics:
+            for m in bag.read_messages(topics=['/bair_car/'+topic]):
+                t = round(m.timestamp.to_time(),3)
+                A[topic][t] = (m[1].x,m[1].y,m[1].z)
+
+        for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
+            t = round(m.timestamp.to_time(),3)
+            A['left_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+
+        for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
+            t = round(m.timestamp.to_time(),3)
+            A['right_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
 
 
-for b in bag_files: # we don't assume we are geting them in chronological order
+    for img in ['left_image','right_image']:
+        ctr = 0
+        sorted_timestamps = sorted(A[img].keys())
+        for t in sorted_timestamps:
+            A[img][t] = ctr
+            ctr += 1
+    """
+    unix('mkdir -p /home/karlzipser/Desktop/rosbag_2Aug/png/left_image/')
+    for b in bag_files: # we don't assume we are geting them in chronological order
+        print b
+        bag = rosbag.Bag(b)
+        for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
+            t = round(m.timestamp.to_time(),3)
+            t_str = "%.3f"%t
+            img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+            imsave('/home/karlzipser/Desktop/rosbag_2Aug/png/left_image/'+t_str+'.png', img)
+    """
     
-    print b
-
-    bag = rosbag.Bag(b)
-
-    for topic in single_value_topics:
-        for m in bag.read_messages(topics=['/bair_car/'+topic]):
-            t = round(m.timestamp.to_time(),3)
-            A[topic][t] = m[1].data
-
-    for topic in vector3_topics:
-        for m in bag.read_messages(topics=['/bair_car/'+topic]):
-            t = round(m.timestamp.to_time(),3)
-            A[topic][t] = (m[1].x,m[1].y,m[1].z)
-
-    for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
-        t = round(m.timestamp.to_time(),3)
-        A['left_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-
-    for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
-        t = round(m.timestamp.to_time(),3)
-        A['right_image'][t] = 'z' #imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-
-
-
-
-for img in ['left_image','right_image']:
-    ctr = 0
-    sorted_timestamps = sorted(A[img].keys())
-    for t in sorted_timestamps:
-        A[img][t] = ctr
-        ctr += 1
 
 #
 ######################################################################
-unix('mkdir -p /home/karlzipser/Desktop/rosbag_2Aug/png/left_image/')
-for b in bag_files: # we don't assume we are geting them in chronological order
-    print b
-    bag = rosbag.Bag(b)
-    for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
-        t = round(m.timestamp.to_time(),3)
-        t_str = "%.3f"%t
-        img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-        imsave('/home/karlzipser/Desktop/rosbag_2Aug/png/left_image/'+t_str+'.png', img)
 
 ######################### binding data to left_image timestamps ######
 #
