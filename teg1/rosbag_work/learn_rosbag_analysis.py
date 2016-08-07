@@ -31,7 +31,7 @@ bridge = cv_bridge.CvBridge()
 
 bag_files = sorted(glob.glob('/home/karlzipser/Desktop/rosbag_2Aug/*.bag'))
 
-bag_files = bag_files[13:15] # TEMP!
+# bag_files = bag_files[13:15] # TEMP!
 
 
 for b in bag_files: # we don't assume we are geting them in chronological order
