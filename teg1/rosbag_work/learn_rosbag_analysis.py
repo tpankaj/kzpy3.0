@@ -133,6 +133,7 @@ def bind_left_image_timestamps_to_data(A):
                 left_image_bound_to_data[k][l] = ms_timestamps[l][k]
             except:
                 error_log.append(d2s(k,l))
+                left_image_bound_to_data[k][l] = 'no data'
     print error_log
     return left_image_bound_to_data,error_log
 
