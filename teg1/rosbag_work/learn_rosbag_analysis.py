@@ -110,6 +110,25 @@ def assign_right_image_timestamps(A):
             interp_dic[j/1000.] = v
     return interp_dic
 
+def bind_left_image_timestamps_to_data(A):
+
+    ms_timestamps = {}
+
+    ms_timestamps['right_image'] = assign_right_image_timestamps(A)
+
+    for topic in single_value_topics:
+        ms_timestamps[topic] = interpolate_single_values(A,topic)
+
+    for topic in vector3_topics:
+        ms_timestamps[topic] = interpolate_vector_values(A,topic)
+
+    left_image_bound_to_data = {}
+
+    for k in A['left_image'].keys():
+        for l in ms_timestamps.keys():
+            left_image_bound_to_data[k] = ms_timestamps[l][k]
+
+    return left_image_bound_to_data
 
 #
 ######################################################################
