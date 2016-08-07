@@ -64,7 +64,7 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0):
             A[img][t] = ctr
             ctr += 1
     """
-    unix('mkdir -p ' + opj(bag_files_path,'png/left_image')
+    unix('mkdir -p ' + opj(bag_files_path,'png/left_image'))
     ctr1 = 0
     ctr2 = 0
     for b in bag_files: # we don't assume we are geting them in chronological order
