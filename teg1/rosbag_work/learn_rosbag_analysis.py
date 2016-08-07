@@ -7,7 +7,7 @@ Take rosbag files and have the option of doing any of the following:
 5) bind data to left_image timestamps, so that one stream of timestamps is
    bound to all data types. 
    e.g.,
-        A = do_A('/home/karlzipser/Desktop/rosbag_2Aug',save_pngs=True)
+        raw_data,left_image_bound_to_data = Preprocess_Bag_Data('/home/karlzipser/Desktop/rosbag_2Aug',save_pngs=True)
 """
 
 from kzpy3.vis import *
@@ -27,13 +27,12 @@ all_topics = image_topics + single_value_topics + vector3_topics
 #
 ######################################################################
 
-############## bagfile data to dictionary A ##############################
+############## bagfile data processing to useful forms ##############################
 #
 
-
-def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_rectangles=False):
+def Preprocess_Bag_Data(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_rectangles=False):
     
-    A = {}
+    A = {} # this will be renamed raw_data at return
 
     for topic in all_topics:
         A[topic] = {}
@@ -98,8 +97,8 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_recta
                     if ctr2 >= 300:
                         ctr2 = 0
                         ctr1 += 1
-
-    return A,left_image_bound_to_data
+    raw_data = A
+    return raw_data,left_image_bound_to_data
     
 
 def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,relative_height,center=True):
