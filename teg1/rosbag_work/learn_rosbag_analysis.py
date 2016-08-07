@@ -81,7 +81,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
 
     if save_pngs:
 
-        for side in ['left','right']:
+        for side in ['left']:#,'right']:
             ctr1 = 0
             ctr2 = 0
             A[side+'_image_folder_number'] = {}
@@ -113,7 +113,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                             try:
                                 gy = left_image_bound_to_data[t]['gyro']
                                 gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
-                                apply_rect_to_img(img,gymag,0,60,[0,150,255],[0,0,0],0.7,0.03)
+                                apply_rect_to_img(img,gymag,0,120,[0,150,255],[0,0,0],0.7,0.03)
                             except:
                                 print t
                     unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False,False)
@@ -131,6 +131,10 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
     p = (value - min_val) / (max_val - 1.0*min_val)
     if reverse:
         p = 1.0 - p
+    if p > 1:
+        p = 1
+    if p < 0:
+        p = 0
     wp = int(p*w)
     bh = int((1-rel_bar_height) * h)
     bt = int(rel_bar_thickness * h)
