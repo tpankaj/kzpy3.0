@@ -113,7 +113,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                             try:
                                 gy = left_image_bound_to_data[t]['gyro']
                                 gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
-                                apply_rect_to_img(img,gymag,0,30,[0,150,255],[0,0,0],0.7,0.03,center=False)
+                                apply_rect_to_img(img,gymag,0,60,[0,150,255],[0,0,0],0.7,0.03,center=False)
                             except:
                                 print t
                     unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False,False)
