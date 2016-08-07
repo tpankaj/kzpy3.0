@@ -74,9 +74,10 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,png_path='',scale_factor=
     left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A)
 
     if save_pngs:
-        ctr1 = 0
-        ctr2 = 0
+
         for side in ['left','right']:
+            ctr1 = 0
+            ctr2 = 0
             A[side+'_image_folder_number'] = {}
             for b in bag_files:
                 print b
