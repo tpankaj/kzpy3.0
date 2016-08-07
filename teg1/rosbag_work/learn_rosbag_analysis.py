@@ -111,6 +111,10 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                             except:
                                 print t
                             try:
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.7,0.03)
+                            except:
+                                print t
+                            try:
                                 gy = left_image_bound_to_data[t]['gyro']
                                 gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
                                 apply_rect_to_img(img,gymag,0,120,[0,150,255],[0,0,0],0.7,0.03)
