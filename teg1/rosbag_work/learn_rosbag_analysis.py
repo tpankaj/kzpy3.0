@@ -126,7 +126,10 @@ def bind_left_image_timestamps_to_data(A):
 
     error_log = []
 
-    for k in A['left_image'].keys():
+    sorted_keys = sorted(A['left_image'].keys())
+    for i in range(30,len(sorted_keys)-30):
+    # we throw away the first and last 30 frames to avoid boundry problems with other sensors
+        k = sorted_keys[i]
         left_image_bound_to_data[k] = {}
         for l in ms_timestamps.keys():
             try:
