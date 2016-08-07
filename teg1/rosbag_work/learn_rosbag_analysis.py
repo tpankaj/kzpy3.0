@@ -70,6 +70,12 @@ for img in ['left_image','right_image']:
 
 #
 ######################################################################
+    unix('mkdir -p /home/karlzipser/Desktop/rosbag_2Aug/jpgs/left_image/')
+    for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
+        t = round(m.timestamp.to_time(),3)
+        t_str = "%.3f"%t
+        img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
+        imsave('/home/karlzipser/Desktop/rosbag_2Aug/jpgs/left_image/'+t_str+'.jpg', img)
 
 ######################### binding data to left_image timestamps ######
 #
