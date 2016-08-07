@@ -109,7 +109,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
     return preprocessed_data,left_image_bound_to_data
     
 
-def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=False):
+def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=True):
     h,w,d = shape(img)
     p = (value - min_val) / (max_val - 1.0*min_val)
     if reverse:
