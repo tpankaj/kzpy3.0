@@ -5,7 +5,9 @@ Take rosbag files and have the option of doing any of the following:
 3) plot data versus timestamps
 4) save images to jpegs at reduced resolution
 5) bind data to left_image timestamps, so that one stream of timestamps is
-   bound to all data types
+   bound to all data types. 
+   e.g.,
+        A = do_A('/home/karlzipser/Desktop/rosbag_2Aug',save_pngs=True)
 """
 
 from kzpy3.vis import *
@@ -27,14 +29,16 @@ all_topics = image_topics + single_value_topics + vector3_topics
 
 ############## bagfile data to dictionary A ##############################
 #
+
+
 def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_rectangles=False):
     
     A = {}
-    
+
     for topic in all_topics:
         A[topic] = {}
 
-    bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))  # e.g.,'/home/karlzipser/Desktop/rosbag_2Aug'
+    bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))
     
     for b in bag_files:
         
@@ -68,6 +72,8 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_recta
             A[img][t] = ctr
             ctr += 1
     
+    left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A)
+
     if save_pngs:
         ctr1 = 0
         ctr2 = 0
@@ -92,8 +98,9 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_recta
                     if ctr2 >= 300:
                         ctr2 = 0
                         ctr1 += 1
+
+    return A,left_image_bound_to_data
     
-    return A
 
 def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,relative_height,center=True):
     pass
@@ -103,7 +110,7 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,relative_hei
 ######################### binding data to left_image timestamps ######
 #
 
-def bind_left_image_timestamps_to_data(A):
+def _bind_left_image_timestamps_to_data(A):
 
     ms_timestamps = {}
 
