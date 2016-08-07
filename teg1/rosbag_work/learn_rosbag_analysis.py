@@ -67,14 +67,16 @@ def do_A(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0):
     
     ctr1 = 0
     ctr2 = 0
+    A['left_image_folder_number'] = {}
     for b in bag_files: # we don't assume we are geting them in chronological order
         print b
         bag = rosbag.Bag(b)
         for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
             t = round(m.timestamp.to_time(),3)
             t_str = "%.3f"%t
+            A['left_image_folder_number'][t] = ctr1
             img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),0.25)
-            unix('mkdir -p ' + opj(bag_files_path,'png/left_image',str(ctr1)))
+            unix('mkdir -p ' + opj(bag_files_path,'png/left_image',str(ctr1)),False)
             imsave(opj(bag_files_path,'png/left_image',str(ctr1),t_str+'.png'), img)
             ctr2 += 1
             if ctr2 >= 300:
