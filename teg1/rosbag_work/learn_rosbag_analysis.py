@@ -87,7 +87,6 @@ def interpolate_vector_values(A,topic):
     k,d = get_sorted_keys_and_data(A[topic])
     d = np.array(d)
     dim = len(d[0])
-
     for i in range(0,len(k)-1):
         for j in range(int(k[i]*1000),int(k[i+1]*1000)):
             v = []
@@ -95,6 +94,22 @@ def interpolate_vector_values(A,topic):
                 v.append(  (d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u] )
             interp_dic[j/1000.] = v
     return interp_dic
+
+def assign_right_image_timestamps(A):
+    interp_dic = {}
+    k,d = get_sorted_keys_and_data(A['right_image'])
+    for i in range(0,len(k)-1):
+        a = int(k[i]*1000)
+        b = int(k[i+1]*1000)
+        c = (a+b)/2
+        for j in range(a,b):
+            if j < c:
+                v = k[i]
+            else:
+                v = k[i+1]
+            interp_dic[j/1000.] = v
+    return interp_dic
+
 
 #
 ######################################################################
