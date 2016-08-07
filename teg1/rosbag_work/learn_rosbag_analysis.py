@@ -127,9 +127,9 @@ def bind_left_image_timestamps_to_data(A):
     error_log = []
 
     for k in A['left_image'].keys():
+        left_image_bound_to_data[k] = {}
         for l in ms_timestamps.keys():
             try:
-                left_image_bound_to_data[k] = {}
                 left_image_bound_to_data[k][l] = ms_timestamps[l][k]
             except:
                 error_log.append(d2s(k,l))
