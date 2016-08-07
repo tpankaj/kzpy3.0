@@ -30,7 +30,7 @@ all_topics = image_topics + single_value_topics + vector3_topics
 ############## bagfile data processing to useful forms ##############################
 #
 
-def Preprocess_Bag_Data(bag_files_path,save_pngs=False,png_path='',scale_factor=1.0,apply_rectangles=False):
+def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_rectangles=False):
     
     A = {} # this will be renamed preprocessed_data at return
 
