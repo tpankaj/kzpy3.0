@@ -103,7 +103,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                             except:
                                 print t
                             try:
-                                apply_rect_to_img(img,left_image_bound_to_data[t]['motor'],0,99,[0,0,255],[255,255,0],0.9,0.03,center=True,reverse=False))
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['motor'],0,99,[0,0,255],[255,255,0],0.9,0.03,center=True,reverse=False)
                             except:
                                 print t
                             try:
