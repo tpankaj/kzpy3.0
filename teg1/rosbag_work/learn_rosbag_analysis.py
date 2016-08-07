@@ -123,11 +123,19 @@ def bind_left_image_timestamps_to_data(A):
         ms_timestamps[topic] = interpolate_vector_values(A,topic)
 
     left_image_bound_to_data = {}
+    first_time = True
+    error_log = []
 
     for k in A['left_image'].keys():
+        if first_time:
+            left_image_bound_to_data[k] = {}
+            first_time = False
         for l in ms_timestamps.keys():
-            left_image_bound_to_data[k] = ms_timestamps[l][k]
-
+            try:
+                left_image_bound_to_data[k][l] = ms_timestamps[l][k]
+            except:
+                error_log.append(d2s(k,l))
+    print error_log
     return left_image_bound_to_data
 
 #
