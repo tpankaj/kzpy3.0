@@ -33,7 +33,7 @@ all_topics = image_topics + single_value_topics + vector3_topics
 ############## bagfile data processing to useful forms ##############################
 #
 
-def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_rectangles=False):
+def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_rectangles=False,bagfile_range=[]):
     
     A = {} # this will be renamed preprocessed_data at return
 
@@ -42,6 +42,9 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
 
     bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))
     
+    if len(bagfile_range) > 0:
+        bag_files = bag_files[bagfile_range[0]:(bagfile_range[1]+1)]
+
     for b in bag_files:
         
         print b
@@ -97,6 +100,14 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                         if side == 'left':
                             try:
                                 apply_rect_to_img(img,left_image_bound_to_data[t]['steer'],0,99,[255,0,0],[0,255,0],0.1,0.03,center=True)
+                            except:
+                                print t
+                            try:
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['motor'],0,99,[0,0,255],[0,0,0],0.9,0.03,center=False)
+                            except:
+                                print t
+                            try:
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['encoder'],0,15,[150,150,0],[0,0,0],0.8,0.03,center=False)
                             except:
                                 print t
                     unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False,False)
