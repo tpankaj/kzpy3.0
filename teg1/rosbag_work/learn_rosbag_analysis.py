@@ -92,7 +92,10 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,png_path='',scale_factor=
                         img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),scale_factor)
                     if apply_rectangles:
                         if side == 'left':
-                            apply_rect_to_img(img,left_image_bound_to_data[t]['steer'],0,99,[255,0,0],[0,255,0],0.1,0.03,center=True)
+                            try:
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['steer'],0,99,[255,0,0],[0,255,0],0.1,0.03,center=True)
+                            except:
+                                print t
                     unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False)
                     imsave(opj(bag_files_path,'png/'+side+'_image',str(ctr1),t_str+'.png'), img)
                     ctr2 += 1
@@ -116,7 +119,7 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
             img[(bh-bt/2):(bh+bt/2),(wp):(w/2),:] = neg_color
         else:
             img[(bh-bt/2):(bh+bt/2),(w/2):(wp),:] = pos_color
-    mi(img,2)
+    #mi(img,2)
 
 
 
