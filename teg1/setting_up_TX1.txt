@@ -102,3 +102,22 @@ username ALL=(ALL) NOPASSWD: ALL
 
 
 mplayer -fps 26 mf://*.png
+
+
+
+
+######################## for .bashrc from MacBook #################
+#
+#echo "source ~/8August2016_common_aliases"
+#export DISPLAY=:0.0
+alias gacp="git add -u;git commit -m 'gacp';git push origin master"
+alias gckzpy3="git clone https://github.com/karlzipser/kzpy3.0.git"
+alias ipn="ipython notebook"
+alias ipy="ipython --no-banner"
+export PYTHONPATH=~:$PYTHONPATH
+#export PYTHONPATH=~/kzpy3/caf/layers:$PYTHONPATH
+#export PYTHONPATH=~/kzpy3/caf2/layers:$PYTHONPATH
+export PYTHONSTARTUP=~/kzpy3/vis.py
+export PATH=~/kzpy3/scripts:$PATH
+#
+######################################################
