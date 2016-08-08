@@ -103,7 +103,7 @@ username ALL=(ALL) NOPASSWD: ALL
 
 mplayer -fps 26 mf://*.png
 
-
+git config --global credential.helper "cache --timeout=3600"
 
 
 ######################## for .bashrc from MacBook #################
