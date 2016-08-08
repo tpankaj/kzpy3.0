@@ -1,4 +1,4 @@
-# Installing Caffe on Jetson TK1, 31 March 2016
+# Installing Caffe on Jetson TX1, starting from TK1 on 31 March 2016
 #
 # Install based primarily on this page:
 #   http://planspace.org/20150614-the_nvidia_jetson_tk1_with_caffe_on_mnist/
@@ -100,9 +100,10 @@ username ALL=(ALL) NOPASSWD: ALL
 # http://www.linuxproblem.org/art_9.html
 
 
-
+# play frames in folder
 mplayer -fps 26 mf://*.png
 
+# make git store password for an hour
 git config --global credential.helper "cache --timeout=3600"
 
 
