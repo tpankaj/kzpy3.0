@@ -112,7 +112,6 @@ mplayer -fps 26 mf://*.png
 #export DISPLAY=:0.0
 alias gacp="git add -u;git commit -m 'gacp';git push origin master"
 alias gckzpy3="git clone https://github.com/karlzipser/kzpy3.0.git"
-alias ipn="ipython notebook"
 alias ipy="ipython --no-banner"
 export PYTHONPATH=~:$PYTHONPATH
 #export PYTHONPATH=~/kzpy3/caf/layers:$PYTHONPATH
