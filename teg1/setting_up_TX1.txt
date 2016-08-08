@@ -101,4 +101,4 @@ username ALL=(ALL) NOPASSWD: ALL
 
 
 
-
+mplayer -fps 26 mf://*.png
