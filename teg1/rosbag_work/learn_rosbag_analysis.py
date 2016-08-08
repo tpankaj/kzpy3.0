@@ -60,6 +60,8 @@ def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_
     
     if len(bagfile_range) > 0:
         bag_files = bag_files[bagfile_range[0]:(bagfile_range[1]+1)]
+    
+    print bag_files
 
     for b in bag_files:
         
@@ -92,6 +94,7 @@ def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_
         for t in sorted_timestamps:
             A[img][t] = ctr
             ctr += 1
+
     
     left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A)
 
@@ -127,7 +130,7 @@ def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_
                             except:
                                 print t
                             try:
-                                apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.7,0.03)
+                                apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.6,0.03)
                             except:
                                 print t
                             try:
