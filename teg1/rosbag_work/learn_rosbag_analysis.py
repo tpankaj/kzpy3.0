@@ -16,7 +16,7 @@ preprocessed_data,left_image_bound_to_data = Preprocess_Bag_Data('/home/karlzips
 cd Desktop/rosbag_2Aug/png/left_image/
 link_files_into_one_dir('.','*.png','links')
 
-
+make_stereo_frames(bag_files_path,left_image_bound_to_data,image_extension='png')
 
 
 
@@ -195,6 +195,7 @@ def link_files_into_one_dir(start_dir,pattern,end_dir):
     os.chdir(cwd)
 #
 ######################################################################
+#
 
 def make_stereo_frames(bag_files_path,left_image_bound_to_data,image_extension='png'):
     left_ts = []
@@ -208,7 +209,9 @@ def make_stereo_frames(bag_files_path,left_image_bound_to_data,image_extension='
     print h,w
     stereo_img = np.zeros((h,int(2.03*w),d),np.uint8)
                     
-    unix('mkdir -p ' + opj(bag_files_path,'images/stereo_image'),False,False)
+    
+    ctr1 = 0
+    ctr2 = 0
 
     for i in range(len(left_ts)):
         left_t_str = "%.3f"%left_ts[i]
@@ -218,9 +221,15 @@ def make_stereo_frames(bag_files_path,left_image_bound_to_data,image_extension='
 
         stereo_img[:,:w,:] = right_img
         stereo_img[:,-w:,:] = left_img # for cross fusing
-        imsave(opj(bag_files_path,'images/stereo_image',left_t_str+'.'+image_extension),stereo_img)
+        unix('mkdir -p ' + opj(bag_files_path,'images/stereo_image',str(ctr1)),False,False)
+        imsave(opj(bag_files_path,'images/stereo_image',str(ctr1),left_t_str+'.'+image_extension),stereo_img)
+        ctr2 += 1
+        if ctr2 >= 300:
+            ctr2 = 0
+            ctr1 += 1
+    link_files_into_one_dir(opj(bag_files_path,'images/stereo_image'),'*.'+image_extension,opj(bag_files_path,'images/stereo_image','links'))
 
-
+#
 ######################### binding data to left_image timestamps ######
 #
 
