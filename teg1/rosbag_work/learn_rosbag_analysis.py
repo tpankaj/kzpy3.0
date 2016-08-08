@@ -1,15 +1,31 @@
 """
 Take rosbag files and have the option of doing any of the following:
-1) look at timestamp intervals
+1) look at timestamp intervals for a given topic
 2) look at difference in timestamps of left and right camera
 3) plot data versus timestamps
-4) save images to jpegs at reduced resolution
+4) save images to separate files at optionally reduced resolution
 5) bind data to left_image timestamps, so that one stream of timestamps is
-   bound to all data types. 
+   bound to all data types.
    e.g.,
-        raw_data,left_image_bound_to_data = Preprocess_Bag_Data('/home/karlzipser/Desktop/rosbag_2Aug',save_pngs=True)
 
-mplayer -fps 24 mf://*.png
+
+
+from kzpy3.teg1.rosbag_work.learn_rosbag_analysis import *
+preprocessed_data,left_image_bound_to_data = Preprocess_Bag_Data('/home/karlzipser/Desktop/rosbag_2Aug',[71,71],True,1.0,False,'png')
+
+cd Desktop/rosbag_2Aug/png/left_image/
+link_files_into_one_dir('.','*.png','links')
+
+
+
+
+
+
+
+
+To play frames:
+    
+    mplayer -fps 24 mf://*.png
 
 """
 
@@ -33,14 +49,14 @@ all_topics = image_topics + single_value_topics + vector3_topics
 ############## bagfile data processing to useful forms ##############################
 #
 
-def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_rectangles=False,bagfile_range=[]):
+def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_factor=1.0,apply_rectangles=False,image_extension='png'):
     
-    A = {} # this will be renamed preprocessed_data at return
+    A = {} # this will be renamed preprocessed_data for return
 
     for topic in all_topics:
         A[topic] = {}
 
-    bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))
+    bag_files = sorted(glob.glob(opj(bag_files_path,'bags','*.bag')))
     
     if len(bagfile_range) > 0:
         bag_files = bag_files[bagfile_range[0]:(bagfile_range[1]+1)]
@@ -53,7 +69,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
 
         for topic in single_value_topics:
             for m in bag.read_messages(topics=['/bair_car/'+topic]):
-                t = round(m.timestamp.to_time(),3)
+                t = round(m.timestamp.to_time(),3) # millisecond resolution
                 A[topic][t] = m[1].data
 
         for topic in vector3_topics:
@@ -63,11 +79,11 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
 
         for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
             t = round(m.timestamp.to_time(),3)
-            A['left_image'][t] = 'z'
+            A['left_image'][t] = 'z' # placeholder for ctr
 
         for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
             t = round(m.timestamp.to_time(),3)
-            A['right_image'][t] = 'z'
+            A['right_image'][t] = 'z' # placeholder for ctr
 
 
     for img in ['left_image','right_image']:
@@ -79,9 +95,9 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
     
     left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A)
 
-    if save_pngs:
+    if save_images:
 
-        for side in ['left']:#,'right']:
+        for side in ['left','right']:
             ctr1 = 0
             ctr2 = 0
             A[side+'_image_folder_number'] = {}
@@ -97,7 +113,7 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                     else:
                         img = imresize(bridge.imgmsg_to_cv2(m[1],"rgb8"),scale_factor)
                     if apply_rectangles:
-                        if side == 'left':
+                        if True: #side == 'left':
                             try:
                                 apply_rect_to_img(img,left_image_bound_to_data[t]['steer'],0,99,[255,0,0],[0,255,0],0.1,0.03,center=True,reverse=True)
                             except:
@@ -120,12 +136,14 @@ def Preprocess_Bag_Data(bag_files_path,save_pngs=False,scale_factor=1.0,apply_re
                                 apply_rect_to_img(img,gymag,0,120,[0,150,255],[0,0,0],0.7,0.03)
                             except:
                                 print t
-                    unix('mkdir -p ' + opj(bag_files_path,'png/'+side+'_image',str(ctr1)),False,False)
-                    imsave(opj(bag_files_path,'png/'+side+'_image',str(ctr1),t_str+'.png'), img)
+                    unix('mkdir -p ' + opj(bag_files_path,'images/'+side+'_image',str(ctr1)),False,False)
+                    imsave(opj(bag_files_path,'images/'+side+'_image',str(ctr1),t_str+'.'+image_extension), img)
                     ctr2 += 1
                     if ctr2 >= 300:
                         ctr2 = 0
                         ctr1 += 1
+            link_files_into_one_dir(opj(bag_files_path,'images/'+side+'_image'),'*.'+image_extension,opj(bag_files_path,'images/'+side+'_image','links'))
+
     preprocessed_data = A
     return preprocessed_data,left_image_bound_to_data
     
@@ -142,24 +160,19 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
     wp = int(p*w)
     bh = int((1-rel_bar_height) * h)
     bt = int(rel_bar_thickness * h)
-    if center == False:
-        img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
-    else:
+    
+    if center:
         if wp < w/2:
             img[(bh-bt/2):(bh+bt/2),(wp):(w/2),:] = neg_color
         else:
             img[(bh-bt/2):(bh+bt/2),(w/2):(wp),:] = pos_color
-    #mi(img,2)
+    else:
+        img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
 
 
-
-
-
-#
-######################################################################
 
 import fnmatch
-import os
+
 def find_files_recursively(start_dir,pattern):
     matches = []
     for root, dirnames, filenames in os.walk(start_dir):
@@ -178,9 +191,34 @@ def link_files_into_one_dir(start_dir,pattern,end_dir):
     for fp in matches:
         f = fp.split('/')[-1]
         print f
-        unix('ln -s ' + '.' + fp + ' ' + f,False)
+        unix('ln -s ' + fp.replace(start_dir,'..') + ' ' + f,False)
     os.chdir(cwd)
+#
+######################################################################
 
+def make_stereo_frames(bag_files_path,left_image_bound_to_data,image_extension='png'):
+    left_ts = []
+    right_ts = []
+    for k in left_image_bound_to_data.keys():
+        left_ts.append(k)
+        right_ts.append(left_image_bound_to_data[k]['right_image'])
+    t_str = "%.3f"%left_ts[0]
+    img = imread(opj(bag_files_path,'images/left_image/links',t_str+'.'+image_extension))
+    h,w,d = shape(img)
+    print h,w
+    stereo_img = np.zeros((h,int(2.03*w),d),np.uint8)
+                    
+    unix('mkdir -p ' + opj(bag_files_path,'images/stereo_image'),False,False)
+
+    for i in range(len(left_ts)):
+        left_t_str = "%.3f"%left_ts[i]
+        right_t_str = "%.3f"%right_ts[i]
+        left_img = imread(opj(bag_files_path,'images/left_image/links',left_t_str+'.'+image_extension))
+        right_img = imread(opj(bag_files_path,'images/right_image/links',right_t_str+'.'+image_extension))
+
+        stereo_img[:,:w,:] = right_img
+        stereo_img[:,-w:,:] = left_img # for cross fusing
+        imsave(opj(bag_files_path,'images/stereo_image',left_t_str+'.'+image_extension),stereo_img)
 
 
 ######################### binding data to left_image timestamps ######
