@@ -64,28 +64,30 @@ def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_
     print bag_files
 
     for b in bag_files:
-        
-        print b
+        try:
+            print b
 
-        bag = rosbag.Bag(b)
+            bag = rosbag.Bag(b)
 
-        for topic in single_value_topics:
-            for m in bag.read_messages(topics=['/bair_car/'+topic]):
-                t = round(m.timestamp.to_time(),3) # millisecond resolution
-                A[topic][t] = m[1].data
+            for topic in single_value_topics:
+                for m in bag.read_messages(topics=['/bair_car/'+topic]):
+                    t = round(m.timestamp.to_time(),3) # millisecond resolution
+                    A[topic][t] = m[1].data
 
-        for topic in vector3_topics:
-            for m in bag.read_messages(topics=['/bair_car/'+topic]):
+            for topic in vector3_topics:
+                for m in bag.read_messages(topics=['/bair_car/'+topic]):
+                    t = round(m.timestamp.to_time(),3)
+                    A[topic][t] = (m[1].x,m[1].y,m[1].z)
+
+            for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
                 t = round(m.timestamp.to_time(),3)
-                A[topic][t] = (m[1].x,m[1].y,m[1].z)
+                A['left_image'][t] = 'z' # placeholder for ctr
 
-        for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
-            t = round(m.timestamp.to_time(),3)
-            A['left_image'][t] = 'z' # placeholder for ctr
-
-        for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
-            t = round(m.timestamp.to_time(),3)
-            A['right_image'][t] = 'z' # placeholder for ctr
+            for m in bag.read_messages(topics=['/bair_car/zed/right/image_rect_color']):
+                t = round(m.timestamp.to_time(),3)
+                A['right_image'][t] = 'z' # placeholder for ctr
+        except Exception as e:
+            print e.message, e.args
 
 
     for img in ['left_image','right_image']:
@@ -129,10 +131,10 @@ def Preprocess_Bag_Data(bag_files_path,bagfile_range=[],save_images=False,scale_
                                 apply_rect_to_img(img,left_image_bound_to_data[t]['encoder'],0,15,[150,150,0],[0,0,0],0.8,0.03)
                             except:
                                 print t
-                            try:
-                                apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.6,0.03)
-                            except:
-                                print t
+                            #try:# sonar seems to be mostly noise
+                            #    apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.6,0.03)
+                            #except:
+                            #    print t
                             try:
                                 gy = left_image_bound_to_data[t]['gyro']
                                 gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
