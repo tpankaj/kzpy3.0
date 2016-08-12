@@ -48,10 +48,15 @@ all_topics = image_topics + single_value_topics + vector3_topics
 
 ############## bagfile data processing to useful forms ##############################
 #
+A = {} # this will be renamed preprocessed_data for return
+
+
 def PP(bag_file_src_path,dst_path,
     bagfile_range=[],save_images=True,
     sides=['left','right'],scale_factor=1.0,
     apply_rectangles=True,image_extension='png'):
+
+    
     unix('mkdir -p ' + opj(dst_path,'bags'),False)
     files = unix('ls '+bag_file_src_path)
     bag_files = []
@@ -63,9 +68,9 @@ def PP(bag_file_src_path,dst_path,
         unix(d2s('cp',opj(bag_file_src_path,b),opj(dst_path,'bags')),False)
         print 'reindexing ' + b
         unix('rosbag reindex '+opj(dst_path,'bags',b))
-        print 'deleting ' + b.replace('.bag','.orig.bags')
+        print 'deleting ' + b.replace('.bag','.orig.bag')
         unix(d2s('rm',opj(dst_path,'bags',b.replace('.bag','.orig.bag'))),False)
-    
+       
 
 
 
@@ -76,7 +81,9 @@ def PP(bag_file_src_path,dst_path,
 
     save_obj(preprocessed_data,opj(dst_path,'preprocessed_data'))
 
-    save_bag_images(dst_path,bagfile_range,sides,scale_factor,apply_rectangles,image_extension)
+    if save_images:
+        save_bag_images(dst_path,left_image_bound_to_data,bagfile_range,sides,scale_factor,apply_rectangles,image_extension)
+        #make_stereo_frames(dst_path,left_image_bound_to_data,image_extension='png')
     
     return preprocessed_data,left_image_bound_to_data
 
@@ -134,7 +141,7 @@ def preprocess_bag_data(bag_files_path,bagfile_range=[]):
 
 
 
-def save_bag_images(bag_files_path,bagfile_range=[],sides=['left','right'],scale_factor=1.0,apply_rectangles=False,image_extension='png'):
+def save_bag_images(bag_files_path,left_image_bound_to_data,bagfile_range=[],sides=['left','right'],scale_factor=1.0,apply_rectangles=False,image_extension='png'):
 
     bag_files = sorted(glob.glob(opj(bag_files_path,'bags','*.bag')))
     
@@ -162,16 +169,16 @@ def save_bag_images(bag_files_path,bagfile_range=[],sides=['left','right'],scale
                     if side == 'left':
                         try:
                             apply_rect_to_img(img,left_image_bound_to_data[t]['steer'],0,99,[255,0,0],[0,255,0],0.1,0.03,center=True,reverse=True)
-                        except:
-                            print t
+                        except Exception as e:
+                            print 'steer', t, e.message, e.args
                         try:
                             apply_rect_to_img(img,left_image_bound_to_data[t]['motor'],0,99,[0,0,255],[255,255,0],0.9,0.03,center=True,reverse=False)
-                        except:
-                            print t
+                        except Exception as e:
+                            print 'motor', t, e.message, e.args
                         try:
                             apply_rect_to_img(img,left_image_bound_to_data[t]['encoder'],0,15,[150,150,0],[0,0,0],0.8,0.03)
-                        except:
-                            print t
+                        except Exception as e:
+                            print 'encoder', t, e.message, e.args
                         #try:# sonar seems to be mostly noise
                         #    apply_rect_to_img(img,left_image_bound_to_data[t]['sonar'],0,200,[0,150,150],[0,0,0],0.6,0.03)
                         #except:
@@ -180,8 +187,8 @@ def save_bag_images(bag_files_path,bagfile_range=[],sides=['left','right'],scale
                             gy = left_image_bound_to_data[t]['gyro']
                             gymag = np.sqrt(gy[0]**2 + gy[1]**2 + gy[2]**2)
                             apply_rect_to_img(img,gymag,0,120,[0,150,255],[0,0,0],0.7,0.03)
-                        except:
-                            print t
+                        except Exception as e:
+                            print 'gryo', t, e.message, e.args
                 unix('mkdir -p ' + opj(bag_files_path,'images/'+side+'_image',str(ctr1)),False,False)
                 imsave(opj(bag_files_path,'images/'+side+'_image',str(ctr1),t_str+'.'+image_extension), img)
                 ctr2 += 1
