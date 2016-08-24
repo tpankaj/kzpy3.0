@@ -98,6 +98,7 @@ username ALL=(ALL) NOPASSWD: ALL
 
 ########### SSH login without password, see: ############
 # http://www.linuxproblem.org/art_9.html
+# a@A:~> cat .ssh/id_rsa.pub | ssh b@B 'cat >> .ssh/authorized_keys'
 
 
 # play frames in folder
@@ -105,6 +106,34 @@ mplayer -fps 26 mf://*.png
 
 # make git store password for an hour
 git config --global credential.helper "cache --timeout=3600"
+
+
+################# setting time from command line (for when in Tilden) ##############
+# https://codeghar.wordpress.com/2007/12/06/manage-time-in-ubuntu-through-command-line/
+Set Time
+To change time means to set a new time. To set time in Ubuntu (or any Linux), just run the following command
+sudo date newdatetimestring
+where newdatetimestring has to follow the format nnddhhmmyyyy.ss which is described below
+nn is a two digit month, between 01 to 12
+dd is a two digit day, between 01 and 31, with the regular rules for days according to month and year applying
+hh is two digit hour, using the 24-hour period so it is between 00 and 23
+mm is two digit minute, between 00 and 59
+yyyy is the year; it can be two digit or four digit: your choice. I prefer to use four digit years whenever I can for better clarity and less confusion
+ss is two digit seconds. Notice the period ‘.’ before the ss.
+Let’s say you want to set your computer’s new time to December 6, 2007, 22:43:55, then you would use:
+sudo date 120622432007.55
+########
+
+############# data collection shortcuts (smartphone login) #######
+#
+alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
+alias rls='ls /media/ubuntu/rosbags'
+alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
+alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
+alias rgy='rostopic echo /bair_car/gyro'
+alias rst='rostopic echo /bair_car/steer'
+alias rmo='rostopic echo /bair_car/motor'
+alias rcd='cd /media/ubuntu/rosbags'
 
 
 ######################## for .bashrc from MacBook #################
