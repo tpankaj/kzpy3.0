@@ -125,7 +125,8 @@ void encoder_loop()
 {  
   dt = micros()-t1;
   if (doEncoderAdtSum > 0) {
-    enc_avg.addValue(1000.0*1000.0/16.0 * a / doEncoderAdtSum);
+    //enc_avg.addValue(1000.0*1000.0/16.0 * a / doEncoderAdtSum);
+    enc_avg.addValue(1000.0*1000.0/12.0 * a / doEncoderAdtSum); //6 magnets
     rate_1 = enc_avg.getAverage();
     t1 = micros();
     a = 0;

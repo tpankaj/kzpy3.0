@@ -133,7 +133,9 @@ alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
 alias rgy='rostopic echo /bair_car/gyro'
 alias rst='rostopic echo /bair_car/steer'
 alias rmo='rostopic echo /bair_car/motor'
+alias ren='rostopic echo /bair_car/encoder'
 alias rcd='cd /media/ubuntu/rosbags'
+alias ssd='sudo shutdown -h now'
 
 
 ######################## for .bashrc from MacBook #################
