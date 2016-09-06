@@ -65,7 +65,7 @@ void loop() {
 
   if (millis() - timer > 10) {
     timer = millis();
-    Serial.print("(acc,");
+    Serial.print("('acc',");
     Serial.print(ax/ctr); Serial.print(",");
     Serial.print(ay/ctr); Serial.print(",");
     Serial.print(az/ctr); Serial.print(")");
