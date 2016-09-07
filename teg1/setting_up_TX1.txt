@@ -136,6 +136,7 @@ alias rmo='rostopic echo /bair_car/motor'
 alias ren='rostopic echo /bair_car/encoder'
 alias rcd='cd /media/ubuntu/rosbags'
 alias ssd='sudo shutdown -h now'
+alias rcn='echo COMPUTER_NAME'
 
 
 ######################## for .bashrc from MacBook #################
@@ -150,5 +151,6 @@ export PYTHONPATH=~:$PYTHONPATH
 #export PYTHONPATH=~/kzpy3/caf2/layers:$PYTHONPATH
 export PYTHONSTARTUP=~/kzpy3/vis.py
 export PATH=~/kzpy3/scripts:$PATH
+export COMPUTER_NAME="Mr. ---"
 #
 ######################################################
