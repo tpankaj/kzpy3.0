@@ -1,4 +1,5 @@
-#! //anaconda/bin/python
+#! /usr/bin/python 
+#//anaconda/bin/python
 
 import caffe
 from kzpy3.utils import *
