@@ -10,9 +10,7 @@ weights_file_path = None #opjD('z1/z1_iter_3000.caffemodel')
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
-if host_name == 'tegra-ubuntu':
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
+
 
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
@@ -32,6 +30,8 @@ def safe_solver_step(solver,n=100000):
 
 
 if __name__ == '__main__':
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
 	solver = setup_solver()
 	if weights_file_path != None:
 		print "loading " + weights_file_path
