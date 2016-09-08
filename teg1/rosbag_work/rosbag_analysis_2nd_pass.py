@@ -13,7 +13,7 @@ vector3_topics = ['acc','gyro'] # leave out gps for now.
 all_topics = image_topics + single_value_topics + vector3_topics
 #
 ######################################################################
-
+ 
 ############## bagfile data processing to useful forms ##############################
 #
 A = {} # this will be renamed preprocessed_data for return
