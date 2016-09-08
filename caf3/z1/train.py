@@ -3,12 +3,24 @@
 
 import caffe
 from kzpy3.utils import *
+os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
+
+########################################################
+#          SETUP SECTION
+#
+#from kzpy3.teg1.get_bag_data import get_data
+#from kzpy3.teg1.get_live_data import get_data
+def get_data():
+	data_dic = {}
+	data_dic['img'] = np.zeros((10,10))
+	return data_dic
 
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
 weights_file_path = opjD('z1/z1_iter_3000.caffemodel') #None #
+#
+########################################################
 
-os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 
@@ -21,12 +33,8 @@ def setup_solver():
 	return solver
 
 
-def safe_solver_step(solver,n=100000):
-    while True:
-        try:
-            solver.step(n)
-        except Exception, e: 
-            print e
+def load_data_into_model(data_dic):
+	pass
 
 
 if __name__ == '__main__':
@@ -36,5 +44,8 @@ if __name__ == '__main__':
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	solver.step(10000)
-	#safe_solver_step(solver)
+	for i in range(10000):
+		load_data_into_model(get_data())
+		solver.step(1)
+
+
