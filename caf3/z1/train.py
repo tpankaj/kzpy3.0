@@ -6,7 +6,7 @@ from kzpy3.utils import *
 
 
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = None #opjD('z1/z1_iter_3000.caffemodel')
+weights_file_path = opjD('z1/z1_iter_3000.caffemodel') #None #
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
