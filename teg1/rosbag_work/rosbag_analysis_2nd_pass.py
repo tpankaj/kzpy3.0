@@ -19,9 +19,9 @@ all_topics = image_topics + single_value_topics + vector3_topics
 A = {} # this will be renamed preprocessed_data for return
 
 
-def PP(bag_file_src_path,dst_path,bagfile_range=[]):       
+def PP(bag_file_path,dst_path,bagfile_range=[]):       
     
-    preprocessed_data,left_image_bound_to_data = preprocess_bag_data(dst_path,bagfile_range)
+    preprocessed_data,left_image_bound_to_data = preprocess_bag_data(bag_file_path,bagfile_range)
 
     save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data'))
 
@@ -36,7 +36,7 @@ def preprocess_bag_data(bag_files_path,bagfile_range=[]):
     for topic in all_topics:
         A[topic] = {}
 
-    bag_files = sorted(glob.glob(opj(bag_files_path,'bags','*.bag')))
+    bag_files = sorted(glob.glob(opj(bag_files_path,'*.bag')))
     
     if len(bagfile_range) > 0:
         bag_files = bag_files[bagfile_range[0]:(bagfile_range[1]+1)]
@@ -138,7 +138,7 @@ def _interpolate_single_values(A,topic):
     k,d = get_sorted_keys_and_data(A[topic])
     for i in range(0,len(k)-1):
         for j in range(int(k[i]*1000),int(k[i+1]*1000)):
-            v =  (d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i]
+            v =  round((d[i+1]-d[i])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i],3)
             interp_dic[j/1000.] = v
     return interp_dic
 
@@ -151,7 +151,7 @@ def _interpolate_vector_values(A,topic):
         for j in range(int(k[i]*1000),int(k[i+1]*1000)):
             v = []
             for u in range(dim):
-                v.append(  (d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u] )
+                v.append(  round((d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u], 3))
             interp_dic[j/1000.] = v
     return interp_dic
 
