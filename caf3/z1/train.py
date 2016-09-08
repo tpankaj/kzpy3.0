@@ -10,7 +10,7 @@ weights_file_path = None #opjD('z1/z1_iter_3000.caffemodel')
 
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
-if host_name == 'redwood2':
+if host_name == 'tegra-ubuntu':
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
