@@ -36,4 +36,5 @@ if __name__ == '__main__':
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	safe_solver_step(solver)
+	solver.step(10000)
+	#safe_solver_step(solver)
