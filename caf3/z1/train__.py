@@ -82,7 +82,7 @@ def run_solver(solver,d):
 			a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
 			loss.append(np.sqrt(a * a).mean())
 			ctr += 1
-			if np.mod(ctr,10) == 0:
+
 			if imshow:
 				print (ctr,loss[-1])
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
