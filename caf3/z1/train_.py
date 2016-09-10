@@ -78,7 +78,7 @@ def run_solver(solver,d):
 		if result == True:
 			solver.step(1)
 			a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
-			loss.append((a * a).mean())
+			loss.append(np.sqrt(a * a).mean())
 			ctr += 1
 			if np.mod(ctr,10) == 0:
 				print (ctr,loss[-1])
