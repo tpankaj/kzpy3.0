@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_5000.caffemodel') #None #
+weights_file_path = opjD('z1/z1_iter_6000.caffemodel') #None #
 #
 ########################################################
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	for i in range(10000):
+	for i in range(10000000):
 		result = load_data_into_model(solver,d.get_data('bgr8'))
 		if result == False:
 			break
