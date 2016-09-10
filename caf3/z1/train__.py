@@ -86,8 +86,8 @@ def run_solver(solver,d):
 				print (ctr,loss[-1])
 			if imshow:
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
-				img += 0.5
-				img *= 255
+				img *= 255.0
+				img += 128.0
 				img[:,:,1] = img[:,:,0]
 				img[:,:,2] = img[:,:,0]
 				cv2.imshow('left',img)
