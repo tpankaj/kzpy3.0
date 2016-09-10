@@ -32,8 +32,7 @@ bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_
 
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2)
 
-def load_data_into_model(solver,data_dic):
-	data = d.get_data('bgr8')
+def load_data_into_model(solver,data):
 	if data == 'END' :
 		print """data = 'END':"""
 		return False
@@ -73,11 +72,11 @@ if __name__ == '__main__':
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	for i in range(10000):
-		result = load_data_into_model(solver,d.get_data())
+		result = load_data_into_model(solver,d.get_data('bgr8'))
 		if result == False:
 			break
 		if result == True:
-			print i
+			#print i
 			solver.step(1)
 
 
