@@ -47,14 +47,17 @@ def load_data_into_model(solver,data,imshow=False):
 			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]
 			if imshow:
-				"""
-				cv2.imshow('left',solver.net.blobs['ZED_data_pool2'].data[0,0,:,:])
-				cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				img = zeros((94,168,3),'uint8')
+				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
+				img[:,:,1] = img[:,:,0]
+				img[:,:,2] = img[:,:,0]
+				cv2.imshow('left',img)
+				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
-				"""
-				mi(solver.net.blobs['ZED_data_pool2'].data[0,0,:,:],'left')
-				mi(solver.net.blobs['ZED_data_pool2'].data[0,2,:,:],'right')
+				
+				#mi(solver.net.blobs['ZED_data_pool2'].data[0,0,:,:],'left')
+				#mi(solver.net.blobs['ZED_data_pool2'].data[0,2,:,:],'right')
 
 
 			for i in range(len(target_data)):
