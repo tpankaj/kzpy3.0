@@ -54,7 +54,7 @@ def load_data_into_model(solver,data,imshow=False):
 
 
 			for i in range(len(target_data)):
-				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]
+				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]/99.
 
 		else:
 			print """not if type(data['left']) == np.ndarray: """+str(time.time())
@@ -96,8 +96,8 @@ def run_solver(solver,d):
 				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
-				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:],1)
-				print np.round(solver.net.blobs['ip2'].data[0,:],1)
+				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:],3)
+				print np.round(solver.net.blobs['ip2'].data[0,:],3)
 
 if __name__ == '__main__':
 	caffe.set_device(0)
