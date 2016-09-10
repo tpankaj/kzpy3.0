@@ -47,20 +47,7 @@ def load_data_into_model(solver,data,imshow=False):
 			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]
-			if imshow:
-				
-				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
-				img[:,:,1] = img[:,:,0]
-				img[:,:,2] = img[:,:,0]
-				cv2.imshow('left',img)
-				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
-				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
-				img[:,:,1] = img[:,:,0]
-				img[:,:,2] = img[:,:,0]
-				cv2.imshow('right',img)
-				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
-				if cv2.waitKey(1) & 0xFF == ord('q'):
-				    pass
+
 				
 				#mi(solver.net.blobs['ZED_data_pool2'].data[0,0,:,:],'left')
 				#mi(solver.net.blobs['ZED_data_pool2'].data[0,2,:,:],'right')
@@ -96,13 +83,21 @@ def run_solver(solver,d):
 			ctr += 1
 			if np.mod(ctr,10) == 0:
 				print (ctr,loss[-1])
-			"""
-			if np.mod(ctr,100) == 0:
-				plt.figure('loss')
-				plt.clf()
-				plt.plot(loss)
-				plt.show()
-			"""
+			if imshow:
+				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
+				img[:,:,1] = img[:,:,0]
+				img[:,:,2] = img[:,:,0]
+				cv2.imshow('left',img)
+				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
+				img[:,:,1] = img[:,:,0]
+				img[:,:,2] = img[:,:,0]
+				cv2.imshow('right',img)
+				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				if cv2.waitKey(1) & 0xFF == ord('q'):
+				    pass
+				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:],1)
+				print np.round(solver.net.blobs['ip2'].data[0,:],1)
 
 if __name__ == '__main__':
 	caffe.set_device(0)
