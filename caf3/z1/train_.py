@@ -63,16 +63,10 @@ def load_data_into_model(solver,data,imshow=False):
 	return True
 
 # 
-# 
-
-if __name__ == '__main__':
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
-	solver = setup_solver()
-	loss = []
-	if weights_file_path != None:
-		print "loading " + weights_file_path
-		solver.net.copy_from(weights_file_path)
+#
+loss = []
+def run_solver(solver,d):
+	global loss
 	ctr = 0
 	while True:
 		imshow = False
@@ -88,9 +82,24 @@ if __name__ == '__main__':
 			ctr += 1
 			if np.mod(ctr,10) == 0:
 				print (ctr,loss[-1])
+			"""
 			if np.mod(ctr,100) == 0:
 				plt.figure('loss')
 				plt.clf()
 				plt.plot(loss)
+				plt.show()
+			"""
+
+if __name__ == '__main__':
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
+	solver = setup_solver()
+	
+	if weights_file_path != None:
+		print "loading " + weights_file_path
+		solver.net.copy_from(weights_file_path)
+	run_solver(solver,d)
+
+
 
 
