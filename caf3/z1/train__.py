@@ -43,10 +43,10 @@ def load_data_into_model(solver,data,imshow=False):
 			target_data = data['steer']
 			target_data += data['motor']
 
-			solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]
-			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]
-			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]
-			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]
+			solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
+			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
+			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]/255.0-.5
+			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]/255.0-.5
 
 				
 				#mi(solver.net.blobs['ZED_data_pool2'].data[0,0,:,:],'left')
