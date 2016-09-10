@@ -90,7 +90,7 @@ def run_solver(solver,d):
 				img *= 255.
 				img[:,:,1] = img[:,:,0]
 				img[:,:,2] = img[:,:,0]
-				cv2.imshow('left',img)
+				cv2.imshow('left',img.astype('uint8'))
 				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
 				img[:,:,1] = img[:,:,0]
