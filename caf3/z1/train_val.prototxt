@@ -18,8 +18,8 @@ layer {
 		shape {
 			dim: 1
 			dim: 4
-			dim: 672
 			dim: 376
+			dim: 672
 		}
 	}
 }
