@@ -84,6 +84,15 @@ def load_images_from_bag(bag_file_path,color_mode="rgb8"):
     return bag_img_dic
 
 
+def save_grayscale_quarter_images(bag_folder,bag_filename):
+    b = load_images_from_bag(bag_file_path,color_mode="rgb8")
+    for s in ['left','right']:
+        for t in b[s]:
+            b[s][t] = b[s][t][:,:,1]
+            b[s][t] = imresize(b[s][t],0.25)
+    unix('mkdir -p '+opj(bag_folder,'.preprocessed'))
+    save_obj(b,opj(bag_folder,'.preprocessed',bag_filename))
+
 """
 bag_folder_path = '/home/karlzipser/Desktop/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
 
