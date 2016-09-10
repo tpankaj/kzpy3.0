@@ -32,7 +32,7 @@ bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_
 
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2)
 
-def load_data_into_model(solver,data):
+def load_data_into_model(solver,data,imshow=False):
 	if data == 'END' :
 		print """data = 'END':"""
 		return False
@@ -41,10 +41,11 @@ def load_data_into_model(solver,data):
 			target_data = data['steer']
 			target_data += data['motor']
 
-			cv2.imshow('left',data['left'][0])
-			cv2.imshow('right',data['right'][0])
-			if cv2.waitKey(1) & 0xFF == ord('q'):
-			    pass
+			if imshow:
+				cv2.imshow('left',data['left'][0])
+				cv2.imshow('right',data['right'][0])
+				if cv2.waitKey(1) & 0xFF == ord('q'):
+				    pass
 
 			solver.net.blobs['ZED_data'].data[0,0,:,:] = data['left'][0][:,:,1]
 			solver.net.blobs['ZED_data'].data[0,1,:,:] = data['left'][1][:,:,1]
@@ -68,15 +69,28 @@ if __name__ == '__main__':
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 	solver = setup_solver()
+	loss = []
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	for i in range(10000000):
-		result = load_data_into_model(solver,d.get_data('bgr8'))
+	ctr = 0
+	while True:
+		imshow = False
+		if np.mod(ctr,10) == 0:
+			imshow = True
+		result = load_data_into_model(solver,d.get_data('bgr8'),imshow)
 		if result == False:
 			break
 		if result == True:
-			#print i
 			solver.step(1)
+			a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
+			loss.append((a * a).mean)
+			ctr += 1
+			if np.mod(ctr,10) == 0:
+				print (ctr,loss[-1])
+			if np.mod(ctr,100) == 0:
+				plt.figure('loss')
+				plt.clf()
+				plt.plot(loss)
 
 
