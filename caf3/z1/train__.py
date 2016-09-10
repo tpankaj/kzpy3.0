@@ -42,10 +42,10 @@ def load_data_into_model(solver,data,imshow=False):
 			target_data += data['motor']
 
 
-			solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:,1]
-			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:,1]
-			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:,1]
-			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:,1]
+			solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]
+			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]
+			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]
+			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]
 			if imshow:
 				cv2.imshow('left',solver.net.blobs['ZED_data_pool2'].data[0,0,:,:])
 				cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
