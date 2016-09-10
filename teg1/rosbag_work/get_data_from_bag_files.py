@@ -28,9 +28,13 @@ class Bair_Car_Recorded_Data:
         self.target_topics = target_topics
         self.num_frames = num_frames
 
-    def get_data(self,color_mode="rgb8"):
+    def get_data(self,quarter_gray=True,color_mode="rgb8"):
         if self.bag_img_dic == None:
-            self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
+            if quarter_gray == True:
+                f = self.bag_files[self.bag_file_num].split('/')[-1]
+                self.bag_img_dic = load_obj(opj(bag_folder,'.preprocessed',f))
+            else:
+                self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
             self.timestamp_num = 0
             self.timestamps = sorted(self.bag_img_dic['left'].keys())
         t = self.timestamps[self.timestamp_num]
