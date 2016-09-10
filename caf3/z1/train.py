@@ -38,8 +38,8 @@ def load_data_into_model(data_dic):
 
 
 if __name__ == '__main__':
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
+	#caffe.set_device(0)
+	#caffe.set_mode_gpu()
 	solver = setup_solver()
 	if weights_file_path != None:
 		print "loading " + weights_file_path
