@@ -32,7 +32,9 @@ bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_
 
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2)
 
+img = zeros((94,168,3),'uint8')
 def load_data_into_model(solver,data,imshow=False):
+	global img
 	if data == 'END' :
 		print """data = 'END':"""
 		return False
@@ -41,17 +43,21 @@ def load_data_into_model(solver,data,imshow=False):
 			target_data = data['steer']
 			target_data += data['motor']
 
-
 			solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]
 			solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]
 			if imshow:
-				img = zeros((94,168,3),'uint8')
+				
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
 				img[:,:,1] = img[:,:,0]
 				img[:,:,2] = img[:,:,0]
 				cv2.imshow('left',img)
+				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
+				img[:,:,1] = img[:,:,0]
+				img[:,:,2] = img[:,:,0]
+				cv2.imshow('right',img)
 				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
@@ -78,7 +84,7 @@ def run_solver(solver,d):
 	ctr = 0
 	while True:
 		imshow = False
-		if np.mod(ctr,10) == 0:
+		if np.mod(ctr,1) == 0:
 			imshow = True
 		result = load_data_into_model(solver,d.get_data(True),imshow)
 		if result == False:
