@@ -72,7 +72,7 @@ def run_solver(solver,d):
 	ctr = 0
 	while True:
 		imshow = False
-		if np.mod(ctr,5) == 0:
+		if np.mod(ctr,20) == 0:
 			imshow = True
 		result = load_data_into_model(solver,d.get_data(True),imshow)
 		if result == False:
@@ -92,11 +92,13 @@ def run_solver(solver,d):
 				img[:,:,2] = img[:,:,0]
 				cv2.imshow('left',img.astype('uint8'))
 				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				"""
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
 				img[:,:,1] = img[:,:,0]
 				img[:,:,2] = img[:,:,0]
 				cv2.imshow('right',img)
 				#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
+				"""
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
 				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
