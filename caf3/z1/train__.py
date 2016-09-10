@@ -32,7 +32,7 @@ bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_
 
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2)
 
-img = zeros((94,168,3),'uint8')
+img = zeros((94,168,3))#,'uint8')
 def load_data_into_model(solver,data,imshow=False):
 	global img
 	if data == 'END' :
@@ -86,8 +86,8 @@ def run_solver(solver,d):
 				print (ctr,loss[-1])
 			if imshow:
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
-				img *= 255
-				img += 128
+				img *= 255.
+				img += 128.
 				img[:,:,1] = img[:,:,0]
 				img[:,:,2] = img[:,:,0]
 				cv2.imshow('left',img)
