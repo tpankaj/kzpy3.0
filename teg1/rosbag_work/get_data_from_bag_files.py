@@ -32,7 +32,7 @@ class Bair_Car_Recorded_Data:
         if self.bag_img_dic == None:
             if quarter_gray == True:
                 f = self.bag_files[self.bag_file_num].split('/')[-1]
-                self.bag_img_dic = load_obj(opj(bag_folder,'.preprocessed',f))
+                self.bag_img_dic = load_obj(opj(bag_folder_path,'.preprocessed',f))
             else:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
             self.timestamp_num = 0
