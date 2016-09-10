@@ -33,7 +33,7 @@ class Bair_Car_Recorded_Data:
             if quarter_gray == True:
                 f = self.bag_files[self.bag_file_num].split('/')[-1]
                 fp = opj(self.bag_folder_path,'.preprocessed',f)
-                print "loading " + fp
+                print "loading " + fp + ".pkl"
                 self.bag_img_dic = load_obj(fp)
             else:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
