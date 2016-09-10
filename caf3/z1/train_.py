@@ -54,7 +54,7 @@ def load_data_into_model(solver,data_dic):
 
 			for i in range(len(target_data)):
 				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]
-				
+
 		else:
 			print """not if type(data['left']) == np.ndarray: """+str(time.time())
 	else:
@@ -73,7 +73,8 @@ if __name__ == '__main__':
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	for i in range(10000):
-		result = load_data_into_model(solver,get_data()):
+		print i
+		result = load_data_into_model(solver,get_data())
 		if result == False:
 			break
 		if result == True:
