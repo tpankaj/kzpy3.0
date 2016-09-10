@@ -84,7 +84,7 @@ def run_solver(solver,d):
 			ctr += 1
 
 			if imshow:
-				print (ctr,loss[-99:].mean())
+				print (ctr,np.array(loss[-99:]).mean())
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
 				img += 0.5
 				img *= 255.
