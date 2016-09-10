@@ -72,7 +72,7 @@ def run_solver(solver,d):
 	ctr = 0
 	while True:
 		imshow = False
-		if np.mod(ctr,20) == 0:
+		if np.mod(ctr,100) == 0:
 			imshow = True
 		result = load_data_into_model(solver,d.get_data(True),imshow)
 		if result == False:
@@ -83,8 +83,8 @@ def run_solver(solver,d):
 			loss.append(np.sqrt(a * a).mean())
 			ctr += 1
 			if np.mod(ctr,10) == 0:
-				print (ctr,loss[-1])
 			if imshow:
+				print (ctr,loss[-1])
 				img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
 				img += 0.5
 				img *= 255.
