@@ -73,11 +73,11 @@ if __name__ == '__main__':
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	for i in range(10000):
-		print i
 		result = load_data_into_model(solver,d.get_data())
 		if result == False:
 			break
 		if result == True:
+			print i
 			solver.step(1)
 
 
