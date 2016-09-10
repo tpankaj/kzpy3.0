@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_39000.caffemodel') #None #
+weights_file_path = opjD('z1/z1_iter_12000.caffemodel') #None #
 #
 ########################################################
 
