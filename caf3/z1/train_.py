@@ -74,7 +74,7 @@ if __name__ == '__main__':
 		solver.net.copy_from(weights_file_path)
 	for i in range(10000):
 		print i
-		result = load_data_into_model(solver,get_data())
+		result = load_data_into_model(solver,d.get_data())
 		if result == False:
 			break
 		if result == True:
