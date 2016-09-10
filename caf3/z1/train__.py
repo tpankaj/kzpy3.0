@@ -67,6 +67,7 @@ def load_data_into_model(solver,data,imshow=False):
 #
 loss = []
 def run_solver(solver,d):
+	global img
 	global loss
 	ctr = 0
 	while True:
