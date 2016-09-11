@@ -118,17 +118,22 @@ def _bind_left_image_timestamps_to_data(A):
     ms_timestamps['right_image'] = _assign_right_image_timestamps(A)
 
     for topic in single_value_topics:
-        ms_timestamps[topic] = _interpolate_single_values(A,topic)
-
+        try:
+            ms_timestamps[topic] = _interpolate_single_values(A,topic)
+        except:
+            print 'Error with topic '+topic
     for topic in vector3_topics:
-        ms_timestamps[topic] = _interpolate_vector_values(A,topic)
+        try:
+            ms_timestamps[topic] = _interpolate_vector_values(A,topic)
+        except:
+            print 'Error with topic '+topic
 
     left_image_bound_to_data = {}
 
     error_log = []
 
     sorted_keys = sorted(A['left_image'].keys())
-    for i in range(5,len(sorted_keys)-5):
+    for i in range(30,len(sorted_keys)-30):
     # we throw away the first and last 5 frames to avoid boundry problems with other sensors
         k = sorted_keys[i]
         left_image_bound_to_data[k] = {}
