@@ -31,7 +31,7 @@ def setup_solver():
 bag_folder_path = '/media/ubuntu/rosbags/direct_7Sept2016_Mr_Orange_Tilden'
 #'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
 
-d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True)
+d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
 
 img = zeros((94,168,3))#,'uint8')
 def load_data_into_model(solver,data):
