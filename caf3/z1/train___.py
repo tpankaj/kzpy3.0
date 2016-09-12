@@ -124,7 +124,7 @@ if __name__ == '__main__':
 					if 'follow' not in bag_folder_path:
 						try:
 							d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor'],2,True,True)				
-							run_solver(solver,d,1000)
+							run_solver(solver,d,300)
 						except Exception as e:
 							print "***************************************"
 							print e.message, e.args
