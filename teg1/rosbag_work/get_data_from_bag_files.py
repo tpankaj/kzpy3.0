@@ -34,9 +34,9 @@ class Bair_Car_Recorded_Data:
             self.bag_file_num = np.random.randint(len(self.bag_files))
         if self.bag_img_dic == None:
             if quarter_gray == True:
-                fp = self.bag_files[self.bag_file_num].split('/')[-1]
+                fp = self.bag_files[self.bag_file_num]#.split('/')#[-1]
                 #fp = opj(self.bag_folder_path,'.preprocessed',f)
-                print "loading " + fp + ".pkl"
+                print "loading " + fp
                 self.bag_img_dic = load_obj(fp.replace('.pkl',''))
             else:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
