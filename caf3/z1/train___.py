@@ -119,15 +119,16 @@ if __name__ == '__main__':
 	while True:
 		bag_folder_path = bag_folders[np.random.randint(len(bag_folders))]
 		if len(gg(opj(bag_folder_path,'.preprocessed','left*'))) > 0:
-			if 'play' not in bag_folder_path:
-				if 'follow' not in bag_folder_path:
-					try:
-						d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)				
-						run_solver(solver,d,1000)
-					except Exception as e:
-						print "***************************************"
-						print e.message, e.args
-						print "***************************************"
+			if len(gg(opj(bag_folder_path,'.preprocessed','*.bag.pkl'))) > 10:
+				if 'play' not in bag_folder_path:
+					if 'follow' not in bag_folder_path:
+						try:
+							d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)				
+							run_solver(solver,d,1000)
+						except Exception as e:
+							print "***************************************"
+							print e.message, e.args
+							print "***************************************"
 
 
 
