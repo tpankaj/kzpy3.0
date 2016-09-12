@@ -120,7 +120,10 @@ if __name__ == '__main__':
 		bag_folder_path = bag_folders[np.random.randint(len(bag_folders))]
 		if len(gg(opj(bag_folder_path,'.preprocessed','load_data_into_model.pkl'))) > 0:
 			d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
-			run_solver(solver,d,1000)
+			try:
+				run_solver(solver,d,1000)
+			except Exception as e:
+				print e.message, e.args
 
 
 
