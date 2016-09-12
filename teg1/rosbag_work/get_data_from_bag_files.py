@@ -31,7 +31,7 @@ class Bair_Car_Recorded_Data:
         self.random_timestamp = random_timestamp
         self.good_timestamps = []
         for t in self.left_image_bound_to_data:
-            if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps
+            if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps:
                 self.good_timestamps.append(t)
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
