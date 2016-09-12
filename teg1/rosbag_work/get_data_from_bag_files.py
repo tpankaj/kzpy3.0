@@ -61,14 +61,14 @@ class Bair_Car_Recorded_Data:
                         target_data = []
                         left_list = []
                         right_list = []
-                        ctr = 0
+                        fctr = 0
                         for tn in range(self.timestamp_num,self.timestamp_num+self.num_data_steps):
                             data = self.left_image_bound_to_data[self.timestamps[tn]][topic]
                             target_data.append(data)
-                            if ctr < self.num_frames:
+                            if fctr < self.num_frames:
                                 left_list.append(self.bag_img_dic['left'][self.timestamps[tn]])
                                 right_list.append(self.bag_img_dic['right'][self.left_image_bound_to_data[self.timestamps[tn]]['right_image']])
-                                ctr += 1
+                                fctr += 1
                         self.data_dic[topic] = target_data
                     self.data_dic['left'] = left_list
                     self.data_dic['right'] = right_list
@@ -84,9 +84,9 @@ class Bair_Car_Recorded_Data:
             if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
                 return 'END'
         else:
-            ctr += 1
+            self.ctr += 1
             if self.ctr > 900:
-                ctr = 0
+                self.ctr = 0
                 self.bag_img_dic = None
         return self.data_dic
 
