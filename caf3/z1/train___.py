@@ -73,7 +73,7 @@ def run_solver(solver,d):
 	ctr = 0
 	while True:
 		imshow = False
-		if np.mod(ctr,100) == 0:
+		if np.mod(ctr,1) == 0:
 			imshow = True
 		result = load_data_into_model(solver,d.get_data(True))
 		if result == False:
