@@ -76,13 +76,18 @@ class Bair_Car_Recorded_Data:
             else:
                 pass
 
-        self.timestamp_num += 1
-        if self.timestamp_num >= len(self.timestamps):
-            self.bag_img_dic = None
-            if self.rand_bag == False:
+        if self.random_timestamp == False:
+            self.timestamp_num += 1
+            if self.timestamp_num >= len(self.timestamps):
+                self.bag_img_dic = None
                 self.bag_file_num += 1
-        if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
-            return 'END'
+            if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
+                return 'END'
+        else:
+            ctr += 1
+            if self.ctr > 900:
+                ctr = 0
+                self.bag_img_dic = None
         return self.data_dic
 
 
