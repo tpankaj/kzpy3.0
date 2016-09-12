@@ -49,7 +49,7 @@ class Bair_Car_Recorded_Data:
             self.timestamp_num = 0
             self.timestamps = sorted(self.bag_img_dic['left'].keys())
         if self.random_timestamp == True:
-            self.timestamp_num = np.random.randint(len(self.good_timestamps))
+            self.timestamp_num = np.random.randint(len(self.timestamps))
         t = self.timestamps[self.timestamp_num]
         self.data_dic = {}
 
