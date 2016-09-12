@@ -118,8 +118,9 @@ if __name__ == '__main__':
 		solver.net.copy_from(weights_file_path)
 	while True:
 		bag_folder_path = bag_folders[np.random.randint(len(bag_folders))]
-		d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
-		run_solver(solver,d,1000)
+		if len(gg(opj(bag_folder_path,'.preprocessed','load_data_into_model.pkl'))) > 0:
+			d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
+			run_solver(solver,d,1000)
 
 
 
