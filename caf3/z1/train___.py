@@ -123,7 +123,7 @@ if __name__ == '__main__':
 				if 'play' not in bag_folder_path:
 					if 'follow' not in bag_folder_path:
 						try:
-							d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)				
+							d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor'],2,True,True)				
 							run_solver(solver,d,1000)
 						except Exception as e:
 							print "***************************************"
