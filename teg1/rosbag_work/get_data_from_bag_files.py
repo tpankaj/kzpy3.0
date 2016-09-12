@@ -13,7 +13,7 @@ bridge = cv_bridge.CvBridge()
 
 class Bair_Car_Recorded_Data:
     """ """
-    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag):
+    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag,random_timestamp):
         self.bag_folder_path = bag_folder_path
         self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'.preprocessed','*.bag.pkl')))
         file_path = opj(bag_folder_path,'.preprocessed','left_image_bound_to_data')
@@ -28,6 +28,11 @@ class Bair_Car_Recorded_Data:
         self.target_topics = target_topics
         self.num_frames = num_frames
         self.rand_bag = rand_bag
+        self.random_timestamp = random_timestamp
+        self.good_timestamps = []
+        for t in self.left_image_bound_to_data:
+            if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps
+                self.good_timestamps.append(t)
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
         if self.rand_bag == True:
@@ -42,7 +47,10 @@ class Bair_Car_Recorded_Data:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
             self.timestamp_num = 0
             self.timestamps = sorted(self.bag_img_dic['left'].keys())
-        t = self.timestamps[self.timestamp_num]
+        if self.random_timestamp == True:
+            t = np.random.randint(len(self.good_timestamps))
+        else:
+            t = self.timestamps[self.timestamp_num]
         self.data_dic = {}
 
         if t in self.left_image_bound_to_data:
