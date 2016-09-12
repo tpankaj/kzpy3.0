@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = None #opjD('z1/z1_iter_81000.caffemodel') #
+weights_file_path = opjD('z1/z1_iter_135000.caffemodel') #
 #
 ########################################################
 
@@ -102,8 +102,8 @@ def run_solver(solver,d):
 				"""
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
-				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
-				print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
+				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:6],3)
+				print np.round(solver.net.blobs['ip2'].data[0,:][:6],3)
 
 if __name__ == '__main__':
 	caffe.set_device(0)
