@@ -28,10 +28,6 @@ def setup_solver():
 	return solver
 
 
-bag_folder_path = '/media/ubuntu/rosbags/direct_7Sept2016_Mr_Orange_Tilden'
-#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
-
-d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
 
 img = zeros((94,168,3))#,'uint8')
 def load_data_into_model(solver,data):
@@ -67,13 +63,14 @@ def load_data_into_model(solver,data):
 # 
 #
 loss = []
-def run_solver(solver,d):
+def run_solver(solver,d,num_steps):
 	global img
 	global loss
+	step_ctr = 0
 	ctr = 0
-	while True:
+	while step_ctr < num_steps:
 		imshow = False
-		if np.mod(ctr,1) == 0:
+		if np.mod(ctr,100) == 0:
 			imshow = True
 		result = load_data_into_model(solver,d.get_data(True))
 		if result == False:
@@ -104,8 +101,14 @@ def run_solver(solver,d):
 				    pass
 				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
 				print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
+		step_ctr += 1
 
 if __name__ == '__main__':
+	bag_folders = gg('/media/ubuntu/rosbags/*') #direct_7Sept2016_Mr_Orange_Tilden'
+	#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
+	bag_folder_path = bag_folders[0]
+	d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
+
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 	solver = setup_solver()
@@ -113,7 +116,8 @@ if __name__ == '__main__':
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	run_solver(solver,d)
+	while True:
+		run_solver(solver,d,1000)
 
 
 
