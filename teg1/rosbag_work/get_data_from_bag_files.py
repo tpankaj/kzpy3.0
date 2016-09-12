@@ -85,7 +85,7 @@ class Bair_Car_Recorded_Data:
                 return 'END'
         else:
             self.ctr += 1
-            if self.ctr > 450:
+            if self.ctr > 225:
                 self.ctr = 0
                 self.bag_img_dic = None
         return self.data_dic
