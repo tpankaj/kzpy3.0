@@ -15,7 +15,7 @@ class Bair_Car_Recorded_Data:
     """ """
     def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag):
         self.bag_folder_path = bag_folder_path
-        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'.preprocessed',*.bag.pkl')))
+        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'.preprocessed','*.bag.pkl')))
         file_path = opj(bag_folder_path,'.preprocessed','left_image_bound_to_data')
         print "loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
