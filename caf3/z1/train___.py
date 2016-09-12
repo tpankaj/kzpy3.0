@@ -106,8 +106,8 @@ def run_solver(solver,d,num_steps):
 if __name__ == '__main__':
 	bag_folders = gg('/media/ubuntu/rosbags/bair_car_data/*') #direct_7Sept2016_Mr_Orange_Tilden'
 	#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
-	bag_folder_path = bag_folders[0]
-	d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
+	
+	
 
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
@@ -117,6 +117,8 @@ if __name__ == '__main__':
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	while True:
+		bag_folder_path = bag_folders[np.random.randint(len(bag_folders))]
+		d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
 		run_solver(solver,d,1000)
 
 
