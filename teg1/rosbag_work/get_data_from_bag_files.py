@@ -13,7 +13,7 @@ bridge = cv_bridge.CvBridge()
 
 class Bair_Car_Recorded_Data:
     """ """
-    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames):
+    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag):
         self.bag_folder_path = bag_folder_path
         self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'*.bag')))
         file_path = opj(bag_folder_path,'.preprocessed','left_image_bound_to_data')
@@ -27,8 +27,11 @@ class Bair_Car_Recorded_Data:
         self.num_data_steps = num_data_steps
         self.target_topics = target_topics
         self.num_frames = num_frames
+        self.rand_bag = rand_bag
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
+        if self.rand_bag == True:
+            self.bag_file_num = np.random.randint(len(self.bag_files))
         if self.bag_img_dic == None:
             if quarter_gray == True:
                 f = self.bag_files[self.bag_file_num].split('/')[-1]
@@ -68,7 +71,8 @@ class Bair_Car_Recorded_Data:
         self.timestamp_num += 1
         if self.timestamp_num >= len(self.timestamps):
             self.bag_img_dic = None
-            self.bag_file_num += 1
+            if self.rand_bag == False:
+                self.bag_file_num += 1
         if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
             return 'END'
         return self.data_dic
