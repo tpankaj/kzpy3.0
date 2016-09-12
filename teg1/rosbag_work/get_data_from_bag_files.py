@@ -33,6 +33,7 @@ class Bair_Car_Recorded_Data:
         for t in self.left_image_bound_to_data:
             if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps:
                 self.good_timestamps.append(t)
+        self.ctr = 0
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
         if self.rand_bag == True:
@@ -48,9 +49,8 @@ class Bair_Car_Recorded_Data:
             self.timestamp_num = 0
             self.timestamps = sorted(self.bag_img_dic['left'].keys())
         if self.random_timestamp == True:
-            t = np.random.randint(len(self.good_timestamps))
-        else:
-            t = self.timestamps[self.timestamp_num]
+            self.timestamp_num = np.random.randint(len(self.good_timestamps))
+        t = self.timestamps[self.timestamp_num]
         self.data_dic = {}
 
         if t in self.left_image_bound_to_data:
