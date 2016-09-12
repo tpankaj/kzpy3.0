@@ -33,7 +33,7 @@ bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True)
 
 img = zeros((94,168,3))#,'uint8')
-def load_data_into_model(solver,data,imshow=False):
+def load_data_into_model(solver,data):
 	global img
 	if data == 'END' :
 		print """data = 'END':"""
@@ -74,7 +74,7 @@ def run_solver(solver,d):
 		imshow = False
 		if np.mod(ctr,100) == 0:
 			imshow = True
-		result = load_data_into_model(solver,d.get_data(True),imshow)
+		result = load_data_into_model(solver,d.get_data(True))
 		if result == False:
 			break
 		if result == True:
