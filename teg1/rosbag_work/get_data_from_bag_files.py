@@ -15,7 +15,7 @@ class Bair_Car_Recorded_Data:
     """ """
     def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag):
         self.bag_folder_path = bag_folder_path
-        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'*.bag')))
+        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'.preprocessed',*.bag.pkl')))
         file_path = opj(bag_folder_path,'.preprocessed','left_image_bound_to_data')
         print "loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
@@ -34,10 +34,10 @@ class Bair_Car_Recorded_Data:
             self.bag_file_num = np.random.randint(len(self.bag_files))
         if self.bag_img_dic == None:
             if quarter_gray == True:
-                f = self.bag_files[self.bag_file_num].split('/')[-1]
-                fp = opj(self.bag_folder_path,'.preprocessed',f)
+                fp = self.bag_files[self.bag_file_num].split('/')[-1]
+                #fp = opj(self.bag_folder_path,'.preprocessed',f)
                 print "loading " + fp + ".pkl"
-                self.bag_img_dic = load_obj(fp)
+                self.bag_img_dic = load_obj(fp.replace('.pkl',''))
             else:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
             self.timestamp_num = 0

@@ -28,7 +28,8 @@ def setup_solver():
 	return solver
 
 
-bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
+bag_folder_path = '/media/ubuntu/rosbags/direct_7Sept2016_Mr_Orange_Tilden'
+#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
 
 d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True)
 
