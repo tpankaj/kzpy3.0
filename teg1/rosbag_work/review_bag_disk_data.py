@@ -1,6 +1,6 @@
 from kzpy3.utils import *
 
-"""
+""" 
 bag_folders = gg('/media/karlzipser/bair_car_data_2/bair_car_data/*')
 for b in bag_folders[12:]:
 	try:
