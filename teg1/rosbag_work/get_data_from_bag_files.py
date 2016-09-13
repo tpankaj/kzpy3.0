@@ -13,9 +13,9 @@ bridge = cv_bridge.CvBridge()
 
 class Bair_Car_Recorded_Data:
     """ """
-    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames):
+    def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag,random_timestamp):
         self.bag_folder_path = bag_folder_path
-        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'*.bag')))
+        self.bag_files = sorted(glob.glob(opj(self.bag_folder_path,'.preprocessed','*.bag.pkl')))
         file_path = opj(bag_folder_path,'.preprocessed','left_image_bound_to_data')
         print "loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
@@ -27,16 +27,29 @@ class Bair_Car_Recorded_Data:
         self.num_data_steps = num_data_steps
         self.target_topics = target_topics
         self.num_frames = num_frames
+        self.rand_bag = rand_bag
+        self.random_timestamp = random_timestamp
+        self.good_timestamps = []
+        for t in self.left_image_bound_to_data:
+            if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps:
+                self.good_timestamps.append(t)
+        self.ctr = 0
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
+        if self.rand_bag == True:
+            self.bag_file_num = np.random.randint(len(self.bag_files))
         if self.bag_img_dic == None:
             if quarter_gray == True:
-                f = self.bag_files[self.bag_file_num].split('/')[-1]
-                self.bag_img_dic = load_obj(opj(bag_folder,'.preprocessed',f))
+                fp = self.bag_files[self.bag_file_num]#.split('/')#[-1]
+                #fp = opj(self.bag_folder_path,'.preprocessed',f)
+                print "loading " + fp
+                self.bag_img_dic = load_obj(fp.replace('.pkl',''))
             else:
                 self.bag_img_dic = load_images_from_bag(self.bag_files[self.bag_file_num],color_mode)
             self.timestamp_num = 0
             self.timestamps = sorted(self.bag_img_dic['left'].keys())
+        if self.random_timestamp == True:
+            self.timestamp_num = np.random.randint(len(self.timestamps))
         t = self.timestamps[self.timestamp_num]
         self.data_dic = {}
 
@@ -48,14 +61,14 @@ class Bair_Car_Recorded_Data:
                         target_data = []
                         left_list = []
                         right_list = []
-                        ctr = 0
+                        fctr = 0
                         for tn in range(self.timestamp_num,self.timestamp_num+self.num_data_steps):
                             data = self.left_image_bound_to_data[self.timestamps[tn]][topic]
                             target_data.append(data)
-                            if ctr < self.num_frames:
+                            if fctr < self.num_frames:
                                 left_list.append(self.bag_img_dic['left'][self.timestamps[tn]])
                                 right_list.append(self.bag_img_dic['right'][self.left_image_bound_to_data[self.timestamps[tn]]['right_image']])
-                                ctr += 1
+                                fctr += 1
                         self.data_dic[topic] = target_data
                     self.data_dic['left'] = left_list
                     self.data_dic['right'] = right_list
@@ -63,12 +76,18 @@ class Bair_Car_Recorded_Data:
             else:
                 pass
 
-        self.timestamp_num += 1
-        if self.timestamp_num >= len(self.timestamps):
-            self.bag_img_dic = None
-            self.bag_file_num += 1
-        if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
-            return 'END'
+        if self.random_timestamp == False:
+            self.timestamp_num += 1
+            if self.timestamp_num >= len(self.timestamps):
+                self.bag_img_dic = None
+                self.bag_file_num += 1
+            if self.timestamp_num >= len(self.left_image_bound_to_data.keys()):
+                return 'END'
+        else:
+            self.ctr += 1
+            if self.ctr > 100:
+                self.ctr = 0
+                self.bag_img_dic = None
         return self.data_dic
 
 

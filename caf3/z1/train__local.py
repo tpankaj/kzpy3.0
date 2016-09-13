@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_135000.caffemodel') #
+weights_file_path = opjD('z1/z1_iter_25000.caffemodel') #
 #
 ########################################################
 
@@ -28,13 +28,12 @@ def setup_solver():
 	return solver
 
 
-bag_folder_path = '/media/ubuntu/rosbags/direct_7Sept2016_Mr_Orange_Tilden'
-#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
+bag_folder_path = '/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
 
-d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
+d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True)
 
 img = zeros((94,168,3))#,'uint8')
-def load_data_into_model(solver,data):
+def load_data_into_model(solver,data,imshow=False):
 	global img
 	if data == 'END' :
 		print """data = 'END':"""
@@ -75,7 +74,7 @@ def run_solver(solver,d):
 		imshow = False
 		if np.mod(ctr,100) == 0:
 			imshow = True
-		result = load_data_into_model(solver,d.get_data(True))
+		result = load_data_into_model(solver,d.get_data(True),imshow)
 		if result == False:
 			break
 		if result == True:
@@ -102,8 +101,8 @@ def run_solver(solver,d):
 				"""
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
-				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:6],3)
-				print np.round(solver.net.blobs['ip2'].data[0,:][:6],3)
+				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
+				print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
 
 if __name__ == '__main__':
 	caffe.set_device(0)

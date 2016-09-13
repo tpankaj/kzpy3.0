@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_135000.caffemodel') #
+weights_file_path = None #opjD('z1/z1_iter_81000.caffemodel') #
 #
 ########################################################
 
@@ -28,10 +28,6 @@ def setup_solver():
 	return solver
 
 
-bag_folder_path = '/media/ubuntu/rosbags/direct_7Sept2016_Mr_Orange_Tilden'
-#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
-
-d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor','encoder','acc','gyro'],2,True,True)
 
 img = zeros((94,168,3))#,'uint8')
 def load_data_into_model(solver,data):
@@ -67,11 +63,12 @@ def load_data_into_model(solver,data):
 # 
 #
 loss = []
-def run_solver(solver,d):
+def run_solver(solver,d,num_steps):
 	global img
 	global loss
+	step_ctr = 0
 	ctr = 0
-	while True:
+	while step_ctr < num_steps:
 		imshow = False
 		if np.mod(ctr,100) == 0:
 			imshow = True
@@ -102,10 +99,19 @@ def run_solver(solver,d):
 				"""
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 				    pass
-				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:6],3)
-				print np.round(solver.net.blobs['ip2'].data[0,:][:6],3)
+				print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
+				print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
+		step_ctr += 1
 
 if __name__ == '__main__':
+	bag_folders = gg('/media/ubuntu/rosbags/bair_car_data/*') #direct_7Sept2016_Mr_Orange_Tilden'
+	#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
+	
+	bag_folders_weighted = [] # Represents each bag folder ~proportional to number of bag files.
+	for b in bag_folders:
+		for i in range(int(len(gg(opj(b,'.preprocessed','*.bag.pkl')))/10+1)):
+				bag_folders_weighted.append(b)
+
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 	solver = setup_solver()
@@ -113,8 +119,19 @@ if __name__ == '__main__':
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
-	run_solver(solver,d)
-
+	while True:
+		bag_folder_path = bag_folders_weighted[np.random.randint(len(bag_folders_weighted))]
+		if len(gg(opj(bag_folder_path,'.preprocessed','left*'))) > 0:
+			if len(gg(opj(bag_folder_path,'.preprocessed','*.bag.pkl'))) > 10:
+				if 'play' not in bag_folder_path:
+					if 'follow' not in bag_folder_path:
+						try:
+							d = Bair_Car_Recorded_Data(bag_folder_path,10,['steer','motor'],2,True,True)				
+							run_solver(solver,d,300)
+						except Exception as e:
+							print "***************************************"
+							print e.message, e.args
+							print "***************************************"
 
 
 

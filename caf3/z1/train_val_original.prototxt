@@ -11,19 +11,42 @@ layer {
 }
 
 layer {
-	name: "ZED_data_pool2"
+	name: "ZED_data"
 	type: "DummyData"
-	top: "ZED_data_pool2"
+	top: "ZED_data"
 	dummy_data_param {
 		shape {
 			dim: 1
 			dim: 4
-			dim: 94
-			dim: 168
+			dim: 376
+			dim: 672
 		}
 	}
 }
-
+layer {
+	name: "ZED_data_pool1"
+	type: "Pooling"
+	bottom: "ZED_data"
+	top: "ZED_data_pool1"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad: 0
+	}
+}
+layer {
+	name: "ZED_data_pool2"
+	type: "Pooling"
+	bottom: "ZED_data_pool1"
+	top: "ZED_data_pool2"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad: 0
+	}
+}
 
 	
 ###################### Convolutional Layer Set 'conv1' ######################
