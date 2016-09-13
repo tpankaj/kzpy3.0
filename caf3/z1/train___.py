@@ -109,7 +109,7 @@ if __name__ == '__main__':
 	
 	bag_folders_weighted = [] # Represents each bag folder ~proportional to number of bag files.
 	for b in bag_folders:
-		for i in range(int(len(gg(b,'.preprocessed','*.bag.pkl'))/10+1)):
+		for i in range(int(len(gg(opj(b,'.preprocessed','*.bag.pkl')))/10+1)):
 				bag_folders_weighted.append(b)
 
 	caffe.set_device(0)
