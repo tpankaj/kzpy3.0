@@ -30,9 +30,22 @@ class Bair_Car_Recorded_Data:
         self.rand_bag = rand_bag
         self.random_timestamp = random_timestamp
         self.good_timestamps = []
+        self.binned_timestamps = [[],[],[],[],[]]
         for t in self.left_image_bound_to_data:
             if self.left_image_bound_to_data[t]['state_one_steps'] > self.num_data_steps:
                 self.good_timestamps.append(t)
+                steer = self.left_image_bound_to_data[t]['steer']
+                if steer < 0.35:
+                    self.binned_timestamps[0].append(t)
+                elif steer < 0.45:
+                    self.binned_timestamps[1].append(t)
+                elif steer < 0.55:
+                    self.binned_timestamps[2].append(t)
+                elif steer < 0.65:
+                    self.binned_timestamps[3].append(t)
+                else:
+                    self.binned_timestamps[4].append(t)
+
         self.ctr = 0
 
     def get_data(self,quarter_gray=True,color_mode="rgb8"):
