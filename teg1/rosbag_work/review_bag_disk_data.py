@@ -1,8 +1,9 @@
 from kzpy3.utils import *
 
-""" 
-bag_folders = gg('/media/karlzipser/bair_car_data_2/bair_car_data/*')
-for b in bag_folders[12:]:
+"""
+from kzpy3.teg1.rosbag_work.preprocess_bag_data import *
+bag_folders = gg('/media/karlzipser/bair_car_data_4/bair_car_data/*')
+for b in bag_folders[:]:
 	try:
 		preprocess_bag_data(b)
 		save_grayscale_quarter_bagfolder(b)
@@ -10,7 +11,7 @@ for b in bag_folders[12:]:
 		print b + ' failed.'
 """
 
-bair_car_data_path = '/media/karlzipser/bair_car_data_2/bair_car_data'
+bair_car_data_path = '/media/karlzipser/bair_car_data_4/bair_car_data'
 
 bair_car_data_folders = gg(opj(bair_car_data_path,'*'))
 
