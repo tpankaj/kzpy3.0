@@ -107,7 +107,10 @@ if __name__ == '__main__':
 	bag_folders = gg('/media/ubuntu/rosbags/bair_car_data/*') #direct_7Sept2016_Mr_Orange_Tilden'
 	#'/media/ubuntu/bair_car_data_3/bair_car_data/direct_7Sept2016_Mr_Orange_Tilden'
 	
-	
+	bag_folders_weighted = [] # Represents each bag folder ~proportional to number of bag files.
+	for b in bag_folders:
+		for i in range(int(len(gg(b,'.preprocessed','*.bag.pkl'))/10+1)):
+				bag_folders_weighted.append(b)
 
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
@@ -117,7 +120,7 @@ if __name__ == '__main__':
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	while True:
-		bag_folder_path = bag_folders[np.random.randint(len(bag_folders))]
+		bag_folder_path = bag_folders_weighted[np.random.randint(len(bag_folders_weighted))]
 		if len(gg(opj(bag_folder_path,'.preprocessed','left*'))) > 0:
 			if len(gg(opj(bag_folder_path,'.preprocessed','*.bag.pkl'))) > 10:
 				if 'play' not in bag_folder_path:
