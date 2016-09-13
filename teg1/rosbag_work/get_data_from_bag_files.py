@@ -121,13 +121,16 @@ def load_images_from_bag(bag_file_path,color_mode="rgb8"):
 
 
 def save_grayscale_quarter_images(bag_folder,bag_filename):
-    b = load_images_from_bag(opj(bag_folder,bag_filename),color_mode="rgb8")
-    for s in ['left','right']:
-        for t in b[s]:
-            b[s][t] = b[s][t][:,:,1]
-            b[s][t] = imresize(b[s][t],0.25)
-    unix('mkdir -p '+opj(bag_folder,'.preprocessed'))
-    save_obj(b,opj(bag_folder,'.preprocessed',bag_filename))
+    try:
+        b = load_images_from_bag(opj(bag_folder,bag_filename),color_mode="rgb8")
+        for s in ['left','right']:
+            for t in b[s]:
+                b[s][t] = b[s][t][:,:,1]
+                b[s][t] = imresize(b[s][t],0.25)
+        unix('mkdir -p '+opj(bag_folder,'.preprocessed'))
+        save_obj(b,opj(bag_folder,'.preprocessed',bag_filename))
+    except:
+        print "save_grayscale_quarter_images failed for "+opj(bag_folder,bag_filename)
 
 def save_grayscale_quarter_bagfolder(bag_folder_path):
     bag_files = sorted(glob.glob(opj(bag_folder_path,'*.bag')))
