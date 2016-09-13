@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = None #opjD('z1/z1_iter_81000.caffemodel') #
+weights_file_path = opjD('z1/z1_iter_20000.caffemodel') #
 #
 ########################################################
 
@@ -66,7 +66,7 @@ loss_timer = time.time()
 loss = []
 def run_solver(solver, bair_car_data, num_steps):
 	if time.time() - loss_timer > 60*15:
-		save_opj(loss,opjD('z1','loss'))
+		save_obj(loss,opjD('z1','loss'))
 	global img
 	global loss
 	step_ctr = 0
