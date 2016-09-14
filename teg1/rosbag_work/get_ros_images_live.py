@@ -1,3 +1,9 @@
+"""
+reed to run roslaunch first, e.g.,
+
+roslaunch bair_car bair_car.launch use_zed:=true record:=false
+"""
+
 import roslib
 import cv2
 from cv_bridge import CvBridge,CvBridgeError
@@ -24,4 +30,4 @@ def callback(data):
 
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,callback)
 
-
+rospy.spin()
