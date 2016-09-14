@@ -17,6 +17,9 @@ bridge = CvBridge()
 
 rospy.init_node('listener',anonymous=True)
 
+left_list = []
+right_list = []
+
 A = 0
 B = 0
 
@@ -32,8 +35,8 @@ def left_callback(data):
 	global B
 	B += 1
 	cimg = bridge.imgmsg_to_cv2(data,"bgr8")
-	cv2.imshow("Left",cimg)
-	cv2.waitKey(1)
+	#cv2.imshow("Left",cimg)
+	#cv2.waitKey(1)
 
 
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
