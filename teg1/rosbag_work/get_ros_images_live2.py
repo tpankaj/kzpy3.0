@@ -12,7 +12,7 @@ from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
-solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
+solver_file_path = opjh("kzpy3/caf3/z1/solver_live.prototxt")
 weights_file_path = None #opjD('z1/z1_iter_510000.caffemodel') #
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
