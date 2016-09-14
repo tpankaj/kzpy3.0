@@ -13,7 +13,7 @@ import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_510000.caffemodel') #
+weights_file_path = None #opjD('z1/z1_iter_510000.caffemodel') #
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
@@ -29,6 +29,8 @@ if weights_file_path != None:
 ########################################################
 
 
+########################################################
+#          ROSPY SETUP SECTION
 import roslib
 import cv2
 from cv_bridge import CvBridge,CvBridgeError
@@ -50,9 +52,6 @@ def right_callback(data):
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
 	right_list.append(cimg)
-
-
-
 	cv2.imshow("Right",cimg)
 	cv2.waitKey(1)
 
@@ -65,6 +64,8 @@ def left_callback(data):
 	left_list.append(cimg)
 	#cv2.imshow("Left",cimg)
 	#cv2.waitKey(1)
+#
+########################################################
 
 
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
