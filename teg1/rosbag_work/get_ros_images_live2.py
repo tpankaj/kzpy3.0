@@ -73,6 +73,8 @@ rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while True:
+	print (A,B,len(left_list),len(right_list))
+	cv2.imshow("Left",left_list[-1])
 	if len(left_list) > 4:
 		l0 = left_list[-2]
 		l1 = left_list[-1]
@@ -85,8 +87,8 @@ while True:
 		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
 
 		solver.net.forward()
-		print (A,B,len(left_list),len(right_list))
-		cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
+		#solver.step(100)
+		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 		cv2.waitKey(1)
 
