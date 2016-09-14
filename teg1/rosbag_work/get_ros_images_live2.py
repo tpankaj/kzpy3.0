@@ -115,6 +115,7 @@ while True:
 		#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
 		#solver.net.forward(start='ZED_data_pool2',end='conv1')
 		solver.net.forward()
+		print solver.net.blobs['ip2'].data[0,:]
 		#solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
