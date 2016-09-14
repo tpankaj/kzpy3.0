@@ -90,10 +90,10 @@ while True:
 		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]#/255.0-.5
 		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
 
-		solver.net.forward(start='ZED_data',end='ZED_data_pool1')
-		solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
-		solver.net.forward(start='ZED_data_pool2',end='conv1')
-		#solver.step(100)
+		#solver.net.forward(start='ZED_data',end='ZED_data_pool1')
+		#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
+		#solver.net.forward(start='ZED_data_pool2',end='conv1')
+		solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 		
