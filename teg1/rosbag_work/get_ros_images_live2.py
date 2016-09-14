@@ -24,7 +24,7 @@ A = 0
 B = 0
 
 def right_callback(data):
-	global A
+	global A,B, left_list, right_list
 	A += 1
 	print (A,B,len(left_list),len(right_list))
 	cimg = bridge.imgmsg_to_cv2(data,"bgr8")
@@ -35,7 +35,7 @@ def right_callback(data):
 	cv2.waitKey(1)
 
 def left_callback(data):
-	global B
+	global A,B, left_list, right_list
 	B += 1
 	cimg = bridge.imgmsg_to_cv2(data,"bgr8")
 	if len(left_list) > 5:
