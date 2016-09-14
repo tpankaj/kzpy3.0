@@ -86,9 +86,9 @@ while True:
 
 		solver.net.forward()
 		print (A,B,len(left_list),len(right_list))
-		#cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
+		cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
-		#cv2.waitKey(1)
+		cv2.waitKey(1)
 
 
 
