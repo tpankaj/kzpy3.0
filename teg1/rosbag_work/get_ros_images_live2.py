@@ -72,7 +72,7 @@ rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while True:
-	if len(left_list) > 3:
+	if len(left_list) > 4:
 		l0 = left_list[-2]
 		l1 = left_list[-1]
 		r0 = right_list[-2]
