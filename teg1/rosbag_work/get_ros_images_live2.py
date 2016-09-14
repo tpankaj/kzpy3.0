@@ -72,17 +72,18 @@ rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while True:
-	l0 = left_list[-2]
-	l1 = left_list[-1]
-	r0 = right_list[-2]
-	r1 = right_list[-1]
+	if len(left_list) > 3:
+		l0 = left_list[-2]
+		l1 = left_list[-1]
+		r0 = right_list[-2]
+		r1 = right_list[-1]
 
-	solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
-	solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-	solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-	solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
 
-	solver.step(1)
+		solver.step(1)
 
 
 
