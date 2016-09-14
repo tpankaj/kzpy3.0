@@ -78,10 +78,10 @@ while True:
 		r0 = right_list[-2]
 		r1 = right_list[-1]
 
-		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0#-.5
+		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
 
 		solver.step(1)
 
