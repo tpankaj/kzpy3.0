@@ -74,7 +74,11 @@ rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while True:
 	print (A,B,len(left_list),len(right_list))
-	cv2.imshow("Left",left_list[-1])
+	try:
+		cv2.imshow("Left",left_list[-1])
+		cv2.waitKey(1)
+	except:
+		pass
 	if len(left_list) > 4:
 		l0 = left_list[-2]
 		l1 = left_list[-1]
@@ -90,7 +94,7 @@ while True:
 		#solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
-		cv2.waitKey(1)
+		
 
 
 
