@@ -47,7 +47,7 @@ B = 0
 def right_callback(data):
 	global A,B, left_list, right_list, solver
 	A += 1
-	print (A,B,len(left_list),len(right_list))
+	
 	cimg = bridge.imgmsg_to_cv2(data,"bgr8")
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
@@ -85,6 +85,7 @@ while True:
 		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
 
 		solver.net.forward()
+		print (A,B,len(left_list),len(right_list))
 		#cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 		#cv2.waitKey(1)
