@@ -68,11 +68,28 @@ def left_callback(data):
 ##
 ########################################################
 
+import thread
+import time
 
-rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
-rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
+# Define a function for the thread
+def print_time( threadName, delay):
+	rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
+	rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
+	rospy.spin()
 
-rospy.spin()
+# Create two threads as follows
+try:
+   thread.start_new_thread( print_time, ("Thread-1", 2, ) )
+
+except:
+   print "Error: unable to start thread"
+
+
+
+
+
+#rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
+#rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while True:
 	print (A,B,len(left_list),len(right_list))
@@ -95,7 +112,8 @@ while True:
 		#solver.net.forward(start='ZED_data',end='ZED_data_pool1')
 		#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
 		#solver.net.forward(start='ZED_data_pool2',end='conv1')
-		solver.step(100)
+		solver.net.forward()
+		#solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 		
