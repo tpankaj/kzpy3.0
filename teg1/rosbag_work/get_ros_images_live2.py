@@ -63,8 +63,8 @@ def left_callback(data):
 	if len(left_list) > 5:
 		left_list = left_list[-5:]
 	left_list.append(cimg)
-	cv2.imshow("Left",cimg)
-	cv2.waitKey(1)
+	#cv2.imshow("Left",cimg)
+	#cv2.waitKey(1)
 #
 ########################################################
 
