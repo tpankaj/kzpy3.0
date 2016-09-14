@@ -36,7 +36,7 @@ def left_callback(data):
 	cv2.waitKey(1)
 
 
-rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,callback)
+rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 rospy.spin()
