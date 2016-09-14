@@ -52,7 +52,8 @@ def right_callback(data):
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
 	right_list.append(cimg)
-	cv2.imshow("Right",solver.net.blobs['ZED_data'].data[0,0,:,:])
+	cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
+	cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 	cv2.waitKey(1)
 
 def left_callback(data):
@@ -78,10 +79,10 @@ while True:
 		r0 = right_list[-2]
 		r1 = right_list[-1]
 
-		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0#-.5
-		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]#/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]#/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]#/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
 
 		solver.step(1)
 
