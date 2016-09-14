@@ -73,8 +73,8 @@ import time
 
 # Define a function for the thread
 def print_time( threadName, delay):
-	rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
-	rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
+	rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
+	rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
 	rospy.spin()
 
 # Create two threads as follows
