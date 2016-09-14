@@ -52,9 +52,9 @@ def right_callback(data):
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
 	right_list.append(cimg)
-	cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
-	cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
-	cv2.waitKey(1)
+	#cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
+	#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
+	#cv2.waitKey(1)
 
 def left_callback(data):
 	global A,B, left_list, right_list
