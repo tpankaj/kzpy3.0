@@ -72,6 +72,8 @@ def left_callback(data):
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
+ros.spin()
+
 while True:
 	print (A,B,len(left_list),len(right_list))
 	try:
