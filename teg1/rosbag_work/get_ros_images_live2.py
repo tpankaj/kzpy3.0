@@ -83,7 +83,7 @@ while True:
 		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]#/255.0-.5
 		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
 
-		solver.step(1)
+		#solver.step(1)
 
 
 
