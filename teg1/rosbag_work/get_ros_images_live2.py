@@ -106,10 +106,10 @@ while True:
 		r0 = right_list[-2]
 		r1 = right_list[-1]
 
-		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]#/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]#/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
 
 		#solver.net.forward(start='ZED_data',end='ZED_data_pool1')
 		#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
