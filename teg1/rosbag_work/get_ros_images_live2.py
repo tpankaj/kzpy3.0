@@ -7,6 +7,8 @@ roslaunch bair_car bair_car.launch use_zed:=true record:=false
 ########################################################
 #          CAFFE SETUP SECTION
 import caffe
+caffe.set_device(0)
+caffe.set_mode_gpu()
 from kzpy3.utils import *
 from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 import cv2
