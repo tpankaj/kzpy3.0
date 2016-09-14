@@ -65,7 +65,7 @@ def left_callback(data):
 	left_list.append(cimg)
 	#cv2.imshow("Left",cimg)
 	#cv2.waitKey(1)
-#
+##
 ########################################################
 
 
