@@ -4,7 +4,7 @@
 import caffe
 from kzpy3.utils import *
 from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
-
+import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z1/solver.prototxt")
-weights_file_path = opjD('z1/z1_iter_20000.caffemodel') #
+weights_file_path = opjD('z1/z1_iter_510000.caffemodel') #
 #
 ########################################################
 
@@ -109,7 +109,8 @@ def run_solver(solver, bair_car_data, num_steps):
 #if __name__ == '__main__':
 
 unix('mkdir -p '+opjD('z1'))
-bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
+#bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
+bair_car_data = Bair_Car_Data('/Volumes/temp/bair_car_data/',1000,100)
 
 #caffe.set_device(0)
 #caffe.set_mode_gpu()

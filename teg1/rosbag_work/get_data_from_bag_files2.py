@@ -42,11 +42,12 @@ zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
 
 
 from kzpy3.vis import *
-import rospy
-import rosbag
+
+#import rospy
+#import rosbag
 import cv2
-import cv_bridge
-bridge = cv_bridge.CvBridge()
+#import cv_bridge
+#bridge = cv_bridge.CvBridge()
 
 
 

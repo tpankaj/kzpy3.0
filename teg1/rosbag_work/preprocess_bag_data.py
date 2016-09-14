@@ -190,3 +190,33 @@ def _assign_right_image_timestamps(A):
 #
 ######################################################################
 
+
+
+def load_images_from_bag(bag_file_path,color_mode="rgb8"):
+    print "loading " + bag_file_path
+    bag_img_dic = {}
+    bag_img_dic['left'] = {}
+    bag_img_dic['right'] = {}
+    sides=['left','right']
+    bag = rosbag.Bag(bag_file_path)
+    for side in sides:
+        for m in bag.read_messages(topics=['/bair_car/zed/'+side+'/image_rect_color']):
+            t = round(m.timestamp.to_time(),3)
+            bag_img_dic[side][t] = bridge.imgmsg_to_cv2(m[1],color_mode)
+    return bag_img_dic
+
+
+def save_grayscale_quarter_images(bag_folder,bag_filename):
+    b = load_images_from_bag(opj(bag_folder,bag_filename),color_mode="rgb8")
+    for s in ['left','right']:
+        for t in b[s]:
+            b[s][t] = b[s][t][:,:,1]
+            b[s][t] = imresize(b[s][t],0.25)
+    unix('mkdir -p '+opj(bag_folder,'.preprocessed'))
+    save_obj(b,opj(bag_folder,'.preprocessed',bag_filename))
+
+def save_grayscale_quarter_bagfolder(bag_folder_path):
+    bag_files = sorted(glob.glob(opj(bag_folder_path,'*.bag')))
+    for b in bag_files:
+        b = b.split('/')[-1]
+        save_grayscale_quarter_images(bag_folder_path,b)
