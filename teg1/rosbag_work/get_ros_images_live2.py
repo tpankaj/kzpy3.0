@@ -45,6 +45,10 @@ left_list = []
 right_list = []
 A = 0
 B = 0
+state = 0
+
+def state_callback(data):
+	state = data
 
 def right_callback(data):
 	global A,B, left_list, right_list, solver
@@ -75,8 +79,11 @@ import time
 
 # Define a function for the thread
 #def print_time( threadName, delay):
+
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
+rospy.Subscriber('"/bair_car/state', std_msgs.msg.Int32,state_callback)
+
 #rospy.spin()
 
 # Create two threads as follows
@@ -85,7 +92,6 @@ rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue
 
 #except:
 #   print "Error: unable to start thread"
-
 
 
 
