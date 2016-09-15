@@ -34,6 +34,7 @@ if weights_file_path != None:
 ########################################################
 #          ROSPY SETUP SECTION
 import roslib
+import std_msgs.msg
 import cv2
 from cv_bridge import CvBridge,CvBridgeError
 import rospy
