@@ -74,17 +74,17 @@ import thread
 import time
 
 # Define a function for the thread
-def print_time( threadName, delay):
-	rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
-	rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
-	rospy.spin()
+#def print_time( threadName, delay):
+rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
+rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
+#rospy.spin()
 
 # Create two threads as follows
-try:
-   thread.start_new_thread( print_time, ("Thread-1", 2, ) )
+#try:
+#   thread.start_new_thread( print_time, ("Thread-1", 2, ) )
 
-except:
-   print "Error: unable to start thread"
+#except:
+#   print "Error: unable to start thread"
 
 
 

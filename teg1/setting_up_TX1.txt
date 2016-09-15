@@ -154,3 +154,5 @@ export PATH=~/kzpy3/scripts:$PATH
 export COMPUTER_NAME="Mr. ---"
 #
 ######################################################
+
+git clone repoman@repo.eecs.berkeley.edu:projects/bdd/rc-car.git
