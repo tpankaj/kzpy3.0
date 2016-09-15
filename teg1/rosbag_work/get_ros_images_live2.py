@@ -124,8 +124,8 @@ while True:
 		#solver.net.forward(start='ZED_data_pool2',end='conv1')
 		solver.net.forward()
 		print solver.net.blobs['ip2'].data[0,:]
-		steer_cmd_pub.publish(std_msgs.msg.Int32(solver.net.blobs['ip2'].data[0,9]))
-		motor_cmd_pub.publish(std_msgs.msg.Int32(solver.net.blobs['ip2'].data[0,19]))
+		steer_cmd_pub.publish(std_msgs.msg.Int32(100*solver.net.blobs['ip2'].data[0,9]))
+		motor_cmd_pub.publish(std_msgs.msg.Int32(100*solver.net.blobs['ip2'].data[0,19]))
 		#solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
