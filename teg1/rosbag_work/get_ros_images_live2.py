@@ -104,8 +104,8 @@ motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
 while True:
 	print (A,B,len(left_list),len(right_list))
 	try:
-		cv2.imshow("Left",left_list[-1])
-		cv2.waitKey(1)
+		#cv2.imshow("Left",left_list[-1])
+		#cv2.waitKey(1)
 	except:
 		pass
 	if len(left_list) > 4:
