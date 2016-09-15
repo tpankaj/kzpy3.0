@@ -15,7 +15,7 @@ import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 solver_file_path = opjh("kzpy3/caf3/z1/solver_live.prototxt")
-weights_file_path = opjD('z1/z1_iter_510000.caffemodel') #
+weights_file_path = None#opjD('z1/z1_iter_510000.caffemodel') #
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
