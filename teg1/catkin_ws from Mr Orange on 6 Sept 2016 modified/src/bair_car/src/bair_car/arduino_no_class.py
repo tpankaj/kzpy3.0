@@ -57,12 +57,12 @@ def _setup_serial(baudrate, timeout):
                 #print ser_str
                 exec('ser_tuple = list({0})'.format(ser_str))
                 print type(ser_tuple[0])
-                print ser_tuple[0] in Arduino.CONTROL_STATES
-                if ser_tuple[0] in Arduino.CONTROL_STATES:
+                print ser_tuple[0] in CONTROL_STATES
+                if ser_tuple[0] in CONTROL_STATES:
                     print('Port {0} is the servos'.format(ser.port))
                     ser_servos = ser
                     break
-                elif ser_tuple[0] in Arduino.SENSOR_STATES:
+                elif ser_tuple[0] in SENSOR_STATES:
                     print('Port {0} is the sensors'.format(ser.port))
                     ser_sensors = ser
                     break
@@ -134,25 +134,25 @@ def _ros_sensors_thread():
             ### parse servos serial and publish to ROS
             sensor = sensors_tuple[0]
             data = sensors_tuple[1:]
-            if sensor == Arduino.STATE_GPS:
+            if sensor == STATE_GPS:
                 # lat, long (floats)
                 assert(len(data) == 2)
                 gps_msg = sensor_msgs.msg.NavSatFix(longitude=data[0], latitude=data[1])
                 gps_msg.header.stamp = rospy.Time.now()
                 gps_pub.publish(gps_msg)
-            elif sensor == Arduino.STATE_GYRO:
+            elif sensor == STATE_GYRO:
                 # x, y, z (floats)
                 assert(len(data) == 3)
                 gyro_pub.publish(geometry_msgs.msg.Vector3(*data))
-            elif sensor == Arduino.STATE_ACC:
+            elif sensor == STATE_ACC:
                 # x, y, z (floats)
                 assert(len(data) == 3)
                 acc_pub.publish(geometry_msgs.msg.Vector3(*data))
-            elif sensor == Arduino.STATE_SONAR:
+            elif sensor == STATE_SONAR:
                 # dist (int)
                 assert(len(data) == 1)
                 sonar_pub.publish(std_msgs.msg.Int32(data[0]))
-            elif sensor == Arduino.STATE_ENCODER:
+            elif sensor == STATE_ENCODER:
                 # rate (float)
                 assert(len(data) == 1)
                 encoder_pub.publish(std_msgs.msg.Float32(data[0]))
