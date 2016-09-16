@@ -33,35 +33,6 @@ timeout=0.25
 
 rospy.init_node('run_arduino', anonymous=True)
 
-ser_servos, ser_sensors = _setup_serial(baudrate, timeout)
-assert(ser_servos is not None)
-#assert(ser_sensors is not None)
-
-### control publishers (from Arduino)
-state_pub = rospy.Publisher('state', std_msgs.msg.Int32, queue_size=100)
-steer_pub = rospy.Publisher('steer', std_msgs.msg.Int32, queue_size=100)
-motor_pub = rospy.Publisher('motor', std_msgs.msg.Int32, queue_size=100)
-encoder_pub = rospy.Publisher('encoder', std_msgs.msg.Float32, queue_size=100)
-### sensor publishers (from Arduino)
-gps_pub = rospy.Publisher('gps', sensor_msgs.msg.NavSatFix, queue_size=100)
-gyro_pub = rospy.Publisher('gyro', geometry_msgs.msg.Vector3, queue_size=100)
-acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
-sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
-### subscribers (info sent to Arduino)
-cmd_steer_sub = rospy.Subscriber('cmd/steer', std_msgs.msg.Int32,
-                                      callback=self._cmd_steer_callback)
-cmd_motor_sub = rospy.Subscriber('cmd/motor', std_msgs.msg.Int32,
-                                      callback=self._cmd_motor_callback)
-cmd_steer_queue = Queue.Queue()
-cmd_motor_queue = Queue.Queue()
-
-### start background ros thread
-print('Starting threads')
-threading.Thread(target=_ros_servos_thread).start()
-#threading.Thread(target=_ros_sensors_thread).start()
-
-rospy.spin()
-
 #############
 ### Setup ###
 #############
@@ -203,5 +174,34 @@ def _cmd_motor_callback(self, msg):
 
 
 
+
+ser_servos, ser_sensors = _setup_serial(baudrate, timeout)
+assert(ser_servos is not None)
+#assert(ser_sensors is not None)
+
+### control publishers (from Arduino)
+state_pub = rospy.Publisher('state', std_msgs.msg.Int32, queue_size=100)
+steer_pub = rospy.Publisher('steer', std_msgs.msg.Int32, queue_size=100)
+motor_pub = rospy.Publisher('motor', std_msgs.msg.Int32, queue_size=100)
+encoder_pub = rospy.Publisher('encoder', std_msgs.msg.Float32, queue_size=100)
+### sensor publishers (from Arduino)
+gps_pub = rospy.Publisher('gps', sensor_msgs.msg.NavSatFix, queue_size=100)
+gyro_pub = rospy.Publisher('gyro', geometry_msgs.msg.Vector3, queue_size=100)
+acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
+sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
+### subscribers (info sent to Arduino)
+cmd_steer_sub = rospy.Subscriber('cmd/steer', std_msgs.msg.Int32,
+                                      callback=self._cmd_steer_callback)
+cmd_motor_sub = rospy.Subscriber('cmd/motor', std_msgs.msg.Int32,
+                                      callback=self._cmd_motor_callback)
+cmd_steer_queue = Queue.Queue()
+cmd_motor_queue = Queue.Queue()
+
+### start background ros thread
+print('Starting threads')
+threading.Thread(target=_ros_servos_thread).start()
+#threading.Thread(target=_ros_sensors_thread).start()
+
+rospy.spin()
 
 
