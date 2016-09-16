@@ -101,7 +101,7 @@ motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
 #rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
 #rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
-while True:
+while not rospy.is_shutdown():
 	print (A,B,len(left_list),len(right_list))
 	try:
 		pass
