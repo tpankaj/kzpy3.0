@@ -83,7 +83,7 @@ import time
 
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
-rospy.Subscriber('"/bair_car/state', std_msgs.msg.Int32,state_callback)
+rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32,state_callback)
 steer_cmd_pub = rospy.Publisher('cmd/steer', std_msgs.msg.Int32, queue_size=100)
 motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
 #rospy.spin()
