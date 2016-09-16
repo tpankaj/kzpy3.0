@@ -99,8 +99,8 @@ def _ros_servos_thread():
             
             ### write servos serial
             write_to_servos = False
-            for var, queue in (('steer', self.cmd_steer_queue),
-                               ('motor', self.cmd_motor_queue)):
+            for var, queue in (('steer', cmd_steer_queue),
+                               ('motor', cmd_motor_queue)):
                 if not queue.empty():
                     write_to_servos = True
                     info[var] = queue.get()
@@ -110,7 +110,7 @@ def _ros_servos_thread():
                 servos_write_int = 10000*1 + 100*info['steer'] + info['motor']
                 servos_write_str = '( {0} )'.format(servos_write_int)
                 print(servos_write_str)
-                self.ser_servos.write(servos_write_str)
+                ser_servos.write(servos_write_str)
                 
             ### print stuff
             # print servos_tuple
@@ -167,11 +167,11 @@ def _ros_sensors_thread():
 ### Callbacks ###
 #################
         
-def _cmd_steer_callback(self, msg):
+def _cmd_steer_callback(msg):
     if msg.data >= 0 and msg.data < 100:
         cmd_steer_queue.put(msg.data)
     
-def _cmd_motor_callback(self, msg):
+def _cmd_motor_callback(msg):
     if msg.data >= 0 and msg.data < 100:
         cmd_motor_queue.put(msg.data)
 
@@ -194,9 +194,9 @@ acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
 sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
 ### subscribers (info sent to Arduino)
 cmd_steer_sub = rospy.Subscriber('cmd/steer', std_msgs.msg.Int32,
-                                      callback=self._cmd_steer_callback)
+                                      callback=_cmd_steer_callback)
 cmd_motor_sub = rospy.Subscriber('cmd/motor', std_msgs.msg.Int32,
-                                      callback=self._cmd_motor_callback)
+                                      callback=_cmd_motor_callback)
 cmd_steer_queue = Queue.Queue()
 cmd_motor_queue = Queue.Queue()
 
