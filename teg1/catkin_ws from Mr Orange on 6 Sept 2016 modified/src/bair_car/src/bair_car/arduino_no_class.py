@@ -57,6 +57,7 @@ def _setup_serial(baudrate, timeout):
                 #print ser_str
                 exec('ser_tuple = list({0})'.format(ser_str))
                 print type(ser_tuple[0])
+                print ser_tuple[0] in Arduino.CONTROL_STATES
                 if ser_tuple[0] in Arduino.CONTROL_STATES:
                     print('Port {0} is the servos'.format(ser.port))
                     ser_servos = ser
