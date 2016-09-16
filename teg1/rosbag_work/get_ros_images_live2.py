@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 reed to run roslaunch first, e.g.,
 

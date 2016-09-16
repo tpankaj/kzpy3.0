@@ -127,7 +127,7 @@ sudo date 120622432007.55
 ############# data collection shortcuts (smartphone login) #######
 #
 alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
-alias rls='ls /media/ubuntu/rosbags'
+alias rls='ls -al /media/ubuntu/rosbags'
 alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
 alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
 alias rgy='rostopic echo /bair_car/gyro'
