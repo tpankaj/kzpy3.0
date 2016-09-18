@@ -110,6 +110,9 @@ class Bag_Folder:
         if self.bag_file == None:
             b = random.choice(self.files)
             if b not in self.bag_files_dic:
+                m=memory()
+                if m['free']/(1.0*m['total']) < 0.1:
+                    del self.bag_files_dic[random.choice(self.bag_files_dic.keys())]
                 self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
@@ -120,8 +123,8 @@ class Bag_Folder:
                 data['bag_filename'] = self.bag_file.path
             #print b
         except Exception, e:
-            print e 
-            print "Bag_Folder ***************************************"
+            #print e 
+            #print "Bag_Folder ***************************************"
             data = None
 
         if data == None:
@@ -139,9 +142,11 @@ class Bair_Car_Data:
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         self.bag_folders_weighted = []
         for f in bag_folder_paths:
-            print f
+            
             n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
-            if n > 0:
+            m = len(gg(opj(f,'.preprocessed','left*')))
+            print (n,m,f)
+            if n > 0 and m > 0:
                 for i in range(max(n/10,1)):
                     self.bag_folders_weighted.append(f)
         #print self.bag_folders_weighted

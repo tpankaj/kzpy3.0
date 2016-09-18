@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z2/solver.prototxt")
-weights_file_path = None #opjD('z2/z2_iter_40000.caffemodel') #
+weights_file_path = opjD('z2/z2_iter_80000.caffemodel') #
 #
 ########################################################
 
@@ -74,8 +74,8 @@ def load_data_into_model(solver,data):
 			if 'furtive' in data['bag_filename']:
 				Furtive = 1.0
 
-			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = 0#target_data[len(target_data)/2]/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
@@ -102,10 +102,11 @@ def load_data_into_model(solver,data):
 loss_timer = time.time()
 loss = []
 def run_solver(solver, bair_car_data, num_steps):
-	if time.time() - loss_timer > 60*15:
-		save_obj(loss,opjD('z1','loss'))
 	global img
 	global loss
+	#if time.time() - loss_timer > 60*15:
+	#	save_obj(loss,opjD('z2','loss'))
+
 	step_ctr = 0
 	ctr = 0
 	try:
@@ -116,7 +117,7 @@ def run_solver(solver, bair_car_data, num_steps):
 				imshow = True
 			if np.mod(ctr,1000) == 0:
 				datashow = True
-			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],30,2))
+			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,2))
 			if result == False:
 				break
 			if result == True:
@@ -148,6 +149,7 @@ def run_solver(solver, bair_car_data, num_steps):
 
 				if datashow:
 					print (ctr,np.array(loss[-99:]).mean())
+					print(solver.net.blobs['metadata'].data[0,:,5,5])
 					#img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
 					#img += 0.5
 					#img *= 255.
@@ -170,7 +172,7 @@ def run_solver(solver, bair_car_data, num_steps):
 					#print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
 			step_ctr += 1
 	except Exception as e:
-		print "***************************************"
+		print "train ***************************************"
 		print e.message, e.args
 		print "***************************************"
 
@@ -201,7 +203,7 @@ while True:
 	try:
 		run_solver(solver,bair_car_data,3000)
 	except Exception as e:
-		print "***************************************"
+		print "train loop ***************************************"
 		print e.message, e.args
 		print "***************************************"
 
