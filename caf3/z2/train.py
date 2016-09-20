@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z2/solver.prototxt")
-weights_file_path = opjD('z2/z2_iter_1760000.2000000.1600000.10000000.one_night.caffemodel') #
+weights_file_path = opjD('z2/z2.caffemodel') #
 #
 ########################################################
 
@@ -62,6 +62,7 @@ def load_data_into_model(solver,data):
 			Follow = 0.
 			Play = 0.
 			Furtive = 0.
+			Caf = 0
 
 			#print data['bag_filename']
 
@@ -73,9 +74,11 @@ def load_data_into_model(solver,data):
 				Play = 1.0
 			if 'furtive' in data['bag_filename']:
 				Furtive = 1.0
+			if 'caffe' in data['bag_filename']:
+				Caf = 1.0
 
 			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = 0#target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,1,:,:] = Caf #0#target_data[len(target_data)/2]/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
@@ -189,7 +192,7 @@ def array_to_int_list(a):
 
 unix('mkdir -p '+opjD('z2'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
-bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/z2/bair_car_data/',1000,100)
+bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
 #BF=             Bair_Car_Data('/home/karlzipser/Desktop/z1/bair_car_data/',10,2) 
 caffe.set_device(0)
 caffe.set_mode_gpu()

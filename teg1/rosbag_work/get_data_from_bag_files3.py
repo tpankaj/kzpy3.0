@@ -99,6 +99,17 @@ class Bag_Folder:
         self.max_requests = max_requests
         self.max_subrequests = max_subrequests
         self.bag_files_dic = {}
+        # The state_one_steps were forund in preprocess_bag_data.py, but I redo it here to get state 3.
+        timestamps = sorted(self.left_image_bound_to_data.keys())
+        state_one_steps = 0
+        for i in range(len(timestamps)-1,-1,-1):
+            state = self.left_image_bound_to_data[timestamps[i]]['state']
+            if state in [1,3,5,6,7]: #== 1.0 or state == 3.0:
+                state_one_steps += 1
+            else:
+                state_one_steps = 0
+            self.left_image_bound_to_data[timestamps[i]]['state_one_steps'] = state_one_steps
+
 
     def reset(self):
         self.request_ctr = 0
