@@ -1,5 +1,5 @@
 
-Here is the organization of the data that I am using. For the complete dataset, it looks like this
+ Here is the organization of the data that I am using. For the complete dataset, it looks like this
 for a given data disk:
 
 /media/ubuntu/bair_car_data_4/ [For example. I use even/odd drive pairs to store duplicates of raw data]
