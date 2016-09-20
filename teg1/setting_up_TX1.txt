@@ -108,6 +108,7 @@ mplayer -fps 26 mf://*.png
 git config --global credential.helper "cache --timeout=3600"
 
 
+
 ################# setting time from command line (for when in Tilden) ##############
 # https://codeghar.wordpress.com/2007/12/06/manage-time-in-ubuntu-through-command-line/
 Set Time
@@ -156,3 +157,4 @@ export COMPUTER_NAME="Mr. ---"
 ######################################################
 
 git clone repoman@repo.eecs.berkeley.edu:projects/bdd/rc-car.git
+
