@@ -112,7 +112,7 @@ def run_solver(solver, bair_car_data, num_steps):
 
 	step_ctr = 0
 	ctr = 0
-	try:
+	if True: #try:
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
@@ -153,31 +153,13 @@ def run_solver(solver, bair_car_data, num_steps):
 				if datashow:
 					print (ctr,np.array(loss[-99:]).mean())
 					print(solver.net.blobs['metadata'].data[0,:,5,5])
-					#img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
-					#img += 0.5
-					#img *= 255.
-					#img[:,:,1] = img[:,:,0]
-					#img[:,:,2] = img[:,:,0]
-					#cv2.imshow('left',img.astype('uint8'))
-					#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
-					"""
-					img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,2,:,:]
-					img[:,:,1] = img[:,:,0]
-					img[:,:,2] = img[:,:,0]
-					cv2.imshow('right',img)
-					#cv2.imshow('right',solver.net.blobs['ZED_data_pool2'].data[0,2,:,:])
-					"""
-					#if cv2.waitKey(1) & 0xFF == ord('q'):
-					#    pass
 					print array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
 					print array_to_int_list(solver.net.blobs['ip2'].data[0,:][:])
-					#print np.round(solver.net.blobs['steer_motor_target_data'].data[0,:][:3],3)
-					#print np.round(solver.net.blobs['ip2'].data[0,:][:3],3)
 			step_ctr += 1
-	except Exception as e:
-		print "train ***************************************"
-		print e.message, e.args
-		print "***************************************"
+	#except Exception as e:
+	#	print "train ***************************************"
+	#	print e.message, e.args
+	#	print "***************************************"
 
 
 def array_to_int_list(a):

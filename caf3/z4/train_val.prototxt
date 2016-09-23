@@ -9,7 +9,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 20
+			dim: 64
 		}
 	}
 }
@@ -177,96 +177,16 @@ layer {
 
 ###################### Convolutional Layer Set 'conv3' ######################
 #
-layer {
-	name: "conv3"
-	type: "Convolution"
-	bottom: "conv2_pool_concat"
-	top: "conv3"
-	convolution_param {
-		num_output: 256
-		group: 1
-		kernel_size: 1
-		stride: 1
-		pad: 0
-		weight_filler {
-			type: "gaussian" 
-			std: 0.1
-		}
-	}
-}
-	
-layer {
-	name: "conv3_relu"
-	type: "ReLU"
-	bottom: "conv3"
-	top: "conv3"
-}	
-############################################################
-
-###################### Convolutional Layer Set 'conv3_PAST' ######################
-#	
-layer {
-	name: "conv3_PAST"
-	type: "DummyData"
-	top: "conv3_PAST"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 256
-			dim: 3
-			dim: 6
-		}
-	}
-}
-############################################################
 
 
-layer {
-  name: "conv3_concat"
-  type: "Concat"
-  bottom: "conv3_PAST"
-  bottom: "conv3"
-  top: "conv3_concat"
-  concat_param {
-    axis: 1
-  }
-}
 
-
-###################### Convolutional Layer Set 'conv4' ######################
-#
-layer {
-	name: "conv4"
-	type: "Convolution"
-	bottom: "conv3_concat"
-	top: "conv4"
-	convolution_param {
-		num_output: 256
-		group: 1
-		kernel_size: 3
-		stride: 1
-		pad: 0
-		weight_filler {
-			type: "gaussian" 
-			std: 0.1
-		}
-	}
-}
-	
-layer {
-	name: "conv4_relu"
-	type: "ReLU"
-	bottom: "conv4"
-	top: "conv4"
-}	
-############################################################
 
 ###################### IP Layer Set 'ip1' ######################
 #
 layer {
 	name: "ip1"
 	type: "InnerProduct"
-	bottom: "conv4"
+	bottom: "conv2_pool_concat"
 	top: "ip1"
 	inner_product_param {
 		num_output: 512
@@ -294,7 +214,7 @@ layer {
 	bottom: "ip1"
 	top: "ip2"
 	inner_product_param {
-		num_output: 20
+		num_output: 64
 		weight_filler {
 			type: "xavier" 
 		}

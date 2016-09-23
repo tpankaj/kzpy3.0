@@ -46,7 +46,14 @@ class Bag_File:
                         else:
                             self.binned_timestamp_nums[1].append(i)
             #print((len(self.binned_timestamp_nums[0]),len(self.binned_timestamp_nums[1])))
-            timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+            if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+            elif len(self.binned_timestamp_nums[0]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[0])
+            elif len(self.binned_timestamp_nums[1]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[1])
+            else:
+                return None
             t = self.timestamps[timestamp_num]
             data_dic = {}
 
@@ -115,6 +122,9 @@ class Bag_Folder:
         self.request_ctr = 0
 
     def get_data(self, target_topics, num_data_steps, num_frames):
+        if len(self.files) == 0:
+            return None
+        assert len(self.files) > 0
         #print 'Bag_Folder::get_data'
         if self.request_ctr >= self.max_requests:
             return None
@@ -122,8 +132,11 @@ class Bag_Folder:
             b = random.choice(self.files)
             if b not in self.bag_files_dic:
                 m=memory()
-                if m['free']/(1.0*m['total']) < 0.1:
-                    del self.bag_files_dic[random.choice(self.bag_files_dic.keys())]
+                if m['free']/(1.0*m['total']) < 0.15:
+                    if len(self.bag_files_dic.keys()) > 0:
+                        rc = random.choice(self.bag_files_dic.keys())
+                        print "Bag_Folder: deleting " + rc + " *****************************************"
+                        del self.bag_files_dic[rc]
                 self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
@@ -169,7 +182,7 @@ class Bair_Car_Data:
 
     def get_data(self, target_topics, num_data_steps, num_frames):
         #print 'Bair_Car_Data::get_data'
-        try:
+        if True:#try:
             if self.bag_folder == None:
                 b = random.choice(self.bag_folders_weighted)
                 if b not in self.bag_folders_dic:
@@ -179,9 +192,9 @@ class Bair_Car_Data:
                 self.bag_folder.reset()
 
             data = self.bag_folder.get_data(target_topics, num_data_steps, num_frames)
-        except Exception, e:
-            print e 
-            print "Bair_Car_Data ***************************************"
+        else: #except Exception, e:
+            #print e 
+            #print "Bair_Car_Data ***************************************"
             data = None
 
         if data == None:
