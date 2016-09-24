@@ -99,7 +99,7 @@ class Bag_Folder:
     def __init__(self, path, max_requests, max_subrequests):
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
         file_path = opj(path,'.preprocessed','left_image_bound_to_data')
-        print "Bag_Folder: loading "+file_path+'.pkl'
+        #print "Bag_Folder: loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
         self.bag_file = None
         self.request_ctr = 0
@@ -135,7 +135,7 @@ class Bag_Folder:
                 if m['free']/(1.0*m['total']) < 0.15:
                     if len(self.bag_files_dic.keys()) > 0:
                         rc = random.choice(self.bag_files_dic.keys())
-                        print "Bag_Folder: deleting " + rc + " *****************************************"
+                        #print "Bag_Folder: deleting " + rc + " *****************************************"
                         del self.bag_files_dic[rc]
                 self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]

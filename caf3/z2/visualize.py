@@ -31,5 +31,5 @@ for n in range(96):
 
 	mi(img,'conv1',img_title=d2s('conv1 channel',n)) 
 
-	plt.pause(4)
+	plt.pause(1)
 
