@@ -172,7 +172,7 @@ class Arduino:
         while not rospy.is_shutdown():
             try:        
                 signals_str = self.ser_signals.readline() 
-                #print signals_str               
+                # print signals_str               
 
                 signals_str = d2n('(',10*self.info_state + self.signal,')')
                 print signals_str    
