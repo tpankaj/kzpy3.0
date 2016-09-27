@@ -11,7 +11,7 @@ for b in bag_folders[:]:
 		print b + ' failed.'
 """
 
-bair_car_data_path = '/media/karlzipser/bair_car_data_4/bair_car_data'
+bair_car_data_path = '/media/karlzipser/rosbags/'
 
 bair_car_data_folders = gg(opj(bair_car_data_path,'*'))
 
