@@ -174,10 +174,10 @@ class Arduino:
                 signals_str = self.ser_signals.readline() 
                 #print signals_str               
 
-
-                        
+                signals_str = d2n('(',10*self.info_state + self.signal,')')
+                print signals_str    
                 #print(d2n('(',self.signal,')'))
-                self.ser_signals.write(d2n('(',10*self.info_state + self.signal,')'))
+                self.ser_signals.write(signals_str)
                     
                 ### print stuff
                 # print servos_tuple
