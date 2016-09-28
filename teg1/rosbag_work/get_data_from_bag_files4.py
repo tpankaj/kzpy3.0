@@ -8,7 +8,7 @@ from kzpy3.utils import *
 
 
 class Bag_File:
-    def __init__(self, path, max_requests,left_image_bound_to_data, target_topics, num_data_steps, num_frames):
+    def __init__(self, path, max_requests, left_image_bound_to_data, target_topics, num_data_steps, num_frames):
         self.path = path
         self.max_requests = max_requests
         self.request_ctr = 0
