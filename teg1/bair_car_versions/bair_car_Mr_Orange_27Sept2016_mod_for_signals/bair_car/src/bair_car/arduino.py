@@ -49,7 +49,7 @@ class Arduino:
         self.gyro_pub = rospy.Publisher('gyro', geometry_msgs.msg.Vector3, queue_size=100)
         self.acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
         self.sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
-        self.signals_pub = rospy.Publisher('signals', std_msgs.msg.Int32, queue_size=100)
+        self.signals_pub = rospy.Publisher('left_right', std_msgs.msg.Int32, queue_size=100)
         ### subscribers (info sent to Arduino)
         self.cmd_steer_sub = rospy.Subscriber('cmd/steer', std_msgs.msg.Int32,
                                               callback=self._cmd_steer_callback)
