@@ -4,34 +4,48 @@
 
 """
 
-from kzpy3.utils import *
+from kzpy3.vis import *
 
 
 class Bag_File:
-    def __init__(self, path, max_requests, left_image_bound_to_data, target_topics, num_data_steps, num_frames):
+    def __init__(self, path, max_requests):
         self.path = path
+        self.img_dic = None
+        self.timestamps = None
         self.max_requests = max_requests
         self.request_ctr = 0
-        #print 'Bag_File: loading ' + self.path
-        self.img_dic = load_obj(self.path)
-        self.timestamps = sorted(self.img_dic['left'].keys())
-        self.binned_timestamp_nums = [[],[]]
-        for i in range(len(self.timestamps)-num_data_steps):
-            t = self.timestamps[i+num_data_steps]
-            if left_image_bound_to_data[t]['state_one_steps'] > num_data_steps:
-                steer = left_image_bound_to_data[t]['steer']
-                if steer < 43 or steer > 55:
-                    self.binned_timestamp_nums[0].append(i)
-                else:
-                    self.binned_timestamp_nums[1].append(i)
 
     def reset(self):
         self.request_ctr = 0
 
-    def get_data(self):
+    def get_data(self, left_image_bound_to_data, target_topics, num_data_steps, num_frames):
             if self.request_ctr >= self.max_requests:
                 return None
+            if self.img_dic == None:
+                #print 'Bag_File: loading ' + self.path
+                self.img_dic = load_obj(self.path.replace('.pkl',''))
+                self.timestamps = sorted(self.img_dic['left'].keys())
+                self.binned_timestamp_nums = [[],[]]
+                """
+                Binning timestamps. Most of the time the car drives straight.
+                If we sample the timestamps uniformly, we will not get many examples
+                of turning, proportionally. Therefore, I bin timestamps. I use only two
+                bins, mostly-straight and turning. Having done this, we can request a
+                random choice within either category.
+                """
+                for i in range(len(self.timestamps)-num_data_steps):
+                    t = self.timestamps[i+num_data_steps]
+                    if left_image_bound_to_data[t]['state_one_steps'] > num_data_steps:
+                        steer = left_image_bound_to_data[t]['steer']
+                        if steer < 43 or steer > 55:
+                            self.binned_timestamp_nums[0].append(i)
+                        else:
+                            self.binned_timestamp_nums[1].append(i)
             #print((len(self.binned_timestamp_nums[0]),len(self.binned_timestamp_nums[1])))
+            """
+            Sometimes a bin is empty, so we need to check for this while making a
+            random selection.
+            """
             if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
                 timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
             elif len(self.binned_timestamp_nums[0]) > 0:
@@ -42,6 +56,7 @@ class Bag_File:
                 return None
 
             t = self.timestamps[timestamp_num]
+            """ Here is our timestamp."""
 
             data_dic = {}
 
@@ -54,10 +69,9 @@ class Bag_File:
                             right_list = []
                             fctr = 0
                             for tn in range(timestamp_num,timestamp_num+num_data_steps):
+                                data = "NO DATA"
                                 if topic in left_image_bound_to_data[self.timestamps[tn]]:
                                     data = left_image_bound_to_data[self.timestamps[tn]][topic]
-                                else:
-                                    data = "NO DATA"
                                 target_data.append(data)
                                 if fctr < num_frames:
                                     left_list.append(self.img_dic['left'][self.timestamps[tn]])
@@ -85,7 +99,6 @@ class Bag_File:
             return data_dic
 
 
-
 class Bag_Folder:
     def __init__(self, path, max_requests, max_subrequests):
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
@@ -108,7 +121,6 @@ class Bag_Folder:
                 state_one_steps = 0
             self.left_image_bound_to_data[timestamps[i]]['state_one_steps'] = state_one_steps
 
-
     def reset(self):
         self.request_ctr = 0
 
@@ -128,12 +140,12 @@ class Bag_Folder:
                         rc = random.choice(self.bag_files_dic.keys())
                         #print "Bag_Folder: deleting " + rc + " *****************************************"
                         del self.bag_files_dic[rc]
-                self.bag_files_dic[b] = Bag_File(b, self.max_subrequests, self.left_image_bound_to_data, target_topics, num_data_steps, num_frames)
+                self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
             #self.bag_file = Bag_File(b, self.max_subrequests)
         try:
-            data = self.bag_file.get_data()
+            data = self.bag_file.get_data(self.left_image_bound_to_data, target_topics, num_data_steps, num_frames)
             if not data == None:
                 data['bag_filename'] = self.bag_file.path
             #print b
@@ -192,10 +204,5 @@ class Bair_Car_Data:
             self.bag_folder = None
             return self.get_data(target_topics, num_data_steps, num_frames)
         return data
-
-
-
-
-
 
 
