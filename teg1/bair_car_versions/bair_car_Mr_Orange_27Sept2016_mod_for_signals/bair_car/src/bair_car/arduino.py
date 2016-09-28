@@ -176,7 +176,7 @@ class Arduino:
                 signals_str = self.ser_signals.readline()
                 exec('signals_tuple = list({0})'.format(signals_str))
                 print signals_str               
-                self.signals_pub.publish(std_msgs.msg.Int32(signals_tuple[1])
+                self.signals_pub.publish(std_msgs.msg.Int32(signals_tuple[1]))
 
                 # Signal to send to signals Arduino
                 signals_ser_str = d2n('(',10*self.info_state + self.signal,')')
