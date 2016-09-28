@@ -175,7 +175,7 @@ class Arduino:
                 # Signal to publish from signals Arduino
                 signals_str = self.ser_signals.readline()
                 exec('signals_tuple = list({0})'.format(signals_str))
-                print signals_str               
+                #print signals_str               
                 self.signals_pub.publish(std_msgs.msg.Int32(signals_tuple[1]))
 
                 # Signal to send to signals Arduino
@@ -250,7 +250,7 @@ class Arduino:
 
     def _cmd_signal_callback(self, msg):
         self.signal = msg.data
-        print msg.data
+        #print msg.data
         if msg.data >= 0 and msg.data < 100:
             self.cmd_signal_queue.put(msg.data)
 
