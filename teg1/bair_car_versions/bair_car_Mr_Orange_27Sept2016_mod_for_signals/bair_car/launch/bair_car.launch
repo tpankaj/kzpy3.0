@@ -11,7 +11,7 @@
         </node>
 
         <node name="run_caffe" pkg="bair_car" type="get_ros_images_live2_z2_TX1.py" output="screen"
-        if="$(arg use_caffe)>
+        if="$(arg use_caffe)
         </node>
 
         <group ns="zed" if="$(arg use_zed)">        
