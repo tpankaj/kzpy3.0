@@ -154,7 +154,7 @@ class Arduino:
                 if write_to_servos:
                     servos_write_int = 10000*1 + 100*info['steer'] + info['motor']
                     servos_write_str = '( {0} )'.format(servos_write_int)
-                    print(('servos_write_str',servos_write_str))#,STEER))
+                    #print(('servos_write_str',servos_write_str))#,STEER))
                     self.ser_servos.write(servos_write_str)
                    
 
