@@ -30,7 +30,7 @@ class Arduino:
                      STATE_GYRO,
                      STATE_ACC,
                      STATE_SONAR)
-    SIGNALS = ("signals")
+    SIGNALS = ("left_right")
 
     def __init__(self, baudrate=115200, timeout=0.25):
         ### setup serial ports
