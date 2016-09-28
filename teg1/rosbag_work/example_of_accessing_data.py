@@ -1,10 +1,10 @@
 # $ python kzpy3/teg1/rosbag_work/example_of_accessing_data.py  
-
+from kzpy3.vis import *
 from kzpy3.teg1.rosbag_work.get_data_from_bag_files3 import *
 
 path = '/media/your_computer/rosbags/bair_car_data'
 path = '/home/karlzipser/Desktop/Old_Desktop/bair_car_rescue/bair_car_data'
-path = opjD('temp_bag')
+path = opjD('temp_bags_saved/temp_bag6')
 # The two variables below exist because it is time consuming
 # to randomly access from all the bag files. It is faster to open a
 # file and sample it several times. Likewise, each folder has metadata
@@ -22,34 +22,36 @@ path = opjD('temp_bag')
 num_bag_files_to_sample_from_given_run = 10
 num_samples_from_given_bag_file = 10
 
-num_frames = 30 * 10 # ten seconds
+num_frames = 30 * 3 # three seconds
 
-topics = ['encoder','steer','motor','gyro'] # images not included in this list
+topics = ['state','encoder','steer','motor','gyro','acc'] # images not included in this list
 
 data_object = Bair_Car_Data(path, num_bag_files_to_sample_from_given_run, num_samples_from_given_bag_file)
 plt.ion()
-while True :
-	try:
-		a_data_sequence = data_object.get_data(topics, num_frames, num_frames)
+#while True :
+#	if True:
+for i in range(10000):
+	a_data_sequence = data_object.get_data(topics, num_frames, num_frames)
 
-		print a_data_sequence.keys()
+	print a_data_sequence.keys()
 
-		# There are no timestamps in this representation. It is assumed
-		# that the framerate is 30 Hz (good approximation).
-		# All the data are syncronized to the left images.
+	# There are no timestamps in this representation. It is assumed
+	# that the framerate is 30 Hz (good approximation).
+	# All the data are syncronized to the left images.
 
-		assert(len(a_data_sequence['acc']) == num_frames)
+	assert(len(a_data_sequence['acc']) == num_frames)
 
-		assert(len(a_data_sequence['left']) == num_frames)
+	assert(len(a_data_sequence['left']) == num_frames)
 
-		plt.figure('acc')
-		plt.clf()
-		plt.figure('acc')
+	plt.figure('acc')
+	plt.clf()
+	plt.figure('acc')
 
-		plt.plot(a_data_sequence['acc'])
-
-		mi(a_data_sequence['left'][123],'left')
-
-		plt.pause(0.15)
-	except:
-		pass
+	plt.plot(a_data_sequence['acc'])
+	plt.plot(a_data_sequence['state'])
+	plt.plot(np.array(a_data_sequence['steer'])/10.)
+	for j in range(num_frames):
+		mi(a_data_sequence['left'][j],'left',img_title=str(j))
+		plt.pause(0.01)
+	#	else:
+	#		pass

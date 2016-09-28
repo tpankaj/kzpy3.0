@@ -28,7 +28,7 @@ class Bag_File:
     def reset(self):
         self.request_ctr = 0
 
-    def get_data(self, ):
+    def get_data(self):
             if self.request_ctr >= self.max_requests:
                 return None
             #print((len(self.binned_timestamp_nums[0]),len(self.binned_timestamp_nums[1])))
@@ -128,12 +128,12 @@ class Bag_Folder:
                         rc = random.choice(self.bag_files_dic.keys())
                         #print "Bag_Folder: deleting " + rc + " *****************************************"
                         del self.bag_files_dic[rc]
-                self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
+                self.bag_files_dic[b] = Bag_File(b, self.max_subrequests, self.left_image_bound_to_data, target_topics, num_data_steps, num_frames)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
             #self.bag_file = Bag_File(b, self.max_subrequests)
         try:
-            data = self.bag_file.get_data(self.left_image_bound_to_data, target_topics, num_data_steps, num_frames)
+            data = self.bag_file.get_data()
             if not data == None:
                 data['bag_filename'] = self.bag_file.path
             #print b
