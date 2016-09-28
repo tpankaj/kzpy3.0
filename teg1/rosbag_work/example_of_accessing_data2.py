@@ -1,12 +1,12 @@
 from kzpy3.vis import *
-from kzpy3.teg1.rosbag_work.get_data_from_bag_files3 import *
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files4 import *
 
 path = '/media/your_computer/rosbags/bair_car_data'
 path = '/home/karlzipser/Desktop/Old_Desktop/bair_car_rescue/bair_car_data'
 path = opjD('temp_bags_saved')
 
-num_bag_files_to_sample_from_given_run = 10
-num_samples_from_given_bag_file = 3
+num_bag_files_to_sample_from_given_run = 3
+num_samples_from_given_bag_file = 1
 
 num_frames = 32
 
@@ -36,19 +36,23 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
     else:
         img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
 
+img = np.zeros((94, 168,3),np.uint8)
 
 for i in range(10000):
-	a_data_sequence = data_object.get_data(topics, num_frames, num_frames)
+    a_data_sequence = data_object.get_data(topics, num_frames, num_frames)
 
-	plt.figure('acc')
-	plt.clf()
-	plt.figure('acc')
+    plt.figure('acc')
+    plt.clf()
+    plt.figure('acc')
 
-	plt.plot(a_data_sequence['acc'])
-	plt.plot(a_data_sequence['state'])
-	plt.plot(np.array(a_data_sequence['steer'])/10.)
-	for j in range(num_frames):
-		img = a_data_sequence['left'][j]
-		apply_rect_to_img(img,a_data_sequence['steer'][j],0,99,[1.0],[0.0],0.9,0.1,center=True,reverse=True)
-		mi(img,'left',img_title=str(j))
-		plt.pause(0.00001)
+    plt.plot(a_data_sequence['acc'])
+    plt.plot(a_data_sequence['state'])
+    plt.plot(np.array(a_data_sequence['steer'])/10.)
+    for j in range(num_frames):
+        im = a_data_sequence['left'][j]
+        img[:,:,0] = im
+        img[:,:,1] = im
+        img[:,:,2] = im
+        apply_rect_to_img(img,a_data_sequence['steer'][j],0,99,[255.0,0,0],[0,255,0.0],0.9,0.1,center=True,reverse=True)
+        mi(img,'left',img_title=str(j))
+        plt.pause(0.00001)
