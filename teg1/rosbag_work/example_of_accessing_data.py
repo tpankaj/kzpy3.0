@@ -4,7 +4,7 @@ from kzpy3.teg1.rosbag_work.get_data_from_bag_files3 import *
 
 path = '/media/your_computer/rosbags/bair_car_data'
 path = '/home/karlzipser/Desktop/Old_Desktop/bair_car_rescue/bair_car_data'
-path = opjD('temp_bags_saved/temp_bag6')
+path = opjD('temp_bags_saved')
 # The two variables below exist because it is time consuming
 # to randomly access from all the bag files. It is faster to open a
 # file and sample it several times. Likewise, each folder has metadata
