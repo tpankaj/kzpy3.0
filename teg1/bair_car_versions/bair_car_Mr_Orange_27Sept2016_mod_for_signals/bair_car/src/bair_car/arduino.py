@@ -49,6 +49,7 @@ class Arduino:
         self.gyro_pub = rospy.Publisher('gyro', geometry_msgs.msg.Vector3, queue_size=100)
         self.acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
         self.sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
+        self.signals_pub = rospy.Publisher('signals', std_msgs.msg.Int32, queue_size=100)
         ### subscribers (info sent to Arduino)
         self.cmd_steer_sub = rospy.Subscriber('cmd/steer', std_msgs.msg.Int32,
                                               callback=self._cmd_steer_callback)
@@ -171,14 +172,17 @@ class Arduino:
         
         while not rospy.is_shutdown():
             try:        
-                signals_str = self.ser_signals.readline() 
-                # print signals_str               
+                # Signal to publish from signals Arduino
+                signals_str = self.ser_signals.readline()
+                exec('signals_tuple = list({0})'.format(signals_str))
+                print signals_str               
+                self.signals_pub.publish(std_msgs.msg.Int32(signals_tuple[1])
 
-                signals_str = d2n('(',10*self.info_state + self.signal,')')
-                print signals_str    
+                # Signal to send to signals Arduino
+                signals_ser_str = d2n('(',10*self.info_state + self.signal,')')
+                #print signals_ser_str    
                 #print(d2n('(',self.signal,')'))
-                self.ser_signals.write(signals_str)
-                    
+                self.ser_signals.write(signals_ser_str)
                 ### print stuff
                 # print servos_tuple
 
