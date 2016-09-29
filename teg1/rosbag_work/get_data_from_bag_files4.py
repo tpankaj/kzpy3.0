@@ -35,12 +35,13 @@ class Bag_File:
                 """
                 for i in range(len(self.timestamps)-num_data_steps):
                     t = self.timestamps[i+num_data_steps]
-                    if left_image_bound_to_data[t]['state_one_steps'] > num_data_steps:
-                        steer = left_image_bound_to_data[t]['steer']
-                        if steer < 43 or steer > 55:
-                            self.binned_timestamp_nums[0].append(i)
-                        else:
-                            self.binned_timestamp_nums[1].append(i)
+                    if t in left_image_bound_to_data:
+                        if left_image_bound_to_data[t]['state_one_steps'] > num_data_steps:
+                            steer = left_image_bound_to_data[t]['steer']
+                            if steer < 43 or steer > 55:
+                                self.binned_timestamp_nums[0].append(i)
+                            else:
+                                self.binned_timestamp_nums[1].append(i)
             #print((len(self.binned_timestamp_nums[0]),len(self.binned_timestamp_nums[1])))
             """
             Sometimes a bin is empty, so we need to check for this while making a
@@ -62,7 +63,7 @@ class Bag_File:
 
             if t in left_image_bound_to_data:
                 if left_image_bound_to_data[t]['state_one_steps'] > num_data_steps:
-                    if timestamp_num+num_data_steps <= len(self.timestamps):
+                    if timestamp_num + num_data_steps <= len(self.timestamps):
                         for topic in target_topics:
                             target_data = []
                             left_list = []
@@ -81,9 +82,13 @@ class Bag_File:
                         data_dic['left'] = left_list
                         data_dic['right'] = right_list
             else:
-                pass
+                return None
+            if len(data_dic) == 0:
+                return None
 
             # assert that data_dic holds what it is supposed to hold.
+            print self.path
+            print data_dic.keys()
             for topic in target_topics:
                 assert type(data_dic[topic]) == list
                 assert len(data_dic[topic]) == num_data_steps
@@ -103,7 +108,7 @@ class Bag_Folder:
     def __init__(self, path, max_requests, max_subrequests):
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
         file_path = opj(path,'.preprocessed','left_image_bound_to_data')
-        #print "Bag_Folder: loading "+file_path+'.pkl'
+        print "Bag_Folder: loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
         self.bag_file = None
         self.request_ctr = 0
@@ -111,12 +116,26 @@ class Bag_Folder:
         self.max_subrequests = max_subrequests
         self.bag_files_dic = {}
         # The state_one_steps were forund in preprocess_bag_data.py, but I redo it here to get state 3.
+        """
+        -- state_one_steps --
+        Data at a given timestamp may be valid or invalid with respect to our data needs.
+        For example, state 2 is by definition invalid, while state 1 is by definition valid.
+        We also want to know, at any given timestamp, how many valid timestamps there are in a continuous
+        sequence in the future. That is what we are figuring out here.
+        A problem is that state number is not necessarily enough. For example, the car could
+        be in state 1 but not be moving, or it could be in state 1 an be being carried by hand
+        because there was a mistake in changing states -- but the lack of a motor signal could catch this.
+        """
         timestamps = sorted(self.left_image_bound_to_data.keys())
         state_one_steps = 0
         for i in range(len(timestamps)-1,-1,-1):
             state = self.left_image_bound_to_data[timestamps[i]]['state']
+            motor = self.left_image_bound_to_data[timestamps[i]]['motor']
             if state in [1,3,5,6,7]: #== 1.0 or state == 3.0:
-                state_one_steps += 1
+                if motor > 51: # i.e., there must be at least a slight forward motor command 
+                    state_one_steps += 1
+                else:
+                    state_one_steps = 0
             else:
                 state_one_steps = 0
             self.left_image_bound_to_data[timestamps[i]]['state_one_steps'] = state_one_steps
@@ -144,12 +163,12 @@ class Bag_Folder:
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
             #self.bag_file = Bag_File(b, self.max_subrequests)
-        try:
+        if True:#try:
             data = self.bag_file.get_data(self.left_image_bound_to_data, target_topics, num_data_steps, num_frames)
             if not data == None:
                 data['bag_filename'] = self.bag_file.path
             #print b
-        except Exception, e:
+        else: #except Exception, e:
             #print e 
             #print "Bag_Folder ***************************************"
             data = None
