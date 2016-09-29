@@ -5,6 +5,7 @@ path = '/media/your_computer/rosbags/bair_car_data'
 path = '/home/karlzipser/Desktop/Old_Desktop/bair_car_rescue/bair_car_data'
 #path = opjD('temp_bags_saved')
 path = '/home/karlzipser/Desktop/bair_car_data_6_min'
+path = opjD('bair_car_data_min')
 num_bag_files_to_sample_from_given_run = 10
 num_samples_from_given_bag_file = 1
 

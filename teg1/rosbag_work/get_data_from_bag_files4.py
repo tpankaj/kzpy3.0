@@ -22,8 +22,10 @@ class Bag_File:
             if self.request_ctr >= self.max_requests:
                 return None
             if self.img_dic == None:
+                if os.path.getsize(self.path) < 20000000:
+                    return None
                 #print 'Bag_File: loading ' + self.path
-                self.img_dic = load_obj(self.path.replace('.pkl',''))
+                self.img_dic = load_obj(self.path)
                 self.timestamps = sorted(self.img_dic['left'].keys())
                 self.binned_timestamp_nums = [[],[]]
                 """
@@ -153,12 +155,13 @@ class Bag_Folder:
         if self.bag_file == None:
             b = random.choice(self.files)
             if b not in self.bag_files_dic:
-                m=memory()
-                if m['free']/(1.0*m['total']) < 0.15:
-                    if len(self.bag_files_dic.keys()) > 0:
-                        rc = random.choice(self.bag_files_dic.keys())
-                        #print "Bag_Folder: deleting " + rc + " *****************************************"
-                        del self.bag_files_dic[rc]
+                if '/Users/' not in home_path: # OSX doesn't have the memory() function that linux has.
+                    m=memory()
+                    if m['free']/(1.0*m['total']) < 0.15:
+                        if len(self.bag_files_dic.keys()) > 0:
+                            rc = random.choice(self.bag_files_dic.keys())
+                            #print "Bag_Folder: deleting " + rc + " *****************************************"
+                            del self.bag_files_dic[rc]
                 self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
