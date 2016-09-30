@@ -79,14 +79,14 @@ void loop() {
 
   if (button_A_state == HIGH) {
     digitalWrite(led_LEFT, HIGH);
-    Serial.println("('signals','left')");
+    Serial.println("('left_right',-1)");
   }
   else if (button_B_state == HIGH) {
     digitalWrite(led_RIGHT, HIGH);
-    Serial.println("('signals','right')");
+    Serial.println("('left_right',1)");
   }
   else {
-    Serial.println("('signals','none')");
+    Serial.println("('left_right',0)");
   }
   if (button_A_state == LOW) {
     digitalWrite(led_LEFT, LOW);
@@ -110,6 +110,12 @@ void loop() {
     digitalWrite(led_STATE_4, HIGH);
   }
   else if (sig_state == 3) {
+    digitalWrite(led_STATE_1, HIGH);
+    digitalWrite(led_STATE_2, HIGH);
+    digitalWrite(led_STATE_3, HIGH);
+    digitalWrite(led_STATE_4, LOW);
+  }
+  else if (sig_state > 4) {
     digitalWrite(led_STATE_1, HIGH);
     digitalWrite(led_STATE_2, HIGH);
     digitalWrite(led_STATE_3, HIGH);
