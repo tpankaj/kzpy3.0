@@ -23,7 +23,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 8
+			dim: 6
 			dim: 14
 			dim: 26
 		}
