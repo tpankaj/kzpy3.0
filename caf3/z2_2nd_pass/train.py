@@ -12,7 +12,9 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-weights_file_path = None#opjD('z2_2nd_pass/z2_2nd_pass_iter_30000.caffemodel') #
+weights_file_path = sys.argv[1] #opjD('z2_2nd_pass/z2_2nd_pass.caffemodel') #
+if weights_file_path == "None":
+	weights_file_path = None
 #
 ########################################################
 
@@ -174,15 +176,20 @@ def array_to_int_list(a):
 
 unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
-bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
+solver = setup_solver()
+
 #caffe.set_device(0)
 #caffe.set_mode_gpu()
-solver = setup_solver()
+
 
 if weights_file_path != None:
 	print "loading " + weights_file_path
 	solver.net.copy_from(weights_file_path)
 #time.sleep(60)	
+
+bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
+
+
 while True:
 	try:
 		run_solver(solver,bair_car_data,3000)
