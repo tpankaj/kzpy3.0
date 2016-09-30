@@ -89,8 +89,8 @@ class Bag_File:
                 return None
 
             # assert that data_dic holds what it is supposed to hold.
-            print self.path
-            print data_dic.keys()
+            #print self.path
+            #print data_dic.keys()
             for topic in target_topics:
                 assert type(data_dic[topic]) == list
                 assert len(data_dic[topic]) == num_data_steps
@@ -107,8 +107,20 @@ class Bag_File:
 
 
 class Bag_Folder:
-    def __init__(self, path, max_requests, max_subrequests):
-        self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
+    def __init__(self, path, max_requests, max_subrequests, validation_set_flag):
+        files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
+        self.files = []
+        for i in range(len(files)):
+            if mod(i,17) == 0:
+                if validation_set_flag:
+                    self.files.append(files[i])
+                else:
+                    pass
+            else:
+                if validation_set_flag:
+                    pass
+                else:
+                    self.files.append(files[i])
         file_path = opj(path,'.preprocessed','left_image_bound_to_data')
         print "Bag_Folder: loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
@@ -117,6 +129,7 @@ class Bag_Folder:
         self.max_requests = max_requests
         self.max_subrequests = max_subrequests
         self.bag_files_dic = {}
+        self.depth = 0
         # The state_one_steps were forund in preprocess_bag_data.py, but I redo it here to get state 3.
         """
         -- state_one_steps --
@@ -155,13 +168,6 @@ class Bag_Folder:
         if self.bag_file == None:
             b = random.choice(self.files)
             if b not in self.bag_files_dic:
-                if '/Users/' not in home_path: # OSX doesn't have the memory() function that linux has.
-                    m=memory()
-                    if m['free']/(1.0*m['total']) < 0.15:
-                        if len(self.bag_files_dic.keys()) > 0:
-                            rc = random.choice(self.bag_files_dic.keys())
-                            #print "Bag_Folder: deleting " + rc + " *****************************************"
-                            del self.bag_files_dic[rc]
                 self.bag_files_dic[b] = Bag_File(b, self.max_subrequests)
             self.bag_file = self.bag_files_dic[b]
             self.bag_file.reset()
@@ -178,16 +184,26 @@ class Bag_Folder:
 
         if data == None:
             self.bag_file = None
+            if self.depth > 5:
+                print "self.depth > 5"
+                self.depth = 0;
+                return None
+            self.depth += 1
             return self.get_data(target_topics, num_data_steps, num_frames)
         self.request_ctr += 1
         #print d2s("Bag_Folder::request_ctr =",self.request_ctr)
+        self.depth = 0
         return data
 
 
 
 class Bair_Car_Data:
     """ """
-    def __init__(self, path, max_requests, max_subrequests):
+    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False):
+        self.bag_folder = None
+        self.max_requests = max_requests
+        self.max_subrequests = max_subrequests
+        self.bag_folders_dic = {}        
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         self.bag_folders_weighted = []
         for f in bag_folder_paths:
@@ -196,17 +212,29 @@ class Bair_Car_Data:
             m = len(gg(opj(f,'.preprocessed','left*')))
             print (n,m,f)
             if n > 0 and m > 0:
+                self.bag_folders_dic[f] = Bag_Folder(f, self.max_requests, self.max_subrequests, validation_set_flag)
                 for i in range(max(n/10,1)):
                     self.bag_folders_weighted.append(f)
         #print self.bag_folders_weighted
         #time.sleep(60)
-        self.bag_folder = None
-        self.max_requests = max_requests
-        self.max_subrequests = max_subrequests
-        self.bag_folders_dic = {}
+
+
+    def check_memory(self):
+        if '/Users/' not in home_path: # OSX doesn't have the memory() function that linux has.
+            m=memory()
+            #print m['free']/(1.0*m['total'])
+            #while m['free']/(1.0*m['total']) < 0.15:
+            free_propotion = m['free']/(1.0*m['total'])
+            #print free_propotion
+            if free_propotion < 0.15:
+                b = random.choice(self.bag_folders_dic.keys())
+                self.bag_folders_dic[b].bag_files_dic = {}
+                #print "Deleting "+b+" bag files."
+                #del self.bag_folders_dic[b]
 
     def get_data(self, target_topics, num_data_steps, num_frames):
         #print 'Bair_Car_Data::get_data'
+        self.check_memory()
         if True:#try:
             if self.bag_folder == None:
                 b = random.choice(self.bag_folders_weighted)
