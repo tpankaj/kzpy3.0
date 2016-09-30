@@ -5,7 +5,8 @@
 """
 
 from kzpy3.vis import *
-
+if '/Users/' in home_path:
+    from kzpy3.misc.OSX_free_memory import OSX_free_memory
 
 class Bag_File:
     def __init__(self, path, max_requests):
@@ -220,17 +221,21 @@ class Bair_Car_Data:
 
 
     def check_memory(self):
+        free_propotion = 1.0
+        free_gigabytes = 999999.0
         if '/Users/' not in home_path: # OSX doesn't have the memory() function that linux has.
             m=memory()
             #print m['free']/(1.0*m['total'])
             #while m['free']/(1.0*m['total']) < 0.15:
             free_propotion = m['free']/(1.0*m['total'])
             #print free_propotion
-            if free_propotion < 0.15:
-                b = random.choice(self.bag_folders_dic.keys())
-                self.bag_folders_dic[b].bag_files_dic = {}
-                #print "Deleting "+b+" bag files."
-                #del self.bag_folders_dic[b]
+        else:
+            free_gigabytes = OSX_free_memory()
+        if free_propotion < 0.15 or free_gigabytes < 3.0:
+            b = random.choice(self.bag_folders_dic.keys())
+            self.bag_folders_dic[b].bag_files_dic = {}
+            #print "Deleting "+b+" bag files."
+            #del self.bag_folders_dic[b]
 
     def get_data(self, target_topics, num_data_steps, num_frames):
         #print 'Bair_Car_Data::get_data'
