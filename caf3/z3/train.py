@@ -180,4 +180,5 @@ assert(load_data_into_model(solver_list[0],data[0:10])
 solver_list[0].net.forward(end='conv2')
 assert(load_data_into_model(solver_list[1],data[2:12])
 solver_list[1].net.forward(end='conv2')
+print 'here!'
 
