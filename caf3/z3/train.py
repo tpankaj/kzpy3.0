@@ -170,14 +170,14 @@ solver2 = setup_solver(solver_file_path2)
 if weights_file_path2 != None:
 	print "loading " + weights_file_path2
 	solver2.net.copy_from(weights_file_path2)
-"""
-bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
+
+#bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
 
 
-while True:
-	data = bair_car_data.get_data(['steer','motor'],32,32)
-	assert(load_data_into_model(solver_list[0],data[0:10])
-	solver_list[0].net.forward(end='conv2')
-	assert(load_data_into_model(solver_list[1],data[2:12])
-	solver_list[1].net.forward(end='conv2')
-"""
+
+data = bair_car_data.get_data(['steer','motor'],32,32)
+assert(load_data_into_model(solver_list[0],data[0:10])
+solver_list[0].net.forward(end='conv2')
+assert(load_data_into_model(solver_list[1],data[2:12])
+solver_list[1].net.forward(end='conv2')
+
