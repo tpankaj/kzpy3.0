@@ -12,10 +12,14 @@ USE_GPU = False
 ########################################################
 #          SETUP SECTION
 #
-solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-weights_file_path = sys.argv[1] #None#opjD('z2_2nd_pass/z2_2nd_pass_iter_30000.caffemodel') #
-if weights_file_path == "None":
-	weights_file_path = None
+solver_file_path1 = opjh("kzpy3/caf3/z2/solver.prototxt")
+weights_file_path1 = sys.argv[1] #None#opjD('z2_2nd_pass/z2_2nd_pass_iter_30000.caffemodel') #
+if weights_file_path1 == "None":
+	weights_file_path1 = None
+solver_file_path2 = opjh("kzpy3/caf3/z3/solver.prototxt")
+weights_file_path2 = sys.argv[2] #None#opjD('z2_2nd_pass/z2_2nd_pass_iter_30000.caffemodel') #
+if weights_file_path2 == "None":
+	weights_file_path2 = None
 #
 ########################################################
 
@@ -154,12 +158,18 @@ if USE_GPU:
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
-solver_list = []
+solver1_list = []
 for i in range(2):
-	solver_list.append(setup_solver(solver_file_path))
-	if weights_file_path != None:
-		print "loading " + weights_file_path
-		solver_list[i].net.copy_from(weights_file_path)
+	solver1_list.append(setup_solver(solver_file_path1))
+	if weights_file_path1 != None:
+		print "loading " + weights_file_path1
+		solver1_list[i].net.copy_from(weights_file_path1)
+
+"""
+solver2 = setup_solver(solver_file_path2)
+if weights_file_path2 != None:
+	print "loading " + weights_file_path2
+	solver2.net.copy_from(weights_file_path2)
 
 bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
 
@@ -167,18 +177,7 @@ bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
 while True:
 	data = bair_car_data.get_data(['steer','motor'],32,32)
 	assert(load_data_into_model(solver_list[0],data[0:10])
-	solver_list[0].net.forward(end='conv1_pool')
+	solver_list[0].net.forward(end='conv2')
 	assert(load_data_into_model(solver_list[1],data[2:12])
-	solver_list[1].net.forward(end='conv1_pool')
-
-
-while True:
-	try:
-		run_solver(solver,bair_car_data,3000)
-	except Exception as e:
-		print "train loop ***************************************"
-		print e.message, e.args
-		print "***************************************"
-
-
-
+	solver_list[1].net.forward(end='conv2')
+"""
