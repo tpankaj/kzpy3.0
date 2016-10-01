@@ -15,51 +15,62 @@ layer {
 }
 
 
-
 layer {
-	name: "metadata"
+	name: "conv2_PAST"
 	type: "DummyData"
-	top: "metadata"
+	top: "conv2_PAST"
 	dummy_data_param {
 		shape {
 			dim: 1
+			dim: 256
 			dim: 6
-			dim: 14
-			dim: 26
+			dim: 12
 		}
 	}
 }
 
-
-
 layer {
-	name: "ZED_data_pool2"
+	name: "conv2_PRESENT"
 	type: "DummyData"
-	top: "ZED_data_pool2"
+	top: "conv2_PRESENT"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 4
-			dim: 94
-			dim: 168
+			dim: 256
+			dim: 6
+			dim: 12
 		}
 	}
 }
+
+
+
 
 
 	
-###################### Convolutional Layer Set 'conv1' ######################
-#
+############################################################
+
 layer {
-	name: "conv1"
+  name: "conv2_time_concat"
+  type: "Concat"
+  bottom: "conv2_PAST"
+  bottom: "conv2_PRESENT"
+  top: "conv2_time_concat"
+  concat_param {
+    axis: 1
+  }
+}
+
+layer {
+	name: "conv2_2"
 	type: "Convolution"
-	bottom: "ZED_data_pool2"
-	top: "conv1"
+	bottom: "conv2_time_concat"
+	top: "conv2_2"
 	convolution_param {
-		num_output: 96
+		num_output: 256
 		group: 1
-		kernel_size: 11
-		stride: 3
+		kernel_size: 1
+		stride: 1
 		pad: 0
 		weight_filler {
 			type: "gaussian" 
@@ -69,45 +80,18 @@ layer {
 }
 	
 layer {
-	name: "conv1_relu"
+	name: "conv2_2_relu"
 	type: "ReLU"
-	bottom: "conv1"
-	top: "conv1"
+	bottom: "conv2_2"
+	top: "conv2_2"
 }
-	
-layer {
-	name: "conv1_pool"
-	type: "Pooling"
-	bottom: "conv1"
-	top: "conv1_pool"
-	pooling_param {
-		pool: MAX
-		kernel_size: 3
-		stride: 2
-		pad: 0
-	}
-}
-	
-############################################################
-
-layer {
-  name: "conv1_metadata_concat"
-  type: "Concat"
-  bottom: "conv1_pool"
-  bottom: "metadata"
-  top: "conv1_metadata_concat"
-  concat_param {
-    axis: 1
-  }
-}
-
 ###################### Convolutional Layer Set 'conv2' ######################
 #
 layer {
-	name: "conv2"
+	name: "conv3_2"
 	type: "Convolution"
-	bottom: "conv1_metadata_concat"
-	top: "conv2"
+	bottom: "conv2_2"
+	top: "conv3_2"
 	convolution_param {
 		num_output: 256
 		group: 2
@@ -122,17 +106,17 @@ layer {
 }
 	
 layer {
-	name: "conv2_relu"
+	name: "conv3_2_relu"
 	type: "ReLU"
-	bottom: "conv2"
-	top: "conv2"
+	bottom: "conv3_2"
+	top: "conv3_2"
 }
 	
 layer {
-	name: "conv2_pool"
+	name: "conv3_2_pool"
 	type: "Pooling"
-	bottom: "conv2"
-	top: "conv2_pool"
+	bottom: "conv3_2"
+	top: "conv3_2_pool"
 	pooling_param {
 		pool: MAX
 		kernel_size: 3
@@ -149,7 +133,7 @@ layer {
 layer {
 	name: "ip1"
 	type: "InnerProduct"
-	bottom: "conv2_pool"
+	bottom: "conv3_2_pool"
 	top: "ip1"
 	inner_product_param {
 		num_output: 512
