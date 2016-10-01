@@ -122,7 +122,7 @@ layer {
 layer {
 	name: "ip1"
 	type: "InnerProduct"
-	bottom: "conv3_2_pool"
+	bottom: "conv3_2"
 	top: "ip1"
 	inner_product_param {
 		num_output: 512
