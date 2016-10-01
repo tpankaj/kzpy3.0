@@ -35,7 +35,7 @@ void loop() {
 
   if (millis() - timer > 1000) { 
     timer = millis();
-    
+  }  
 
   sensors_event_t event; 
   mma.getEvent(&event);

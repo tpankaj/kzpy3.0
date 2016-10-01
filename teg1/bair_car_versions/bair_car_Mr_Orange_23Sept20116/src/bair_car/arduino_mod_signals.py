@@ -32,12 +32,11 @@ class Arduino:
 
     def __init__(self, baudrate=115200, timeout=0.25):
         ### setup serial ports
-        self.ser_servos, self.ser_sensors = self._setup_serial(baudrate, timeout)
+        self.ser_servos, self.ser_sensors, self.ser_signals = self._setup_serial(baudrate, timeout)
+ 
+
         assert(self.ser_servos is not None)
         assert(self.ser_sensors is not None)
-
-
-        self.ser_signals = self._setup_serial(9600, timeout)
         assert(self.ser_signals is not None)
 
 
@@ -65,13 +64,9 @@ class Arduino:
 
 
 
+        self.state = -999
 
-
-        self.cmd_signals_sub = rospy.Subscriber('signals', std_msgs.msg.Int32,
-                                              callback=self._cmd_signals_callback)
-        self.cmd_signals_queue = Queue.Queue()
-
-
+        rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32,self.state_callback)        
 
 
 
@@ -80,8 +75,9 @@ class Arduino:
         print('Starting threads')
         threading.Thread(target=self._ros_servos_thread).start()
         threading.Thread(target=self._ros_sensors_thread).start()
-
         threading.Thread(target=self._ros_signals_thread).start()
+
+        #threading.Thread(target=self._ros_signals_thread).start()
 
     #############
     ### Setup ###
@@ -100,11 +96,14 @@ class Arduino:
         ### determine which serial port is which
         ser_servos = None
         ser_sensors = None
+        ser_signals = None
         for ser in sers:
-            for _ in xrange(100):
+            for attempts in xrange(100):
+                print attempts
                 try:
                     ser_str = ser.readline()
                     exec('ser_tuple = list({0})'.format(ser_str))
+                    print ser_tuple
                     if ser_tuple[0] in Arduino.CONTROL_STATES:
                         print('Port {0} is the servos'.format(ser.port))
                         ser_servos = ser
@@ -113,7 +112,7 @@ class Arduino:
                         print('Port {0} is the sensors'.format(ser.port))
                         ser_sensors = ser
                         break
-                    elif True: #ser_tuple[0] in ['signals'] #Arduino.SENSOR_STATES:
+                    elif ser_tuple[0] in ('signals'): #Arduino.SENSOR_STATES:
                         print('Port {0} is the signals'.format(ser.port))
                         ser_signals = ser
                         break
@@ -122,7 +121,7 @@ class Arduino:
             else:
                 print('Unable to identify port {0}'.format(ser.port))
         
-        return ser_servos, ser_sensors
+        return ser_servos, ser_sensors, ser_signals
 
     ###################
     ### ROS methods ###
@@ -182,29 +181,15 @@ class Arduino:
         """
 
         """
+        
         info = dict()
         
         while not rospy.is_shutdown():
-            try:        
-                ### read servos serial
-                signals_str = self.ser_servos.readline()
+            try:
+                print str(self.state)
+                self.ser_signals.write(str(self.state))
+
                 
-                ### write servos serial
-                write_to_signals = False
-                for var, queue in (('signals', self.cmd_signals_queue)):
-                    if not queue.empty():
-                        write_to_signals = True
-                        info[var] = queue.get()
-
-                        
-                if write_to_signals:
-                    signals_write_int = info['save']
-                    signals_write_str = '( {0} )'.format(servos_write_int)
-                    print(('signals_write_str',signals_write_int))
-                    self.ser_signals.write(signals_write_str)
-                    
-
-
             except Exception as e:
                 print e
 
@@ -262,6 +247,7 @@ class Arduino:
     #################
             
     def _cmd_steer_callback(self, msg):
+        print msd.data
         if msg.data >= 0 and msg.data < 100:
             self.cmd_steer_queue.put(msg.data)
         
@@ -269,3 +255,5 @@ class Arduino:
         if msg.data >= 0 and msg.data < 100:
             self.cmd_motor_queue.put(msg.data)
 
+    def state_callback(self,data):
+        self.state = data

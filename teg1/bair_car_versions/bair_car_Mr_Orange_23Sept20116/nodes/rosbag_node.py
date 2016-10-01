@@ -20,9 +20,9 @@ if __name__ == '__main__':
     bag_mv_folder = sys.argv[2] # '/media/ubuntu/3131-3031/rosbags'
     bag_mv_folder = opj(bag_mv_folder,foldername)
 
-    unix('mkdir -p '+bag_mv_folder)
-    unix('mkdir -p '+opj(bag_mv_folder,'.caf'))
-    unix('mkdir -p '+opj(bag_mv_folder,'.bair_car'))
+    unix('mkdir  '+bag_mv_folder)
+    unix('mkdir  '+opj(bag_mv_folder,'.caf'))
+    unix('mkdir  '+opj(bag_mv_folder,'.bair_car'))
 
     unix('scp -r /home/ubuntu/catkin_ws/src/bair_car ' + opj(bag_mv_folder,'.bair_car'))
     unix('scp /home/ubuntu/Desktop/z2/z2.caffemodel ' + opj(bag_mv_folder,'.caf'))
