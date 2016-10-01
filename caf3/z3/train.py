@@ -165,12 +165,12 @@ for i in range(2):
 		print "loading " + weights_file_path1
 		solver1_list[i].net.copy_from(weights_file_path1)
 
-"""
+
 solver2 = setup_solver(solver_file_path2)
 if weights_file_path2 != None:
 	print "loading " + weights_file_path2
 	solver2.net.copy_from(weights_file_path2)
-
+"""
 bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
 
 
