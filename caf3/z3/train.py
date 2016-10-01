@@ -171,8 +171,8 @@ if weights_file_path2 != None:
 	print "loading " + weights_file_path2
 	solver2.net.copy_from(weights_file_path2)
 
-#bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
-bair_car_data = Bair_Car_Data(opjD('temp_bags_saved/folder'),1000,100)
+bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
+#bair_car_data = Bair_Car_Data(opjD('temp_bags_saved/folder'),1000,100)
 
 
 
