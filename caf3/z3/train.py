@@ -175,10 +175,10 @@ if weights_file_path2 != None:
 
 
 
-data = bair_car_data.get_data(['steer','motor'],32,32)
+#data = bair_car_data.get_data(['steer','motor'],32,32)
 assert(load_data_into_model(solver_list[0],data[0:10])
-solver_list[0].net.forward(end='conv2')
+solver1_list[0].net.forward(end='conv2')
 assert(load_data_into_model(solver_list[1],data[2:12])
-solver_list[1].net.forward(end='conv2')
+solver1_list[1].net.forward(end='conv2')
 print 'here!'
 
