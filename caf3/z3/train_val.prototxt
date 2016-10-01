@@ -93,7 +93,7 @@ layer {
 	bottom: "conv2_2"
 	top: "conv3_2"
 	convolution_param {
-		num_output: 256
+		num_output: 384
 		group: 2
 		kernel_size: 3
 		stride: 2
@@ -112,18 +112,7 @@ layer {
 	top: "conv3_2"
 }
 	
-layer {
-	name: "conv3_2_pool"
-	type: "Pooling"
-	bottom: "conv3_2"
-	top: "conv3_2_pool"
-	pooling_param {
-		pool: MAX
-		kernel_size: 3
-		stride: 2
-		pad: 0
-	}
-}
+
 	
 ############################################################
 
