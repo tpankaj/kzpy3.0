@@ -855,7 +855,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 20
+			dim: 64
 		}
 	}
 }
@@ -1414,14 +1414,27 @@ layer {
 ############################################
 #
 layer {
+	name: "conv2__7_pool"
+	type: "Pooling"
+	bottom: "conv2__7"
+	top: "conv2__7_pool"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad: 0
+	}
+}
+layer {
 	name: "ip1_conv2_2"
 	type: "InnerProduct"
-	bottom: "conv2__7"
+	bottom: "conv2__7_pool"
 	top: "ip1_conv2_2"
 	inner_product_param {
 		num_output: 512
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.1
 		}
 	}
 }
@@ -1440,7 +1453,8 @@ layer {
 	inner_product_param {
 		num_output: 512
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.1
 		}
 	}
 }
@@ -1459,7 +1473,8 @@ layer {
 	inner_product_param {
 		num_output: 512
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.1
 		}
 	}
 }
@@ -1479,7 +1494,8 @@ layer {
 	inner_product_param {
 		num_output: 512
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.1
 		}
 	}
 }
@@ -1513,22 +1529,46 @@ layer {
 	inner_product_param {
 		num_output: 96
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.01
 		}
 	}
 }
 
+
+
+###################### IP Layer Set 'ip2' ######################
+#
 layer {
 	name: "ip2"
 	type: "InnerProduct"
 	bottom: "ip1_2"
 	top: "ip2"
 	inner_product_param {
-		num_output: 20
+		num_output: 64
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.01 
 		}
 	}
 }
+	
+#layer {
+#	name: "ip2_relu"
+#	type: "ReLU"
+#	bottom: "ip2"
+#	top: "ip2"
+#}
+	
+############################################################
 
 
+layer {
+	name: "euclidean"
+	type: "EuclideanLoss"
+	bottom: "ip2"
+	bottom: "steer_motor_target_data__7"
+	top: "euclidean"
+	loss_weight: 1
+}
+	

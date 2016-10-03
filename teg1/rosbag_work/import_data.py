@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 
-#$ python kzpy3/teg1/rosbag_work/import_data.py /media/karlzipser/rosbags/ ~/Desktop/temp_bag/;python kzpy3/teg1/rosbag_work/multi_folder_preprocess.py ~/Desktop/temp_bag/
+#$ python kzpy3/teg1/rosbag_work/import_data.py /media/karlzipser/rosbags ~/Desktop/temp_bag; python kzpy3/teg1/rosbag_work/multi_folder_preprocess.py ~/Desktop/temp_bag/
 
 from kzpy3.utils import *
 

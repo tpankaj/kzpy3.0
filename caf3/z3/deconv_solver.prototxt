@@ -1,9 +1,9 @@
 
-net: "kzpy3/caf3/z3/train_val_unified.prototxt"
+net: "kzpy3/caf3/z3/deconv_train_val.prototxt"
 test_iter: 1
 test_interval: 1000000
 test_initialization: false
-base_lr: 0.001  #
+base_lr: 0.000001  #
 momentum: 0.01
 weight_decay: 0.005
 lr_policy: "inv"
@@ -12,5 +12,5 @@ power: 0.75
 display: 20000
 max_iter: 10000000
 snapshot: 1000
-snapshot_prefix: "Desktop/z3/z_unified"
+snapshot_prefix: "Desktop/z3/z3_deconv"
 	
