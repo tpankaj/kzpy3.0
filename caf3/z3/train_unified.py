@@ -146,7 +146,7 @@ solver5 = setup_solver(solver_file_path5)
 """
 
 solver_unified = setup_solver(opjh('kzpy3/caf3/z3/solver_unified.prototxt'))
-solver_unified.net.copy_from(opjD('z3/z_unified_iter_14000.caffemodel'))
+solver_unified.net.copy_from(opjD('z3/z_unified_iter_90000.caffemodel'))
 
 """
 for h in range(8):

@@ -115,6 +115,7 @@ class Bag_Folder:
             if mod(i,17) == 0:
                 if validation_set_flag:
                     self.files.append(files[i])
+                    print "validation data"
                 else:
                     pass
             else:
@@ -122,6 +123,7 @@ class Bag_Folder:
                     pass
                 else:
                     self.files.append(files[i])
+                    #print "test data"
         file_path = opj(path,'.preprocessed','left_image_bound_to_data')
         print "Bag_Folder: loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)

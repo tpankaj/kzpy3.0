@@ -390,3 +390,21 @@ def memory():
     return ret
 
 
+def most_recent_file_in_folder(path,str_elements):
+    files = gg(opj(path,'*'))
+    candidates = []
+    for f in files:
+        is_candidate = True
+        for s in str_elements:
+            if s not in f:
+                is_candidate = False
+                break
+        if is_candidate:
+            candidates.append(f)
+    mtimes = {}
+    for c in candidates:
+        mtimes[os.path.getmtime(c)] = c
+
+    mt = sorted(mtimes.keys())[-1]
+    c = mtimes[mt]
+    return c

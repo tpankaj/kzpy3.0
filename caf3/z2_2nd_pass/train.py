@@ -3,7 +3,7 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg1.rosbag_work.get_data_from_bag_files4 import *
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-weights_file_path = sys.argv[1] #opjD('z2_2nd_pass/z2_2nd_pass.caffemodel') #
+weights_file_path = most_recent_file_in_folder(opjD('z2'),['z2','caffemodel']) 
 if weights_file_path == "None":
 	weights_file_path = None
 #
@@ -118,9 +118,9 @@ def run_solver(solver, bair_car_data, num_steps):
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
-			if np.mod(ctr,50) == 0:
+			if np.mod(ctr,10) == 0:
 				imshow = True
-			if np.mod(ctr,1000) == 0:
+			if np.mod(ctr,100) == 0:
 				datashow = True
 			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,2))
 			if result == False:
@@ -173,8 +173,8 @@ def array_to_int_list(a):
 
 
 #if __name__ == '__main__':
-
-unix('mkdir -p '+opjD('z2_2nd_pass'))
+bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1,10)
+#unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 solver = setup_solver()
 
@@ -187,9 +187,9 @@ if weights_file_path != None:
 	solver.net.copy_from(weights_file_path)
 #time.sleep(60)	
 
-bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1000,100)
 
 
+#def main():
 while True:
 	try:
 		run_solver(solver,bair_car_data,3000)
