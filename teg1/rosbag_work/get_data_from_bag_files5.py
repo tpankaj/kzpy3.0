@@ -107,6 +107,8 @@ class Bag_File:
             return data_dic
 
 
+
+
 class Bag_Folder:
     def __init__(self, path, max_requests, max_subrequests, validation_set_flag):
         files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
@@ -200,6 +202,61 @@ class Bag_Folder:
 
 
 
+
+
+
+
+
+
+class Bag_Folder2:
+    def __init__(self, path):
+        self.path = path
+        self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
+        file_path = opj(path,'.preprocessed','left_image_bound_to_data')
+        print "Bag_Folder: loading "+file_path+'.pkl'
+        self.left_image_bound_to_data = load_obj(file_path)
+        self.img_dic = {}
+        # The state_one_steps were forund in preprocess_bag_data.py, but I redo it here to get state 3.
+        """
+        -- state_one_steps --
+        Data at a given timestamp may be valid or invalid with respect to our data needs.
+        For example, state 2 is by definition invalid, while state 1 is by definition valid.
+        We also want to know, at any given timestamp, how many valid timestamps there are in a continuous
+        sequence in the future. That is what we are figuring out here.
+        A problem is that state number is not necessarily enough. For example, the car could
+        be in state 1 but not be moving, or it could be in state 1 an be being carried by hand
+        because there was a mistake in changing states -- but the lack of a motor signal could catch this.
+        """
+        timestamps = sorted(self.left_image_bound_to_data.keys())
+        state_one_steps = 0
+        for i in range(len(timestamps)-1,-1,-1):
+            state = self.left_image_bound_to_data[timestamps[i]]['state']
+            motor = self.left_image_bound_to_data[timestamps[i]]['motor']
+            if state in [1,3,5,6,7]: #== 1.0 or state == 3.0:
+                if motor > 51: # i.e., there must be at least a slight forward motor command 
+                    state_one_steps += 1
+                else:
+                    state_one_steps = 0
+            else:
+                state_one_steps = 0
+            self.left_image_bound_to_data[timestamps[i]]['state_one_steps'] = state_one_steps
+
+    def load_all_bag_files(self):
+        for f in self.files:
+            bag_file_img_dic = load_obj(f)
+            for t in bag_file_img_dic['left'].keys():
+                self.img_dic[t] = bag_file_img_dic['left'][t]
+
+def play(self,start_index,stop_index):
+    ts = sorted( self.img_dic.keys())
+    print len(ts)
+    for i in range(len(ts)):
+        if i >= start_index and i < stop_index:
+            cv2.imshow('left',img.astype('uint8'))
+            if cv2.waitKey(1) & 0xFF == ord('q'):            
+            #mi(self.img_dic[ts[i]],2)
+            plt.pause(0.03)
+
 class Bair_Car_Data:
     """ """
     def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False):
@@ -261,5 +318,28 @@ class Bair_Car_Data:
             self.bag_folder = None
             return self.get_data(target_topics, num_data_steps, num_frames)
         return data
+
+
+def time_stamps_and_elements(L,topic):
+    ts = sorted(L.keys())
+    data = []
+    for t in ts:
+        data.append(L[t][topic])
+    return ts,data
+
+def plot_L_file(L,fig_num=1,by_index=False):
+    ts,steer=time_stamps_and_elements(L,'steer')
+    ts,motor=time_stamps_and_elements(L,'motor')
+    ts,encoder=time_stamps_and_elements(L,'encoder')
+    ts,gyro=time_stamps_and_elements(L,'gyro')   
+    ts,state=time_stamps_and_elements(L,'state')
+    if by_index:
+        ts = range(len(ts))
+    plt.plot(ts,steer)
+    plt.plot(ts,motor)
+    plt.plot(ts,np.array(gyro)/10.)
+    plt.plot(ts,encoder)
+    plt.plot(ts,state)
+
 
 

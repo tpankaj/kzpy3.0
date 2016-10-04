@@ -408,3 +408,10 @@ def most_recent_file_in_folder(path,str_elements):
     mt = sorted(mtimes.keys())[-1]
     c = mtimes[mt]
     return c
+
+def a_key(dic):
+    keys = dic.keys()
+    return keys[np.random.randint(len(keys))]
+
+def an_element(dic):
+    return dic[a_key(dic)]

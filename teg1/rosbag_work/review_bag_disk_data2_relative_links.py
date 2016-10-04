@@ -20,7 +20,7 @@ bair_car_min_disks = gg(opj(bair_car_min_data_path,'*'))
 
 for bcm_disks in bair_car_min_disks:
 	print bcm_disks
-	
+
 	bair_car_data_folders = gg(opj(bcm_disks,'*'))
 
 	total_pklbags = 0
@@ -41,7 +41,10 @@ for bcm_disks in bair_car_min_disks:
 		
 		if len(pklbags_sizes) > 0:
 			stats = (pklbags_sizes.min(),np.int(pklbags_sizes.mean()),pklbags_sizes.max())
-			unix( d2s("ln -s",bf,opj(bair_car_data_min_links_path,bf.split('/')[-1])), False )
+			os.chdir(bf)
+			unix('pwd')
+			print( d2s("ln -s",bf,opj('..',bair_car_data_min_links_path[-1],bf.split('/')[-1])), False )
+			#print( d2s("ln -s",bf,opj('..',bf.split('/')[-1])), False )
 		else:
 			stats = ('nothing')
 		print (stats, bf.split('/')[-1],len(bags),len(pklbags),len(leftpkl))
