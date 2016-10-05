@@ -411,7 +411,8 @@ def most_recent_file_in_folder(path,str_elements):
 
 def a_key(dic):
     keys = dic.keys()
-    return keys[np.random.randint(len(keys))]
+    k = np.random.randint(len(keys))
+    return keys[k]
 
 def an_element(dic):
     return dic[a_key(dic)]

@@ -247,15 +247,144 @@ class Bag_Folder2:
             for t in bag_file_img_dic['left'].keys():
                 self.img_dic[t] = bag_file_img_dic['left'][t]
 
-def play(self,start_index,stop_index):
+def play(self,start_t,stop_t):
+    print((start_t,stop_t))
     ts = sorted( self.img_dic.keys())
     print len(ts)
-    for i in range(len(ts)):
-        if i >= start_index and i < stop_index:
+    t_tracker = ts[0]
+    for i in range(0,len(ts),1):
+        if ts[i] >= start_t and ts[i] < stop_t:
+            img = self.img_dic[ts[i]]
+            if ts[i] - t_tracker > 0.25:
+                plt.figure(1)
+                plt.plot(ts[i],10,'o')
+                t_tracker = ts[i]
+            mi(self.img_dic[ts[i]],2,img_title=str(ts[i]),toolBar=True)
+            plt.pause(0.001)#max(0.03 - time.time()-t0,0))
+
+
+def play2(self,start_t,stop_t,step=1,save_instead_of_display=False):
+    caffe_steer_color_color = [255,0,0]
+    human_steer_color_color = [0,0,255]
+    img = np.zeros((94, 168,3),np.uint8)
+    img_dic = {}
+    print((start_t,stop_t))
+    ts = sorted( self.img_dic.keys())
+    print len(ts)
+    t_tracker = ts[0]
+    for i in range(0,len(ts),step):
+        if ts[i] >= start_t and ts[i] < stop_t:
+            im = self.img_dic[ts[i]]
+            img[:,:,0] = im
+            img[:,:,1] = im
+            img[:,:,2] = im
+            if np.int(self.left_image_bound_to_data[ts[i]]['state']) in [3,6]: #caffe is steering
+                steer_rect_color = caffe_steer_color_color
+            else:
+                steer_rect_color = human_steer_color_color
+            apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
+            if ts[i] - t_tracker > 0.25:
+                plt.figure(1)
+                plt.plot(ts[i],10,'o')
+                t_tracker = ts[i]
+
+            if save_instead_of_display:
+                img_dic[ts[i]] = img.copy()
+            if (not save_instead_of_display) or (np.mod(i,10) == 0): 
+                mi(img,2,img_title=str(ts[i]),toolBar=True)
+                plt.pause(0.001)#max(0.03 - time.time()-t0,0))
+    if save_instead_of_display:
+        return img_dic    
+
+
+
+
+def play_cv2(self,start_t,stop_t):
+    import cv2
+    cv2.namedWindow('left',1)
+    ts = sorted( self.img_dic.keys())
+    print len(ts)
+    for i in range(0,len(ts),1):
+        if ts[i] >= start_t and ts[i] < stop_t:
+            #print i
+            img = self.img_dic[ts[i]]
             cv2.imshow('left',img.astype('uint8'))
-            if cv2.waitKey(1) & 0xFF == ord('q'):            
-            #mi(self.img_dic[ts[i]],2)
-            plt.pause(0.03)
+            if cv2.waitKey(1) & 0xFF == ord('q'):   
+                return      
+            #t0 = time.time()   
+            #mi(self.img_dic[ts[i]],2,img_title=str(ts[i]))
+            plt.pause(0.03)#max(0.03 - time.time()-t0,0))
+    cv2.destroyWindow('left')
+
+click_ts = []
+def button_press_event(event):
+    global click_ts
+    #print len(click_ts)
+    ts = event.xdata
+    click_ts.append(ts)
+    print click_ts[-2:]
+
+
+def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=False):
+    h,w,d = shape(img)
+    p = (value - min_val) / (max_val - 1.0*min_val)
+    if reverse:
+        p = 1.0 - p
+    if p > 1:
+        p = 1
+    if p < 0:
+        p = 0
+    wp = int(p*w)
+    bh = int((1-rel_bar_height) * h)
+    bt = int(rel_bar_thickness * h)
+    
+    if center:
+        if wp < w/2:
+            img[(bh-bt/2):(bh+bt/2),(wp):(w/2),:] = neg_color
+        else:
+            img[(bh-bt/2):(bh+bt/2),(w/2):(wp),:] = pos_color
+    else:
+        img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
+
+
+"""
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
+bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_from_Evans_19Sept2016_Mr_Orange');#caffe_z2_direct_Tilden_22Sep16_13h18m02s_Mr_Orange')
+bf2.load_all_bag_files()
+L = bf2.left_image_bound_to_data
+
+ts = sorted( bf2.img_dic.keys())
+t0 = ts[0]
+
+
+
+
+
+fig = plt.figure(1,figsize=(14,4))
+
+plt.rcParams['toolbar'] = 'toolbar2'
+plt.clf()
+plt.ion()
+plt.show()
+fig.canvas.mpl_connect('button_press_event', button_press_event)
+
+plot_L_file(L,1,False)
+
+
+play(bf2,click_ts[-2],click_ts[-1])
+(1474581103.2895727, 1474581268.1056883)
+    (1474580959.4764488, 1474581045.9608831)
+    1474576522.58,1474576603.85
+    1474577588.98,1474577653.58 !
+    1474577817.37,1474577824.85 hill rollover
+    1474331412.37,1474331420.67 sidewalk obsticals
+    1474331288.89,1474331350.38 good sidewalk sequence
+    ,1474331037.87,1474331059.92 pedestrian avoidance
+
+ts = sorted(img_dic.keys())
+for i in range(len(ts)):
+    imsave(opjD('temp2',d2n(i,'.png')),img_dic[ts[i]])
+"""
 
 class Bair_Car_Data:
     """ """
@@ -332,12 +461,14 @@ def plot_L_file(L,fig_num=1,by_index=False):
     ts,motor=time_stamps_and_elements(L,'motor')
     ts,encoder=time_stamps_and_elements(L,'encoder')
     ts,gyro=time_stamps_and_elements(L,'gyro')   
+    #ts,acc=time_stamps_and_elements(L,'acc') 
     ts,state=time_stamps_and_elements(L,'state')
     if by_index:
         ts = range(len(ts))
     plt.plot(ts,steer)
     plt.plot(ts,motor)
     plt.plot(ts,np.array(gyro)/10.)
+    #plt.plot(ts,np.array(acc)-10.)
     plt.plot(ts,encoder)
     plt.plot(ts,state)
 
