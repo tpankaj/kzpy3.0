@@ -380,11 +380,18 @@ play(bf2,click_ts[-2],click_ts[-1])
     1474331412.37,1474331420.67 sidewalk obsticals
     1474331288.89,1474331350.38 good sidewalk sequence
     ,1474331037.87,1474331059.92 pedestrian avoidance
+"""
+"""
+Step 1) save jpg frames to bag_folder
+Step 2) 
+"""
 
 ts = sorted(img_dic.keys())
 for i in range(len(ts)):
-    imsave(opjD('temp2',d2n(i,'.png')),img_dic[ts[i]])
-"""
+    if np.mod(i,10) == 0:
+        print i
+    imsave(opjD('temp_jpg',d2n(i,'.jpg')),imresize(img_dic[ts[i]],4.0))
+
 
 class Bair_Car_Data:
     """ """
