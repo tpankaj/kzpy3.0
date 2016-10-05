@@ -6,7 +6,7 @@
 #    For this, use weight sharing but only train some weights on feed-forward pass.
 # Need way to quantify success of models, so that I can test effectiveness of these
 # various variations.
-
+# idea: train net to predict time offset between frames or time/stereo quad inputs.
 
 layer {
 	name: "steer_motor_target_data"
