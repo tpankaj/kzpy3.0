@@ -3,212 +3,36 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg1.rosbag_work.get_data_from_bag_files3 import *
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files4 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
+USE_GPU = False
 
 ########################################################
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z4/solver.prototxt")
-weights_file_path = opjD('z4/z4.caffemodel') #
+weights_file_path1 = None
+if weights_file_path1 == "None":
+	weights_file_path1 = None
 #
 ########################################################
 
-
-
-
-def setup_solver():
+def setup_solver(solver_file_path):
 	solver = caffe.SGDSolver(solver_file_path)
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
-		print(l)
-	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
-		print(l)
+		if 'split' not in l[0]:
+			print(l)
+	#for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
+	#	print(l)
 	return solver
 
 
-
 img = zeros((94,168,3))#,'uint8')
-def load_data_into_model(solver,data):
-	global img
-	if data == 'END' :
-		print """data = 'END':"""
-		return False
-	if 'left' in data:
-		if type(data['left'][0]) == np.ndarray:
-			target_data = data['steer']
-			target_data += data['motor']
-			left_right_flip = False
-
-			if np.random.random() > 0.5:
-				left_right_flip = True
-
-			if left_right_flip:
-				for i in range(len(target_data)/2):
-					t = target_data[i]
-					t = t - 49
-					t = -t
-					t = t + 49
-					target_data[i] = t
-
-			for i in range(len(target_data)):
-				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]/99.
-
-			Direct = 0.
-			Follow = 0.
-			Play = 0.
-			Furtive = 0.
-			Caf = 0
-
-			if 'follow' in data['bag_filename']:
-				Follow = 1.0
-			if 'direct' in data['bag_filename']:
-				Direct = 1.0
-			if 'play' in data['bag_filename']:
-				Play = 1.0
-			if 'furtive' in data['bag_filename']:
-				Furtive = 1.0
-			if 'caffe' in data['bag_filename']:
-				Caf = 1.0
-
-			solver.net.blobs['metadata'].data[0,0,:,:] = 0
-			solver.net.blobs['metadata'].data[0,1,:,:] = Caf
-			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-			solver.net.blobs['metadata'].data[0,4,:,:] = Play
-			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 
 
-			# First we need to get conv2's
-
-			conv2_pools = zeros((8,256,3,6))
-
-			for i in range(0,4,2):
-
-				if not left_right_flip:
-					solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][i][:,:]/255.0-.5
-					solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][i+1][:,:]/255.0-.5
-					solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][i][:,:]/255.0-.5
-					solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][i+1][:,:]/255.0-.5
-				else: # flip left-right
-					solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = scipy.fliplr(data['left'][i][:,:]/255.0-.5)
-					solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = scipy.fliplr(data['left'][i+1][:,:]/255.0-.5)
-					solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = scipy.fliplr(data['right'][i][:,:]/255.0-.5)
-					solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = scipy.fliplr(data['right'][i+1][:,:]/255.0-.5)
-
-				conv2_pools[i/2,:,:,:] = solver.net.forward(start='ZED_data_pool2',end='conv2_pool')['conv2_pool']
-
-			# Then we need the C3's
-
-			for i in range(0,2,2):
-				solver.net.blobs['conv2_pool_PAST'].data[0,:,:,:] = conv2_pools[i,:,:,:].copy()
-			
-			solver.step(1)
-
-		else:
-			print """not if type(data['left']) == np.ndarray: """+str(time.time())
-	else:
-		pass #print """not if 'left' in data: """+str(time.time())
-		return 'no data'
-	return True
+unix('mkdir -p '+opjD('z4'))
 
 
-
-loss_timer = time.time()
-loss = []
-
-
-
-
-def run_solver(solver, bair_car_data, num_steps):
-	global img
-	global loss
-	step_ctr = 0
-	ctr = 0
-	if True: #try:
-		while step_ctr < num_steps:
-			imshow = False
-			datashow = False
-			if np.mod(ctr,50) == 0:
-				imshow = True
-			if np.mod(ctr,1000) == 0:
-				datashow = True
-			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],32,16))
-			if result == False:
-				break
-			if result == True:
-				ctr += 1
-				#solver.step(1) # No longer necessary as solver is called in complex way in load_data_into_model
-			display_solver_training(solver,imshow,datashow)
-			step_ctr += 1
-	else:
-		pass #except Exception as e:
-		#print "train ***************************************"
-		#print e.message, e.args
-		#print "***************************************"
-
-
-
-
-
-
-
-
-def array_to_int_list(a):
-	l = []
-	for d in a:
-		l.append(int(d*100))
-	return l
-
-
-
-def display_solver_training(solver,imshow,datashow):
-	global img
-	a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
-	loss.append(np.sqrt(a * a).mean())
-	#ctr += 1
-	if imshow:
-		img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
-		img += 0.5
-		img *= 255.
-		img[:,:,1] = img[:,:,0]
-		img[:,:,2] = img[:,:,0]
-		cv2.imshow('left',img.astype('uint8'))
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-		    pass
-	if datashow:
-		print (np.array(loss[-(len(loss)/10):]).mean())
-		print(solver.net.blobs['metadata'].data[0,:,5,5])
-		print array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
-		print array_to_int_list(solver.net.blobs['ip2'].data[0,:][:])
-
-
-
-
-
-if __name__ == '__main__':
-
-	unix('mkdir -p '+opjD('z4'))
-	#bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
-	bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
-	#BF=             Bair_Car_Data('/home/karlzipser/Desktop/z1/bair_car_data/',10,2) 
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
-	solver = setup_solver()
-
-	if weights_file_path != None:
-		print "loading " + weights_file_path
-		solver.net.copy_from(weights_file_path)
-	#time.sleep(60)
-	
-	while True:
-		if True:#try:
-			run_solver(solver,bair_car_data,3000)
-		"""
-		except Exception as e:
-			print "train loop ***************************************"
-			print e.message, e.args
-			print "***************************************"
-		"""
-
+solver = setup_solver(solver_file_path)
