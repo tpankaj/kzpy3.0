@@ -7,9 +7,9 @@ from __future__ import division  # 1/2 == 0.5, not 0
 import os
 import os.path
 import shutil
-import scipy
-import scipy.io
-import numpy as np  # the Python array package
+#import scipy
+#import scipy.io
+#import numpy as np  # the Python array package
 import string
 import glob
 import time
