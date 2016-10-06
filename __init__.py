@@ -20,7 +20,7 @@ import pickle
 import re
 import subprocess
 from pprint import pprint
-import serial
+#import serial
 
 # - some definitions
 import socket
