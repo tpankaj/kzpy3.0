@@ -26,8 +26,8 @@ from pprint import pprint
 import socket
 host_name = socket.gethostname()
 home_path = os.path.expanduser("~")
-imread = scipy.misc.imread
-imsave = scipy.misc.imsave
+#imread = scipy.misc.imread
+#imsave = scipy.misc.imsave
 #opj = os.path.join
 gg = glob.glob
 shape = np.shape
@@ -36,7 +36,7 @@ randint = np.random.randint
 randn = np.random.randn
 zeros = np.zeros
 ones = np.ones
-imresize = scipy.misc.imresize
+#imresize = scipy.misc.imresize
 reshape = np.reshape
 mod = np.mod
 
