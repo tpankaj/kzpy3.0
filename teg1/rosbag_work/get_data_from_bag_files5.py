@@ -383,7 +383,10 @@ play(bf2,click_ts[-2],click_ts[-1])
 """
 """
 Step 1) save jpg frames to bag_folder
-Step 2) 
+Step 2) from kzpy3.teg1.analysis.frames_readied_for_video import *
+Step 3) frames_to_video_with_ffmpeg(frame_path) # requires ffmpeg, puts .mp4 video on Desktop
+Step 4) .mp4 video to iMovies
+
 """
 
 ts = sorted(img_dic.keys())
@@ -395,12 +398,18 @@ for i in range(len(ts)):
 
 class Bair_Car_Data:
     """ """
-    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False):
+    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False,use_caffe_data=False):
         self.bag_folder = None
         self.max_requests = max_requests
         self.max_subrequests = max_subrequests
         self.bag_folders_dic = {}        
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
+        if use_caffe_data == False:
+            temp = []
+            for b in bag_folder_paths:
+                if 'caffe' not in b:
+                    temp.append(b)
+            bag_folder_paths = temp
         self.bag_folders_weighted = []
         for f in bag_folder_paths:
             

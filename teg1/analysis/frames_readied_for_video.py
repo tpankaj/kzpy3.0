@@ -1,6 +1,8 @@
 from kzpy3.utils import *
 
 def frames_to_video_with_ffmpeg(input_dir,img_range=()):
+	if input_dir[-1] == '/':
+		input_dir = input_dir[:-1] # the trailing / messes up the name.
 	_,fnames = dir_as_dic_and_list(input_dir)
 	frames_folder = input_dir.split('/')[-1]
 	if len(img_range) == 0:
