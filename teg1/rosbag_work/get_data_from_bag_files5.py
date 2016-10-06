@@ -409,6 +409,8 @@ class Bair_Car_Data:
             for b in bag_folder_paths:
                 if 'caffe' not in b:
                     temp.append(b)
+                else:
+                    print "Not using " + b + " as data."
             bag_folder_paths = temp
         self.bag_folders_weighted = []
         for f in bag_folder_paths:

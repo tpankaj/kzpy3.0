@@ -7,9 +7,9 @@ from __future__ import division  # 1/2 == 0.5, not 0
 import os
 import os.path
 import shutil
-#import scipy
-#import scipy.io
-#import numpy as np  # the Python array package
+import scipy
+import scipy.io
+import numpy as np  # the Python array package
 import string
 import glob
 import time
@@ -20,14 +20,14 @@ import pickle
 import re
 import subprocess
 from pprint import pprint
-#import serial
+import serial
 
 # - some definitions
 import socket
 host_name = socket.gethostname()
 home_path = os.path.expanduser("~")
-#imread = scipy.misc.imread
-#imsave = scipy.misc.imsave
+imread = scipy.misc.imread
+imsave = scipy.misc.imsave
 #opj = os.path.join
 gg = glob.glob
 shape = np.shape
@@ -36,7 +36,7 @@ randint = np.random.randint
 randn = np.random.randn
 zeros = np.zeros
 ones = np.ones
-#imresize = scipy.misc.imresize
+imresize = scipy.misc.imresize
 reshape = np.reshape
 mod = np.mod
 
