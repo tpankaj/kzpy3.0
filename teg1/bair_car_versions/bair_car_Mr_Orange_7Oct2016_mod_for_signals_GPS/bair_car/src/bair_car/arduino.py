@@ -194,6 +194,7 @@ class Arduino:
 
             except Exception as e:
                 print '_ros_signals_thread'
+                print signals_str
                 print e
                 # print e
  
