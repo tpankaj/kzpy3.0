@@ -193,6 +193,7 @@ class Arduino:
                 # print servos_tuple
 
             except Exception as e:
+                print '_ros_signals_thread'
                 print e
                 # print e
  
