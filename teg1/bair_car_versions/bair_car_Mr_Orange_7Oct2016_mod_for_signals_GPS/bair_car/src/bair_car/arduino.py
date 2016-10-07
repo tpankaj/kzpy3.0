@@ -173,7 +173,7 @@ class Arduino:
                 ### read sensors serial
                 signals_str = self.ser_signals.readline()
                 exec('signals_tuple = list({0})'.format(signals_str))
-                ### parse servos serial and publish to ROS
+                ### parse servos serial and publish to  ROS
                 signal = signals_tuple[0]
                 data = signals_tuple[1:]
                 if signal == Arduino.STATE_GPS:
