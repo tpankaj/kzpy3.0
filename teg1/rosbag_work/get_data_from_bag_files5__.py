@@ -273,32 +273,26 @@ def play2(self,start_t,stop_t,step=1,save_instead_of_display=False):
     print len(ts)
     t_tracker = ts[0]
     for i in range(0,len(ts),step):
-        try:
-            if ts[i] >= start_t and ts[i] < stop_t:
-                im = self.img_dic[ts[i]]
-                img[:,:,0] = im
-                img[:,:,1] = im
-                img[:,:,2] = im
-                if np.int(self.left_image_bound_to_data[ts[i]]['state']) in [3,6]: #caffe is steering
-                    steer_rect_color = caffe_steer_color_color
-                else:
-                    steer_rect_color = human_steer_color_color
-                apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
-                if ts[i] - t_tracker > 0.25 and not save_instead_of_display:
-                    plt.figure(1)
-                    plt.plot(ts[i],10,'o')
-                    t_tracker = ts[i]
+        if ts[i] >= start_t and ts[i] < stop_t:
+            im = self.img_dic[ts[i]]
+            img[:,:,0] = im
+            img[:,:,1] = im
+            img[:,:,2] = im
+            if np.int(self.left_image_bound_to_data[ts[i]]['state']) in [3,6]: #caffe is steering
+                steer_rect_color = caffe_steer_color_color
+            else:
+                steer_rect_color = human_steer_color_color
+            apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
+            if ts[i] - t_tracker > 0.25:
+                plt.figure(1)
+                plt.plot(ts[i],10,'o')
+                t_tracker = ts[i]
 
-                if save_instead_of_display:
-                    img_dic[ts[i]] = img.copy()
-                if (not save_instead_of_display) or (np.mod(i,10) == 0): 
-                    mi(img,2,img_title=str(ts[i]),toolBar=True)
-                    plt.pause(0.001)#max(0.03 - time.time()-t0,0))
-        except Exception as e:
-           print "train ***************************************"
-           print e.message, e.args
-           print "***************************************"
-
+            if save_instead_of_display:
+                img_dic[ts[i]] = img.copy()
+            if (not save_instead_of_display) or (np.mod(i,10) == 0): 
+                mi(img,2,img_title=str(ts[i]),toolBar=True)
+                plt.pause(0.001)#max(0.03 - time.time()-t0,0))
     if save_instead_of_display:
         return img_dic    
 
@@ -354,6 +348,30 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
 
 
 """
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
+bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_from_Evans_19Sept2016_Mr_Orange');#caffe_z2_direct_Tilden_22Sep16_13h18m02s_Mr_Orange')
+bf2.load_all_bag_files()
+L = bf2.left_image_bound_to_data
+
+ts = sorted( bf2.img_dic.keys())
+t0 = ts[0]
+
+
+
+
+
+fig = plt.figure(1,figsize=(14,4))
+
+plt.rcParams['toolbar'] = 'toolbar2'
+plt.clf()
+plt.ion()
+plt.show()
+fig.canvas.mpl_connect('button_press_event', button_press_event)
+
+plot_L_file(L,1,False)
+
+
+play(bf2,click_ts[-2],click_ts[-1])
 (1474581103.2895727, 1474581268.1056883)
     (1474580959.4764488, 1474581045.9608831)
     1474576522.58,1474576603.85
@@ -362,46 +380,20 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
     1474331412.37,1474331420.67 sidewalk obsticals
     1474331288.89,1474331350.38 good sidewalk sequence
     ,1474331037.87,1474331059.92 pedestrian avoidance
-img_dic = play2(bf2,click_ts[-2],click_ts[-1],1,True)
-img_dic = play2(bf2,0,9999999999,1,True)
-    data_dir = 'caffe_z2_direct_18Sept2016_Mr_Orange_local_sidewalks'
-    data_dir = 'caffe_z2_direct_Tilden_22Sep16_13h18m02s_Mr_Orange'
-    data_dir = 'caffe_z2_direct_local_Tilden_22Sep16_14h31m11s_Mr_Orange'
 """
-#from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
-#bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_from_Evans_19Sept2016_Mr_Orange');#
+"""
+Step 1) save jpg frames to bag_folder
+Step 2) from kzpy3.teg1.analysis.frames_readied_for_video import *
+Step 3) frames_to_video_with_ffmpeg(frame_path) # requires ffmpeg, puts .mp4 video on Desktop
+Step 4) .mp4 video to iMovies
 
-def generate_frames(data_dir):
-    bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/'+data_dir)
-    bf2.load_all_bag_files()
-    L = bf2.left_image_bound_to_data
-    if False:
-        fig = plt.figure(1,figsize=(14,4))
-        plt.rcParams['toolbar'] = 'toolbar2'
-        plt.clf()
-        plt.ion()
-        plt.show()
-        fig.canvas.mpl_connect('button_press_event', button_press_event)
-        plot_L_file(L,1,False)
-    img_dic = play2(bf2,0,9999999999,1,True)
-    ts = sorted(img_dic.keys())
-    dir = opjD('frames',data_dir+'_jpg')
-    unix(d2s('mkdir -p',dir))
-    for i in range(len(ts)):
-        if np.mod(i,10) == 0:
-            print i
-        imsave(opjD(dir,d2n(i,'.jpg')),imresize(img_dic[ts[i]],4.0))
+"""
 
-if False:
-
-    data_dirs = []
-    _, dirs = dir_as_dic_and_list( '/home/karlzipser/Desktop/bair_car_data_min' )
-    for d in dirs:
-        if 'caffe' in d:
-            if '22Sep16_14h31m11s' not in d:
-                if 'direct_18Sept2016_Mr_Orange_local_sidewalks' not in d:
-                    data_dirs.append(d)
-                    generate_frames(d)
+ts = sorted(img_dic.keys())
+for i in range(len(ts)):
+    if np.mod(i,10) == 0:
+        print i
+    imsave(opjD('temp_jpg',d2n(i,'.jpg')),imresize(img_dic[ts[i]],4.0))
 
 
 class Bair_Car_Data:
