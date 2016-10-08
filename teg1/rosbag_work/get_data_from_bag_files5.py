@@ -265,7 +265,8 @@ def play(self,start_t,stop_t):
 
 def play2(self,start_t,stop_t,step=1,save_instead_of_display=False):
     caffe_steer_color_color = [255,0,0]
-    human_steer_color_color = [0,0,255]
+    human_steer_color_color_state_2 = [0,0,255]
+    human_steer_color_color_state_1 = [0,255,0]
     img = np.zeros((94, 168,3),np.uint8)
     img_dic = {}
     print((start_t,stop_t))
@@ -281,8 +282,12 @@ def play2(self,start_t,stop_t,step=1,save_instead_of_display=False):
                 img[:,:,2] = im
                 if np.int(self.left_image_bound_to_data[ts[i]]['state']) in [3,6]: #caffe is steering
                     steer_rect_color = caffe_steer_color_color
+                elif np.int(self.left_image_bound_to_data[ts[i]]['state']) == 2:
+                    steer_rect_color = human_steer_color_color_state_2
+                elif np.int(self.left_image_bound_to_data[ts[i]]['state']) == 1:
+                    steer_rect_color = human_steer_color_color_state_1
                 else:
-                    steer_rect_color = human_steer_color_color
+                    steer_rect_color = [255,0,255]
                 apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
                 if ts[i] - t_tracker > 0.25 and not save_instead_of_display:
                     plt.figure(1)
@@ -397,9 +402,9 @@ if False:
     data_dirs = []
     _, dirs = dir_as_dic_and_list( '/home/karlzipser/Desktop/bair_car_data_min' )
     for d in dirs:
-        if 'caffe' in d:
-            if '22Sep16_14h31m11s' not in d:
-                if 'direct_18Sept2016_Mr_Orange_local_sidewalks' not in d:
+        if 'furtive' in d:
+            if 'caffe' not in d:
+                if 'play_3Sept2016_Mr_Orange' not in d:
                     data_dirs.append(d)
                     generate_frames(d)
 
