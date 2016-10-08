@@ -1,8 +1,0 @@
-prefix=/home/ubuntu/catkin_ws/devel
-
-Name: bair_car
-Description: Description of bair_car
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/ubuntu/catkin_ws/devel/lib 
-Requires: 
