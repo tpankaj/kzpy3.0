@@ -22,8 +22,8 @@ import rosbag
 ############## topics, not necessarily original rosbag names ###################
 #
 image_topics = ['left_image','right_image']
-single_value_topics = ['steer','state','motor','encoder','sonar']
-vector3_topics = ['acc','gyro','gps'] # leave out gps for now.
+single_value_topics = ['steer','state','motor','encoder']
+vector3_topics = ['acc','gyro','gps']
 all_topics = image_topics + single_value_topics + vector3_topics
 #
 ######################################################################
@@ -59,15 +59,18 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
                     A[topic][t] = m[1].data
 
             for topic in vector3_topics:
-                if topic ~= 'gps'
+                if topic != 'gps':
                     for m in bag.read_messages(topics=['/bair_car/'+topic]):
                         t = round(m.timestamp.to_time(),3)
                         A[topic][t] = (m[1].x,m[1].y,m[1].z)
 
-            topic = 'gps'
-            for m in bag.read_messages(topics=['/bair_car/'+topic]):
-                t = round(m.timestamp.to_time(),3)
-                A[topic][t] = (m[1].x,m[1].y,m[1].z) # need to figure out how to access gps topic data
+            try:
+                topic = 'gps'
+                for m in bag.read_messages(topics=['/bair_car/'+topic]):
+                    t = round(m.timestamp.to_time(),3)
+                    A[topic][t] = (m[1].latitude,m[1].longitude,m[1].altitude)
+            except:
+                print 'gps problem'
 
             for m in bag.read_messages(topics=['/bair_car/zed/left/image_rect_color']):
                 t = round(m.timestamp.to_time(),3)
@@ -175,7 +178,10 @@ def _interpolate_vector_values(A,topic):
         for j in range(int(k[i]*1000),int(k[i+1]*1000)):
             v = []
             for u in range(dim):
-                v.append(  round((d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u], 3))
+                if topic != 'gps': # with GPS we need as many decimal places as possible
+                    v.append(  round((d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u], 3))
+                else:
+                    v.append((d[i+1,u]-d[i,u])/(k[i+1]-k[i]) * (j/1000.-k[i])  + d[i,u])
             interp_dic[j/1000.] = v
     return interp_dic
 

@@ -404,9 +404,10 @@ if False:
     for d in dirs:
         if 'furtive' in d:
             if 'caffe' not in d:
-                if 'play_3Sept2016_Mr_Orange' not in d:
-                    data_dirs.append(d)
-                    generate_frames(d)
+                if 'follow_and_furtive_27Aug' not in d:
+                    if 'furtive_8Aug' not in d:
+                        data_dirs.append(d)
+                        generate_frames(d)
 
 
 class Bair_Car_Data:
