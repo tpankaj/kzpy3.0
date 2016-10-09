@@ -12,8 +12,7 @@ for b in bag_folders[:]:
         except Exception,e:
         	print e
         try:
-        	pass
-            #save_grayscale_quarter_bagfolder(b)
+        	save_grayscale_quarter_bagfolder(b)
         except Exception,e:
         	print e
 
