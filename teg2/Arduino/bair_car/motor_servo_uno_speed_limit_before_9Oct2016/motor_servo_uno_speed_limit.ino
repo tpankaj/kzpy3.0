@@ -303,15 +303,12 @@ void servo_interrupt_service_routine(void) {
         //servo.writeMicroseconds((caffe_servo_pwm_value+servo_pwm_value)/2);
       }
       else {
-        /* REMOVING this sensitivity stuff, it seems to mess everything up.
         // twice as sensitive so can reach all steering angles
         int adjusted_servo_pwm_value = 2*(servo_pwm_value - servo_null_pwm_value) + caffe_last_written_servo_pwm_value;
         adjusted_servo_pwm_value = min(adjusted_servo_pwm_value, servo_max_pwm_value);
         adjusted_servo_pwm_value = max(adjusted_servo_pwm_value, servo_min_pwm_value);
         servo.writeMicroseconds(adjusted_servo_pwm_value);
         written_servo_pwm_value = adjusted_servo_pwm_value;
-        */
-        servo.writeMicroseconds(servo_pwm_value);
       }
     }
     // If human makes strong steer command, let human take over.
