@@ -5,7 +5,7 @@
 # despite the import from kzpy if I want to use printing fully
 #from __future__ import division  # 1/2 == 0.5, not 0
 ############################
-
+from __future__ import print_function  # print('me') instead of print 'me'
 from __future__ import division  # 1/2 == 0.5, not 0
 
 # - import common modules

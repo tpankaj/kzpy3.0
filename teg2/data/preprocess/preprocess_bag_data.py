@@ -93,7 +93,7 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
     preprocessed_data = A
 
     left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A)
-
+    print """left_image_bound_to_data,error_log = _bind_left_image_timestamps_to_data(A) """
     timestamps = sorted(left_image_bound_to_data.keys())
     state_one_steps = 0
     for i in range(len(timestamps)-1,-1,-1):
@@ -106,8 +106,13 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
     
 
     dst_path = opj(bag_folder_path,'.preprocessed')
+    print """unix('mkdir -p ' """ +dst_path+')'
     unix('mkdir -p '+dst_path)
+
+    print """save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data2')) """
     save_obj(left_image_bound_to_data,opj(dst_path,'left_image_bound_to_data2'))
+
+    print """save_obj(preprocessed_data,opj(dst_path,'preprocessed_data2'))"""
     save_obj(preprocessed_data,opj(dst_path,'preprocessed_data2'))
 
 

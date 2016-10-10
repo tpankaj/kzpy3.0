@@ -1,4 +1,5 @@
-#! //anaconda/bin/python
+#! /usr/bin/python
+#//anaconda/bin/python
 from kzpy3.vis import *
 import cv2
 import sys
