@@ -470,3 +470,28 @@ def a_key(dic):
 
 def an_element(dic):
     return dic[a_key(dic)]
+
+def apply_function_to_directories(fun,path,not_str_lst=[],and_str_lst=[],or_str_lst=[]):
+    dirs = gg(opj(path,'*'))
+    for d in dirs:
+        ignore = False
+        for i in not_str_lst:
+            if i in d:
+                ignore = True
+                continue
+        for r in and_str_lst:
+            if r not in d:
+                ignore = True
+                continue
+        if len(or_str_lst) > 0:
+            or_ignore = True
+        else:
+            or_ignore = False
+        for o in or_str_lst:
+            if o in d:
+                or_ignore = False
+                continue
+        if not ignore and not or_ignore:
+            fun(d)
+
+            

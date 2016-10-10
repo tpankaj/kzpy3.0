@@ -371,8 +371,10 @@ img_dic = play2(bf2,0,9999999999,1,True)
 #from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
 #bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_from_Evans_19Sept2016_Mr_Orange');#
 
-def generate_frames(data_dir):
-    bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/'+data_dir)
+def generate_frames(path):
+    if path.endswith('/'):
+        path = path[:-len('/')]
+    bf2 = Bag_Folder2(path)
     bf2.load_all_bag_files()
     L = bf2.left_image_bound_to_data
     if False:
@@ -385,23 +387,14 @@ def generate_frames(data_dir):
         plot_L_file(L,1,False)
     img_dic = play2(bf2,0,9999999999,1,True)
     ts = sorted(img_dic.keys())
-    dir = opjD('frames',data_dir+'_jpg')
+    dir = opjD('frames',path.split('/')[-1]+'_jpg')
     unix(d2s('mkdir -p',dir))
     for i in range(len(ts)):
         if np.mod(i,10) == 0:
             print i
         imsave(opjD(dir,d2n(i,'.jpg')),imresize(img_dic[ts[i]],4.0))
 
-if False:
 
-    data_dirs = []
-    _, dirs = dir_as_dic_and_list( '/home/karlzipser/Desktop/bair_car_data_min' )
-    for d in dirs:
-        if 'caffe' in d:
-            if '22Sep16_14h31m11s' not in d:
-                if 'direct_18Sept2016_Mr_Orange_local_sidewalks' not in d:
-                    data_dirs.append(d)
-                    generate_frames(d)
 
 
 class Bair_Car_Data:
