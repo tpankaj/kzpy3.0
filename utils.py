@@ -493,5 +493,7 @@ def apply_function_to_directories(fun,path,not_str_lst=[],and_str_lst=[],or_str_
                 continue
         if not ignore and not or_ignore:
             fun(d)
+        else:
+            print 'ignoring '+d
 
             
