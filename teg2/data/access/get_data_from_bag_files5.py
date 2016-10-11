@@ -387,6 +387,7 @@ def generate_frames(path):
         plot_L_file(L,1,False)
     img_dic = play2(bf2,0,9999999999,1,True)
     ts = sorted(img_dic.keys())
+    unix('mkdir '+opjD('frames'))
     dir = opjD('frames',path.split('/')[-1]+'_jpg')
     unix(d2s('mkdir -p',dir))
     for i in range(len(ts)):

@@ -10,8 +10,8 @@ for b in bag_folders[:]:
 	except:
 		print b + ' failed.'
 """
-
-bair_car_data_path = '/media/karlzipser/rosbags/'
+print sys.argv[1]
+bair_car_data_path = sys.argv[1]#'/media/karlzipser/rosbags/'
 
 bair_car_data_folders = gg(opj(bair_car_data_path,'*'))
 

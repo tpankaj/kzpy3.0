@@ -10,7 +10,7 @@ import cv2
 import cv_bridge
 from cv_bridge import CvBridge, CvBridgeError
 bridge = cv_bridge.CvBridge()
-"""
+
 class Bair_Car_Recorded_Data:
     """ """
     def __init__(self, bag_folder_path, num_data_steps, target_topics, num_frames,rand_bag,random_timestamp):
@@ -118,7 +118,7 @@ def load_images_from_bag(bag_file_path,color_mode="rgb8"):
             t = round(m.timestamp.to_time(),3)
             bag_img_dic[side][t] = bridge.imgmsg_to_cv2(m[1],color_mode)
     return bag_img_dic
-"""
+
 
 def save_grayscale_quarter_images(bag_folder,bag_filename):
     try:
