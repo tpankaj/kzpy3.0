@@ -10,25 +10,6 @@ layer {
 	}
 }
 
-
-
-layer {
-        name: "metadata"
-        type: "DummyData"
-        top: "metadata"
-        dummy_data_param {
-                shape {
-                        dim: 1
-                        dim: 6
-                        dim: 14
-                        dim: 26
-                }
-        }
-}
-
-
-
-
 layer {
 	name: "ZED_data"
 	type: "DummyData"
@@ -110,25 +91,13 @@ layer {
 	
 ############################################################
 
-layer {
-  name: "conv1_metadata_concat"
-  type: "Concat"
-  bottom: "conv1_pool"
-  bottom: "metadata"
-  top: "conv1_metadata_concat"
-  concat_param {
-    axis: 1
-  }     
-}               
-                        
-
 
 ###################### Convolutional Layer Set 'conv2' ######################
 #
 layer {
 	name: "conv2"
 	type: "Convolution"
-	bottom: "conv1_metadata_concat"
+	bottom: "conv1_pool"
 	top: "conv2"
 	convolution_param {
 		num_output: 256
