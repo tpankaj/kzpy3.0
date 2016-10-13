@@ -82,7 +82,71 @@ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
 sudo apt-get update
 sudo apt-get install ros-indigo-desktop
+
+sudo apt-get install python-rosdep
+sudo rosdep init
+rosdep update
+
+echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
 ###################
+
+ZED setup: note, ZED_SDK_Linux_JTX1_v1.1.0_32b_JP21.run works, v1.1.1_64b doesn't.
+
+
+#################
+### Setup ROS ###
+#################
+
+Add to .bashrc: source /opt/ros/indigo/setup.bash
+
+$ mkdir -p ~/catkin_ws/src
+$ cd ~/catkin_ws/src
+$ catkin_init_workspace
+$ cd ~/catkin_ws/
+$ catkin_make
+
+Add to .bashrc: source ~/catkin_ws/devel/setup.bash
+
+#####################
+### Setup ZED ROS ###
+#####################
+
+$ sudo apt-get install libpcl-1.7-all ros-indigo-pcl-ros ros-indigo-image-view
+$ cd ~/catkin_ws/src
+$ git clone https://github.com/stereolabs/zed-ros-wrapper.git
+
+It may be necessary to do this: in zed-ros-wrapper/CMakeLists.txt put in:
+SET(CUDA_VERSION "7.0")
+
+$ cd ~/catkin_ws
+$ catkin_make
+
+Test that it works
+$ roslaunch zed_wrapper zed.launch
+$ rosrun image_view image_view image:=/camera/right/image_rect_color
+
+######################
+### Setup our code ###
+######################
+
+$ git clone https://github.com/rctn/bair_car.git
+$ roslaunch bair_car bair_car.launch use_zed:=true
+$ rosrun image_view image_view image:=/bair_car/zed/right/image_rect_color
+
+And rostopic echo all the topics to check
+
+###########################
+### Running experiments ###
+###########################
+
+Go into bair_car.launch and change the bagpath to where you want to record data to (e.g. flash drive)
+
+$ roslaunch bair_car bair_car.launch use_zed:=true record:=true
+
+
+
 
 
 ############## screen ########
@@ -138,6 +202,7 @@ alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
 alias rls='ls -al /media/ubuntu/rosbags'
 alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
 alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
+alias rlac='roslaunch bair_car bair_car.launch use_zed:=true record:=true caffe:=true'
 alias rgy='rostopic echo /bair_car/gyro'
 alias rst='rostopic echo /bair_car/steer'
 alias rmo='rostopic echo /bair_car/motor'
