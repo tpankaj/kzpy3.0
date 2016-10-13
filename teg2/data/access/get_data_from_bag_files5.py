@@ -126,8 +126,10 @@ class Bag_Folder:
                 else:
                     self.files.append(files[i])
                     #print "test data"
-        file_path = opj(path,'.preprocessed','left_image_bound_to_data')
-        print "Bag_Folder: loading "+file_path+'.pkl'
+        file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+        if len(gg(file_path)) == 0:
+            file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
+        print "Bag_Folder: loading "+file_path
         self.left_image_bound_to_data = load_obj(file_path)
         self.bag_file = None
         self.request_ctr = 0
@@ -212,8 +214,10 @@ class Bag_Folder2:
     def __init__(self, path):
         self.path = path
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
-        file_path = opj(path,'.preprocessed','left_image_bound_to_data2')
-        print "Bag_Folder: loading "+file_path+'.pkl'
+        file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+        if len(gg(file_path)) == 0:
+            file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
+        print "Bag_Folder: loading "+file_path
         self.left_image_bound_to_data = load_obj(file_path)
         self.img_dic = {}
         # The state_one_steps were forund in preprocess_bag_data.py, but I redo it here to get state 3.
