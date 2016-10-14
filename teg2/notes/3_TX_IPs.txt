@@ -1,0 +1,7 @@
+
+
+LEFT: ssh ubuntu@192.168.43.76
+CENTER: ssh ubuntu@192.168.43.196
+RIGHT: ubuntu@192.168.43.54
+
+cat .ssh/id_rsa.pub | ssh ubuntu@192.168.43.XX 'cat >> .ssh/authorized_keys'
