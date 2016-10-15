@@ -5,3 +5,14 @@ CENTER: ssh ubuntu@192.168.43.196
 RIGHT: ubuntu@192.168.43.54
 
 cat .ssh/id_rsa.pub | ssh ubuntu@192.168.43.XX 'cat >> .ssh/authorized_keys'
+
+http://www.techbitar.com/how-to-network-many-arduinos-with-sensors-using-i2c.html
+
+://www.safaribooksonline.com/library/view/arduino-cookbook-2nd/9781449321185/ch04.html
+
+
+https://defendtheplanet.net/2014/11/05/using-ros-indigo-webcam-by-the-uvc_camera-usb-video-class-package/
+
+http://sauravag.com/2015/03/how-to-usb-web-cam-with-ros-indigo/
+
+http://wiki.ros.org/usb_cam
