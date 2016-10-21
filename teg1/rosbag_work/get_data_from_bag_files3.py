@@ -98,9 +98,17 @@ class Bag_File:
 class Bag_Folder:
     def __init__(self, path, max_requests, max_subrequests):
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
+        """ 
         file_path = opj(path,'.preprocessed','left_image_bound_to_data')
         #print "Bag_Folder: loading "+file_path+'.pkl'
         self.left_image_bound_to_data = load_obj(file_path)
+        """
+        file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+        if len(gg(file_path)) == 0:
+            file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
+        print "Bag_Folder: loading "+file_path
+        self.left_image_bound_to_data = load_obj(file_path)
+
         self.bag_file = None
         self.request_ctr = 0
         self.max_requests = max_requests
