@@ -3,7 +3,7 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files5 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
@@ -12,7 +12,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-weights_file_path = most_recent_file_in_folder(opjD('z2'),['z2','caffemodel']) 
+weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
 if weights_file_path == "None":
 	weights_file_path = None
 #
@@ -118,9 +118,9 @@ def run_solver(solver, bair_car_data, num_steps):
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
-			if np.mod(ctr,10) == 0:
-				imshow = True
 			if np.mod(ctr,100) == 0:
+				imshow = True
+			if np.mod(ctr,1010) == 0:
 				datashow = True
 			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,2))
 			if result == False:
@@ -153,7 +153,7 @@ def run_solver(solver, bair_car_data, num_steps):
 			
 
 				if datashow:
-					print (ctr,np.array(loss[-99:]).mean())
+					print (ctr,np.array(loss[-1000:]).mean())
 					print(solver.net.blobs['metadata'].data[0,:,5,5])
 					print array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
 					print array_to_int_list(solver.net.blobs['ip2'].data[0,:][:])
@@ -173,13 +173,14 @@ def array_to_int_list(a):
 
 
 #if __name__ == '__main__':
-bair_car_data = Bair_Car_Data(opjD('bair_car_data_min'),1,10)
+bar_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
+bair_car_data = Bair_Car_Data(bar_car_data_path,1,10,False,['follow','play','furtive'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 solver = setup_solver()
 
-#caffe.set_device(0)
-#caffe.set_mode_gpu()
+caffe.set_device(0)
+caffe.set_mode_gpu()
 
 
 if weights_file_path != None:
@@ -189,14 +190,20 @@ if weights_file_path != None:
 
 
 
-#def main():
-while True:
-	try:
-		run_solver(solver,bair_car_data,3000)
-	except Exception as e:
-		print "train loop ***************************************"
-		print e.message, e.args
-		print "***************************************"
+def main():
+	while True:
+		try:
+			run_solver(solver,bair_car_data,3000)
+			#except KeyboardInterrupt:
+			#    print 'Interrupted'
+		except Exception as e:
+			print "train loop ***************************************"
+			print e.message, e.args
+			print "***************************************"
 
 
+"""
+except KeyboardInterrupt:
+        print 'Interrupted'
+"""
 

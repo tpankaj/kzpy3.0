@@ -1,3 +1,6 @@
+
+################## INSTALLING CAFFE #######################
+#
 # https://github.com/BVLC/caffe/wiki/Ubuntu-16.04-or-15.10-Installation-Guide
 
 sudo apt-get update
@@ -74,6 +77,13 @@ make all -j $(($(nproc) + 1))
 # to ~/.bashrc
 export PYTHONPATH=~/caffe/python:$PYTHONPATH
 
+cd ~/caffe
+build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
+#
+###################################################################3
+
+
+
 ############# data collection shortcuts (smartphone login) #######
 #
 alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
@@ -104,10 +114,55 @@ export PYTHONPATH=~:$PYTHONPATH
 #export PYTHONPATH=~/kzpy3/caf2/layers:$PYTHONPATH
 export PYTHONSTARTUP=~/kzpy3/vis.py
 export PATH=~/kzpy3/scripts:$PATH
-export COMPUTER_NAME="Mr. ---"
+export COMPUTER_NAME="Mr. Desktop"
 #
 ######################################################
 
 
 
-build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
+
+
+
+
+
+
+
+
+
+http://wiki.ros.org/kinetic/Installation/Ubuntu
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116
+
+sudo apt-get update
+
+sudo apt-get install ros-kinetic-desktop-full
+
+sudo rosdep init
+rosdep update
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+sudo apt-get install python-rosinstall
+
+
+http://www.webupd8.org/2011/03/sublime-text-2-ubuntu-ppa.html
+sandipbgt.com/2016/08/02/how-to-install-sublime-text-in-ubuntu-1604/
+sudo add-apt-repository ppa:webupd8team/sublime-text-2
+sudo apt-get update
+sudo apt-get install sublime-text
+
+
+sudo apt-get update
+sudo apt-get install ipython
+
+
+
+https://www.stereolabs.com/developers/release/1.1.1a/#sdkdownloads_anchor
+
+chmod 777 ZED_SDK_Linux_Ubuntu16_CUDA80_v1.1.1.run
+
+
+
+
+https://www.continuum.io/downloads

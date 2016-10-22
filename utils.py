@@ -446,6 +446,8 @@ def memory():
 
 def most_recent_file_in_folder(path,str_elements):
     files = gg(opj(path,'*'))
+    if len(files) == 0:
+        return None
     candidates = []
     for f in files:
         is_candidate = True
@@ -456,6 +458,8 @@ def most_recent_file_in_folder(path,str_elements):
         if is_candidate:
             candidates.append(f)
     mtimes = {}
+    if len(candidates) == 0:
+        return None
     for c in candidates:
         mtimes[os.path.getmtime(c)] = c
 

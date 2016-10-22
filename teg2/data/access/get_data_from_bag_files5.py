@@ -414,20 +414,25 @@ apply_function_to_directories(generate_frames,'/home/karlzipser/Desktop/temp_bag
 
 class Bair_Car_Data:
     """ """
-    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False,use_caffe_data=False):
+    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False,to_ignore=[]):
         self.bag_folder = None
         self.max_requests = max_requests
         self.max_subrequests = max_subrequests
         self.bag_folders_dic = {}        
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
-        if use_caffe_data == False:
-            temp = []
-            for b in bag_folder_paths:
-                if 'caffe' not in b:
-                    temp.append(b)
-                else:
+        bag_folder_paths_dic = {}
+        for b in bag_folder_paths:
+            bag_folder_paths_dic[b] = True
+            for ig in to_ignore:
+                if ig in b:
+                    bag_folder_paths_dic[b] = False
                     print "Not using " + b + " as data."
-            bag_folder_paths = temp
+
+        temp = []
+        for b in bag_folder_paths_dic.keys():
+            if bag_folder_paths_dic[b]:
+                temp.append(b)
+        bag_folder_paths = temp
         self.bag_folders_weighted = []
         for f in bag_folder_paths:
             
