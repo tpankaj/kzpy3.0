@@ -191,13 +191,16 @@ class Arduino:
                 ### read sensors serial
                 signals_str = self.ser_signals.readline()
                 exec('signals_tuple = list({0})'.format(signals_str))
-                print signals_tuple
+                #print signals_tuple
                 ### parse servos serial and publish to ROS
                 signal = signals_tuple[0]
                 data = signals_tuple[1:]
+                print data[1]
                 if signal == Arduino.STATE_GPS:
                     # lat, long (floats)
+                    print data[2]
                     assert(len(data) == 15)
+                    print data[3]
                     self.GPS2_hour_pub.publish(std_msgs.msg.Int32(data[1]))
                     self.GPS2_min_pub.publish(std_msgs.msg.Int32(data[2]))
                     self.GPS2_sec_pub.publish(std_msgs.msg.Int32(data[3]))
