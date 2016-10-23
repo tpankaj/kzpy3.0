@@ -195,13 +195,14 @@ class Arduino:
                 ### parse servos serial and publish to ROS
                 signal = signals_tuple[0]
                 data = signals_tuple[1:]
-                print data[1]
+                print d2s("here 1 ", data[1])
                 if signal == Arduino.STATE_GPS:
                     # lat, long (floats)
-                    print data[2]
+                    print d2s("here 1 ", data[2])
                     assert(len(data) == 15)
-                    print data[3]
+                    print d2s("here 1 ", data[3])
                     self.GPS2_hour_pub.publish(std_msgs.msg.Int32(data[1]))
+                    """
                     self.GPS2_min_pub.publish(std_msgs.msg.Int32(data[2]))
                     self.GPS2_sec_pub.publish(std_msgs.msg.Int32(data[3]))
                     self.GPS2_day_pub.publish(std_msgs.msg.Int32(data[4]))
@@ -218,6 +219,7 @@ class Arduino:
                     #gps_msg = sensor_msgs.msg.NavSatFix(longitude=data[0], latitude=data[1])
                     #gps_msg.header.stamp = rospy.Time.now()
                     #self.gps_pub.publish(gps_msg)
+                    """
                 else:
                     pass
                 """
