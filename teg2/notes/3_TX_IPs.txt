@@ -29,3 +29,6 @@ http://answers.ros.org/question/42906/issue-with-usb_cam-cant-open-camera/
 
 http://www.iheartrobotics.com/2010/05/testing-ros-usb-camera-drivers.html
 
+http://wiki.ros.org/ROS/NetworkSetup
+
+http://stackoverflow.com/questions/20023209/function-for-rotating-2d-objects
