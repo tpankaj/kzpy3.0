@@ -26,9 +26,14 @@ ctr = 6.0
 legend_handles = []
 for tp in topics:
 	if tp != 'timestamps':
-		legend_handles.append(z2o_plot(ts,B.data[tp],ctr,tp)[0])
+		legend_handles.append(z2o_plot(ts,B.data[tp],ctr,'.',tp)[0])
 		ctr -= 0.5
 plt.legend(handles=legend_handles)
+
+
+b=B.data['state_one_steps']
+plt.plot(B.data['steer'][b>0],B.data['gyro_x'][b>0],'.')
+
 
 
 

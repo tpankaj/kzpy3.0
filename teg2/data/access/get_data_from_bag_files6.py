@@ -20,8 +20,10 @@ def button_press_event(event):
     click_ts.append(ts)
     print click_ts[-2:]
 
-def z2o_plot(x,y,y_offset,label='no label'):
-    return plt.plot(x,z2o(y)+y_offset,label=label)
+def z2o_plot(x,y,y_offset,plt_str='.',label='no label'):
+    return plt.plot(x,z2o(y)+y_offset,plt_str,label=label)
+
+
 
 class Bag_Folder:
     def __init__(self, path):
@@ -165,29 +167,30 @@ class Bag_Folder:
             if ts[i] >= start_t and ts[i] < stop_t:
                 if ts[i] in self.left_image_bound_to_data:
                     print ts[i],self.left_image_bound_to_data[ts[i]]['state']
+
+                    im = self.img_dic[ts[i]].copy()
+                    img[:,:,0] = im
+                    img[:,:,1] = im
+                    img[:,:,2] = im
+                    #img = self.img_dic[ts[i]].copy()
+                    steer_rect_color = [255,0,0]
+                    #apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
+                    apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][0],-50,50,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=False)
+                    apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][1],-50,50,steer_rect_color,steer_rect_color,0.2,0.1,center=True,reverse=False)
+                    apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][2],-50,50,steer_rect_color,steer_rect_color,0.3,0.1,center=True,reverse=False)
+                    #apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['gyro'][0],-50,50,steer_rect_color,steer_rect_color,0.2,0.1,center=True,reverse=False)
+                    m = max(0,self.left_image_bound_to_data[ts[i]]['motor']-49)
+                    #apply_rect_to_img(img,m,0,49,steer_rect_color,steer_rect_color,0.1,0.1,center=False,reverse=False)
+                    if use_cv2: # cv2 is fast, but slows if matplotlib figure is open.
+                        cv2.imshow('left',img.astype('uint8'))
+                        if cv2.waitKey(1) & 0xFF == ord('q'):   
+                            return      
+                    #t0 = time.time()   
+                    else:
+                        mi(self.img_dic[ts[i]],2,img_title=str(ts[i]))
+                    plt.pause(0.033)#max(0.03 - time.time()-t0,0))
                 else:
-                    print "no data"
-                im = self.img_dic[ts[i]].copy()
-                img[:,:,0] = im
-                img[:,:,1] = im
-                img[:,:,2] = im
-                #img = self.img_dic[ts[i]].copy()
-                steer_rect_color = [255,0,0]
-                #apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['steer'],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
-                apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][0],-50,50,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=False)
-                apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][1],-50,50,steer_rect_color,steer_rect_color,0.2,0.1,center=True,reverse=False)
-                apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['acc'][2],-50,50,steer_rect_color,steer_rect_color,0.3,0.1,center=True,reverse=False)
-                #apply_rect_to_img(img,self.left_image_bound_to_data[ts[i]]['gyro'][0],-50,50,steer_rect_color,steer_rect_color,0.2,0.1,center=True,reverse=False)
-                m = max(0,self.left_image_bound_to_data[ts[i]]['motor']-49)
-                #apply_rect_to_img(img,m,0,49,steer_rect_color,steer_rect_color,0.1,0.1,center=False,reverse=False)
-                if use_cv2: # cv2 is fast, but slows if matplotlib figure is open.
-                    cv2.imshow('left',img.astype('uint8'))
-                    if cv2.waitKey(1) & 0xFF == ord('q'):   
-                        return      
-                #t0 = time.time()   
-                else:
-                    mi(self.img_dic[ts[i]],2,img_title=str(ts[i]))
-                plt.pause(0.033)#max(0.03 - time.time()-t0,0))
+                    print "no data"        
         if use_cv2:
             cv2.destroyWindow('left')
     #
