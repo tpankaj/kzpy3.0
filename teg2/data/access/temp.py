@@ -1,16 +1,3 @@
-from kzpy3.utils import *
-
-def temp4(c):
-	f = '/Users/karlzipser/Desktop/temp.py'
-	t = txt_file_to_list_of_strings(f)
-	ctr = 0
-	u = '\n'.join(t)
-	v = u.split('############\n')
-	print('###########\n')
-	print(v[c])
-	d = raw_input('########### Do this? ')
-	if d == 'y':
-		exec(v[c],globals())
 
 
 from kzpy3.teg2.data.access.get_data_from_bag_files6 import * 
@@ -35,10 +22,3 @@ b=B.data['state_one_steps']
 plt.plot(B.data['steer'][b>0],B.data['gyro_x'][b>0],'.')
 
 
-
-
-t0 = time.time()
-for i in range(100):
-	unix('scp /home/karlzipser/Pictures/bay2.png /home/karlzipser/',False) # 0.97 s
-	#unix('scp /home/karlzipser/Pictures/bay2.png /media/karlzipser/ExtraDrive1/',False) # 1.46 s
-print time.time()-t0

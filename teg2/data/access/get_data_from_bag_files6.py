@@ -201,5 +201,71 @@ class Bag_Folder:
 
 
 
+"""
 
 
+class Bair_Car_Data:
+    """ """
+    def __init__(self, path):
+        self.bag_folders_dic = {}        
+        bag_folder_paths = sorted(glob.glob(opj(path,'*')))
+        bag_folder_paths_dic = {}
+        for b in bag_folder_paths:
+            bag_folder_paths_dic[b] = True
+
+        temp = []
+        for b in bag_folder_paths_dic.keys():
+            if bag_folder_paths_dic[b]:
+                temp.append(b)
+        bag_folder_paths = temp
+        self.bag_folders_weighted = []
+        for f in bag_folder_paths:
+            n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
+            m = len(gg(opj(f,'.preprocessed','left*')))
+            print (n,m,f)
+            if n > 0 and m > 0:
+                self.bag_folders_dic[f] = Bag_Folder(f)
+                for i in range(max(n/10,1)):
+                    self.bag_folders_weighted.append(f)
+
+
+    def check_memory(self):
+        free_propotion = 1.0
+        free_gigabytes = 999999.0
+        if '/Users/' not in home_path: # OSX doesn't have the memory() function that linux has.
+            m=memory()
+            #print m['free']/(1.0*m['total'])
+            #while m['free']/(1.0*m['total']) < 0.15:
+            free_propotion = m['free']/(1.0*m['total'])
+            #print free_propotion
+        else:
+            free_gigabytes = OSX_free_memory()
+        if free_propotion < 0.15 or free_gigabytes < 3.0:
+            b = random.choice(self.bag_folders_dic.keys())
+            self.bag_folders_dic[b].bag_files_dic = {}
+            #print "Deleting "+b+" bag files."
+            #del self.bag_folders_dic[b]
+
+    def get_data(self, target_topics, num_data_steps, num_frames):
+        #print 'Bair_Car_Data::get_data'
+        self.check_memory()
+        if True:#try:
+            if self.bag_folder == None:
+                b = random.choice(self.bag_folders_weighted)
+                if b not in self.bag_folders_dic:
+                    self.bag_folders_dic[b] = Bag_Folder(b)
+                    print d2s("len(self.bag_folders_dic) =",len(self.bag_folders_dic))
+                self.bag_folder = self.bag_folders_dic[b]
+                self.bag_folder.reset()
+
+            data = self.bag_folder.get_data(target_topics, num_data_steps, num_frames)
+        else: #except Exception, e:
+            #print e 
+            #print "Bair_Car_Data ***************************************"
+            data = None
+
+        if data == None:
+            self.bag_folder = None
+            return self.get_data(target_topics, num_data_steps, num_frames)
+        return data
+"""
