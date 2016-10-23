@@ -191,6 +191,7 @@ class Arduino:
                 ### read sensors serial
                 signals_str = self.ser_signals.readline()
                 exec('signals_tuple = list({0})'.format(signals_str))
+                print signals_tuple
                 ### parse servos serial and publish to ROS
                 signal = signals_tuple[0]
                 data = signals_tuple[1:]
@@ -216,6 +217,35 @@ class Arduino:
                     #self.gps_pub.publish(gps_msg)
                 else:
                     pass
+                """
+                gps_config = [['hour','Int32'],
+                    ['min','Int32'],
+                    ['sec','Int32'],
+                    ['day','Int32'],
+                    ['mon','Int32'],
+                    ['yr','Int32'],
+                    ['fix','Int32'],
+                    ['qual','Int32'],
+                    ['lat','Float32'],
+                    ['long','Float32'],
+                    ['speed','Float32'],
+                    ['angle','Float32'],
+                    ['alt','Float32'],
+                    ['sat','Int32']]
+
+                for el in gps_config:
+                    name = 'GPS2_'+el[0]
+                    typ = el[1]
+                    print "self."+name+"_pub = rospy.Publisher('"+name+"', std_msgs.msg."+typ+", queue_size=100)"     
+
+                ctr = 1
+                for el in gps_config:
+                    name = 'GPS2_'+el[0]
+                    typ = el[1]
+                    print "self."+name+"_pub.publish(std_msgs.msg."+typ+"(data["+str(ctr)+"]))" 
+                    ctr += 1   
+                """
+
                 # Signal to send to signals Arduino
                 signals_ser_str = d2n('(',10*self.info_state + self.signal,')')
                 #print signals_ser_str    
