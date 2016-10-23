@@ -198,7 +198,7 @@ class Arduino:
                 if signals_tuple[0] == Arduino.STATE_GPS:
                     # lat, long (floats)
                     #print d2s("here 2 ", data[2])
-                    assert(len(signals_tuple) == 14)
+                    assert(len(signals_tuple) == 15)
                     #print d2s("here 3 ", data[3])
                     self.GPS2_hour_pub.publish(std_msgs.msg.Int32(signals_tuple[1]))
                     self.GPS2_min_pub.publish(std_msgs.msg.Int32(signals_tuple[2]))
