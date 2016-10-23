@@ -29,3 +29,11 @@ for tp in topics:
 		legend_handles.append(z2o_plot(ts,B.data[tp],ctr,tp)[0])
 		ctr -= 0.5
 plt.legend(handles=legend_handles)
+
+
+
+t0 = time.time()
+for i in range(100):
+	unix('scp /home/karlzipser/Pictures/bay2.png /home/karlzipser/',False) # 0.97 s
+	#unix('scp /home/karlzipser/Pictures/bay2.png /media/karlzipser/ExtraDrive1/',False) # 1.46 s
+print time.time()-t0
