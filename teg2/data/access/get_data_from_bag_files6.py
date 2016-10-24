@@ -27,55 +27,76 @@ def z2o_plot(x,y,y_offset,plt_str='.',label='no label'):
 
 class Bag_Folder:
     def __init__(self, path):
-        self.path = path
-        self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
-        file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
-        #print file_path
-        if len(gg(file_path)) == 0:
-            file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
-        #print "Bag_Folder: __init__: loading "+file_path
-        self.left_image_bound_to_data = load_obj(file_path)
-        self.img_dic = {}
-        self.timestamps = sorted(self.left_image_bound_to_data.keys())
-        for t in self.timestamps:
-            s = self.left_image_bound_to_data[t]['state'] # There is interpolation of values. For state we don't want this!
-            self.left_image_bound_to_data[t]['state'] = np.round(s) # Here we undo the problem.
+        if True:
+            self.path = path
+            self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
+            file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+            #print file_path
+            if len(gg(file_path)) == 0:
+                file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
+            #print "Bag_Folder: __init__: loading "+file_path
+            self.left_image_bound_to_data = load_obj(file_path)
+            self.img_dic = {}
+            self.timestamps = sorted(self.left_image_bound_to_data.keys())
+            for t in self.timestamps:
+                s = self.left_image_bound_to_data[t]['state'] # There is interpolation of values. For state we don't want this!
+                self.left_image_bound_to_data[t]['state'] = np.round(s) # Here we undo the problem.
 
-        for i in range(len(self.timestamps)-2): # Here we assume that isolated state 4 timepoints are rounding/sampling errors.
-            t0 = self.timestamps[i]
-            t1 = self.timestamps[i+1]
-            t2 = self.timestamps[i+2]
-            if self.left_image_bound_to_data[t1]['state'] == 4:
-                if self.left_image_bound_to_data[t0]['state'] != 4:
-                    if self.left_image_bound_to_data[t2]['state'] != 4:
-                            self.left_image_bound_to_data[t1]['state'] = self.left_image_bound_to_data[t0]['state']
+            for i in range(len(self.timestamps)-2): # Here we assume that isolated state 4 timepoints are rounding/sampling errors.
+                t0 = self.timestamps[i]
+                t1 = self.timestamps[i+1]
+                t2 = self.timestamps[i+2]
+                if self.left_image_bound_to_data[t1]['state'] == 4:
+                    if self.left_image_bound_to_data[t0]['state'] != 4:
+                        if self.left_image_bound_to_data[t2]['state'] != 4:
+                                self.left_image_bound_to_data[t1]['state'] = self.left_image_bound_to_data[t0]['state']
 
-        state_one_steps = 0
-        for i in range(len(self.timestamps)-2,-1,-1):
-            self.left_image_bound_to_data[self.timestamps[i]]['state_one_steps'] = 0 # overwrite loaded values
-            if self.is_timestamp_valid_data(self.timestamps[i]) and self.timestamps[i+1] - self.timestamps[i] < 0.3:
-                state_one_steps += 1
+            state_one_steps = 0
+            for i in range(len(self.timestamps)-2,-1,-1):
+                self.left_image_bound_to_data[self.timestamps[i]]['state_one_steps'] = 0 # overwrite loaded values
+                if self.is_timestamp_valid_data(self.timestamps[i]) and self.timestamps[i+1] - self.timestamps[i] < 0.3:
+                    state_one_steps += 1
+                else:
+                    state_one_steps = 0
+                self.left_image_bound_to_data[self.timestamps[i]]['state_one_steps'] = state_one_steps
+            self.data = {}
+            self.data['timestamps'] = np.array(self.timestamps)
+            self.data['state'] = self.elements('state')
+            self.data['steer'] = self.elements('steer')
+            self.data['motor'] = self.elements('motor')
+            
+            acc = self.elements('acc')
+            if len(acc) > 0: # acc added later than other sensors, not in all bagfiles
+                self.data['acc_x'] = acc[:,0]
+                self.data['acc_z'] = acc[:,1]
+                self.data['acc_y'] = acc[:,2]
             else:
-                state_one_steps = 0
-            self.left_image_bound_to_data[self.timestamps[i]]['state_one_steps'] = state_one_steps
-        self.data = {}
-        self.data['timestamps'] = np.array(self.timestamps)
-        self.data['state'] = self.elements('state')
-        self.data['steer'] = self.elements('steer')
-        self.data['motor'] = self.elements('motor')
-        """
-        acc = self.elements('acc')
-        self.data['acc_x'] = acc[:,0]
-        self.data['acc_z'] = acc[:,1]
-        self.data['acc_y'] = acc[:,2]
-        """
-        gyro = self.elements('gyro')
-        self.data['gyro_x'] = gyro[:,0]
-        self.data['gyro_z'] = gyro[:,1]
-        self.data['gyro_y'] = gyro[:,2]
-        self.data['encoder'] = self.elements('encoder')
-        self.data['state_one_steps'] = self.elements('state_one_steps')
-        print "Bag_Folder::init() preloaded " + self.path.split('/')[-1] + " (" + str(len(self.files)) + " bags)"
+                self.data['acc_x'] = 0*self.data['timestamps']
+                self.data['acc_z'] = 0*self.data['timestamps']
+                self.data['acc_y'] = 0*self.data['timestamps']
+            
+            gyro = self.elements('gyro')
+            self.data['gyro_x'] = gyro[:,0]
+            self.data['gyro_z'] = gyro[:,1]
+            self.data['gyro_y'] = gyro[:,2]
+            self.data['encoder'] = self.elements('encoder')
+            self.data['state_one_steps'] = self.elements('state_one_steps')
+            self.data['state_one_steps_1s_indicies'] = np.where(np.array(self.data['state_one_steps'])>=30)[0]
+
+            topics = ['steer','motor','acc_x','acc_y','acc_z','gyro_x','gyro_y','gyro_z','encoder']
+            for tp in topics:
+                    d = self.data[tp][self.data['state_one_steps_1s_indicies']]
+                    mn = d.mean()
+                    sd = d.std()
+                    if sd == 0 or sd == 0.0: # acc can be all zero, as can encoder, so we don't want to devide by this.
+                        sd = 1.0
+                    self.data[tp+'_z_scored'] = (self.data[tp]-mn)/sd
+
+
+            print "Bag_Folder::init() preloaded " + self.path.split('/')[-1] + " (" + str(len(self.files)) + " bags)"
+        #except Exception as e:
+        #    cprint("********** " + self.path + " *****************************",'red')
+        #    print e.message, e.args
 
 
     def load_all_bag_files(self):
@@ -146,7 +167,10 @@ class Bag_Folder:
     def elements(self,topic):
         data = []
         for t in self.timestamps:
-            data.append(self.left_image_bound_to_data[t][topic])
+            if topic in self.left_image_bound_to_data[t]:
+                data.append(self.left_image_bound_to_data[t][topic])
+            else:
+                return []
         return np.array(data)
 
     def filtered_elements(self,topic):

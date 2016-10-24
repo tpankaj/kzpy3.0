@@ -51,7 +51,6 @@ state = 0
 
 def state_callback(data):
 	state = data
-
 def right_callback(data):
 	global A,B, left_list, right_list, solver
 	A += 1
@@ -60,10 +59,6 @@ def right_callback(data):
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
 	right_list.append(cimg)
-	#cv2.imshow("Left",solver.net.blobs['ZED_data_pool2'].data[0,1,:,:]/255.0)
-	#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
-	#cv2.waitKey(1)
-
 def left_callback(data):
 	global A,B, left_list, right_list
 	B += 1
@@ -71,36 +66,44 @@ def left_callback(data):
 	if len(left_list) > 5:
 		left_list = left_list[-5:]
 	left_list.append(cimg)
-	#cv2.imshow("Left",cimg)
-	#cv2.waitKey(1)
+
+GPS2_lat = -999.99
+GPS2_long = -999.99
+GPS2_lat_orig = -999.99
+GPS2_long_orig = -999.99
+def GPS2_lat_callback(msg):
+	global GPS2_lat
+	GPS2_lat = msg.data
+def GPS2_long_callback(msg):
+	global GPS2_long
+	GPS2_long = msg.data
+"""
+def GPS2_lat_orig_callback(msg):
+	global GPS2_lat_orig
+	GPS2_lat_orig = msg.data
+def GPS2_long_orig_callback(msg):
+	global GPS2_long_orig
+	GPS2_long_orig = msg.data
+"""
 ##
 ########################################################
 
 import thread
 import time
 
-# Define a function for the thread
-#def print_time( threadName, delay):
 
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
 rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32,state_callback)
 steer_cmd_pub = rospy.Publisher('cmd/steer', std_msgs.msg.Int32, queue_size=100)
 motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
-#rospy.spin()
 
-# Create two threads as follows
-#try:
-#   thread.start_new_thread( print_time, ("Thread-1", 2, ) )
-
-#except:
-#   print "Error: unable to start thread"
+rospy.Subscriber('/bair_car/GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+rospy.Subscriber('/bair_car/GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
+#rospy.Subscriber('/bair_car/GPS2_lat_orig', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+#rospy.Subscriber('/bair_car/GPS2_long_orig', std_msgs.msg.Float32, callback=GPS2_long_callback)
 
 
-
-
-#rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback)
-#rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback)
 
 while not rospy.is_shutdown():
 	#print (A,B,len(left_list),len(right_list))

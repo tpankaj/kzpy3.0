@@ -26,14 +26,37 @@ plt.plot(B.data['steer'][b>0],B.data['gyro_x'][b>0],'.')
 
 
 from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
-BCD = Bair_Car_Data(opjD('bair_car_data_min'),[])#['play','follow','Tilden','Aug','Sep'])
+BCD = Bair_Car_Data(opjD('bair_car_data_min'),['caffe','play','follow','Tilden','Aug','Sep'])
 
 for i in range(7):
 	t0 = time.time()
 	print d2s("*************** i =",i,"*************************")
-	BCD.load_bag_folder_images(100./(30./1000.))
+	BCD.load_bag_folder_images(250./(30./1000.))
 	print d2s("time =",time.time()-t0)
 
+ 
 
-
-
+N=30
+while True:
+	bf=an_element(BCD.bag_folders_dic)
+	if bf.data['acc_z'].mean() > 5: # the mean should be around 9.5 if acc is in datafile
+		break
+indx = random.randint(0,len(bf.data['state_one_steps_1s_indicies'])-1)
+topics = ['steer_z_scored','motor_z_scored','acc_x_z_scored','acc_y_z_scored','acc_z_z_scored','gyro_x_z_scored','gyro_y_z_scored','gyro_z_z_scored',]
+data = []
+target = []
+target2 = []
+for tp in topics:
+	zero_topic = False
+	if random.random() < 0.2:
+		zero_topic = True
+	for i in range(N):
+		d = bf.data[tp][indx+i]
+		target.append(d)
+		if i == N-1:
+			target2.append(d)
+		if zero_topic:
+			d *= 0
+		data.append(d)
+plt.plot(data)
+plt.plot(target)
