@@ -145,8 +145,18 @@ while not rospy.is_shutdown():
 		
 		solver.net.forward()
 		#print solver.net.blobs['ip2'].data[0,:]
-		steer_cmd_pub.publish(std_msgs.msg.Int32(100*solver.net.blobs['ip2'].data[0,9]))
-		motor_cmd_pub.publish(std_msgs.msg.Int32(100*solver.net.blobs['ip2'].data[0,19]))
+
+		caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
+		caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
+
+		if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
+			if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
+				caf_steer = 49
+				caf_motor = 49
+				print "GPS2 stopping car."
+
+		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
+		motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
 		#solver.step(100)
 		
 		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
