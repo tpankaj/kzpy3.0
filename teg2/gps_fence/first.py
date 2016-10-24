@@ -51,9 +51,9 @@ for i in range(20000):
 	p = 2*np.random.random(2) - 1
 	if distance(p,(0,0))>a**0.1:
 		pts.append(p)
-		if len(pts) > 100:
+		if len(pts) > 250:
 			break
-for i in range(10):
+for i in range(50):
 	p = 2*np.random.random(2) - 1
 	pts.append(p)
 
