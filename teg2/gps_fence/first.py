@@ -51,7 +51,7 @@ for i in range(20000):
 	p = 2*np.random.random(2) - 1
 	if distance(p,(0,0))>a**0.1:
 		pts.append(p)
-		if len(pts) > 250:
+		if len(pts) > 150:
 			break
 for i in range(50):
 	p = 2*np.random.random(2) - 1
@@ -62,7 +62,8 @@ pts = np.array(pts)
 rpts = pts.copy()
 vec_total_prev = np.array((0,0))
 my_position_prev = np.array((0,0))
-while distance(my_position,(0,0)) < 1.415:
+GO_UP = True
+while distance(my_position,(0,0)) < 10000: #1.415:
 	plt.figure(1)
 	plt.clf()
 	#plt.subplot(1,2,1)
@@ -81,8 +82,8 @@ while distance(my_position,(0,0)) < 1.415:
 	#plt.subplot(1,2,2)
 	plt.plot(rpts[:,0],rpts[:,1],'.')
 	#plt.plot(0,0,'o')
-	plt.xlim(-1,1)
-	plt.ylim(-1,1)
+	plt.xlim(-1.5,1.5)
+	plt.ylim(-1.5,1.5)
 
 
 
@@ -92,7 +93,17 @@ while distance(my_position,(0,0)) < 1.415:
 	#D = distance(my_position,(0,0))
 	#if D > 0.5:
 	#	vec_total += -10*D*my_position
-	vec_total += 1.0*vec_total_prev + 0.01*np.random.random(2) + 25*np.array((1,1))
+	vec_total += 1.0*vec_total_prev + 0.01*np.random.random(2)
+	if distance(my_position,(1,1))>0.2 and GO_UP:
+		vec_total +=25*np.array((1,1))
+	elif distance(my_position,(1,1))<0.2 and GO_UP:
+		GO_UP = False
+		vec_total +=25*np.array((-1,-1))
+	elif distance(my_position,(-1,-1))>0.2 and not GO_UP:
+		vec_total +=25*np.array((-1,-1))
+	else:
+		GO_UP = True
+		vec_total +=25*np.array((1,1))
 
 	plt.plot([my_position[0],my_position[0]+vec_total[0]/10000.],[my_position[1],my_position[1]+vec_total[1]/10000.],'r-')
 	plt.plot(my_position[0],my_position[1],'go')
