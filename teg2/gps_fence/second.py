@@ -28,7 +28,7 @@ while not rospy.is_shutdown():
 	except Exception as e:
 		print e.message, e.args
 """
-
+os.environ["ROS_MASTER_URI"] = "http://192.168.43.113:11311"
 
 GPS2_lat = -999.99
 GPS2_long = -999.99
@@ -53,22 +53,25 @@ def GPS2_angle_callback(msg):
 
 rospy.init_node('listener',anonymous=True)
 	
-rospy.Subscriber('GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
-rospy.Subscriber('GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
-rospy.Subscriber('GPS2_speed', std_msgs.msg.Float32, callback=GPS2_speed_callback)
-rospy.Subscriber('GPS2_angle', std_msgs.msg.Float32, callback=GPS2_angle_callback)
+rospy.Subscriber('/bair_car/GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+rospy.Subscriber('/bair_car/GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
+rospy.Subscriber('/bair_car/GPS2_speed', std_msgs.msg.Float32, callback=GPS2_speed_callback)
+rospy.Subscriber('/bair_car/GPS2_angle', std_msgs.msg.Float32, callback=GPS2_angle_callback)
+plt.ion()
 
 while not rospy.is_shutdown():
+	plt.figure(1)
 	try:
 		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
-		time.sleep(0.5)
+		if GPS2_lat > -999:
+			plt.plot(GPS2_lat,GPS2_long,'o')
+		plt.pause(0.5);#time.sleep(0.5)
 	except Exception as e:
 		print e.message, e.args
 
 
 
-while True:
-	pass
+raw_input()
 
 
 gps_data = ['lat','long','speed','angle']
@@ -83,5 +86,5 @@ for g in gps_data:
 	"""
 
 for g in gps_data:
-	print """rospy.Subscriber('GPS2_"""+g+"""', std_msgs.msg.Float32, callback=GPS2_"""+g+"""_callback)"""
+	print """rospy.Subscriber('/bair_car/GPS2_"""+g+"""', std_msgs.msg.Float32, callback=GPS2_"""+g+"""_callback)"""
 
