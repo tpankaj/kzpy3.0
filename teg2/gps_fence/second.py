@@ -5,7 +5,7 @@ from kzpy3.vis import *
 import roslib
 import std_msgs.msg
 import rospy
-
+"""
 GPS2_lat = -999.9
 GPS2_long = 0
 GPS2_speed = 0
@@ -17,6 +17,7 @@ def GPS2_lat_callback(msg):
 
 
 rospy.init_node('listener',anonymous=True)
+
 rospy.Subscriber('GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
 
 
@@ -26,4 +27,61 @@ while not rospy.is_shutdown():
 		time.sleep(0.5)
 	except Exception as e:
 		print e.message, e.args
+"""
+
+
+GPS2_lat = -999.99
+GPS2_long = -999.99
+GPS2_speed = -999.99
+GPS2_angle = -999.99
+
+def GPS2_lat_callback(msg):
+	global GPS2_lat
+	GPS2_lat = msg.data
+	
+def GPS2_long_callback(msg):
+	global GPS2_long
+	GPS2_long = msg.data
+	
+def GPS2_speed_callback(msg):
+	global GPS2_speed
+	GPS2_speed = msg.data
+	
+def GPS2_angle_callback(msg):
+	global GPS2_angle
+	GPS2_angle = msg.data
+
+rospy.init_node('listener',anonymous=True)
+	
+rospy.Subscriber('GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+rospy.Subscriber('GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
+rospy.Subscriber('GPS2_speed', std_msgs.msg.Float32, callback=GPS2_speed_callback)
+rospy.Subscriber('GPS2_angle', std_msgs.msg.Float32, callback=GPS2_angle_callback)
+
+while not rospy.is_shutdown():
+	try:
+		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
+		time.sleep(0.5)
+	except Exception as e:
+		print e.message, e.args
+
+
+
+while True:
+	pass
+
+
+gps_data = ['lat','long','speed','angle']
+
+for g in gps_data:
+	print "GPS2_"+g+" = -999.99"
+
+for g in gps_data:
+	print """def GPS2_"""+g+"""_callback(msg):
+	global GPS2_"""+g+"""
+	GPS2_"""+g+""" = msg.data
+	"""
+
+for g in gps_data:
+	print """rospy.Subscriber('GPS2_"""+g+"""', std_msgs.msg.Float32, callback=GPS2_"""+g+"""_callback)"""
 
