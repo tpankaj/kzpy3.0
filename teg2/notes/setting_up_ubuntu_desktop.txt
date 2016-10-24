@@ -166,3 +166,7 @@ chmod 777 ZED_SDK_Linux_Ubuntu16_CUDA80_v1.1.1.run
 
 
 https://www.continuum.io/downloads
+
+
+
+pip install termcolor

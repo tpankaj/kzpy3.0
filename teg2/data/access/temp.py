@@ -22,3 +22,18 @@ b=B.data['state_one_steps']
 plt.plot(B.data['steer'][b>0],B.data['gyro_x'][b>0],'.')
 
 
+
+
+
+from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
+BCD = Bair_Car_Data(opjD('bair_car_data_min'),[])#['play','follow','Tilden','Aug','Sep'])
+
+for i in range(7):
+	t0 = time.time()
+	print d2s("*************** i =",i,"*************************")
+	BCD.load_bag_folder_images(100./(30./1000.))
+	print d2s("time =",time.time()-t0)
+
+
+
+
