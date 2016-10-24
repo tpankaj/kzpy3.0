@@ -70,6 +70,20 @@
             /$(arg car_name)/sonar
             /$(arg car_name)/state
             /$(arg car_name)/steer
+            /$(arg car_name)/GPS2_hour
+            /$(arg car_name)/GPS2_min
+            /$(arg car_name)/GPS2_sec
+            /$(arg car_name)/GPS2_day
+            /$(arg car_name)/GPS2_mon
+            /$(arg car_name)/GPS2_yr
+            /$(arg car_name)/GPS2_fix
+            /$(arg car_name)/GPS2_qual
+            /$(arg car_name)/GPS2_lat
+            /$(arg car_name)/GPS2_long
+            /$(arg car_name)/GPS2_speed
+            /$(arg car_name)/GPS2_angle
+            /$(arg car_name)/GPS2_alt
+            /$(arg car_name)/GPS2_sat
             /$(arg car_name)/zed/depth/camera_info 
             /$(arg car_name)/zed/depth/image_rect_color 
             /$(arg car_name)/zed/left/camera_info 

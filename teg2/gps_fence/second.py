@@ -2,7 +2,6 @@ from kzpy3.vis import *
 import roslib
 import std_msgs.msg
 import rospy
-rospy.init_node('listener',anonymous=True)
 
 GPS2_lat = 0
 GPS2_long = 0
@@ -13,7 +12,10 @@ def GPS2_lat_callback(msg):
 	global GPS2_lat
 	GPS2_lat = msg.data
 
-self.cmd_steer_sub = rospy.Subscriber('GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+
+rospy.init_node('listener',anonymous=True)
+rospy.Subscriber('GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
+
 
 while not rospy.is_shutdown():
 	try:
