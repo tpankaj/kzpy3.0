@@ -35,3 +35,8 @@ http://stackoverflow.com/questions/20023209/function-for-rotating-2d-objects
 
 http://askubuntu.com/questions/468721/how-can-i-empty-the-trash-using-terminal
 rm -rf ~/.local/share/Trash/*
+
+
+http://jeffskinnerbox.me/notebooks/matplotlib-2d-and-3d-plotting-in-ipython.html
+
+nvidia-smi
