@@ -215,6 +215,7 @@ class Bag_Folder2:
         self.path = path
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
         file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+        print file_path
         if len(gg(file_path)) == 0:
             file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
         print "Bag_Folder: loading "+file_path
@@ -375,7 +376,7 @@ img_dic = play2(bf2,0,9999999999,1,True)
 #from kzpy3.teg1.rosbag_work.get_data_from_bag_files5 import *
 #bf2 = Bag_Folder2('/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_from_Evans_19Sept2016_Mr_Orange');#
 
-def generate_frames(path):
+def generate_frames(path, use_state_list=range(10)):
     if path.endswith('/'):
         path = path[:-len('/')]
     bf2 = Bag_Folder2(path)
@@ -389,7 +390,8 @@ def generate_frames(path):
         plt.show()
         fig.canvas.mpl_connect('button_press_event', button_press_event)
         plot_L_file(L,1,False)
-    img_dic = play2(bf2,0,9999999999,1,True)
+    ts_L = sorted(L.keys())
+    img_dic = play2(bf2,ts_L[0],ts_L[-1],1,True)
     ts = sorted(img_dic.keys())
     unix('mkdir '+opjD('frames'))
     dir = opjD('frames',path.split('/')[-1]+'_jpg')
@@ -397,27 +399,40 @@ def generate_frames(path):
     for i in range(len(ts)):
         if np.mod(i,10) == 0:
             print i
-        imsave(opjD(dir,d2n(i,'.jpg')),imresize(img_dic[ts[i]],4.0))
+        img = imresize(img_dic[ts[i]],4.0)
+        if L[ts[i]]['state'] not in use_state_list:
+            mn = img.mean()
+            img = np.zeros(shape(img),np.uint8) + mn
+            img[0,0]=0;img[0,1]=255
+        imsave(opjD(dir,d2n(i,'.jpg')),img)
 
+"""
+apply_function_to_directories(generate_frames,'/home/karlzipser/Desktop/temp_bag')
 
+"""
 
 
 class Bair_Car_Data:
     """ """
-    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False,use_caffe_data=False):
+    def __init__(self, path, max_requests, max_subrequests, validation_set_flag=False,to_ignore=[]):
         self.bag_folder = None
         self.max_requests = max_requests
         self.max_subrequests = max_subrequests
         self.bag_folders_dic = {}        
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
-        if use_caffe_data == False:
-            temp = []
-            for b in bag_folder_paths:
-                if 'caffe' not in b:
-                    temp.append(b)
-                else:
+        bag_folder_paths_dic = {}
+        for b in bag_folder_paths:
+            bag_folder_paths_dic[b] = True
+            for ig in to_ignore:
+                if ig in b:
+                    bag_folder_paths_dic[b] = False
                     print "Not using " + b + " as data."
-            bag_folder_paths = temp
+
+        temp = []
+        for b in bag_folder_paths_dic.keys():
+            if bag_folder_paths_dic[b]:
+                temp.append(b)
+        bag_folder_paths = temp
         self.bag_folders_weighted = []
         for f in bag_folder_paths:
             
