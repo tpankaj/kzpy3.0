@@ -16,3 +16,7 @@ https://defendtheplanet.net/2014/11/05/using-ros-indigo-webcam-by-the-uvc_camera
 http://sauravag.com/2015/03/how-to-usb-web-cam-with-ros-indigo/
 
 http://wiki.ros.org/usb_cam
+
+https://github.com/adafruit/Adafruit_LSM9DS0_Library
+
+https://help.ubuntu.com/lts/serverguide/network-configuration.html
