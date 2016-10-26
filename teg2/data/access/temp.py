@@ -60,3 +60,67 @@ for tp in topics:
 		data.append(d)
 plt.plot(data)
 plt.plot(target)
+
+
+from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
+BF = Bag_Folder('/media/karlzipser/ExtraDrive1/bair_car_data_min_disks/bair_car_data_6_min/caffe_z2_direct_local_sidewalks_02Oct16_15h53m07s_Mr_Orange' )
+BF.load_all_bag_files()
+dd = BF.get_data()
+
+t0 = time.time()
+for i in range(1000):
+	q = an_element(BF.left_image_bound_to_data)
+	#dd = BF.get_data()
+print(time.time()-t0)
+
+
+
+from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
+BCD = Bair_Car_Data(opjD('bair_car_data_min'),['play','follow','Tilden','Aug','Sep']) #'campus','caffe'
+
+BCD.load_bag_folder_images(250./(30./1000.))
+
+plt.ion()
+
+t_start()
+for i in range(100000):
+	print i
+	#try:
+	#BF = BCD.bag_folders_dic[a_key(BCD.bag_folders_with_loaded_images)]
+	#if len(BF.img_dic['left'])==0:
+	#	print "**************** BF.load_all_bag_files() *************"
+	#	BF.load_all_bag_files()
+	data_dic = BCD.get_data()
+	#if np.mod(i,100) == 0:
+	#	mi(data_dic['left'])
+	#	plt.pause(0.001)
+	#except Exception as e:
+	#	print d2s("BF.path =,",BF.path,",i =",i,"len(BF.img_dic['left']) = ",len(BF.img_dic['left']))
+	#	print e.message, e.args
+	#	break
+t_end()
+
+
+
+def get_data(BCD,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,state_one_steps_indicies_str='state_one_steps_0_5s_indicies'):
+	BF = BCD.bag_folders_dic[a_key(BCD.bag_folders_with_loaded_images)]
+	return BF.get_data(topics,num_topic_steps,num_image_steps,state_one_steps_indicies_str)
+
+
+
+
+
+no_left_ts = []
+for i in range(len(BF.data['timestamps'])):
+	t = BF.data['timestamps'][i]
+	if np.mod(i,1000)==0:
+		print i
+	if t not in BF.img_dic['left'].keys():
+		print d2s(BF.path,t)
+		no_left_ts.append(t)
+
+plt.figure(1)
+plt.clf()
+plt.plot(a,'o')
+plt.plot(b,'o')
+

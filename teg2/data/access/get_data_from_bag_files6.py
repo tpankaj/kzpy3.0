@@ -37,7 +37,11 @@ class Bag_Folder:
             #print "Bag_Folder: __init__: loading "+file_path
             self.left_image_bound_to_data = load_obj(file_path)
             self.img_dic = {}
+            self.img_dic['left'] = {}
+            self.img_dic['right'] = {}
             self.timestamps = sorted(self.left_image_bound_to_data.keys())
+            self.returning_data_dic = 0
+            self.returning_empty_data_dic = 0
             for t in self.timestamps:
                 s = self.left_image_bound_to_data[t]['state'] # There is interpolation of values. For state we don't want this!
                 self.left_image_bound_to_data[t]['state'] = np.round(s) # Here we undo the problem.
@@ -60,7 +64,7 @@ class Bag_Folder:
                     state_one_steps = 0
                 self.left_image_bound_to_data[self.timestamps[i]]['state_one_steps'] = state_one_steps
             self.data = {}
-            self.data['timestamps'] = np.array(self.timestamps)
+            self.data['timestamps'] = self.timestamps
             self.data['state'] = self.elements('state')
             self.data['steer'] = self.elements('steer')
             self.data['motor'] = self.elements('motor')
@@ -81,8 +85,9 @@ class Bag_Folder:
             self.data['gyro_y'] = gyro[:,2]
             self.data['encoder'] = self.elements('encoder')
             self.data['state_one_steps'] = self.elements('state_one_steps')
-            self.data['state_one_steps_1s_indicies'] = np.where(np.array(self.data['state_one_steps'])>=30)[0]
-
+            #self.data['state_one_steps_1s_indicies'] = np.where(np.array(self.data['state_one_steps'])>=30)[0]
+            self.data['state_one_steps_0_5s_indicies'] = np.where(np.array(self.data['state_one_steps'])>=15)[0]
+            """
             topics = ['steer','motor','acc_x','acc_y','acc_z','gyro_x','gyro_y','gyro_z','encoder']
             for tp in topics:
                     d = self.data[tp][self.data['state_one_steps_1s_indicies']]
@@ -91,7 +96,14 @@ class Bag_Folder:
                     if sd == 0 or sd == 0.0: # acc can be all zero, as can encoder, so we don't want to devide by this.
                         sd = 1.0
                     self.data[tp+'_z_scored'] = (self.data[tp]-mn)/sd
-
+            """
+            self.binned_timestamp_nums = [[],[]]
+            for i in range(len(self.data['state_one_steps_0_5s_indicies'])):
+                steer = self.data['steer'][i]
+                if steer < 43 or steer > 55:
+                    self.binned_timestamp_nums[0].append(i)
+                else:
+                    self.binned_timestamp_nums[1].append(i)
 
             print "Bag_Folder::init() preloaded " + self.path.split('/')[-1] + " (" + str(len(self.files)) + " bags)"
         #except Exception as e:
@@ -102,8 +114,9 @@ class Bag_Folder:
     def load_all_bag_files(self):
         for f in self.files:
             bag_file_img_dic = load_obj(f)
-            for t in bag_file_img_dic['left'].keys():
-                self.img_dic[t] = bag_file_img_dic['left'][t]
+            for s in ['left','right']:
+                for t in bag_file_img_dic[s].keys():
+                    self.img_dic[s][t] = bag_file_img_dic[s][t]
 
     def is_timestamp_valid_data(self,t):
         valid = True
@@ -220,9 +233,83 @@ class Bag_Folder:
                     print "no data"        
         if use_cv2:
             cv2.destroyWindow('left')
-    #
-    ######################################################################
+        #
+        ######################################################################
     
+
+
+        """
+            while True:
+                bf=an_element(BCD.bag_folders_dic)
+                if bf.data['acc_z'].mean() > 5 and len(bf.data['state_one_steps_1s_indicies']) > 1000: # the mean should be around 9.5 if acc is in datafile
+                    break
+        """
+
+
+    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,state_one_steps_indicies_str='state_one_steps_0_5s_indicies'):
+        """
+        state_one_steps_indicies_str can be, e.g.:
+            'state_one_steps_1s_indicies' or 'state_one_steps_0_5s_indicies'
+
+        topics means non-image topics
+        """
+        tries = 0
+        while tries < 5:
+            try:
+                if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
+                    start_index = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+                elif len(self.binned_timestamp_nums[0]) > 0:
+                    start_index = random.choice(self.binned_timestamp_nums[0])
+                elif len(self.binned_timestamp_nums[1]) > 0:
+                    start_index = random.choice(self.binned_timestamp_nums[1])
+                else:
+                    break
+                #start_index = random.choice(  self.data[state_one_steps_indicies_str])
+                data_dic = {}
+                for tp in topics:
+                    data_dic[tp] = self.data[tp][start_index:(start_index+num_topic_steps)]
+                for s in ['left']:
+                    data_dic[s] = []   
+                    for n in range(num_image_steps):
+                        t = self.data['timestamps'][start_index+n]
+                        data_dic[s].append(self.img_dic[s][t])
+                for s in ['right']:
+                    data_dic[s] = []   
+                    for n in range(num_image_steps):
+                        t_ = self.left_image_bound_to_data[t]['right_image']
+                        data_dic[s].append(self.img_dic[s][t_])
+                # assert that data_dic holds what it is supposed to hold.
+                for tp in topics:
+                    assert type(data_dic[tp]) == np.ndarray
+                    assert len(data_dic[tp]) == num_topic_steps
+                for s in ['left','right']:
+                    assert type(data_dic[s]) == list
+                    assert len(data_dic[s]) == num_image_steps
+                    for i in range(num_image_steps):
+                        assert type(data_dic[s][i]) == np.ndarray
+                        assert shape(data_dic[s][i]) == (94, 168)
+                self.returning_data_dic += 1
+                return data_dic
+            except:
+                tries += 1
+                #print "Try again."
+        #print("Returning empty data_dic")
+        self.returning_empty_data_dic += 1
+        if np.mod(self.returning_empty_data_dic,1000) == 0:
+            print(d2s("returning_empty_data_dic =",self.returning_empty_data_dic,"returning_data_dic =",self.returning_data_dic))
+        return {}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,6 +350,7 @@ class Bair_Car_Data:
         self.bag_folders_priority_list = self.bag_folders_dic.keys()
         random.shuffle(self.bag_folders_priority_list)
         bag_count = 0
+        i = 0
         for i in range(len(self.bag_folders_priority_list)):
             b = self.bag_folders_priority_list[i]
             bag_count += len(self.bag_folders_dic[b].files)
@@ -338,7 +426,7 @@ class Bair_Car_Data:
                     print "Bair_Car_Data::free_memory() removed "+b
                     return b
         return None
-    """
+
 
     def get_data(self, target_topics, num_data_steps, num_frames):
         #print 'Bair_Car_Data::get_data'
@@ -362,4 +450,8 @@ class Bair_Car_Data:
             self.bag_folder = None
             return self.get_data(target_topics, num_data_steps, num_frames)
         return data
+    """
 
+
+    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,state_one_steps_indicies_str='state_one_steps_0_5s_indicies'):
+        return self.bag_folders_dic[a_key(self.bag_folders_with_loaded_images)].get_data(topics,num_topic_steps,num_image_steps,state_one_steps_indicies_str)

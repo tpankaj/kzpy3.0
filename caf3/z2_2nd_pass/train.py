@@ -3,7 +3,7 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files5 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
@@ -39,8 +39,8 @@ def load_data_into_model(solver,data):
 		return False
 	if 'left' in data:
 		if type(data['left'][0]) == np.ndarray:
-			target_data = data['steer']
-			target_data += data['motor']
+			target_data = list(data['steer'])
+			target_data += list(data['motor'])
 
 			if np.random.random() > 0.5:
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
@@ -67,7 +67,7 @@ def load_data_into_model(solver,data):
 			Caf = 0
 
 			#print data['bag_filename']
-
+			"""
 			if 'follow' in data['bag_filename']:
 				Follow = 1.0
 			if 'direct' in data['bag_filename']:
@@ -78,7 +78,7 @@ def load_data_into_model(solver,data):
 				Furtive = 1.0
 			if 'caffe' in data['bag_filename']:
 				Caf = 1.0
-
+			"""
 			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
 			solver.net.blobs['metadata'].data[0,1,:,:] = Caf #0#target_data[len(target_data)/2]/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
@@ -172,17 +172,20 @@ def array_to_int_list(a):
 
 
 
+
+
 #if __name__ == '__main__':
-bar_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
-bair_car_data = Bair_Car_Data(bar_car_data_path,1,10,False,['follow','play','furtive'])
+bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
+assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
+bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
-solver = setup_solver()
+
 
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-
+solver = setup_solver()
 if weights_file_path != None:
 	print "loading " + weights_file_path
 	solver.net.copy_from(weights_file_path)
@@ -192,14 +195,15 @@ if weights_file_path != None:
 
 def main():
 	while True:
-		try:
-			run_solver(solver,bair_car_data,3000)
+		if True:#try:
+			bair_car_data.load_bag_folder_images(250./(30./1000.))
+			run_solver(solver,bair_car_data,30000)
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'
-		except Exception as e:
-			print "train loop ***************************************"
-			print e.message, e.args
-			print "***************************************"
+		#except Exception as e:
+		#	print "train loop ***************************************"
+		#	print e.message, e.args
+		#	print "***************************************"
 
 
 """

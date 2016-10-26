@@ -501,3 +501,14 @@ def apply_function_to_directories(fun,path,not_str_lst=[],and_str_lst=[],or_str_
             print('*** Ignoring '+d)
 
             
+
+
+
+t__0 = 0
+def t_start():
+    global t__0
+    t__0 = time.time()
+
+def t_end():
+    print(time.time()-t__0)
+
