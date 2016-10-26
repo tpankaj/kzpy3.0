@@ -59,12 +59,17 @@ rospy.Subscriber('/bair_car/GPS2_speed', std_msgs.msg.Float32, callback=GPS2_spe
 rospy.Subscriber('/bair_car/GPS2_angle', std_msgs.msg.Float32, callback=GPS2_angle_callback)
 plt.ion()
 
+GPS2_lat_orig = 37.881401062#37.881404 #-999.99
+GPS2_long_orig = -122.272346497#-122.2743327 #-999.99
+
 while not rospy.is_shutdown():
 	plt.figure(1)
+	plt.xlim(GPS2_long_orig-0.008,GPS2_long_orig+0.008)
+	plt.ylim(GPS2_lat_orig-0.008,GPS2_lat_orig+0.008)
 	try:
 		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
 		if GPS2_lat > -999:
-			plt.plot(GPS2_lat,GPS2_long,'o')
+			plt.plot(GPS2_long,GPS2_lat,'o')
 		plt.pause(0.5);#time.sleep(0.5)
 	except Exception as e:
 		print e.message, e.args
