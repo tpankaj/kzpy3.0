@@ -170,9 +170,9 @@ while not rospy.is_shutdown():
 					caf_motor = 49
 					print "GPS2 stopping car."
 		
-		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
-		#motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
-		motor_cmd_pub.publish(std_msgs.msg.Int32(camera_heading))
+		steer_cmd_pub.publish(std_msgs.msg.Int32(camera_heading))
+
+		motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
 		
 
 
