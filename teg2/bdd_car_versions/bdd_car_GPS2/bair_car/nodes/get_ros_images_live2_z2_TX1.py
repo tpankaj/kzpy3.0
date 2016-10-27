@@ -81,7 +81,7 @@ def GPS2_long_callback(msg):
 camera_heading = 49.0
 def camera_heading_callback(msg):
 	global camera_heading
-	c = -msg.data
+	c = msg.data
 	#print camera_heading
 	if c > 90:
 		c = 90
@@ -96,6 +96,7 @@ def camera_heading_callback(msg):
 		c = 0
 	if c > 99:
 		c = 99
+	c = 99-c
 	camera_heading = int(c)
 """
 def GPS2_lat_orig_callback(msg):
