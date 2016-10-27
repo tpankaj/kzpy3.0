@@ -50,7 +50,9 @@ def showarray(a, fmt='jpeg'):
     PIL.Image.fromarray(a).save(f, fmt)
     display(Image(data=f.getvalue()))
 
-
+def toolbar():
+    plt.rcParams['toolbar'] = 'toolbar2'
+    
 ######################
 #
 def mi(
@@ -61,7 +63,7 @@ def mi(
     img_xlabel = 'x',
     img_ylabel = 'y',
     cmap = 'gray',
-    toolBar = False,
+    toolBar = True,
     do_clf = True,
     do_axis = False ):
     """
