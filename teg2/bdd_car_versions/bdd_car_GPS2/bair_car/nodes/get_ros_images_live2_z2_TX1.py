@@ -87,10 +87,11 @@ def camera_heading_callback(msg):
 		c = 90
 	if c < -90:
 		c = -90
+	c += 90
 	c /= 180.
-	c += 1.0
+	
 	c *= 99
-	c += 49
+
 	if c < 0:
 		c = 0
 	if c > 99:
