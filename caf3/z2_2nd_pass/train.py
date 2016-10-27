@@ -3,7 +3,7 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files6 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files7 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
@@ -177,7 +177,7 @@ def array_to_int_list(a):
 #if __name__ == '__main__':
 bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
 assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-bair_car_data = Bair_Car_Data(bair_car_data_path,['follow','play'])#['play','follow','furtive','caffe'])
+bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe'])#['follow','play'])#['play','follow','furtive','caffe'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 
@@ -196,8 +196,12 @@ if weights_file_path != None:
 def main():
 	while True:
 		if True:#try:
-			bair_car_data.load_bag_folder_images(3000)
-			run_solver(solver,bair_car_data,30000)
+			t_start()
+			bair_car_data.load_bag_folder_images(3400)
+			t_end()
+			t_start()
+			run_solver(solver,bair_car_data,150000)
+			t_end()
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'
 		#except Exception as e:

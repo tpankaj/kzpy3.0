@@ -7,6 +7,19 @@
 ############################
 from __future__ import print_function  # print('me') instead of print 'me'
 from __future__ import division  # 1/2 == 0.5, not 0
+######################
+
+####################################
+# exception format:
+if False:
+    try:
+        pass
+    except Exception as e:
+        cprint("********** Exception ***********************",'red')
+        print(emessage, e.args)
+#
+####################################
+
 
 # - import common modules
 import os
@@ -26,7 +39,10 @@ import re
 import subprocess
 from pprint import pprint
 import serial
-
+try:
+    from termcolor import cprint
+except:
+    print("termcolor not installed")
 # - some definitions
 import socket
 host_name = socket.gethostname()
