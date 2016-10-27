@@ -84,6 +84,7 @@
             /$(arg car_name)/GPS2_angle
             /$(arg car_name)/GPS2_alt
             /$(arg car_name)/GPS2_sat
+            /$(arg car_name)/camera_heading
             /$(arg car_name)/zed/depth/camera_info 
             /$(arg car_name)/zed/depth/image_rect_color 
             /$(arg car_name)/zed/left/camera_info 
