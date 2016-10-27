@@ -67,18 +67,18 @@ def load_data_into_model(solver,data):
 			Caf = 0
 
 			#print data['bag_filename']
-			"""
-			if 'follow' in data['bag_filename']:
+			
+			if 'follow' in data['path']:
 				Follow = 1.0
-			if 'direct' in data['bag_filename']:
+			if 'direct' in data['path']:
 				Direct = 1.0
-			if 'play' in data['bag_filename']:
+			if 'play' in data['path']:
 				Play = 1.0
-			if 'furtive' in data['bag_filename']:
+			if 'furtive' in data['path']:
 				Furtive = 1.0
-			if 'caffe' in data['bag_filename']:
+			if 'caffe' in data['path']:
 				Caf = 1.0
-			"""
+			
 			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
 			solver.net.blobs['metadata'].data[0,1,:,:] = Caf #0#target_data[len(target_data)/2]/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
@@ -177,7 +177,7 @@ def array_to_int_list(a):
 #if __name__ == '__main__':
 bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
 assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe'])
+bair_car_data = Bair_Car_Data(bair_car_data_path,['follow','play'])#['play','follow','furtive','caffe'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 
@@ -196,7 +196,7 @@ if weights_file_path != None:
 def main():
 	while True:
 		if True:#try:
-			bair_car_data.load_bag_folder_images(250./(30./1000.))
+			bair_car_data.load_bag_folder_images(3000)
 			run_solver(solver,bair_car_data,30000)
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'

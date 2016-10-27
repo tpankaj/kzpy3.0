@@ -266,6 +266,7 @@ class Bag_Folder:
                     break
                 #start_index = random.choice(  self.data[state_one_steps_indicies_str])
                 data_dic = {}
+                data_dic['path'] = self.path
                 for tp in topics:
                     data_dic[tp] = self.data[tp][start_index:(start_index+num_topic_steps)]
                 for s in ['left']:
@@ -454,4 +455,12 @@ class Bair_Car_Data:
 
 
     def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,state_one_steps_indicies_str='state_one_steps_0_5s_indicies'):
-        return self.bag_folders_dic[a_key(self.bag_folders_with_loaded_images)].get_data(topics,num_topic_steps,num_image_steps,state_one_steps_indicies_str)
+        while True:
+            rc = random.choice(self.bag_folders_weighted)
+            if rc in self.bag_folders_with_loaded_images:
+                break
+        return self.bag_folders_dic[random.choice(self.bag_folders_weighted)].get_data(topics,num_topic_steps,num_image_steps,state_one_steps_indicies_str)
+
+
+#bag_folders_weighted
+#bag_folders_with_loaded_images
