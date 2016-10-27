@@ -78,11 +78,11 @@ def GPS2_long_callback(msg):
 	global GPS2_long
 	GPS2_long = msg.data
 
-camera_heading = 49
+camera_heading = 49.0
 def camera_heading_callback(msg):
 	global camera_heading
 	camera_heading = msg.data
-	print camera_heading
+	#print camera_heading
 	if camera_heading > 90:
 		camera_heading = 90
 	if camera_heading < -90:
