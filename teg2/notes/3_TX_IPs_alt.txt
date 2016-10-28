@@ -46,3 +46,8 @@ http://jeffskinnerbox.me/notebooks/matplotlib-2d-and-3d-plotting-in-ipython.html
 
 nvidia-smi
 >>>>>>> 43388f45ea2f7380e7f58fdbce6193c7cd636972
+
+
+http://deeplearning.net/software/theano/install_ubuntu.html
+
+
