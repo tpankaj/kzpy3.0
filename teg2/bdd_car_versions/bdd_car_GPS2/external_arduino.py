@@ -7,7 +7,9 @@ import geometry_msgs.msg
 import sensor_msgs.msg
 from kzpy3.utils import *
 
-class Arduino:
+os.environ["ROS_MASTER_URI"] = "http://192.168.43.196:11311"
+
+class External_Arduino:
 
     STATE_HEADING   = "hdg"
     SENSOR_STATES = (STATE_HEADING)
@@ -17,7 +19,8 @@ class Arduino:
         self.ser_sensors = self._setup_serial(baudrate, timeout)
         assert(self.ser_sensors is not None)
 
-        self.state_pub = rospy.Publisher('camera_heading', std_msgs.msg.Int32, queue_size=100)
+        self.state_pub = rospy.Publisher('/bair_car/camera_heading', std_msgs.msg.Float32, queue_size=100)
+        rospy.init_node('talker',anonymous=True)
 
         print('Starting threads')
 
@@ -39,8 +42,10 @@ class Arduino:
             for _ in xrange(100):
                 try:
                     ser_str = ser.readline()
+                    #print ser_str
                     exec('ser_tuple = list({0})'.format(ser_str))
-                    if ser_tuple[0] in Arduino.SENSOR_STATES:
+                    #print d2s('ser_tuple = ',ser_tuple)
+                    if ser_tuple[0] in External_Arduino.SENSOR_STATES:
                         print('Port {0} is the sensors'.format(ser.port))
                         ser_sensors = ser
                         break
@@ -66,13 +71,13 @@ class Arduino:
                 sensors_str = self.ser_sensors.readline()
                 exec('sensors_tuple = list({0})'.format(sensors_str))
 
-                if sensor == Arduino.STATE_HEADING:
+                if sensors_tuple[0] == External_Arduino.STATE_HEADING:
                     assert(len(sensors_tuple) == 2)
-                    gps_msg = sensor_msgs.msg.NavSatFix(longitude=data[0], latitude=data[1])
-                    gps_msg.header.stamp = rospy.Time.now()
-                    self.gps_pub.publish(gps_msg)
+                    self.state_pub.publish(std_msgs.msg.Float32(sensors_tuple[1]))
+                    #print "published"
 
             except Exception as e:
+                print e
                 pass
 
             

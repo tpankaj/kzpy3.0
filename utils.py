@@ -43,6 +43,7 @@ try:
     from termcolor import cprint
 except:
     print("termcolor not installed")
+    print("Try:  sudo pip install termcolor")
 # - some definitions
 import socket
 host_name = socket.gethostname()
