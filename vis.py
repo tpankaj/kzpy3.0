@@ -302,7 +302,8 @@ def my_scatter(x,y,xmin,xmax,fig_wid,fig_name):
 
 
 
-def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=False):
+def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_height,rel_bar_thickness,center=False,reverse=False,horizontal=False):
+    #print(value)
     h,w,d = shape(img)
     p = (value - min_val) / (max_val - 1.0*min_val)
     if reverse:
@@ -312,15 +313,26 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
     if p < 0:
         p = 0
     wp = int(p*w)
+    hp = int(p*h)
     bh = int((1-rel_bar_height) * h)
     bt = int(rel_bar_thickness * h)
-    
-    if center:
-        if wp < w/2:
-            img[(bh-bt/2):(bh+bt/2),(wp):(w/2),:] = neg_color
-        else:
-            img[(bh-bt/2):(bh+bt/2),(w/2):(wp),:] = pos_color
-    else:
-        img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
+    bw = int((1-rel_bar_height) * w)
 
+    if horizontal:
+        if center:
+            if wp < w/2:
+                img[(bh-bt/2):(bh+bt/2),(wp):(w/2),:] = neg_color
+            else:
+                img[(bh-bt/2):(bh+bt/2),(w/2):(wp),:] = pos_color
+        else:
+            img[(bh-bt/2):(bh+bt/2),0:wp,:] = pos_color
+    else:
+        if center:
+            if hp < h/2:
+                img[(hp):(h/2),(bw-bt/2):(bw+bt/2),:] = neg_color
+            else:
+                img[(h/2):(hp),(bw-bt/2):(bw+bt/2),:] = pos_color
+
+        else:
+            img[hp:h,(bw-bt/2):(bw+bt/2),:] = pos_color
 

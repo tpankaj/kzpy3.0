@@ -11,6 +11,7 @@ class Bag_Folder:
         if len(gg(left_path)) == 0:
             left_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
         self.left_image_bound_to_data = load_obj(left_path)
+        self.good_timestamps_to_raw_timestamps_indicies__dic = {}
         self.img_dic = {}
         self.img_dic['left'] = {}
         self.img_dic['right'] = {}
@@ -135,6 +136,10 @@ class Bag_Folder:
 
         self.data = {}
         self.data['good_start_timestamps'] = sorted(list(set(good_timestamps_list) - set(bad_timestamps)))
+        self.data['raw_timestamps'] = sorted(self.left_image_bound_to_data.keys())
+        for gts in self.data['good_start_timestamps']:
+            raw_index = self.data['raw_timestamps'].index(gts)
+            self.good_timestamps_to_raw_timestamps_indicies__dic[gts] = raw_index
 
         if len(self.data['good_start_timestamps']) == 0:
             cprint("""WARNING!!!!, len(self.data['good_start_timestamps']) == 0, ***NO DATA***,"""+self.path,'red','on_yellow')
@@ -190,7 +195,7 @@ class Bag_Folder:
                 valid = False
         return valid
         
-    def elements(self,topic):
+    def elements_older(self,topic):
         data = []
         for t in self.data['good_start_timestamps']:
             if topic in self.left_image_bound_to_data[t]:
@@ -199,6 +204,17 @@ class Bag_Folder:
                 print 'def elements(self,topic)::returning nothing'
                 return []
         return np.array(data)
+
+    def elements(self,topic):
+        data = []
+        for t in self.data['raw_timestamps']:
+            if topic in self.left_image_bound_to_data[t]:
+                data.append(self.left_image_bound_to_data[t][topic])
+            else:
+                data.append(-999.999)
+                print "Bag_Folder::elements Warning, data.append(-999.999)"
+        return np.array(data)
+
 
 
     def fix_extremes(self,topic,min_val,max_val):
@@ -213,19 +229,19 @@ class Bag_Folder:
             d[d>max_val] = max_val
         #print(d2s(topic,":len=",len(d),",",len(mn),len(mx)))
 
-    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,randomized=False):
+    def get_data_older(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2):
         if self.incremental_index >= len(self.data['good_start_timestamps']):
             return 'end_of_bag_folder_reached'
         start_index = self.incremental_index
+        start_timestep = self.data['good_start_timestamps'][start_index]
         data_dic = {}
         data_dic['path'] = self.path
-        data_dic['timestamp'] = self.data['good_start_timestamps'][start_index]
-        data_dic['state'] = self.data['state'][start_index]
+        data_dic['timestamp'] = self.data['good_start_timestamps'][start_index:(start_index+num_topic_steps)]
         for tp in topics:
             data_dic[tp] = self.data[tp][start_index:(start_index+num_topic_steps)]
 
         data_dic['left'] = []
-        data_dic['right'] = []    
+        data_dic['right'] = []
         for n in range(num_image_steps):
             t = self.data['good_start_timestamps'][start_index+n]
             data_dic['left'].append(self.img_dic['left'][t])
@@ -246,20 +262,145 @@ class Bag_Folder:
         return data_dic
 
 
-def get_data_sequence(BF):
+    def get_data(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2):
+        if self.incremental_index >= len(self.data['good_start_timestamps']):
+            return 'end_of_bag_folder_reached'
+        start_index = self.incremental_index
+        start_timestep = self.data['good_start_timestamps'][start_index]
+        del start_index
+        raw_start_index = self.good_timestamps_to_raw_timestamps_indicies__dic[start_timestep]
+        del start_timestep
+        data_dic = {}
+        data_dic['path'] = self.path
+        data_dic['timestamp'] = self.data['raw_timestamps'][raw_start_index:(raw_start_index+num_topic_steps)]
+        for tp in topics:
+            data_dic[tp] = self.data[tp][raw_start_index:(raw_start_index+num_topic_steps)]
+
+        data_dic['left'] = []
+        data_dic['right'] = []
+        for n in range(num_image_steps):
+            t = self.data['raw_timestamps'][raw_start_index+n]
+            data_dic['left'].append(self.img_dic['left'][t])
+            t_ = self.left_image_bound_to_data[t]['right_image']
+            data_dic['right'].append(self.img_dic['right'][t_])
+
+        # assert that data_dic holds what it is supposed to hold.
+        for tp in topics:
+            assert type(data_dic[tp]) == np.ndarray
+            assert len(data_dic[tp]) == num_topic_steps
+        for s in ['left','right']:
+            assert type(data_dic[s]) == list
+            assert len(data_dic[s]) == num_image_steps
+            for i in range(num_image_steps):
+                assert type(data_dic[s][i]) == np.ndarray
+                assert shape(data_dic[s][i]) == (94, 168)
+        self.incremental_index
+        return data_dic
+
+"""
+def show_data_sequence(BF,N):
     caffe_steer_color_color = [255,0,0]
     human_steer_color_color = [0,0,255]
-    for i in range(1000):
-        d = BF.get_data()
+    t0 = 0
+    dt = 0
+    for i in range(N):
+        d = BF.get_data(['state','steer','motor','encoder','gyro_x','gyro_y','gyro_z','acc_x','acc_y','acc_z'])
+        if i > 0:
+            img_prev = img.copy()
         img = np.zeros((shape(d['right'][0])[0],shape(d['right'][0])[1],3),'uint8')
+        dt = d['timestamp'][0] - t0
+        #mi(d['left'][1],3,[1,2,2])
+        #mi(d['right'][1],3,[1,2,1],do_clf=False)
+        plt.pause(0.0001)
         img[:,:,0] = d['right'][0].copy()
         img[:,:,1] = d['right'][0].copy()
         img[:,:,2] = d['right'][0].copy()
         BF.incremental_index += 1
-        if np.int(d['state']) in [3,6]: #caffe is steering
+        if np.int(d['state'][0]) in [3,6]: #caffe is steering
             steer_rect_color = caffe_steer_color_color
         else:
             steer_rect_color = human_steer_color_color
-        apply_rect_to_img(img,d['steer'][0],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True)
-        mi(img)
-        plt.pause(0.00001)
+        apply_rect_to_img(img,d['steer'][0],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+        apply_rect_to_img(img,d['acc_x'][0],-6,8,steer_rect_color,steer_rect_color,0.78,0.05,center=True,reverse=False,horizontal=True)
+        apply_rect_to_img(img,d['gyro_x'][0],-60,60,steer_rect_color,steer_rect_color,0.75,0.05,center=True,reverse=False,horizontal=True)        
+        
+        apply_rect_to_img(img,80-d['motor'][0],0,80,steer_rect_color,steer_rect_color,0.8,0.05,center=False,reverse=True,horizontal=False)
+        apply_rect_to_img(img,8-d['encoder'][0],0,8,steer_rect_color,steer_rect_color,0.78,0.05,center=False,reverse=True,horizontal=False)
+
+        apply_rect_to_img(img,d['gyro_y'][0],-240,240,steer_rect_color,steer_rect_color,0.2,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['acc_y'][0],-48,48,steer_rect_color,steer_rect_color,0.18,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['gyro_z'][0],-480,480,steer_rect_color,steer_rect_color,0.16,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['acc_z'][0],-135,160,steer_rect_color,steer_rect_color,0.14,0.05,center=True,reverse=False,horizontal=False)
+        #apply_rect_to_img(img,d['gyro_z'][0],-280*2,280*2,steer_rect_color,steer_rect_color,0.12,0.05,center=True,reverse=True,horizontal=False)
+        if dt > 0.06 and i > 0:
+            #img_prev[:,:,1] = img_prev[:,:,1] / 2
+            #img_prev[:,:,2] = img_prev[:,:,2] / 2
+            pz = min(dt,1.0)
+            mi(img_prev,img_title=(d2s('dt = ', int(1000*dt),'ms')))
+            plt.pause(pz)
+
+        pz = 0.0001
+        mi(img,img_title=(d2s('dt = ', int(1000*dt),'ms')))
+        t0 = d['timestamp'][0]
+        plt.pause(pz)
+"""
+
+def show_data_dic(d):
+    caffe_steer_color_color = [255,0,0]
+    human_steer_color_color = [0,0,255]
+    t0 = 0
+    dt = 0
+    for i in range(len(d['steer'])):
+        print i
+        if i > 0:
+            img_prev = img.copy()
+        img = np.zeros((shape(d['right'][0])[0],shape(d['right'][0])[1],3),'uint8')
+        dt = d['timestamp'][i] - t0
+        #mi(d['left'][1],3,[1,2,2])
+        #mi(d['right'][1],3,[1,2,1],do_clf=False)
+        plt.pause(0.0001)
+        img[:,:,0] = d['right'][i].copy()
+        img[:,:,1] = d['right'][i].copy()
+        img[:,:,2] = d['right'][i].copy()
+
+        if np.int(d['state'][i]) in [3,6]: #caffe is steering
+            steer_rect_color = caffe_steer_color_color
+        else:
+            steer_rect_color = human_steer_color_color
+        apply_rect_to_img(img,d['steer'][i],0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+        apply_rect_to_img(img,d['acc_x'][i],-8,8,steer_rect_color,steer_rect_color,0.78,0.05,center=True,reverse=False,horizontal=True)
+        apply_rect_to_img(img,d['gyro_x'][i],-60,60,steer_rect_color,steer_rect_color,0.75,0.05,center=True,reverse=False,horizontal=True)        
+        
+        apply_rect_to_img(img,d['motor'][i],49,99,steer_rect_color,steer_rect_color,0.8,0.05,center=False,reverse=True,horizontal=False)
+        apply_rect_to_img(img,d['encoder'][i],0,10,steer_rect_color,steer_rect_color,0.78,0.05,center=False,reverse=True,horizontal=False)
+
+        apply_rect_to_img(img,d['gyro_y'][i],-240,240,steer_rect_color,steer_rect_color,0.2,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['acc_y'][i],-48,48,steer_rect_color,steer_rect_color,0.18,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['gyro_z'][i],-480,480,steer_rect_color,steer_rect_color,0.16,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['acc_z'][i],-135,160,steer_rect_color,steer_rect_color,0.14,0.05,center=True,reverse=False,horizontal=False)
+        apply_rect_to_img(img,d['gyro_z'][i],-280*2,280*2,steer_rect_color,steer_rect_color,0.12,0.05,center=True,reverse=True,horizontal=False)
+        if dt > 0.06 and i > 0:
+            #img_prev[:,:,1] = img_prev[:,:,1] / 2
+            #img_prev[:,:,2] = img_prev[:,:,2] / 2
+            pz = min(dt,1.0)
+            mi(img_prev,img_title=(d2s('dt = ', int(1000*dt),'ms')))
+            plt.pause(pz)
+
+        pz = 0.0001
+        mi(img,img_title=(d2s('dt = ', int(1000*dt),'ms')))
+        t0 = d['timestamp'][i]
+        plt.pause(pz)
+
+
+"""
+dts = []
+raw_timestamps = sorted(BF.img_dic['right'].keys()) #sorted(BF.left_image_bound_to_data.keys())
+for i in range(len(raw_timestamps)-2):
+    dt = raw_timestamps[i+1]-raw_timestamps[i]
+    if dt < .11:
+        dts.append(dt)
+plt.figure(2)
+plt.clf()
+plt.hist(dts,bins=50);
+True
+"""

@@ -135,3 +135,19 @@ if True:
 		d=BF.get_data()
 		#BF.verify_get_data(d)
 	t_end()
+
+
+
+
+
+from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
+f = random.choice(gg(opjD('bair_car_data_min','*')))
+N_topics = 30
+N_frames = N_topics; assert(N_topics >= N_frames)
+BF=Bag_Folder(f,N_topics)
+for i in range(1000):
+	d = BF.get_data(['state','steer','motor','encoder','gyro_x','gyro_y','gyro_z','acc_x','acc_y','acc_z'],N_topics,N_frames)
+	show_data_dic(d)
+	plt.pause(0.5)
+	BF.incremental_index += N_frames
+
