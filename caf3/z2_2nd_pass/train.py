@@ -3,20 +3,11 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files7 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
-########################################################
-#          SETUP SECTION
-#
-solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
-if weights_file_path == "None":
-	weights_file_path = None
-#
-###### ##################################################
 
 
 
@@ -177,7 +168,7 @@ def array_to_int_list(a):
 #if __name__ == '__main__':
 bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
 assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe','Sep','Aug'])#['play','follow','furtive','caffe','Aug','Sep'])#['follow','play'])#['play','follow','furtive','caffe'])
+bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive'])#['play','follow','furtive','caffe','Aug','Sep'])#[]) #['Tilden','local','play','follow','furtive','caffe','Sep','Aug'])#['play','follow','furtive','caffe','Aug','Sep'])#['follow','play'])#['play','follow','furtive','caffe'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 
@@ -185,29 +176,41 @@ bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caf
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
+solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
 solver = setup_solver()
+
+
+weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
+if weights_file_path == "None":
+	weights_file_path = None
 if weights_file_path != None:
 	print "loading " + weights_file_path
 	solver.net.copy_from(weights_file_path)
-#time.sleep(60)	
+	
 
 
-bair_car_data.load_bag_folder_images(3400)
+
 def main():
+	weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
+	if weights_file_path == "None":
+		weights_file_path = None
+	if weights_file_path != None:
+		print "loading " + weights_file_path
+		solver.net.copy_from(weights_file_path)
 	while True:
 		if True:#try:
 			t_start()
-			#bair_car_data.load_bag_folder_images(3400)
+			bair_car_data.load_bag_folder_images(3400)
 			t_end()
 			t_start()
 			run_solver(solver,bair_car_data,150000)
 			t_end()
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'
-		#except Exception as e:
-		#	print "train loop ***************************************"
-		#	print e.message, e.args
-		#	print "***************************************"
+		if False: #except Exception as e:
+			print "train loop ***************************************"
+			print e.message, e.args
+			print "***************************************"
 
 
 """

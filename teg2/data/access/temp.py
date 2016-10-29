@@ -142,12 +142,28 @@ if True:
 
 from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
 f = random.choice(gg(opjD('bair_car_data_min','*')))
-N_topics = 30
+f='/home/karlzipser/Desktop/bair_car_data_min/furtive_8August2016'
+f='/home/karlzipser/Desktop/bair_car_data_min/play_Nino_to_campus_08Oct16_09h00m00s_Mr_Blue_1a'
+N_topics = 10
 N_frames = N_topics; assert(N_topics >= N_frames)
 BF=Bag_Folder(f,N_topics)
+
+t_start()
 for i in range(1000):
 	d = BF.get_data(['state','steer','motor','encoder','gyro_x','gyro_y','gyro_z','acc_x','acc_y','acc_z'],N_topics,N_frames)
 	show_data_dic(d)
-	plt.pause(0.5)
+	#print "<pause>"
+	#plt.pause(0.1)
+	plt.title('<pause>')
 	BF.incremental_index += N_frames
+t_end()
+
+n=10
+plt.figure(n)
+plt.clf()
+mi(d['left'][0],n,[2,2,2],do_clf=False)
+mi(d['left'][1],n,[2,2,4],do_clf=False)
+mi(d['right'][1],n,[2,2,3],do_clf=False)
+mi(d['right'][0],n,[2,2,1],do_clf=False)
+
 
