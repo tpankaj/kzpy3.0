@@ -42,7 +42,7 @@ def load_data_into_model(solver,data):
 			target_data = list(data['steer'])
 			target_data += list(data['motor'])
 
-			if np.random.random() > 0.5:
+			if True:#np.random.random() > 0.5:
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
 				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
 				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]/255.0-.5
@@ -118,7 +118,7 @@ def run_solver(solver, bair_car_data, num_steps):
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
-			if np.mod(ctr,100) == 0:
+			if np.mod(ctr,90) == 0:
 				imshow = True
 			if np.mod(ctr,1010) == 0:
 				datashow = True
@@ -177,7 +177,7 @@ def array_to_int_list(a):
 #if __name__ == '__main__':
 bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
 assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe'])#['follow','play'])#['play','follow','furtive','caffe'])
+bair_car_data = Bair_Car_Data(bair_car_data_path,['play','follow','furtive','caffe','Sep','Aug'])#['play','follow','furtive','caffe','Aug','Sep'])#['follow','play'])#['play','follow','furtive','caffe'])
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 
@@ -192,12 +192,12 @@ if weights_file_path != None:
 #time.sleep(60)	
 
 
-
+bair_car_data.load_bag_folder_images(3400)
 def main():
 	while True:
 		if True:#try:
 			t_start()
-			bair_car_data.load_bag_folder_images(3400)
+			#bair_car_data.load_bag_folder_images(3400)
 			t_end()
 			t_start()
 			run_solver(solver,bair_car_data,150000)

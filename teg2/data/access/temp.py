@@ -127,7 +127,7 @@ if False:
 
 if True:
 	from kzpy3.teg2.data.access.get_data_from_bag_files7 import *
-	path = opjD('bair_car_data_min/play_30Aug2016_Mr_Blue_Tilden_1') #'bair_car_data_min/direct_campus_25Sep16_09h34m37s_Mr_Orange')
+	path = opjD('bair_car_data_min/direct_local_sidewalks_27Sep16_16h45m54s_Mr_Orange')# 'bair_car_data_min/play_30Aug2016_Mr_Blue_Tilden_1') #'bair_car_data_min/direct_campus_25Sep16_09h34m37s_Mr_Orange')
 	BF=Bag_Folder(path)
 
 	t_start()

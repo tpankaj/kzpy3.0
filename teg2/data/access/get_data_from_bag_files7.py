@@ -36,6 +36,7 @@ class Bag_Folder:
             file_path = opj(path,'.preprocessed','left_image_bound_to_data2.pkl')
             if len(gg(file_path)) == 0:
                 file_path = opj(path,'.preprocessed','left_image_bound_to_data.pkl')
+            self.incremental_index = -1
             self.left_image_bound_to_data = load_obj(file_path)
             self.img_dic = {}
             self.img_dic['left'] = {}
@@ -44,7 +45,7 @@ class Bag_Folder:
 
             timestamps = sorted(list(set(self.left_image_bound_to_data.keys()).intersection(self.img_dic['left'])))
 
-            cprint('checking assertions . . .','blue')
+            cprint('checking assertions . . .','yellow')
             if False:
                 ctr = 0
                 for t in timestamps:
@@ -247,18 +248,29 @@ class Bag_Folder:
 
 
 
-    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2):
+    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,randomized=False):
         tries = 0
         while tries < 5:
             try:
-                if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
-                    start_index = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
-                elif len(self.binned_timestamp_nums[0]) > 0:
-                    start_index = random.choice(self.binned_timestamp_nums[0])
-                elif len(self.binned_timestamp_nums[1]) > 0:
-                    start_index = random.choice(self.binned_timestamp_nums[1])
+                if randomized:
+                    if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
+                        start_index = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+                    elif len(self.binned_timestamp_nums[0]) > 0:
+                        start_index = random.choice(self.binned_timestamp_nums[0])
+                    elif len(self.binned_timestamp_nums[1]) > 0:
+                        start_index = random.choice(self.binned_timestamp_nums[1])
+                    else:
+                        break
                 else:
-                    break
+                    start_index = self.incremental_index
+                    while True:
+                        self.incremental_index += 1
+                        if self.incremental_index in self.data['state_one_steps_0_5s_indicies']: #This shouldn't be necessary.
+                            break
+                        if self.incremental_index >= len(self.data['state_one_steps_0_5s_indicies']):
+                            self.incremental_index = -1
+                            return 'finished_bag_folder'
+
                 data_dic = {}
                 data_dic['path'] = self.path
                 data_dic['timestamp'] = self.data['timestamps'][start_index]
@@ -289,7 +301,7 @@ class Bag_Folder:
                 self.returning_data_dic += 1
                 return data_dic
             except:
-                tries += 1
+               tries += 1
         self.returning_empty_data_dic += 1
         if np.mod(self.returning_empty_data_dic,1000) == 0:
             print(d2s("returning_empty_data_dic =",self.returning_empty_data_dic,"returning_data_dic =",self.returning_data_dic))
@@ -316,7 +328,9 @@ class Bair_Car_Data:
     def __init__(self, path, to_ignore=[]):
         self.bag_folders_with_loaded_images = {}
         self.bag_folders_priority_list = []
-        self.bag_folders_dic = {}        
+        self.bag_folders_dic = {}
+        self.incremental_index = 0
+        self.ctr = 0
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         bag_folder_paths_dic = {}
         for b in bag_folder_paths:
@@ -383,11 +397,29 @@ class Bair_Car_Data:
         for f in self.bag_folders_with_loaded_images:
             print '\t'+f.split('/')[-1]
 
+    
 
-    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2):
-        while True:
-            rc = random.choice(self.bag_folders_weighted)
-            if rc in self.bag_folders_with_loaded_images:
-                break
-        return self.bag_folders_dic[random.choice(self.bag_folders_weighted)].get_data(topics,num_topic_steps,num_image_steps)
+    def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2,randomized=False):
+        if randomized:
+            while True:
+                rc = random.choice(self.bag_folders_weighted)
+                if rc in self.bag_folders_with_loaded_images:
+                    break
+            return self.bag_folders_dic[random.choice(self.bag_folders_weighted)].get_data(topics,num_topic_steps,num_image_steps,True)
+
+        else:
+            self.bag_folders_with_loaded_images_list = sorted(self.bag_folders_with_loaded_images.keys())
+            while True:
+                data = self.bag_folders_dic[self.bag_folders_with_loaded_images_list[self.incremental_index]].get_data(topics,num_topic_steps,num_image_steps,False)
+                if data != 'finished_bag_folder':
+                    if self.ctr == 0:
+                        print('self.ctr == 0')
+                    if np.mod(self.ctr,1000) == 0:
+                        cprint(self.bag_folders_with_loaded_images_list[self.incremental_index],'magenta')
+                        self.ctr += 1
+                    return data        
+                else:
+                    self.incremental_index += 1
+                    if self.incremental_index >= len(sorted(self.bag_folders_with_loaded_images_list)):
+                        self.incremental_index = 0
 
