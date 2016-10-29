@@ -77,6 +77,27 @@ def GPS2_lat_callback(msg):
 def GPS2_long_callback(msg):
 	global GPS2_long
 	GPS2_long = msg.data
+
+camera_heading = 49.0
+def camera_heading_callback(msg):
+	global camera_heading
+	c = msg.data
+	#print camera_heading
+	if c > 90:
+		c = 90
+	if c < -90:
+		c = -90
+	c += 90
+	c /= 180.
+	
+	c *= 99
+
+	if c < 0:
+		c = 0
+	if c > 99:
+		c = 99
+	c = 99-c
+	camera_heading = int(c)
 """
 def GPS2_lat_orig_callback(msg):
 	global GPS2_lat_orig
@@ -102,6 +123,7 @@ rospy.Subscriber('/bair_car/GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_c
 rospy.Subscriber('/bair_car/GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
 #rospy.Subscriber('/bair_car/GPS2_lat_orig', std_msgs.msg.Float32, callback=GPS2_lat_callback)
 #rospy.Subscriber('/bair_car/GPS2_long_orig', std_msgs.msg.Float32, callback=GPS2_long_callback)
+rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=camera_heading_callback)
 
 
 
@@ -156,14 +178,12 @@ while not rospy.is_shutdown():
 					caf_motor = 49
 					print "GPS2 stopping car."
 		
-		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
+		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
+		#print camera_heading
 		motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
-		#solver.step(100)
-		
-		#cv2.imshow("Right",solver.net.blobs['ZED_data_pool2'].data[0,3,:,:]/255.0)
 		
 
 
 
 
-#rospy.spin()
+
