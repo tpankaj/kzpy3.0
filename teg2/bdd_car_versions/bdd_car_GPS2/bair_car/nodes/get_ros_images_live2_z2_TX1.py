@@ -175,9 +175,9 @@ while not rospy.is_shutdown():
 			#print GPS2_long
 			if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
 				if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
-					caf_steer = 49
-					caf_motor = 49
-					print "GPS2 stopping car."
+					#caf_steer = 49
+					#caf_motor = 49
+					#print "GPS2 stopping car."
 		
 		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
 		#print camera_heading

@@ -28,7 +28,7 @@ while not rospy.is_shutdown():
 	except Exception as e:
 		print e.message, e.args
 """
-os.environ["ROS_MASTER_URI"] = "http://192.168.43.113:11311"
+#os.environ["ROS_MASTER_URI"] = "http://192.168.43.113:11311"
 
 GPS2_lat = -999.99
 GPS2_long = -999.99
@@ -59,13 +59,16 @@ rospy.Subscriber('/bair_car/GPS2_speed', std_msgs.msg.Float32, callback=GPS2_spe
 rospy.Subscriber('/bair_car/GPS2_angle', std_msgs.msg.Float32, callback=GPS2_angle_callback)
 plt.ion()
 
-GPS2_lat_orig = 37.881401062#37.881404 #-999.99
-GPS2_long_orig = -122.272346497#-122.2743327 #-999.99
+
+
+
+GPS2_lat_orig = 37.8814506531
+GPS2_long_orig = -122.27844238
 
 while not rospy.is_shutdown():
 	plt.figure(1)
-	plt.xlim(GPS2_long_orig-0.008,GPS2_long_orig+0.008)
-	plt.ylim(GPS2_lat_orig-0.008,GPS2_lat_orig+0.008)
+	plt.xlim(GPS2_long_orig-0.002,GPS2_long_orig+0.002)
+	plt.ylim(GPS2_lat_orig-0.002,GPS2_lat_orig+0.002)
 	try:
 		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
 		if GPS2_lat > -999:
