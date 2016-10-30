@@ -212,7 +212,7 @@ alias ren='rostopic echo /bair_car/encoder'
 alias rcd='cd /media/ubuntu/rosbags'
 alias ssd='sudo shutdown -h now'
 alias rcn='echo $COMPUTER_NAME'
-
+alias riv='rosrun image_view image_view image:=/bair_car/zed/right/image_rect_color'
 
 ######################## for .bashrc from MacBook #################
 #
