@@ -3,7 +3,7 @@ from kzpy3.vis import *
 
 
 class Bag_Folder:
-    def __init__(self, path, NUM_STATE_ONE_STEPS=15):
+    def __init__(self, path, NUM_STATE_ONE_STEPS=10):
         self.path = path
         cprint('Bag_Folder::__init__, path = '+path,'yellow','on_red')
         self.files = sorted(glob.glob(opj(path,'.preprocessed','*.bag.pkl')))
@@ -21,6 +21,7 @@ class Bag_Folder:
         self.img_dic['left'] = {}
         self.img_dic['right'] = {}
         self.incremental_index = 0
+        self.timestamp_num = 0
         for f in self.files:
             bag_file_img_dic = load_obj(f)
             for s in ['left','right']:
@@ -181,6 +182,15 @@ class Bag_Folder:
             cprint(d2s("Bag_Folder::__init__", e[0],len(self.data[e[0]])),'blue')
             self.fix_extremes(e[0],e[1],e[2])
 
+        self.binned_timestamp_nums = [[],[]]
+        for i in range(len(self.data['good_start_timestamps'])):
+            t = self.data['good_start_timestamps'][i]
+            steer = self.left_image_bound_to_data[t]['steer']
+            if steer < 43 or steer > 55:
+                self.binned_timestamp_nums[0].append(i)
+            else:
+                self.binned_timestamp_nums[1].append(i)
+            #print((len(self.binned_timestamp_nums[0]),len(self.binned_timestamp_nums[1])))
 
 
     def is_timestamp_valid_data(self,t):
@@ -266,14 +276,30 @@ class Bag_Folder:
         return data_dic
 
 
-    def get_data(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2):
-        if self.incremental_index >= len(self.data['good_start_timestamps']):
-            return 'end_of_bag_folder_reached'
-        start_index = self.incremental_index
-        start_timestep = self.data['good_start_timestamps'][start_index]
-        del start_index
-        raw_start_index = self.good_timestamps_to_raw_timestamps_indicies__dic[start_timestep]
-        del start_timestep
+    def get_data(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2,step = 0):
+        #if self.incremental_index >= len(self.data['good_start_timestamps']):
+        #    return 'end_of_bag_folder_reached'
+        #start_index = self.incremental_index
+        if not hasattr(self, 'timestamp_num'):
+            self.timestamp_num = lambda: None
+            setattr(self,'timestamp_num', 0)
+        if step == 0:
+            self.timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+        timestamp = self.data['good_start_timestamps'][self.timestamp_num]
+        
+        if False:
+            if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+            elif len(self.binned_timestamp_nums[0]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[0])
+            elif len(self.binned_timestamp_nums[1]) > 0:
+                timestamp_num = random.choice(self.binned_timestamp_nums[1])
+            else:
+                assert(False) #return None
+
+        
+        raw_start_index = self.good_timestamps_to_raw_timestamps_indicies__dic[timestamp] + step
+
         data_dic = {}
         data_dic['path'] = self.path
         data_dic['timestamp'] = self.data['raw_timestamps'][raw_start_index:(raw_start_index+num_topic_steps)]
@@ -301,6 +327,25 @@ class Bag_Folder:
         self.incremental_index
         return data_dic
 
+    def make_contact_print(self,X=20,Y=20):
+        step = int(len(self.data['good_start_timestamps'])/(X*Y))
+        num = 0
+        shp = shape(an_element(self.img_dic['left']))
+        width = shp[0]
+        height = shp[1]
+        offset = width/20
+        contact_print = np.zeros(((width+offset)*X,(height+offset)*Y),'uint8') + 128
+        for x in range(X):
+            for y in range(Y):
+                ts = self.data['good_start_timestamps'][num]
+                #ts = self.data['raw_timestamps'][indx]
+                x_ = x*(width+offset)
+                y_ = y*(height+offset)
+                contact_print[x_:(x_+width),y_:(y_+height)] = self.img_dic['left'][ts]
+                #mi(self.img_dic['left'][ts],img_title=d2s(x,y,num,len(self.data['state_one_steps_0_5s_indicies'])))
+                plt.pause(0.00002)
+                num += step
+        return contact_print
 """
 def show_data_sequence(BF,N):
     caffe_steer_color_color = [255,0,0]
@@ -412,9 +457,19 @@ True
 
 
 
+"""
+bins steering
+weight folder
+"""
 
-
-
+def make_contact_prints():
+    unix('mkdir -p '+opjD('bair_car_data_contact_sheets'))
+    files = gg(opjD('train_preprocessed_bag_folder_path','*.pkl'))
+    for f in files:
+        print f
+        BF = load_obj(f)
+        cs = BF.make_contact_print()
+        imsave(opjD('bair_car_data_contact_sheets',f.split('/')[-1]+'.png'),cs)
 
 
 
@@ -426,12 +481,14 @@ True
 
 class Bair_Car_Data:
     """ """
-    def __init__(self, path, to_ignore=[]):
+    def __init__(self, path, to_ignore=[], NUM_STATE_ONE_STEPS=10):
         self.bag_folders_with_loaded_images = {}
         self.bag_folders_priority_list = []
         self.bag_folders_dic = {}
         self.incremental_index = 0
         self.ctr = 0
+        self.current_bag_folder = None
+        self.step = 0
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         bag_folder_paths_dic = {}
         for b in bag_folder_paths:
@@ -454,22 +511,26 @@ class Bair_Car_Data:
         if True:#try:
             unix('mkdir -p '+train_preprocessed_bag_folder_path)
             for f in bag_folder_paths:
-                if len(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')) == 1:
+                n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
+                m = len(gg(opj(f,'.preprocessed','left*')))
+                #print opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
+                if len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
                     self.bag_folders_dic[f] = load_obj(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))
                     print "loaded "+opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
-                else
+                else:
                     n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
                     m = len(gg(opj(f,'.preprocessed','left*')))
                     #print(f.split('/')[-1],n,m)
                     if n > 0 and m > 0:
-                        self.bag_folders_dic[f] = Bag_Folder(f)
+                        self.bag_folders_dic[f] = Bag_Folder(f,NUM_STATE_ONE_STEPS)
                         bpath = opj(train_preprocessed_bag_folder_path,self.bag_folders_dic[f].path.split('/')[-1]+'.pkl')
                         if len(gg(bpath)) == 0:
                             print("saveing "+bpath)
                             save_obj(self.bag_folders_dic[f],bpath)
                 self.bag_folders_with_loaded_images[f] = True
                 for i in range(max(n/10,1)):
-                self.bag_folders_weighted.append(f)
+                    self.bag_folders_weighted.append(f)
+        self.current_bag_folder = random.choice(self.bag_folders_weighted)
         if False: #except Exception as e:
             cprint("Bair_Car_Data::__init__ ********** Exception ******* with "+f,'red')
             print e.message, e.args
@@ -518,11 +579,19 @@ class Bair_Car_Data:
     def get_data(self,topics=['steer','motor'],num_topic_steps=10,num_image_steps=2):
         self.bag_folders_with_loaded_images_list = sorted(self.bag_folders_with_loaded_images.keys())
         t0 = time.time()
+        
         while True:
-            rc = random.choice(self.bag_folders_with_loaded_images_list)
-            BF = self.bag_folders_dic[rc]
+            if np.random.random() > 0.98:
+                self.current_bag_folder = random.choice(self.bag_folders_weighted)
+                #print "Bair_Car_Data::get_data, self.current_bag_folder = "+self.current_bag_folder
+            #rc = random.choice(self.bag_folders_with_loaded_images_list)
+            BF = self.bag_folders_dic[self.current_bag_folder]
             BF.incremental_index = np.random.randint(0,len(BF.data['good_start_timestamps']))
-            data = BF.get_data(topics,num_topic_steps,num_image_steps)
+            data = BF.get_data(topics,num_topic_steps,num_image_steps,self.step)
+            self.step += 1
+            if self.step >= 30:
+                self.step = 0
+
             if data != 'end_of_bag_folder_reached':
                 if self.ctr == 0:
                     print('self.ctr == 0')

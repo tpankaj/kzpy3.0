@@ -142,8 +142,8 @@ if True:
 
 from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
 f = random.choice(gg(opjD('bair_car_data_min','*')))
-f='/home/karlzipser/Desktop/bair_car_data_min/furtive_8August2016'
-f='/home/karlzipser/Desktop/bair_car_data_min/play_Nino_to_campus_08Oct16_09h00m00s_Mr_Blue_1a'
+f='/home/karlzipser/Desktop/bair_car_data_min/furtive_9August2016'
+
 N_topics = 10
 N_frames = N_topics; assert(N_topics >= N_frames)
 BF=Bag_Folder(f,N_topics)
