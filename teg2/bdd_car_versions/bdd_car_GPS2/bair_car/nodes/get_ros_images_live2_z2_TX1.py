@@ -172,7 +172,7 @@ while not rospy.is_shutdown():
 		caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
 
 		if True:
-			print GPS2_long
+			#print GPS2_long
 			if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
 				if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
 					caf_steer = 49
