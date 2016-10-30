@@ -272,7 +272,7 @@ while distance(my_position,(0,0)) < 1.415:
 	for i in range(len(dist_sorted)-1,0,-1): #s in dist_sorted:
 		s = dist_sorted[i]
 		rp = rpts_rot[s[0]]
-		if rp[1] > -3 and rp[1] < 3 and rp[0] > 0.1: 
+		if rp[1] > -3 and rp[1] < 3 and rp[0] < -0.1: 
 			picture(ar(rp),w)
 	mi(img,2)
 
