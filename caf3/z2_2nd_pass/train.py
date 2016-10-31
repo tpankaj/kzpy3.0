@@ -23,7 +23,7 @@ def setup_solver():
 
 
 
-img = zeros((94,168,3))#,'uint8')
+img = zeros((94,168,3)
 def load_data_into_model(solver,data,flip):
 	global img
 	if data == 'END' :
@@ -35,7 +35,6 @@ def load_data_into_model(solver,data,flip):
 			target_data += list(500*(data['motor']-data['motor'][0]))
 			target_data[0] = data['steer'][0]-49
 			target_data[10] = data['motor'][0]-49
-
 
 			if not flip:
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
@@ -54,9 +53,7 @@ def load_data_into_model(solver,data,flip):
 				solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = scipy.fliplr(data['right'][2][:,:]/255.0-.5)
 				for i in range(len(target_data)/2):
 					t = target_data[i]
-					#t = t - 49
 					t = -t
-					#t = t + 49
 					target_data[i] = t
 
 			Direct = 0.
@@ -65,8 +62,6 @@ def load_data_into_model(solver,data,flip):
 			Furtive = 0.
 			Caf = 0
 
-			#print data['bag_filename']
-			
 			if 'follow' in data['path']:
 				if 'direct' in data['path']:
 					Direct = -1.0
@@ -93,14 +88,8 @@ def load_data_into_model(solver,data,flip):
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
 			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 
-
-			#print solver.net.blobs['metadata'].data[0,:,5,5]
-			#time.sleep(0.01)
-
-
 			for i in range(len(target_data)):
 				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]/99.
-
 
 		else:
 			print """not if type(data['left']) == np.ndarray: """+str(time.time())
