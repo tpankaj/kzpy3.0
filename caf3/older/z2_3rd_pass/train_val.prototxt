@@ -3,13 +3,13 @@
 
 
 layer {
-	name: "target_data"
+	name: "steer_motor_target_data"
 	type: "DummyData"
-	top: "target_data"
+	top: "steer_motor_target_data"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 110
+			dim: 20
 		}
 	}
 }
@@ -23,7 +23,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 17
+			dim: 6
 			dim: 14
 			dim: 26
 		}
@@ -177,13 +177,19 @@ layer {
 	bottom: "ip1"
 	top: "ip2"
 	inner_product_param {
-		num_output: 110
+		num_output: 20
 		weight_filler {
 			type: "xavier" 
 		}
 	}
 }
 	
+#layer {
+#	name: "ip2_relu"
+#	type: "ReLU"
+#	bottom: "ip2"
+#	top: "ip2"
+#}
 	
 ############################################################
 
@@ -192,7 +198,7 @@ layer {
 	name: "euclidean"
 	type: "EuclideanLoss"
 	bottom: "ip2"
-	bottom: "target_data"
+	bottom: "steer_motor_target_data"
 	top: "euclidean"
 	loss_weight: 1
 }

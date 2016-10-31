@@ -3,11 +3,18 @@
 
 import caffe
 from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
+from kzpy3.teg1.rosbag_work.get_data_from_bag_files3 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
+########################################################
+#          SETUP SECTION
+#
+solver_file_path = opjh("kzpy3/caf3/z2_3rd_pass/solver.prototxt")
+#weights_file_path = None #opjD('z2/z2.caffemodel') #
+#
+########################################################
 
 
 
@@ -23,19 +30,17 @@ def setup_solver():
 
 
 img = zeros((94,168,3))#,'uint8')
-def load_data_into_model(solver,data,flip):
+def load_data_into_model(solver,data):
 	global img
 	if data == 'END' :
 		print """data = 'END':"""
 		return False
 	if 'left' in data:
 		if type(data['left'][0]) == np.ndarray:
-			target_data = list(data['steer'])
-			target_data += list(data['motor'])
+			target_data = data['steer']
+			target_data += data['motor']
 
-
-
-			if not flip:
+			if np.random.random() > 0.5:
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
 				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
 				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]/255.0-.5
@@ -60,18 +65,18 @@ def load_data_into_model(solver,data,flip):
 			Caf = 0
 
 			#print data['bag_filename']
-			
-			if 'follow' in data['path']:
+
+			if 'follow' in data['bag_filename']:
 				Follow = 1.0
-			if 'direct' in data['path']:
+			if 'direct' in data['bag_filename']:
 				Direct = 1.0
-			if 'play' in data['path']:
+			if 'play' in data['bag_filename']:
 				Play = 1.0
-			if 'furtive' in data['path']:
+			if 'furtive' in data['bag_filename']:
 				Furtive = 1.0
-			if 'caffe' in data['path']:
+			if 'caffe' in data['bag_filename']:
 				Caf = 1.0
-			
+
 			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
 			solver.net.blobs['metadata'].data[0,1,:,:] = Caf #0#target_data[len(target_data)/2]/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
@@ -93,81 +98,17 @@ def load_data_into_model(solver,data,flip):
 	else:
 		pass #print """not if 'left' in data: """+str(time.time())
 		return 'no data'
-
-	#show_solver_data(solver,data,flip)
-
 	return True
-
-
-
-
-
-
-
-def show_solver_data(solver,data,flip):
-	caffe_steer_color_color = [1.,0,0]
-	human_steer_color_color = [0,0,1.]
-
-	data_img_shape = np.shape(solver.net.blobs['ZED_data_pool2'].data)
-	num_frames = (data_img_shape[1])/2
-	print num_frames		
-	img = np.zeros((data_img_shape[2],data_img_shape[3],3))+0.5
-	img[0,0,:]=1
-	img[0,1,:]=0
-	mi(img)
-	plt.pause(0.5)
-	for i in range(10):#num_frames):
-		#print i
-		#if i > 0:
-		#    img_prev = img.copy()
-
-		if not flip:
-			d = data['left'][i][:,:]/255.0-.5
-		else:
-			d = scipy.fliplr(data['left'][i][:,:]/255.0-.5)
-		d = z2o(d)
-		if i < 2:
-			img[:,:,0] = z2o(solver.net.blobs['ZED_data_pool2'].data[0,i,:,:])
-		else:
-			img[:,:,0] = d #z2o(solver.net.blobs['ZED_data_pool2'].data[0,i+2,:,:])
-		img[:,:,1] = img[:,:,0].copy()
-		img[:,:,2] = img[:,:,0].copy()
-
-		if solver.net.blobs['metadata'].data[0,1,0,0] == 1.0: #caffe is steering
-		    steer_rect_color = caffe_steer_color_color
-		else:
-			steer_rect_color = human_steer_color_color
-
-		steer = 99*solver.net.blobs['steer_motor_target_data'].data[0,0]
-		apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
-
-		mi(img,img_title=d2s(flip,i))#,img_title=(d2s('dt = ', int(1000*dt),'ms')))
-		#print solver.net.blobs['steer_motor_target_data'].data
-		plt.pause(0.25)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 
 #
 loss_timer = time.time()
 loss = []
-def run_solver(solver, bair_car_data, num_steps,flip):
+def run_solver(solver, bair_car_data, num_steps):
 	global img
 	global loss
 	#if time.time() - loss_timer > 60*15:
-	#	save_obj(loss,opjD('z2_2nd_pass','loss'))
+	#	save_obj(loss,opjD('z2','loss'))
 
 	step_ctr = 0
 	ctr = 0
@@ -175,18 +116,11 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
-			if np.mod(ctr,100) == 0:
+			if np.mod(ctr,50) == 0:
 				imshow = True
-			if np.mod(ctr,1010) == 0:
+			if np.mod(ctr,1001) == 0:
 				datashow = True
-
-
-			bf = random.choice(bair_car_data.bag_folders_weighted)
-			BF = bair_car_data.bag_folders_dic[bf]
-			indx,steer = BF.get_random_steer_equal_weighting()
-			data = BF.get_data(good_start_index=indx)
-			result = load_data_into_model(solver, data,flip)
-			#result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,10),flip)
+			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,2))
 			if result == False:
 				break
 			if result == True:
@@ -235,71 +169,33 @@ def array_to_int_list(a):
 	return l
 
 
-#['play','follow','furtive']
-
-
-#if __name__ == '__main__':
-bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
-assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-
-list0 = []
-list1 = ['play','follow','furtive','caffe','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
-list2 = ['Tilden','play','follow','furtive','play','follow','furtive','caffe','local','Aug','Sep']
-
-
-bair_car_data = Bair_Car_Data(bair_car_data_path,list1)
-#unix('mkdir -p '+opjD('z2_2nd_pass'))
-#bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
-
-
 caffe.set_device(0)
 caffe.set_mode_gpu()
+#if __name__ == '__main__':
 
-solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
+unix('mkdir -p '+opjD('z2_3nd_pass'))
+#bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data/',1000,100)
+bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
+#BF=             Bair_Car_Data('/home/karlzipser/Desktop/z1/bair_car_data/',10,2) 
+
 solver = setup_solver()
 
-
-weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
+weights_file_path = most_recent_file_in_folder(opjD('z2_3rd_pass'),['z2_3rd_pass','caffemodel']) 
 if weights_file_path == "None":
 	weights_file_path = None
 if weights_file_path != None:
 	print "loading " + weights_file_path
 	solver.net.copy_from(weights_file_path)
-	
-
 
 
 def main():
-	weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
-	if weights_file_path == "None":
-		weights_file_path = None
-	if weights_file_path != None:
-		print "loading " + weights_file_path
-		solver.net.copy_from(weights_file_path)
 	while True:
 		try:
-			t_start()
-			bair_car_data.load_bag_folder_images(3400)
-			t_end()
-			t_start()
-
-			for i in range(150):
-				if np.random.random() > 0.5:
-					flip = False
-				else:
-					flip = True
-				run_solver(solver,bair_car_data,1000,flip)
-			t_end()
-			#except KeyboardInterrupt:
-			#    print 'Interrupted'
+			run_solver(solver,bair_car_data,3000)
 		except Exception as e:
 			print "train loop ***************************************"
 			print e.message, e.args
 			print "***************************************"
 
 
-"""
-except KeyboardInterrupt:
-        print 'Interrupted'
-"""
 

@@ -283,19 +283,20 @@ class Bag_Folder:
         if not hasattr(self, 'timestamp_num'):
             self.timestamp_num = lambda: None
             setattr(self,'timestamp_num', 0)
-        if step == 0:
-            self.timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+        #if step == 0:
+        #    self.timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
         timestamp = self.data['good_start_timestamps'][self.timestamp_num]
         
-        if False:
+        if step == 0:
             if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
-                timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+                self.timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
             elif len(self.binned_timestamp_nums[0]) > 0:
-                timestamp_num = random.choice(self.binned_timestamp_nums[0])
+                self.timestamp_num = random.choice(self.binned_timestamp_nums[0])
             elif len(self.binned_timestamp_nums[1]) > 0:
-                timestamp_num = random.choice(self.binned_timestamp_nums[1])
+                self.timestamp_num = random.choice(self.binned_timestamp_nums[1])
             else:
                 assert(False) #return None
+        timestamp = self.data['good_start_timestamps'][self.timestamp_num]
 
         
         raw_start_index = self.good_timestamps_to_raw_timestamps_indicies__dic[timestamp] + step
@@ -581,7 +582,7 @@ class Bair_Car_Data:
         t0 = time.time()
         
         while True:
-            if np.random.random() > 0.98:
+            if np.random.random() > 0.00:
                 self.current_bag_folder = random.choice(self.bag_folders_weighted)
                 #print "Bair_Car_Data::get_data, self.current_bag_folder = "+self.current_bag_folder
             #rc = random.choice(self.bag_folders_with_loaded_images_list)
@@ -589,7 +590,7 @@ class Bair_Car_Data:
             BF.incremental_index = np.random.randint(0,len(BF.data['good_start_timestamps']))
             data = BF.get_data(topics,num_topic_steps,num_image_steps,self.step)
             self.step += 1
-            if self.step >= 30:
+            if self.step >= 1:
                 self.step = 0
 
             if data != 'end_of_bag_folder_reached':

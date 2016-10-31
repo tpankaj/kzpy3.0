@@ -36,7 +36,9 @@ def kzpy_vis_test():
     plt.hist(np.random.randn(10000),bins=100)
     True
 
-
+def hist(data):
+    plt.hist(data,bins=100)
+    pass
 
 # - These allow for real-time display updating
 from cStringIO import StringIO

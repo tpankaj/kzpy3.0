@@ -9,7 +9,8 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 
 
-
+loss_timer = time.time()
+loss = []
 
 
 def setup_solver():
@@ -30,8 +31,8 @@ def load_data_into_model(solver,data,flip):
 		return False
 	if 'left' in data:
 		if type(data['left'][0]) == np.ndarray:
-			target_data = list(data['steer'])
-			target_data += list(data['motor'])
+			target_data = list(data['steer']-data['steer'][0])
+			target_data += list(data['motor']-data['motor'][0])
 
 
 
@@ -48,9 +49,9 @@ def load_data_into_model(solver,data,flip):
 				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = scipy.fliplr(data['right'][1][:,:]/255.0-.5)
 				for i in range(len(target_data)/2):
 					t = target_data[i]
-					t = t - 49
+					#t = t - 49
 					t = -t
-					t = t + 49
+					#t = t + 49
 					target_data[i] = t
 
 			Direct = 0.
@@ -62,19 +63,27 @@ def load_data_into_model(solver,data,flip):
 			#print data['bag_filename']
 			
 			if 'follow' in data['path']:
-				Follow = 1.0
-			if 'direct' in data['path']:
-				Direct = 1.0
-			if 'play' in data['path']:
-				Play = 1.0
-			if 'furtive' in data['path']:
-				Furtive = 1.0
-			if 'caffe' in data['path']:
-				Caf = 1.0
+				if 'direct' in data['path']:
+					Direct = -1.0
+				if 'play' in data['path']:
+					Play = -1.0
+				if 'furtive' in data['path']:
+					Furtive = -1.0
+				if 'caffe' in data['path']:
+					Caf = -1.0
+			else:
+				if 'direct' in data['path']:
+					Direct = 1.0
+				if 'play' in data['path']:
+					Play = 1.0
+				if 'furtive' in data['path']:
+					Furtive = 1.0
+				if 'caffe' in data['path']:
+					Caf = 1.0
 			
-			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = Caf #0#target_data[len(target_data)/2]/99. #current motor
-			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
+			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]/99. #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,2,:,:] = Caf
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
 			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
@@ -93,13 +102,8 @@ def load_data_into_model(solver,data,flip):
 	else:
 		pass #print """not if 'left' in data: """+str(time.time())
 		return 'no data'
-
 	#show_solver_data(solver,data,flip)
-
 	return True
-
-
-
 
 
 
@@ -147,28 +151,11 @@ def show_solver_data(solver,data,flip):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# 
-#
-loss_timer = time.time()
-loss = []
 def run_solver(solver, bair_car_data, num_steps,flip):
 	global img
 	global loss
 	#if time.time() - loss_timer > 60*15:
 	#	save_obj(loss,opjD('z2_2nd_pass','loss'))
-
 	step_ctr = 0
 	ctr = 0
 	if True: #try:
@@ -179,7 +166,14 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 				imshow = True
 			if np.mod(ctr,1010) == 0:
 				datashow = True
-			result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,10),flip)
+
+
+			bf = random.choice(bair_car_data.bag_folders_weighted)
+			BF = bair_car_data.bag_folders_dic[bf]
+			indx,steer = BF.get_random_steer_equal_weighting()
+			data = BF.get_data(good_start_index=indx)
+			result = load_data_into_model(solver, data,flip)
+			#result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,10),flip)
 			if result == False:
 				break
 			if result == True:
@@ -224,7 +218,7 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 def array_to_int_list(a):
 	l = []
 	for d in a:
-		l.append(int(d*100))
+		l.append(int(d*1000))
 	return l
 
 
@@ -236,11 +230,12 @@ bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data
 assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
 
 list0 = []
-list1 = ['play','follow','furtive']
+list1 = ['play','follow','furtive','caffe','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
 list2 = ['Tilden','play','follow','furtive','play','follow','furtive','caffe','local','Aug','Sep']
+list3 = ['follow','furtive','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
 
 
-bair_car_data = Bair_Car_Data(bair_car_data_path,list1)
+bair_car_data = Bair_Car_Data(bair_car_data_path,list3)
 #unix('mkdir -p '+opjD('z2_2nd_pass'))
 #bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
 

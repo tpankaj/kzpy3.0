@@ -167,3 +167,53 @@ mi(d['right'][1],n,[2,2,3],do_clf=False)
 mi(d['right'][0],n,[2,2,1],do_clf=False)
 
 
+
+
+
+
+from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
+path = '/home/karlzipser/Desktop/bair_car_data_min/play_Nino_to_campus_08Oct16_09h00m00s_Mr_Blue_1c'
+list0 = []
+list1 = ['play','follow','furtive','caffe','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
+#list2 = ['Tilden','play','follow','furtive','play','follow','furtive','caffe','local','Aug','Sep']
+list3 = ['direct','caffe','play','follow']
+bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
+bair_car_data = Bair_Car_Data(bair_car_data_path,list3)
+
+
+
+bf = random.choice(bair_car_data.bag_folders_weighted)
+BF = bair_car_data.bag_folders_dic[bf]
+BF.path
+show_data_dic_sequence(BF)
+
+
+
+	self.steer_angle_dic = {}
+	for i in range(len(self.data['steer'])):
+		steer = self.data['steer'][i]
+		steer = int(steer)
+		if steer < 0:
+			steer = 0
+		if steer > 99:
+			steer = 99
+		if not steer in self.steer_angle_dic:
+			self.steer_angle_dic[steer] = []
+		self.steer_angle_dic[steer].append(i)
+ 
+
+
+	def get_random_steer_equal_weighting(self):
+		indx = -99
+		steer = np.random.randint(0,100)
+		if steer in steer_angle_dic:
+			indx = random.choice(steer_angle_dic[steer])
+			break
+		assert(indx >= 0)
+		return indx
+
+from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
+bair_car_data_path = opjD('bair_car_data_min')
+bair_car_data = Bair_Car_Data_temp(bair_car_data_path,[])
+
+
