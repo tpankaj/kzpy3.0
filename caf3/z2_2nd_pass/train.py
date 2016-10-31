@@ -81,8 +81,8 @@ def load_data_into_model(solver,data,flip):
 				if 'caffe' in data['path']:
 					Caf = 1.0
 			
-			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]#/99. #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]#/99. #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Caf
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
