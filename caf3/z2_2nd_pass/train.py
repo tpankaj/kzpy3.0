@@ -31,22 +31,27 @@ def load_data_into_model(solver,data,flip):
 		return False
 	if 'left' in data:
 		if type(data['left'][0]) == np.ndarray:
-			target_data = list(data['steer']-data['steer'][0])
-			target_data += list(data['motor']-data['motor'][0])
-
+			target_data = list(100*(data['steer']-data['steer'][0]))
+			target_data += list(500*(data['motor']-data['motor'][0]))
+			target_data[0] = data['steer'][0]-49
+			target_data[10] = data['motor'][0]-49
 
 
 			if not flip:
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
 				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
-				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]/255.0-.5
-				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['left'][2][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][0][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2'].data[0,4,:,:] = data['right'][1][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = data['right'][2][:,:]/255.0-.5
 
 			else: # flip left-right
 				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = scipy.fliplr(data['left'][0][:,:]/255.0-.5)
 				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = scipy.fliplr(data['left'][1][:,:]/255.0-.5)
-				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = scipy.fliplr(data['right'][0][:,:]/255.0-.5)
-				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = scipy.fliplr(data['right'][1][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = scipy.fliplr(data['left'][2][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = scipy.fliplr(data['right'][0][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2'].data[0,4,:,:] = scipy.fliplr(data['right'][1][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = scipy.fliplr(data['right'][2][:,:]/255.0-.5)
 				for i in range(len(target_data)/2):
 					t = target_data[i]
 					#t = t - 49
@@ -81,8 +86,8 @@ def load_data_into_model(solver,data,flip):
 				if 'caffe' in data['path']:
 					Caf = 1.0
 			
-			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0] #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2] #current motor
 			solver.net.blobs['metadata'].data[0,2,:,:] = Caf
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
@@ -171,7 +176,7 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 			bf = random.choice(bair_car_data.bag_folders_weighted)
 			BF = bair_car_data.bag_folders_dic[bf]
 			indx,steer = BF.get_random_steer_equal_weighting()
-			data = BF.get_data(good_start_index=indx)
+			data = BF.get_data(num_image_steps=3,good_start_index=indx)
 			result = load_data_into_model(solver, data,flip)
 			#result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,10),flip)
 			if result == False:

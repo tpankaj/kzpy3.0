@@ -387,7 +387,7 @@ class Bair_Car_Data_temp:
 class Bair_Car_Data:
     """ """
     def __init__(self, path, to_ignore=[], NUM_STATE_ONE_STEPS=10):
-        self.bag_folders_with_loaded_images = {}
+        #self.bag_folders_with_loaded_images = {}
         self.bag_folders_dic = {}
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         bag_folder_paths_dic = {}
@@ -401,29 +401,35 @@ class Bair_Car_Data:
         for b in bag_folder_paths_dic.keys():
             if bag_folder_paths_dic[b]:
                 temp.append(b)
-        bag_folder_paths = temp
+        self.bag_folder_paths = temp
+
+    def load_bag_folders():
         self.bag_folders_weighted = []
+        fs = random.shuffle(self.bag_folders_dic.keys())
+        for i in range(len(fs)/4):
+            del self.bag_folders_dic[fs[i]]
         train_preprocessed_bag_folder_path = opjD('train_preprocessed_bag_folder_path')
         if True:#try:
             unix('mkdir -p '+train_preprocessed_bag_folder_path)
-            for f in bag_folder_paths:
-                m=memory()
-                free_propotion = m['free']/(1.0*m['total'])
-                if free_propotion < 0.15:
-                    break
-                n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
-                m = len(gg(opj(f,'.preprocessed','left*')))
-                if len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
-                    self.bag_folders_dic[f] = load_obj(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))
-                    print "loaded "+opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
-                else:
-                    if n > 0 and m > 0:
-                        self.bag_folders_dic[f] = Bag_Folder(f,NUM_STATE_ONE_STEPS)
-                        bpath = opj(train_preprocessed_bag_folder_path,self.bag_folders_dic[f].path.split('/')[-1]+'.pkl')
-                        if len(gg(bpath)) == 0:
-                            print("saveing "+bpath)
-                            save_obj(self.bag_folders_dic[f],bpath)
-                self.bag_folders_with_loaded_images[f] = True
+            for f in random.shuffle(self.bag_folder_paths):
+                if f not in self.bag_folders_dic.keys():
+                    m=memory()
+                    free_propotion = m['free']/(1.0*m['total'])
+                    if free_propotion < 0.15:
+                        break
+                    n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
+                    m = len(gg(opj(f,'.preprocessed','left*')))
+                    if len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
+                        self.bag_folders_dic[f] = load_obj(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))
+                        print "loaded "+opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
+                    else:
+                        if n > 0 and m > 0:
+                            self.bag_folders_dic[f] = Bag_Folder(f,NUM_STATE_ONE_STEPS)
+                            bpath = opj(train_preprocessed_bag_folder_path,self.bag_folders_dic[f].path.split('/')[-1]+'.pkl')
+                            if len(gg(bpath)) == 0:
+                                print("saveing "+bpath)
+                                save_obj(self.bag_folders_dic[f],bpath)
+                #self.bag_folders_with_loaded_images[f] = True
                 for i in range(max(n/10,1)):
                     self.bag_folders_weighted.append(f)
         if False: #except Exception as e:
