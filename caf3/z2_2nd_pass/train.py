@@ -1,17 +1,19 @@
 #! /usr/bin/python
 #//anaconda/bin/python
-
+#
 import caffe
+caffe.set_device(0)
+caffe.set_mode_gpu()
 from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files8 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
+import os, serial, threading, Queue
+import threading
 
-
-
-loss_timer = time.time()
-loss = []
-
+img = zeros((94,168,3))
+DO_LOADING = False
+QUIT = False
 
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
@@ -22,8 +24,6 @@ def setup_solver():
 	return solver
 
 
-
-img = zeros((94,168,3)
 def load_data_into_model(solver,data,flip):
 	global img
 	if data == 'END' :
@@ -31,8 +31,8 @@ def load_data_into_model(solver,data,flip):
 		return False
 	if 'left' in data:
 		if type(data['left'][0]) == np.ndarray:
-			target_data = list(100*(data['steer']-data['steer'][0]))
-			target_data += list(500*(data['motor']-data['motor'][0]))
+			target_data = list(10*(data['steer']-data['steer'][0]))
+			target_data += list(30*(data['motor']-data['motor'][0]))
 			target_data[0] = data['steer'][0]-49
 			target_data[10] = data['motor'][0]-49
 
@@ -81,33 +81,29 @@ def load_data_into_model(solver,data,flip):
 				if 'caffe' in data['path']:
 					Caf = 1.0
 			
-<<<<<<< HEAD
-			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0]#/99. #current steer
-			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2]#/99. #current motor
-=======
+
+
 			solver.net.blobs['metadata'].data[0,0,:,:] = target_data[0] #current steer
 			solver.net.blobs['metadata'].data[0,1,:,:] = target_data[len(target_data)/2] #current motor
->>>>>>> f924c475902b86f00a8f08f63f16484bd83d44e3
+
 			solver.net.blobs['metadata'].data[0,2,:,:] = Caf
 			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 			solver.net.blobs['metadata'].data[0,4,:,:] = Play
 			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 
 			for i in range(len(target_data)):
-				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]/99.
+				solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]
 
 		else:
 			print """not if type(data['left']) == np.ndarray: """+str(time.time())
 	else:
 		pass #print """not if 'left' in data: """+str(time.time())
 		return 'no data'
-	#show_solver_data(solver,data,flip)
+	#show_solver_data(solver,data,flip,49.,1.)
 	return True
 
 
-
-
-def show_solver_data(solver,data,flip):
+def show_solver_data(solver,data,flip,steer_offset,steer_mult):
 	caffe_steer_color_color = [1.,0,0]
 	human_steer_color_color = [0,0,1.]
 
@@ -119,7 +115,7 @@ def show_solver_data(solver,data,flip):
 	img[0,1,:]=0
 	mi(img)
 	plt.pause(0.5)
-	for i in range(10):#num_frames):
+	for i in range(num_frames):
 		#print i
 		#if i > 0:
 		#    img_prev = img.copy()
@@ -141,18 +137,19 @@ def show_solver_data(solver,data,flip):
 		else:
 			steer_rect_color = human_steer_color_color
 
-		steer = 99*solver.net.blobs['steer_motor_target_data'].data[0,0]
+		steer = 99*solver.net.blobs['steer_motor_target_data'].data[0,0] * steer_mult + steer_offset
 		apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 
 		mi(img,img_title=d2s(flip,i))#,img_title=(d2s('dt = ', int(1000*dt),'ms')))
 		#print solver.net.blobs['steer_motor_target_data'].data
 		plt.pause(0.25)
 
-
+bf_dic = {}
 
 def run_solver(solver, bair_car_data, num_steps,flip):
 	global img
 	global loss
+	global bf_dic
 	#if time.time() - loss_timer > 60*15:
 	#	save_obj(loss,opjD('z2_2nd_pass','loss'))
 	step_ctr = 0
@@ -161,15 +158,33 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 		while step_ctr < num_steps:
 			imshow = False
 			datashow = False
-			if np.mod(ctr,100) == 0:
+			if np.mod(ctr,200) == 0:
 				imshow = True
-			if np.mod(ctr,1010) == 0:
+			if np.mod(ctr,2010) == 0:
 				datashow = True
 
+			if hasattr(bair_car_data,'bag_folders_weighted'):
+				if len(bair_car_data.bag_folders_weighted) == 0:
+					print("run_solver:: waiting because len(bair_car_data.bag_folders_weighted) == 0")
+					time.sleep(3)
+					continue
+			else:
+				print("run_solver:: waiting because bair_car_data has no bag_folders_weighted")
+				time.sleep(3)
+				continue
 
 			bf = random.choice(bair_car_data.bag_folders_weighted)
+			if not bf in bf_dic:
+				bf_dic[bf] = 0
+			bf_dic[bf] += 1
+			#print bf,len(bf_dic)
+			#time.sleep(0.5)
+
 			BF = bair_car_data.bag_folders_dic[bf]
-			indx,steer = BF.get_random_steer_equal_weighting()
+			if np.random.random() > 0.5:
+				indx,steer = BF.get_random_steer_equal_weighting()
+			else:
+				indx,motor = BF.get_random_motor_equal_weighting()
 			data = BF.get_data(num_image_steps=3,good_start_index=indx)
 			result = load_data_into_model(solver, data,flip)
 			#result = load_data_into_model(solver, bair_car_data.get_data(['steer','motor'],10,10),flip)
@@ -203,10 +218,10 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 			
 
 				if datashow:
-					print (ctr,np.array(loss[-1000:]).mean())
-					print(solver.net.blobs['metadata'].data[0,:,5,5])
-					print array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
-					print array_to_int_list(solver.net.blobs['ip2'].data[0,:][:])
+					cprint(d2s("\t\tmean loss=",np.array(loss[-1000:]).mean()),'magenta')
+					cprint(solver.net.blobs['metadata'].data[0,:,5,5],'red')
+					print array_to_dp_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
+					print array_to_dp_list(solver.net.blobs['ip2'].data[0,:][:])
 			step_ctr += 1
 	#except Exception as e:
 	#	print "train ***************************************"
@@ -214,47 +229,30 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 	#	print "***************************************"
 
 
-def array_to_int_list(a):
+def array_to_dp_list(a,n=0):
 	l = []
 	for d in a:
-		l.append(int(d*1000))
+		l.append(dp(d,n))
 	return l
 
 
-#['play','follow','furtive']
+def quit_thread():
+	global QUIT
+	QUIT = True
 
-
-#if __name__ == '__main__':
-bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
-assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
-
-list0 = []
-list1 = ['play','follow','furtive','caffe','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
-list2 = ['Tilden','play','follow','furtive','play','follow','furtive','caffe','local','Aug','Sep']
-list3 = ['follow','furtive','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
-
-
-bair_car_data = Bair_Car_Data(bair_car_data_path,list3)
-#unix('mkdir -p '+opjD('z2_2nd_pass'))
-#bair_car_data = Bair_Car_Data('/home/karlzipser/Desktop/bair_car_data_min/',1000,100)
-
-
-caffe.set_device(0)
-caffe.set_mode_gpu()
-
-solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
-solver = setup_solver()
-
-
-weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
-if weights_file_path == "None":
-	weights_file_path = None
-if weights_file_path != None:
-	print "loading " + weights_file_path
-	solver.net.copy_from(weights_file_path)
-	
-
-
+def load_bag_folders_thread():
+	global DO_LOADING
+	global QUIT
+	while True:
+		if QUIT:
+			cprint("load_bag_folders_thread:: QUIT == True",'black','on_green')
+			return
+		if DO_LOADING == True:
+			print("load_bag_folders_thread:: DO_LOADING == True")
+			DO_LOADING = False
+			bair_car_data.load_bag_folders()
+		else:
+			time.sleep(1)
 
 def main():
 	weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
@@ -264,12 +262,9 @@ def main():
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	while True:
-		try:
-			t_start()
-			bair_car_data.load_bag_folder_images(3400)
-			t_end()
-			t_start()
-
+		if True:#try:
+			bair_car_data.load_bag_folders(num_to_load=4)
+			pprint(bf_dic)
 			for i in range(150):
 				if np.random.random() > 0.5:
 					flip = False
@@ -279,14 +274,39 @@ def main():
 			t_end()
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'
-		except Exception as e:
+		else:#except Exception as e:
 			print "train loop ***************************************"
 			print e.message, e.args
 			print "***************************************"
 
 
-"""
-except KeyboardInterrupt:
-        print 'Interrupted'
-"""
+ 
 
+
+
+loss_timer = time.time()
+loss = []
+
+bair_car_data_path = opjD('bair_car_data_min')#'/media/ExtraDrive1/bair_car_data_min'
+assert(len(gg(opj(bair_car_data_path,'*'))) > 5)
+
+list0 = []
+list1 = ['play','follow','furtive','caffe','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37','Aug','Sep']
+list2 = ['Oct','Tilden','play','follow','furtive','play','follow','furtive','caffe','local','Aug','Sep']
+list3 = ['follow','furtive','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
+
+bair_car_data = Bair_Car_Data(bair_car_data_path,list0)
+unix('mkdir -p '+opjD('z2_2nd_pass'))
+
+solver_file_path = opjh("kzpy3/caf3/z2_2nd_pass/solver.prototxt")
+solver = setup_solver()
+
+if False:
+	weights_file_path = most_recent_file_in_folder(opjD('z2_2nd_pass'),['z2_2nd_pass','caffemodel']) 
+	if weights_file_path == "None":
+		weights_file_path = None
+	if weights_file_path != None:
+		print "loading " + weights_file_path
+		solver.net.copy_from(weights_file_path)
+	
+#threading.Thread(target=load_bag_folders_thread).start()
