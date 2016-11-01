@@ -437,12 +437,14 @@ class Bair_Car_Data:
         self.bag_folder_paths = temp
 
     def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
+        cprint("Bair_Car_Data::load_bag_folders",'red','on_yellow')
         self.bag_folders_weighted = []
         m=memory()
         free_propotion = m['free']/(1.0*m['total'])
-        if free_propotion > 0.8:
-            fs = random.shuffle(self.bag_folders_dic.keys())
+        if free_propotion < 0.20:
+            fs = self.bag_folders_dic.keys()
             if not fs == None:
+                random.shuffle(fs)
                 for i in range(len(fs)/4):
                     print("Bair_Car_Data::load_bag_folders, unloading ",self.bag_folders_dic[fs[i]])
                     del self.bag_folders_dic[fs[i]]
@@ -485,6 +487,65 @@ class Bair_Car_Data:
             print e.message, e.args
 
 
+
+
+def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
+    cprint("load_bag_folders",'red','on_yellow')
+    self.bag_folders_weighted = []
+
+    while True:
+        total_num_bag_files = 0
+        fs = self.bag_folders_dic.keys()
+        for bf in fs:
+            BF = self.bag_folders_dic[bf]
+            total_num_bag_files += len(BF.files)
+        if total_num_bag_files > 3400:
+            f = fs[np.random.randing(len(fs))]
+            print("load_bag_folders, unloading "+f)
+            del self.bag_folders_dic[f]
+        else:
+            break
+
+    train_preprocessed_bag_folder_path = opjD('train_preprocessed_bag_folder_path')
+    ctr = 0
+    if True:#try:
+        unix('mkdir -p '+train_preprocessed_bag_folder_path)
+        random.shuffle(self.bag_folder_paths)
+        for f in self.bag_folder_paths:               
+            if f not in self.bag_folders_dic.keys():
+                total_num_bag_files = 0
+                fs = self.bag_folders_dic.keys()
+                for bf in fs:
+                    BF = self.bag_folders_dic[bf]
+                    total_num_bag_files += len(BF.files)
+                if total_num_bag_files > 3400:
+                    break
+
+                if train_preprocessed_only and len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
+                    self.bag_folders_dic[f] = load_obj(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))
+                    print "loaded "+opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
+                elif not train_preprocessed_only:
+                    if n > 0 and m > 0:
+                        self.bag_folders_dic[f] = Bag_Folder(f,self.NUM_STATE_ONE_STEPS)
+                        bpath = opj(train_preprocessed_bag_folder_path,self.bag_folders_dic[f].path.split('/')[-1]+'.pkl')
+                        if len(gg(bpath)) == 0:
+                            print("saveing "+bpath)
+                            save_obj(self.bag_folders_dic[f],bpath)
+                else:
+                    continue
+                ctr += 1
+                if ctr >= num_to_load:
+                    break
+            #self.bag_folders_with_loaded_images[f] = True
+        for f in self.bag_folders_dic.keys():
+            n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
+            m = len(gg(opj(f,'.preprocessed','left*'))) 
+            for i in range(max(n/10,1)):
+                self.bag_folders_weighted.append(f)
+
+    if False: #except Exception as e:
+        cprint("Bair_Car_Data::__init__ ********** Exception ******* with "+f,'red')
+        print e.message, e.args
 
 
 
