@@ -173,14 +173,14 @@ my_position = (np.random.random(2)-0.5)/4.0
 my_heading = 90
 
 pts = []
-for i in range(20000):
+for i in range(2000):
 	a = np.random.random()
 	p = 2*np.random.random(2) - 1
 	if distance(p,(0,0))>a**0.05:
 		pts.append(p)
 		if len(pts) > 150:
 			break
-for i in range(100):
+for i in range(10):
 	p = 2*np.random.random(2) - 1
 	pts.append(p)
 
@@ -272,9 +272,9 @@ while distance(my_position,(0,0)) < 1.415:
 	for i in range(len(dist_sorted)-1,0,-1): #s in dist_sorted:
 		s = dist_sorted[i]
 		rp = rpts_rot[s[0]]
-		if rp[1] > -3 and rp[1] < 3 and rp[0] < -0.1: 
-			picture(ar(rp),w)
-	mi(img,2)
+		if rp[0] > -3 and rp[0] < 3 and rp[1] < -0.1: 
+			picture(ar([rp[1],rp[0]]),w)
+	mi(img,2,img_title=d2s(img.max()))
 
 	plt.pause(0.000133)
 
