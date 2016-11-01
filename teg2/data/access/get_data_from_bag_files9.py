@@ -2,7 +2,7 @@
 from kzpy3.vis import *
 import cv2
 
-
+#
 class Bag_Folder:
     def __init__(self, path, NUM_STATE_ONE_STEPS=10):
         self.path = path
@@ -204,8 +204,27 @@ class Bag_Folder:
                 self.steer_angle_dic[steer] = []
             self.steer_angle_dic[steer].append(i)
 
+        self.motor_level_dic = {}
+        self.make_motor_level_dic()
+
         cprint(d2s("Bag_Folder::__init__, good_start_timestamps =",len(self.data['good_start_timestamps']),"out of",len(self.data['raw_timestamps']),"raw_timestamps, i.e.",int(100*len(self.data['good_start_timestamps'])/(1.0*len(self.data['raw_timestamps']))),"%"))
 
+
+    def make_motor_level_dic(self):
+        for i in range(len(self.data['good_start_timestamps'])):
+            good_timestamp = self.data['good_start_timestamps'][i]
+            raw_timestamp = self.good_timestamps_to_raw_timestamps_indicies__dic[good_timestamp]
+            motor = self.data['motor'][raw_timestamp]
+            motor = int(motor)
+            if motor < 0:
+                motor = 0
+            if motor > 99:
+                motor = 99
+            if not motor in self.motor_level_dic:
+                self.motor_level_dic[motor] = []
+            self.motor_level_dic[motor].append(i)
+        print("Bag_Folder::make_motor_level_dic, done.")
+        time.sleep(2)
 
     def is_timestamp_valid_data(self,t):
         valid = True
@@ -282,6 +301,19 @@ class Bag_Folder:
                 break
         assert(indx >= 0)
         return indx,steer
+
+    def get_random_motor_equal_weighting(self):
+        #print("Bag_Folder::get_random_motor_equal_weighting")
+        if len(self.motor_level_dic) == 0:
+            self.make_motor_level_dic() 
+        indx = -99
+        while True:
+            motor = np.random.randint(51,100)
+            if motor in self.motor_level_dic:
+                indx = random.choice(self.motor_level_dic[motor])
+                break
+        assert(indx >= 0)
+        return indx,motor
 
 
     def get_data(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2,good_start_index=0):
@@ -389,6 +421,7 @@ class Bair_Car_Data:
     def __init__(self, path, to_ignore=[], NUM_STATE_ONE_STEPS=10):
         #self.bag_folders_with_loaded_images = {}
         self.bag_folders_dic = {}
+        self.NUM_STATE_ONE_STEPS = NUM_STATE_ONE_STEPS
         bag_folder_paths = sorted(glob.glob(opj(path,'*')))
         bag_folder_paths_dic = {}
         for b in bag_folder_paths:
@@ -403,35 +436,50 @@ class Bair_Car_Data:
                 temp.append(b)
         self.bag_folder_paths = temp
 
-    def load_bag_folders():
+    def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
         self.bag_folders_weighted = []
-        fs = random.shuffle(self.bag_folders_dic.keys())
-        for i in range(len(fs)/4):
-            del self.bag_folders_dic[fs[i]]
+        m=memory()
+        free_propotion = m['free']/(1.0*m['total'])
+        if free_propotion > 0.8:
+            fs = random.shuffle(self.bag_folders_dic.keys())
+            if not fs == None:
+                for i in range(len(fs)/4):
+                    print("Bair_Car_Data::load_bag_folders, unloading ",self.bag_folders_dic[fs[i]])
+                    del self.bag_folders_dic[fs[i]]
         train_preprocessed_bag_folder_path = opjD('train_preprocessed_bag_folder_path')
+        ctr = 0
         if True:#try:
             unix('mkdir -p '+train_preprocessed_bag_folder_path)
-            for f in random.shuffle(self.bag_folder_paths):
+            random.shuffle(self.bag_folder_paths)
+            for f in self.bag_folder_paths:               
                 if f not in self.bag_folders_dic.keys():
                     m=memory()
                     free_propotion = m['free']/(1.0*m['total'])
                     if free_propotion < 0.15:
                         break
-                    n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
-                    m = len(gg(opj(f,'.preprocessed','left*')))
-                    if len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
+
+                    if train_preprocessed_only and len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
                         self.bag_folders_dic[f] = load_obj(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))
                         print "loaded "+opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl')
-                    else:
+                    elif not train_preprocessed_only:
                         if n > 0 and m > 0:
-                            self.bag_folders_dic[f] = Bag_Folder(f,NUM_STATE_ONE_STEPS)
+                            self.bag_folders_dic[f] = Bag_Folder(f,self.NUM_STATE_ONE_STEPS)
                             bpath = opj(train_preprocessed_bag_folder_path,self.bag_folders_dic[f].path.split('/')[-1]+'.pkl')
                             if len(gg(bpath)) == 0:
                                 print("saveing "+bpath)
                                 save_obj(self.bag_folders_dic[f],bpath)
+                    else:
+                        continue
+                    ctr += 1
+                    if ctr >= num_to_load:
+                        break
                 #self.bag_folders_with_loaded_images[f] = True
+            for f in self.bag_folders_dic.keys():
+                n = len(gg(opj(f,'.preprocessed','*.bag.pkl')))
+                m = len(gg(opj(f,'.preprocessed','left*'))) 
                 for i in range(max(n/10,1)):
                     self.bag_folders_weighted.append(f)
+
         if False: #except Exception as e:
             cprint("Bair_Car_Data::__init__ ********** Exception ******* with "+f,'red')
             print e.message, e.args
