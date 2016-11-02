@@ -499,8 +499,8 @@ def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
         for bf in fs:
             BF = self.bag_folders_dic[bf]
             total_num_bag_files += len(BF.files)
-        if total_num_bag_files > 3400:
-            f = fs[np.random.randing(len(fs))]
+        if total_num_bag_files > 2800:
+            f = fs[np.random.randint(len(fs))]
             print("load_bag_folders, unloading "+f)
             del self.bag_folders_dic[f]
         else:

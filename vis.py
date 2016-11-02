@@ -40,17 +40,20 @@ def hist(data):
     plt.hist(data,bins=100)
     pass
 
-# - These allow for real-time display updating
-from cStringIO import StringIO
-import scipy.ndimage as nd
-import PIL.Image
-if MacOSX:
-    from IPython.display import clear_output, Image, display
-def showarray(a, fmt='jpeg'):
-    a = np.uint8(np.clip(255.0*z2o(a), 0, 255))
-    f = StringIO()
-    PIL.Image.fromarray(a).save(f, fmt)
-    display(Image(data=f.getvalue()))
+try:
+    # - These allow for real-time display updating
+    from cStringIO import StringIO
+    import scipy.ndimage as nd
+    import PIL.Image
+    if MacOSX:
+        from IPython.display import clear_output, Image, display
+    def showarray(a, fmt='jpeg'):
+        a = np.uint8(np.clip(255.0*z2o(a), 0, 255))
+        f = StringIO()
+        PIL.Image.fromarray(a).save(f, fmt)
+        display(Image(data=f.getvalue()))
+except:
+    PIL image display not imported.
 
 def toolbar():
     plt.rcParams['toolbar'] = 'toolbar2'
