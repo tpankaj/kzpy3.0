@@ -67,8 +67,8 @@ GPS2_long_orig = -122.27844238
 
 while not rospy.is_shutdown():
 	plt.figure(1)
-	plt.xlim(GPS2_long_orig-0.002,GPS2_long_orig+0.002)
-	plt.ylim(GPS2_lat_orig-0.002,GPS2_lat_orig+0.002)
+	plt.xlim(GPS2_long_orig-0.022,GPS2_long_orig+0.022)
+	plt.ylim(GPS2_lat_orig-0.022,GPS2_lat_orig+0.022)
 	try:
 		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
 		if GPS2_lat > -999:

@@ -53,7 +53,7 @@ try:
         PIL.Image.fromarray(a).save(f, fmt)
         display(Image(data=f.getvalue()))
 except:
-    PIL image display not imported.
+    print("kzpy3.vis: PIL image display not imported.")
 
 def toolbar():
     plt.rcParams['toolbar'] = 'toolbar2'
