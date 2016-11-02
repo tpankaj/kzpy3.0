@@ -2,6 +2,8 @@
 from kzpy3.vis import *
 import cv2
 
+good_start_timestamp_indicies_test_results = load_obj(opjD('good_start_timestamp_indicies_test_results'))
+
 #
 class Bag_Folder:
     def __init__(self, path, NUM_STATE_ONE_STEPS=10):
@@ -204,8 +206,11 @@ class Bag_Folder:
                 self.steer_angle_dic[steer] = []
             self.steer_angle_dic[steer].append(i)
 
+
         self.motor_level_dic = {}
         self.make_motor_level_dic()
+        #self.loss_indicies_dic = {}
+        self.make_loss_indicies_dic()
 
         cprint(d2s("Bag_Folder::__init__, good_start_timestamps =",len(self.data['good_start_timestamps']),"out of",len(self.data['raw_timestamps']),"raw_timestamps, i.e.",int(100*len(self.data['good_start_timestamps'])/(1.0*len(self.data['raw_timestamps']))),"%"))
 
@@ -225,6 +230,8 @@ class Bag_Folder:
             self.motor_level_dic[motor].append(i)
         print("Bag_Folder::make_motor_level_dic, done.")
         time.sleep(2)
+
+
 
     def is_timestamp_valid_data(self,t):
         valid = True
@@ -295,7 +302,11 @@ class Bag_Folder:
     def get_random_steer_equal_weighting(self):
         indx = -99
         while True:
-            steer = np.random.randint(0,100)
+            if 'caffe' in self.path:
+                steer = np.random.randint(1,99) # to compensate for a problem with human-caffe interaction
+            else:
+                steer = np.random.randint(0,100)
+
             if steer in self.steer_angle_dic:
                 indx = random.choice(self.steer_angle_dic[steer])
                 break
@@ -314,6 +325,8 @@ class Bag_Folder:
                 break
         assert(indx >= 0)
         return indx,motor
+
+
 
 
     def get_data(self,topics=['state','steer','motor'],num_topic_steps=10,num_image_steps=2,good_start_index=0):
@@ -352,16 +365,73 @@ class Bag_Folder:
 
 
 
+def make_loss_indicies_dic(self):
+    global good_start_timestamp_indicies_test_results
+    self.data['loss_indicies_dic'] = {}
+    a = good_start_timestamp_indicies_test_results[self.path]
+    l = a['loss']
+    l = np.array(l)
+    l[l<0] = 0
+    for i in range(len(l)):
+        m = l[i]
+        m *= 100
+        m = to_range(m,0,60)
+        m = int(m)
+        if not m in self.data['loss_indicies_dic']:
+            self.data['loss_indicies_dic'][m] = []
+        self.data['loss_indicies_dic'][m].append(i)
 
 
 
 
+def get_random_turn_with_high_loss_equal_weighting(self):
+    if 'loss_indicies_dic' not in self.data:
+        self.data['loss_indicies_dic'] = {}
+    if len(self.data['loss_indicies_dic']) == 0:
+        make_loss_indicies_dic(self) 
+    j = -99
+    ctr = 0
+    while True:
+        i = np.random.randint(23,61)
+        if i in self.data['loss_indicies_dic']:
+            j = random.choice(self.data['loss_indicies_dic'][i])
+            good_timestamp = self.data['good_start_timestamps'][j]
+            raw_index = self.good_timestamps_to_raw_timestamps_indicies__dic[good_timestamp]
+            s = self.data['steer'][raw_index]
+            if in_range(s,49-9,49+9):
+                continue
+            if 'caffe' in self.path:
+                if not in_range(s,1,98):
+                    continue
+            break
+        ctr += 1
+        if ctr > 1000:
+            print self.path
+            assert(ctr<1000)
+    assert(j >= 0)
+    return j,s
 
 
-
-
-
-
+"""
+loss_level = []
+steer = []
+for i in range(15,61):
+    if i in BF.data['loss_indicies_dic']:
+        for j in BF.data['loss_indicies_dic'][i]:
+            
+            good_timestamp = BF.data['good_start_timestamps'][j]
+            raw_index = BF.good_timestamps_to_raw_timestamps_indicies__dic[good_timestamp]
+            s = BF.data['steer'][raw_index]
+            if 'caffe' in BF.path:
+                if not in_range(s,1,98):
+                    continue
+                if not in_range(s,49-9,49+9):
+                    loss_level.append(i)
+                    if s < 49:
+                        s = 49 + 49-s
+                    steer.append(s)
+plt.plot(steer,loss_level,'o')
+"""
 
 
 

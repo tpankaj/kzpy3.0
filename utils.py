@@ -529,3 +529,25 @@ def t_start():
 def t_end():
     print(time.time()-t__0)
 
+
+def fn(path):
+    """
+    get filename part of path
+    """
+    return path.split('/')[-1]
+
+def na(lst):
+    return np.array(lst)
+
+def to_range(e,a,b):
+    if e < a:
+        return a
+    if e > b:
+        return b
+    return e
+
+def in_range(e,a,b):
+    if e >= a:
+        if e <= b:
+            return True
+    return False

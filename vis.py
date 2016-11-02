@@ -2,6 +2,8 @@ from kzpy3.utils import *
 
 import matplotlib
 
+
+
 MacOSX = False
 if '/Users/' in home_path:
     MacOSX = True
@@ -18,6 +20,7 @@ from kzpy3.vis import *; kzpy_vis_test()
 ################
 
 import matplotlib.pyplot as plt  # the Python plotting package
+plt.ion()
 plot = plt.plot
 hist = plt.hist
 figure = plt.figure
@@ -37,6 +40,10 @@ def kzpy_vis_test():
     True
 
 def hist(data):
+    """
+    default hist behavior
+    """
+    plt.clf()
     plt.hist(data,bins=100)
     pass
 
