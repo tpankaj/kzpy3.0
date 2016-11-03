@@ -176,6 +176,7 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 				print("run_solver:: waiting because bair_car_data has no bag_folders_weighted")
 				time.sleep(3)
 				continue
+				/home/karlzipser/Desktop/bair_car_data_min/caffe_z2_play_campus_10Oct16_17h58m02s_Mr_Orange
 			"""
 			while True:
 				bf = random.choice(bair_car_data.bag_folders_weighted)
@@ -192,9 +193,9 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 			BF = bair_car_data.bag_folders_dic[bf]
 			meta_turn_flag = False
 			rnd = np.random.random()
-			if rnd < 1/3.:
+			if rnd < 7/14.:
 				indx,_ = BF.get_random_steer_equal_weighting()
-			elif rnd < 2/3.:
+			elif rnd < 13/14.:
 				indx,_ = BF.get_random_motor_equal_weighting()
 			else:
 				indx,_ = get_random_turn_with_high_loss_equal_weighting(BF)
@@ -286,7 +287,7 @@ def main():
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
 	while True:
-		if True: #try:
+		try:
 			load_bag_folders(bair_car_data,num_to_load=2)
 			#bair_car_data.load_bag_folders(num_to_load=25)
 			pprint(bf_dic)
@@ -299,7 +300,7 @@ def main():
 			t_end()
 			#except KeyboardInterrupt:
 			#    print 'Interrupted'
-		else: #except Exception as e:
+		except Exception as e:
 			print "train loop ***************************************"
 			print e.message, e.args
 			print "***************************************"

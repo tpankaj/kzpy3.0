@@ -569,7 +569,7 @@ def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
         for bf in fs:
             BF = self.bag_folders_dic[bf]
             total_num_bag_files += len(BF.files)
-        if total_num_bag_files > 2800:
+        if total_num_bag_files > 3200:
             f = fs[np.random.randint(len(fs))]
             print("load_bag_folders, unloading "+f)
             del self.bag_folders_dic[f]
@@ -588,7 +588,7 @@ def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
                 for bf in fs:
                     BF = self.bag_folders_dic[bf]
                     total_num_bag_files += len(BF.files)
-                if total_num_bag_files > 3400:
+                if total_num_bag_files > 3600:
                     break
 
                 if train_preprocessed_only and len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
@@ -682,10 +682,9 @@ def show_data_dic(d):
 
 
 
-def show_data_dic_sequence(BF):
-    N = 10
+def show_data_dic_sequence(BF,N,start_indx):
     for i in range(0,len(BF.data['good_start_timestamps']),N):
-        d = BF.get_data(topics=['state','steer','motor'],num_topic_steps=N,num_image_steps=N,good_start_index=i)
+        d = BF.get_data(topics=['state','steer','motor'],num_topic_steps=N,num_image_steps=N,good_start_index=start_indx+i)
         show_data_dic(d)
   
 

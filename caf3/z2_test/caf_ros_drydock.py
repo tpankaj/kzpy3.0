@@ -1,12 +1,28 @@
+"""
+TO RUN:
+First, eed to do this in two separate terminal windows:
+$ roscore
+$ rosbag play /home/YOU/BAG_FOLDER/*.bag
+e.g.,
+$ rosbag play /home/karlzipser/Desktop/bair_car_data_min_disks/bair_car_data_6_min/direct_local_sidewalk_test_data_01Nov16_14h59m31s_Mr_Orange/*.bag
 
+Then, 
+$ python kzpy3/caf3/z2_ttest/caf_ros_drydock.py
+
+########################################################
+
+
+
+
+"""
 
 ########################################################
 #						Caffe
 import caffe
 caffe.set_device(0)
 caffe.set_mode_gpu()
-from kzpy3.utils import *
-from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
+from kzpy3.vis import *
+#from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 import os, serial, threading, Queue
@@ -124,12 +140,6 @@ def left_callback(data):
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
 rospy.Subscriber('/bair_car/state',std_msgs.msg.Int32,state_callback)
-#
-# Need to do this in two separate terminal windows:
-# $ roscore
-# $ rosbag play /home/karlzipser/Desktop/bair_car_data_min_disks/bair_car_data_6_min/direct_local_sidewalk_test_data_01Nov16_14h59m31s_Mr_Orange/*.bag
-#
-########################################################
 
 
 
