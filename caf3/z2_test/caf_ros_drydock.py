@@ -1,6 +1,6 @@
 """
 TO RUN:
-First, eed to do this in two separate terminal windows:
+First, need to do this in two separate terminal windows:
 $ roscore
 $ rosbag play /home/YOU/BAG_FOLDER/*.bag
 e.g.,
