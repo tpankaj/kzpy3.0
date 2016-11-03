@@ -25,9 +25,11 @@ class Arduino:
     #STATE_GPS                           = "gps"
     STATE_GPS                           = "GPS2"
     STATE_GYRO                          = "gyro"
+    STATE_GYRO_HEADING                  = "gyro_heading"
     STATE_ACC                           = "acc"
     SENSOR_STATES = (STATE_GYRO,
-                     STATE_ACC)
+                    STATE_GYRO_HEADING,
+                    STATE_ACC)
     SIGNALS = (STATE_GPS)
 
     def __init__(self, baudrate=115200, timeout=0.25):
@@ -62,6 +64,7 @@ class Arduino:
         self.GPS2_sat_pub = rospy.Publisher('GPS2_sat', std_msgs.msg.Int32, queue_size=100)
 
         self.gyro_pub = rospy.Publisher('gyro', geometry_msgs.msg.Vector3, queue_size=100)
+        self.gyro_heading_pub = rospy.Publisher('gyro_heading', std_msgs.msg.Float32, queue_size=100)
         self.acc_pub = rospy.Publisher('acc', geometry_msgs.msg.Vector3, queue_size=100)
         self.sonar_pub = rospy.Publisher('sonar', std_msgs.msg.Int32, queue_size=100)
         self.signals_pub = rospy.Publisher('left_right', std_msgs.msg.Int32, queue_size=100)
@@ -299,10 +302,10 @@ class Arduino:
                     # dist (int)
                     assert(len(data) == 1)
                     self.sonar_pub.publish(std_msgs.msg.Int32(data[0]))
-                elif sensor == Arduino.STATE_ENCODER:
+                elif sensor == Arduino.STATE_GYRO_HEADING:
                     # rate (float)
                     assert(len(data) == 1)
-                    self.encoder_pub.publish(std_msgs.msg.Float32(data[0]))
+                    self.gyro_heading_pub.publish(std_msgs.msg.Float32(data[0]))
                 
                 ### print stuff
                 # print sensors_tuple
