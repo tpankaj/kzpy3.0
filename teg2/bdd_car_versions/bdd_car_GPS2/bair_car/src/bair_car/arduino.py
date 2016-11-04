@@ -6,7 +6,7 @@ import std_msgs.msg
 import geometry_msgs.msg
 import sensor_msgs.msg
 from kzpy3.utils import *
-
+#
 class Arduino:
 
     STATE_HUMAN_FULL_CONTROL            = 1

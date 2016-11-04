@@ -131,8 +131,8 @@ ctr = 0
 while not rospy.is_shutdown():
 	if True: #state in [3,5,6,7]:
 		
-		if np.mod(ctr,100):
-			print d2s("caffe state =",state)
+		if np.mod(ctr,1000):
+			print d2s("state =",state)
 		ctr+=1
 		if ctr > 65000:
 			ctr = 0
