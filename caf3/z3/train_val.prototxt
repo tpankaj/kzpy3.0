@@ -9,7 +9,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 110
+			dim: 200
 		}
 	}
 }
@@ -23,7 +23,7 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 17
+			dim: 60
 			dim: 14
 			dim: 26
 		}
@@ -33,13 +33,27 @@ layer {
 
 
 layer {
-	name: "ZED_data_pool2"
+	name: "ZED_data_pool2_left"
 	type: "DummyData"
-	top: "ZED_data_pool2"
+	top: "ZED_data_pool2_left"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 4
+			dim: 3
+			dim: 94
+			dim: 168
+		}
+	}
+}
+
+layer {
+	name: "ZED_data_pool2_right"
+	type: "DummyData"
+	top: "ZED_data_pool2_right"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 3
 			dim: 94
 			dim: 168
 		}
@@ -48,15 +62,16 @@ layer {
 
 
 	
-###################### Convolutional Layer Set 'conv1' ######################
-#
+
+
+
 layer {
-	name: "conv1"
+	name: "conv1_left"
 	type: "Convolution"
-	bottom: "ZED_data_pool2"
-	top: "conv1"
+	bottom: "ZED_data_pool2_left"
+	top: "conv1_left"
 	convolution_param {
-		num_output: 96
+		num_output: 48
 		group: 1
 		kernel_size: 11
 		stride: 3
@@ -67,52 +82,24 @@ layer {
 		}
 	}
 }
-	
 layer {
-	name: "conv1_relu"
+	name: "conv1_left_relu"
 	type: "ReLU"
-	bottom: "conv1"
-	top: "conv1"
-}
-	
-layer {
-	name: "conv1_pool"
-	type: "Pooling"
-	bottom: "conv1"
-	top: "conv1_pool"
-	pooling_param {
-		pool: MAX
-		kernel_size: 3
-		stride: 2
-		pad: 0
-	}
-}
-	
-############################################################
-
-layer {
-  name: "conv1_metadata_concat"
-  type: "Concat"
-  bottom: "conv1_pool"
-  bottom: "metadata"
-  top: "conv1_metadata_concat"
-  concat_param {
-    axis: 1
-  }
+	bottom: "conv1_left"
+	top: "conv1_left"
 }
 
-###################### Convolutional Layer Set 'conv2' ######################
-#
+
 layer {
-	name: "conv2"
+	name: "conv1_left_1x1a"
 	type: "Convolution"
-	bottom: "conv1_metadata_concat"
-	top: "conv2"
+	bottom: "conv1_left"
+	top: "conv1_left_1x1a"
 	convolution_param {
-		num_output: 256
-		group: 2
-		kernel_size: 3
-		stride: 2
+		num_output: 48
+		group: 1
+		kernel_size: 1
+		stride: 1
 		pad: 0
 		weight_filler {
 			type: "gaussian" 
@@ -120,80 +107,36 @@ layer {
 		}
 	}
 }
-	
 layer {
-	name: "conv2_relu"
+	name: "conv1_left_1x1a_relu"
 	type: "ReLU"
-	bottom: "conv2"
-	top: "conv2"
+	bottom: "conv1_left_1x1a"
+	top: "conv1_left_1x1a"
 }
-	
+
+
 layer {
-	name: "conv2_pool"
-	type: "Pooling"
-	bottom: "conv2"
-	top: "conv2_pool"
-	pooling_param {
-		pool: MAX
-		kernel_size: 3
-		stride: 2
+	name: "conv1_left_1x1b"
+	type: "Convolution"
+	bottom: "conv1_left_1x1a"
+	top: "conv1_left_1x1b"
+	convolution_param {
+		num_output: 48
+		group: 1
+		kernel_size: 1
+		stride: 1
 		pad: 0
-	}
-}
-	
-############################################################
-
-
-###################### IP Layer Set 'ip1' ######################
-#
-layer {
-	name: "ip1"
-	type: "InnerProduct"
-	bottom: "conv2_pool"
-	top: "ip1"
-	inner_product_param {
-		num_output: 512
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.1
 		}
 	}
 }
-	
 layer {
-	name: "ip1_relu"
+	name: "conv1_left_1x1b_relu"
 	type: "ReLU"
-	bottom: "ip1"
-	top: "ip1"
+	bottom: "conv1_left_1x1b"
+	top: "conv1_left_1x1b"
 }
-	
-############################################################
 
 
-###################### IP Layer Set 'ip2' ######################
-#
-layer {
-	name: "ip2"
-	type: "InnerProduct"
-	bottom: "ip1"
-	top: "ip2"
-	inner_product_param {
-		num_output: 110
-		weight_filler {
-			type: "xavier" 
-		}
-	}
-}
-	
-	
-############################################################
-
-
-layer {
-	name: "euclidean"
-	type: "EuclideanLoss"
-	bottom: "ip2"
-	bottom: "target_data"
-	top: "euclidean"
-	loss_weight: 1
-}
-	
