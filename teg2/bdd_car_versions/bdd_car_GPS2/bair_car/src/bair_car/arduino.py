@@ -280,6 +280,7 @@ class Arduino:
             
                 ### read sensors serial
                 sensors_str = self.ser_sensors.readline()
+                print sensors_str
                 exec('sensors_tuple = list({0})'.format(sensors_str))
                 ### parse servos serial and publish to ROS
                 sensor = sensors_tuple[0]
