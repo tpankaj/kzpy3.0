@@ -50,6 +50,7 @@ B = 0
 state = 0
 
 def state_callback(data):
+	global state
 	state = data.data
 def right_callback(data):
 	global A,B, left_list, right_list, solver
