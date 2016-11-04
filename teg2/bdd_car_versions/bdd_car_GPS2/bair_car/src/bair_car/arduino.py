@@ -280,7 +280,7 @@ class Arduino:
             
                 ### read sensors serial
                 sensors_str = self.ser_sensors.readline()
-                print sensors_str
+
                 exec('sensors_tuple = list({0})'.format(sensors_str))
                 ### parse servos serial and publish to ROS
                 sensor = sensors_tuple[0]
@@ -308,6 +308,8 @@ class Arduino:
                     assert(len(data) == 3)
                     print data
                     self.gyro_heading_pub.publish(geometry_msgs.msg.Vector3(*data))
+                else:
+                    pass
                 
                 ### print stuff
                 # print sensors_tuple
