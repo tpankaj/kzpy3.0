@@ -305,6 +305,7 @@ class Arduino:
                 elif sensor == Arduino.STATE_GYRO_HEADING:
                     # rate (float)
                     assert(len(data) == 3)
+                    print data
                     self.gyro_heading_pub.publish(geometry_msgs.msg.Vector3(*data))
                 
                 ### print stuff
