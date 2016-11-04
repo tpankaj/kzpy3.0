@@ -50,4 +50,6 @@ nvidia-smi
 
 http://deeplearning.net/software/theano/install_ubuntu.html
 
+http://stackoverflow.com/questions/1647586/is-it-possible-to-change-an-instances-method-implementation-without-changing-al
 
+http://scikit-image.org/docs/dev/auto_examples/plot_gabor.html
