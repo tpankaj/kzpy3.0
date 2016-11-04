@@ -2,6 +2,7 @@
 
 ######## to import and then preprocess:
 #$ python kzpy3/teg2/data/preprocess/import_data.py /media/karlzipser/rosbags ~/Desktop/temp_bag; python kzpy3/teg2/data/preprocess/multi_folder_preprocess.py ~/Desktop/temp_bag/
+#$ python kzpy3/teg2/data/preprocess/import_data.py /media/karlzipser/rosbags ~/Desktop/temp_bag; python kzpy3/teg2/data/preprocess/multi_folder_preprocess2.py ~/Desktop/temp_bag/
 #######################
 
 from kzpy3.utils import *

@@ -364,3 +364,21 @@ def make_loss_indicies_dic():
 		self.loss_indicies_dic[m].append((ctr,i))
 	ctr += 1
 	#raw_input('enter to contine')
+
+
+from kzpy3.vis import *
+ts = sorted(b.keys())
+hx,hy,hz,gx,gy,m,s,e,gs,ax = [],[],[],[],[],[],[],[],[],[]
+for t in ts:                                                                   
+	hx.append(b[t]['gyro_heading'][0])
+	hy.append(b[t]['gyro_heading'][1])
+	hz.append(b[t]['gyro_heading'][2])
+	gx.append(b[t]['GPS2_lat'])
+	gy.append(b[t]['GPS2_long'])
+	gs.append(b[t]['GPS2_speed'])
+	m.append(b[t]['motor'])
+	s.append(b[t]['steer'])
+	e.append(b[t]['encoder'])
+	ax.append(b[t]['acc'][2])
+plt.plot(ts,hy)
+
