@@ -294,7 +294,10 @@ class Arduino:
                 elif sensor == Arduino.STATE_GYRO:
                     # x, y, z (floats)
                     assert(len(data) == 3)
-                    self.gyro_pub.publish(geometry_msgs.msg.Vector3(*data))
+                elif sensor == Arduino.STATE_GYRO_HEADING:
+                    # x, y, z (floats)
+                    assert(len(data) == 3)
+                    self.gyro_heading_pub.publish(geometry_msgs.msg.Vector3(*data))
                 elif sensor == Arduino.STATE_ACC:
                     # x, y, z (floats)
                     assert(len(data) == 3)
@@ -303,11 +306,6 @@ class Arduino:
                     # dist (int)
                     assert(len(data) == 1)
                     self.sonar_pub.publish(std_msgs.msg.Int32(data[0]))
-                elif sensor == Arduino.STATE_GYRO_HEADING:
-                    # rate (float)
-                    assert(len(data) == 3)
-                    print data
-                    self.gyro_heading_pub.publish(geometry_msgs.msg.Vector3(*data))
                 else:
                     pass
                 
