@@ -46,6 +46,11 @@ def hist(data):
     plt.clf()
     plt.hist(data,bins=100)
     pass
+plot = plt.plot
+figure = plt.figure
+clf=plt.clf
+
+
 
 try:
     # - These allow for real-time display updating
@@ -348,3 +353,7 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
         else:
             img[hp:h,(bw-bt/2):(bw+bt/2),:] = pos_color
 
+
+def plt_square():
+    plt.gca().set_aspect('equal',adjustable='box')
+    plt.draw()

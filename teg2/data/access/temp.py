@@ -366,19 +366,156 @@ def make_loss_indicies_dic():
 	#raw_input('enter to contine')
 
 
-from kzpy3.vis import *
-ts = sorted(b.keys())
-hx,hy,hz,gx,gy,m,s,e,gs,ax = [],[],[],[],[],[],[],[],[],[]
-for t in ts:                                                                   
-	hx.append(b[t]['gyro_heading'][0])
-	hy.append(b[t]['gyro_heading'][1])
-	hz.append(b[t]['gyro_heading'][2])
-	gx.append(b[t]['GPS2_lat'])
-	gy.append(b[t]['GPS2_long'])
-	gs.append(b[t]['GPS2_speed'])
-	m.append(b[t]['motor'])
-	s.append(b[t]['steer'])
-	e.append(b[t]['encoder'])
-	ax.append(b[t]['acc'][2])
-plt.plot(ts,hy)
 
+from kzpy3.vis import *
+MLK_pm_lat = 37.881556
+MLK_pm_lon = -122.278434
+miles_per_deg_lat = 68.94
+miles_per_deg_lon_at_37p88 = 54.41
+meters_per_mile = 1609.34
+b=load_obj('/home/karlzipser/Desktop/temp_bag/caffe_z2_direct_local_sidewalk_test_data_03Nov16_18h33m09s_Mr_Orange/.preprocessed/left_image_bound_to_data3.pkl' )
+
+
+ts = sorted(b.keys())
+
+topics = ['gyro_heading_x','gyro_heading_y','gyro_heading_z',
+'gyro_x','gyro_y','gyro_z',
+'GPS2_lat','GPS2_long','GPS2_speed','GPS2_angle',
+'motor','steer','encoder',
+'acc_x','acc_y','acc_z','state']
+
+Data = {}
+for tp in topics:
+	Data[tp] = []
+
+for t in ts:                                                                   
+	Data['gyro_heading_x'].append(b[t]['gyro_heading'][0])
+	Data['gyro_heading_y'].append(b[t]['gyro_heading'][1])
+	Data['gyro_heading_z'].append(b[t]['gyro_heading'][2])
+	Data['GPS2_lat'].append(b[t]['GPS2_lat'])
+	Data['GPS2_long'].append(b[t]['GPS2_long'])
+	Data['GPS2_speed'].append(b[t]['GPS2_speed'])
+	Data['motor'].append(b[t]['motor'])
+	Data['steer'].append(b[t]['steer'])
+	Data['encoder'].append(b[t]['encoder'])
+	Data['acc_x'].append(b[t]['acc'][0])
+	Data['acc_y'].append(b[t]['acc'][1])
+	Data['acc_z'].append(b[t]['acc'][2])
+	Data['gyro_x'].append(b[t]['gyro'][0])
+	Data['gyro_y'].append(b[t]['gyro'][1])
+	Data['gyro_z'].append(b[t]['gyro'][2])
+	Data['state'].append(b[t]['state'])
+
+for tp in topics:
+	Data[tp] = na(Data[tp])
+
+Data['meters_y'] = (Data['GPS2_lat']-MLK_pm_lat)*miles_per_deg_lat*meters_per_mile
+Data['meters_x'] = (Data['GPS2_long']-MLK_pm_lon)*miles_per_deg_lon_at_37p88*meters_per_mile
+
+hx = Data['gyro_heading_x']
+hy = Data['gyro_heading_y']
+hz = Data['gyro_heading_z']
+hdx=0*hx;hdy=0*hy;hdz=0*hz
+for i in range(1+5*30,len(hx),1):
+    hdx[i] =  hx[i]-hx[(i-5*30):(i-4*30)].mean()
+    hdy[i] =  hy[i]-hy[(i-5*30):(i-4*30)].mean()
+    hdz[i] =  hz[i]-hz[(i-5*30):(i-4*30)].mean()
+Data['d_gyro_heading_x'] = hdx
+Data['d_gyro_heading_y'] = hdy
+Data['d_gyro_heading_z'] = hdz
+
+
+zData = {}
+for tp in ['acc_x','acc_y','acc_z','gyro_x','gyro_y','gyro_z',
+	'd_gyro_heading_x','d_gyro_heading_y','d_gyro_heading_z']:
+	zData[tp] = zscore(Data[tp],3)
+zData['meters_x'] = Data['meters_x']/10.0
+zData['meters_y'] = Data['meters_y']/10.0
+zData['state'] = Data['state'].copy()
+for i in range(len(zData['state'])):
+	if int(zData['state'][i]) in [5,7]:
+		zData['state'][i] = 1
+	else:
+		zData['state'][i] = 0
+zData['motor'] = (Data['motor']-49.)/10.
+zData['steer'] = zscore(Data['steer'],3)
+zData['encoder'] = Data['encoder']/3.
+
+
+
+
+
+img = zeros((len(zData.keys()),len(zData['state'])))
+topics = sorted(zData.keys())
+ctr = 0
+for tp in topics:
+	img[ctr,:] = zData[tp]
+	ctr += 1
+
+for i in range(20000,60000,2):
+	input_img = img[:,i-150:i]
+	mi(input_img)
+	plt.pause(0.001)
+	steer_target = []
+	motor_target = []
+	for j in range(i,i+10):
+		if zData['state'][j] == 1:
+			steer_target.append(int(Data['steer'][j]))
+			motor_target.append(int(Data['motor'][j]))
+		else:
+			steer_target.append(49)
+			motor_target.append(49)
+	print steer_target
+	print motor_target
+	print "---"
+
+
+
+
+
+
+"""
+['acc_x',
+ 'acc_y',
+ 'acc_z',
+ 'd_gyro_heading_x',
+ 'd_gyro_heading_y',
+ 'd_gyro_heading_z',
+ 'encoder',
+ 'gyro_x',
+ 'gyro_y',
+ 'gyro_z',
+ 'meters_x',
+ 'meters_y',
+ 'motor',
+ 'state',
+ 'steer']
+"""
+
+
+def gps_plotter(start,stop,lat,lon,lat_orig=MLK_pm_lat,lon_orig=MLK_pm_lon,d_lat=0.0005,d_lon=0.0005,d_meters=100):
+	lat = na(lat[start:stop])
+	lon = na(lon[start:stop])
+	d_lat = na(d_lat)
+	d_lon = na(d_lon)
+	lat_meters_from_orig = (lat-lat_orig)*miles_per_deg_lat*meters_per_mile
+	lon_meters_from_orig = (lon-lon_orig)*miles_per_deg_lon_at_37p88*meters_per_mile
+	
+	plt.figure(1)
+	plt.clf()
+	plt.plot(lon,lat,'o')
+	plt.ylim(lat_orig-d_lat/2.,lat_orig+d_lat/2.)
+	plt.xlim(lon_orig-d_lon/2.,lon_orig+d_lon/2.)
+	plt_square()
+
+	
+	plt.figure(2)
+	plt.clf()
+	plt.plot(lon_meters_from_orig,lat_meters_from_orig,'o')
+	plt.ylim(-d_meters/2.,+d_meters/2.)
+	plt.xlim(-d_meters/2.,+d_meters/2.)
+	plt_square()
+
+
+
+gps_plotter(20000,60000,gx,gy)
