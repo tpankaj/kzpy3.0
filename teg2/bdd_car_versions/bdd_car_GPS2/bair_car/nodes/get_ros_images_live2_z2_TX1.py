@@ -126,63 +126,70 @@ rospy.Subscriber('/bair_car/GPS2_long', std_msgs.msg.Float32, callback=GPS2_long
 rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=camera_heading_callback)
 
 
-
+ctr = 0
 while not rospy.is_shutdown():
-	#print (A,B,len(left_list),len(right_list))
-	try:
-		pass
-		#cv2.imshow("Left",left_list[-1])
-		#cv2.waitKey(1)
-	except:
-		pass
-	if len(left_list) > 4:
-		l0 = left_list[-2]
-		l1 = left_list[-1]
-		r0 = right_list[-2]
-		r1 = right_list[-1]
-
-		solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-		solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
-		from computer_name import *	
-		"""
-		Direct = 1.
-		Follow = 0.
-		Play = 0.
-		Furtive = 0.
-		Caf = 1.0
-		"""
-		solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
-		solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
-		solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-		solver.net.blobs['metadata'].data[0,4,:,:] = Play
-		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-
-
-		#solver.net.forward(start='ZED_data',end='ZED_data_pool1')
-		#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
-		#solver.net.forward(start='ZED_data_pool2',end='conv1')
+	if state in [3,5,6,7]:
 		
-		solver.net.forward()
-		#print solver.net.blobs['ip2'].data[0,:]S
+		if np.mod(ctr,100):
+			print d2s("caffe state =",state)
+		ctr+=1
+		if ctr > 65000:
+			ctr = 0
+		#print (A,B,len(left_list),len(right_list))
+		try:
+			pass
+			#cv2.imshow("Left",left_list[-1])
+			#cv2.waitKey(1)
+		except:
+			pass
+		if len(left_list) > 4:
+			l0 = left_list[-2]
+			l1 = left_list[-1]
+			r0 = right_list[-2]
+			r1 = right_list[-1]
 
-		caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
-		caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
+			solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+			from computer_name import *	
+			"""
+			Direct = 1.
+			Follow = 0.
+			Play = 0.
+			Furtive = 0.
+			Caf = 1.0
+			"""
+			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
+			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
+			solver.net.blobs['metadata'].data[0,4,:,:] = Play
+			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 
-		if True:
-			#print GPS2_long
-			if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
-				if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
-					#caf_steer = 49
-					#caf_motor = 49
-					#print "GPS2 stopping car."
-		
-		steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
-		#print camera_heading
-		motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
-		
+
+			#solver.net.forward(start='ZED_data',end='ZED_data_pool1')
+			#solver.net.forward(start='ZED_data_pool1',end='ZED_data_pool2')
+			#solver.net.forward(start='ZED_data_pool2',end='conv1')
+			
+			solver.net.forward()
+			#print solver.net.blobs['ip2'].data[0,:]S
+
+			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
+			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
+
+			if True:
+				#print GPS2_long
+				if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
+					if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
+						#caf_steer = 49
+						#caf_motor = 49
+						#print "GPS2 stopping car."
+			
+			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
+			#print camera_heading
+			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+			
 
 
 
