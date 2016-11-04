@@ -129,7 +129,7 @@ rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=came
 
 ctr = 0
 while not rospy.is_shutdown():
-	if state in [3,5,6,7]:
+	if True: #state in [3,5,6,7]:
 		
 		if np.mod(ctr,100):
 			print d2s("caffe state =",state)
@@ -179,7 +179,7 @@ while not rospy.is_shutdown():
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
 
-			if True:
+			if False:
 				#print GPS2_long
 				if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
 					if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
@@ -192,7 +192,7 @@ while not rospy.is_shutdown():
 			#print camera_heading
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
 	else:
-		print state
+		pass
 			
 
 
