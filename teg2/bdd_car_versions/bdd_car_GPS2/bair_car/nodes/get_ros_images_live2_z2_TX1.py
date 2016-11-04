@@ -190,6 +190,8 @@ while not rospy.is_shutdown():
 			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
 			#print camera_heading
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+	else:
+		print state
 			
 
 
