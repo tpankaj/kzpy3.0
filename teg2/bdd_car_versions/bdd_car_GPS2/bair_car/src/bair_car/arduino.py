@@ -294,6 +294,7 @@ class Arduino:
                 elif sensor == Arduino.STATE_GYRO:
                     # x, y, z (floats)
                     assert(len(data) == 3)
+                    self.gyro_pub.publish(geometry_msgs.msg.Vector3(*data))
                 elif sensor == Arduino.STATE_GYRO_HEADING:
                     # x, y, z (floats)
                     assert(len(data) == 3)
