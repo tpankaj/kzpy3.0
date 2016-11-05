@@ -50,6 +50,7 @@ def line_plot(p1,p2):
 	plt.plot([p1[0],p2[0]],[p1[1],p2[1]],'r-')
 
 def get_pts(v1,w):
+	v1 = na(v1)
 	m = np.sqrt(v1[0]**2 + v1[1]**2)
 	u1 = v1 / m
 	v2 = -w * u1
@@ -61,7 +62,7 @@ def get_pts(v1,w):
 	v5b = ar([d*v4b[0]/v4b[1],d])
 	if True:
 		plt.figure(3)
-		clf()
+		#clf()
 		plt.plot([-2,2],[d,d])
 		pt_plot(o)
 		pt_plot(v4a);pt_plot(v4b)
@@ -74,9 +75,38 @@ def get_pts(v1,w):
 		plt_square()
 	return v5a[0],v5b[0],m
 
-get_pts(v1,w)
 
-if False:
+
+def mi_picture(v1s,ws):
+	figure(3)
+	clf()
+	img = zeros((100,200))
+	#img[0,0] = d
+	#img[0,1] = 0
+	for i in range(len(v1s)):
+		v1 = v1s[i]
+		w = ws[i]
+
+		a,b,m = get_pts(v1,w)
+
+		mn = min(a,b)
+		mx = max(a,b)
+
+		p_min = -0.1
+		p_max = 0.1
+
+		ylow = max(0,50-int((mx-mn)*500))
+		yhigh = min(100,50+int((mx-mn)*500))
+		xlow = max(0,int(mn*1000+99))
+		xhigh = min(200,int(mx*1000+100))
+
+		img[ylow:yhigh,xlow:xhigh] = d/(1.*m)
+
+	mi(img,2)
+	print 'here!'
+
+
+if True:
 
 	img = zeros((100,200))
 
@@ -173,14 +203,14 @@ if False:
 	my_heading = 90
 
 	pts = []
-	for i in range(100):
+	for i in range(10):
 		a = np.random.random()
 		p = 2*np.random.random(2) - 1
 		if distance(p,(0,0))>a**0.1:
 			pts.append(p)
 			if len(pts) > 150:
 				break
-	for i in range(50):
+	for i in range(10):
 		p = 2*np.random.random(2) - 1
 		pts.append(p)
 
@@ -253,7 +283,9 @@ if False:
 		#plt.plot([my_position[0],my_position[0]+vec_total[0]/10000.],[my_position[1],my_position[1]+vec_total[1]/10000.],'r-')
 		mp_rot2 = np.array(rotatePoint([0,0],my_position+vec_total/10000.,-a))
 		mp_rot = np.array(rotatePoint([0,0],my_position,-a))
+
 		plt.plot(rpts_rot[:,0]-mp_rot[0],rpts_rot[:,1]-mp_rot[1],'.')
+
 		plt.plot(mp_rot[0]-mp_rot[0],mp_rot[1]-mp_rot[1],'go')
 		plt.plot(mp_rot2[0]-mp_rot[0],mp_rot2[1]-mp_rot[1],'rx')
 
@@ -277,6 +309,8 @@ if False:
 		#plt.figure(3)
 		#plt.clf()
 		#print len(rpts_rot)
+		v1s = []
+		ws = []
 		for i in range(len(dist_sorted)-1,0,-1): #s in dist_sorted:
 			s = dist_sorted[i]
 			rp = rpts_rot[s[0]]
@@ -284,11 +318,16 @@ if False:
 			#if rp[0] > -3 and rp[0] < 3 and rp[1] < -0.1:
 			x = rp[0]-mp_rot[0]
 			y = rp[1]-mp_rot[1]
+
 			if y > d:
-				picture(ar([x,y]),w)
+				v1s.append([x,y])
+				ws.append(0.01)
 		#mi(img,2,img_title=d2s(img.max()))
+		print v1s
+		print ws
+		mi_picture(v1s,ws)
 
 		plt.pause(0.000133)
 
-raw_input('enter to quit')
+		raw_input('enter to quit')
 
