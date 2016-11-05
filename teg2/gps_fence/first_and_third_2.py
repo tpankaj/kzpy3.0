@@ -260,7 +260,7 @@ while distance(my_position,(0,0)) < 10*1.415:
 	plt.plot(mp_rot2[0]-mp_rot[0],mp_rot2[1]-mp_rot[1],'rx')
 
 
-	q = 0.05
+	q = 0.01
 	my_position += 1.0/distance(vec_total,(0,0)) * vec_total * q
 	if distance(my_position_prev,my_position) < q:
 		my_position+=1.0/distance(vec_total_prev,(0,0)) * vec_total_prev * q
