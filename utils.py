@@ -551,3 +551,8 @@ def in_range(e,a,b):
         if e <= b:
             return True
     return False
+
+def nvidia_smi_continuous():
+    while True:                                     
+        unix('nvidia-smi')
+        time.sleep(5)

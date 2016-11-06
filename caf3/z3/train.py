@@ -5,7 +5,7 @@ import caffe
 caffe.set_device(1)
 caffe.set_mode_gpu()
 from kzpy3.utils import *
-#from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
+from kzpy3.teg2.data.access.get_data_from_bag_files9 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 import os, serial, threading, Queue
@@ -37,20 +37,21 @@ def load_data_into_model(solver,data,flip):
 			target_data[10] = data['motor'][0]
 
 			if not flip:
-				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
-				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
-				#solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['left'][2][:,:]/255.0-.5
-				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = data['right'][0][:,:]/255.0-.5
-				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = data['right'][1][:,:]/255.0-.5
-				#solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = data['right'][2][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_left'].data[0,0,:,:] = data['left'][0][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_left'].data[0,1,:,:] = data['left'][1][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_left'].data[0,2,:,:] = data['left'][2][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_right'].data[0,0,:,:] = data['right'][0][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_right'].data[0,1,:,:] = data['right'][1][:,:]/255.0-.5
+				solver.net.blobs['ZED_data_pool2_right'].data[0,2,:,:] = data['right'][2][:,:]/255.0-.5
 
 			else: # flip left-right
-				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = scipy.fliplr(data['left'][0][:,:]/255.0-.5)
-				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = scipy.fliplr(data['left'][1][:,:]/255.0-.5)
-				#solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = scipy.fliplr(data['left'][2][:,:]/255.0-.5)
-				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = scipy.fliplr(data['right'][0][:,:]/255.0-.5)
-				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = scipy.fliplr(data['right'][1][:,:]/255.0-.5)
-				#solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = scipy.fliplr(data['right'][2][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_left'].data[0,0,:,:] = scipy.fliplr(data['left'][0][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_left'].data[0,1,:,:] = scipy.fliplr(data['left'][1][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_left'].data[0,2,:,:] = scipy.fliplr(data['left'][2][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_right'].data[0,0,:,:] = scipy.fliplr(data['right'][0][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_right'].data[0,1,:,:] = scipy.fliplr(data['right'][1][:,:]/255.0-.5)
+				solver.net.blobs['ZED_data_pool2_right'].data[0,2,:,:] = scipy.fliplr(data['right'][2][:,:]/255.0-.5)
+
 				for i in range(len(target_data)/2):
 					t = target_data[i]
 					t = t - 49
@@ -200,7 +201,7 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 			else:
 				indx,_ = get_random_turn_with_high_loss_equal_weighting(BF)
 				meta_turn_flag = True
-			data = BF.get_data(num_image_steps=2,good_start_index=indx)
+			data = BF.get_data(num_image_steps=3,good_start_index=indx)
 			if meta_turn_flag:
 				data['meta-turn'] = data['steer'][9]
 			else:
@@ -217,7 +218,7 @@ def run_solver(solver, bair_car_data, num_steps,flip):
 				ctr += 1
 				if imshow:
 					#print (ctr,np.array(loss[-99:]).mean())
-					img[:,:,0] = solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]
+					img[:,:,0] = solver.net.blobs['ZED_data_pool2_left'].data[0,0,:,:]
 					img += 0.5
 					img *= 255.
 					img[:,:,1] = img[:,:,0]
@@ -280,12 +281,17 @@ def load_bag_folders_thread():
 			time.sleep(1)
 
 def main():
-	weights_file_path = most_recent_file_in_folder(opjD('z2_turn0'),['z2_turn0','caffemodel']) 
+	weights_file_path = most_recent_file_in_folder(opjD('z3'),['z3','caffemodel']) 
 	if weights_file_path == "None":
 		weights_file_path = None
 	if weights_file_path != None:
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
+	filters = load_obj(opjD('filters'))
+	for i in range(48):
+		solver.net.params['conv1_left'][0].data[i,0,:,:] = z2o(filters[i,1,:,:])-0.5
+		solver.net.params['conv1_right'][0].data[i,0,:,:] = z2o(filters[i,1,:,:])-0.5
+
 	while True:
 		try:
 			load_bag_folders(bair_car_data,num_to_load=2)
@@ -309,7 +315,7 @@ def main():
  
 
 
-"""
+
 loss_timer = time.time()
 loss = []
 
@@ -322,10 +328,51 @@ list2 = ['Oct','Tilden','play','follow','furtive','play','follow','furtive','caf
 list3 = ['follow','furtive','direct_from_campus2_08Oct16_10h15m','direct_from_campus_31Dec12_10h00m','direct_to_campus_08Oct16_08h55m37']
 
 bair_car_data = Bair_Car_Data(bair_car_data_path,list0)
-unix('mkdir -p '+opjD('z2_turn0'))
-"""
+unix('mkdir -p '+opjD('z3'))
+
 solver_file_path = opjh("kzpy3/caf3/z3/solver.prototxt")
 #solver_file_path = opjh("kzpy3/caf3/z2_replicate/solver.prototxt")
 solver = setup_solver()
 
 #main()
+"""
+filters = load_obj(opjD('filters'))
+for i in range(48):
+	solver.net.params['conv1_left'][0].data[i,0,:,:] = z2o(filters[i,1,:,:])-0.5
+	solver.net.params['conv1_right'][0].data[i,0,:,:] = z2o(filters[i,1,:,:])-0.5
+""";
+
+
+"""
+('steer_motor_target_data', (1, 20))
+('ZED_data_pool2_left', (1, 3, 94, 168))
+('ZED_data_pool2_right', (1, 3, 94, 168))
+('conv1_left', (1, 48, 28, 53))
+('conv1_left_1x1a', (1, 48, 28, 53))
+('conv1_left_1x1b', (1, 48, 28, 53))
+('conv1_right', (1, 48, 28, 53))
+('conv1_right_1x1a', (1, 48, 28, 53))
+('conv1_right_1x1a_conv1_right_1x1a_relu_0_split_0', (1, 48, 28, 53))
+('conv1_right_1x1a_conv1_right_1x1a_relu_0_split_1', (1, 48, 28, 53))
+('conv1_right_1x1b', (1, 48, 28, 53))
+('conv1_concat', (1, 96, 28, 53))
+('conv2', (1, 96, 13, 26))
+('metadata', (1, 6, 13, 26))
+('conv2_concat', (1, 102, 13, 26))
+('conv2_pool', (1, 102, 6, 13))
+('conv3', (1, 256, 2, 6))
+('conv3_pool', (1, 256, 1, 3))
+('ip1', (1, 512))
+('ip2', (1, 20))
+('euclidean', ())
+('conv1_left', (48, 3, 11, 11))
+('conv1_left_1x1a', (48, 48, 1, 1))
+('conv1_left_1x1b', (48, 48, 1, 1))
+('conv1_right', (48, 3, 11, 11))
+('conv1_right_1x1a', (48, 48, 1, 1))
+('conv1_right_1x1b', (48, 48, 1, 1))
+('conv2', (96, 96, 3, 3))
+('conv3', (256, 102, 3, 3))
+('ip1', (512, 768))
+('ip2', (20, 512))
+"""

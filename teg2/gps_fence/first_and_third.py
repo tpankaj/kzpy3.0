@@ -253,12 +253,12 @@ while distance(my_position,(0,0)) < 1.415:
 	plt.plot(rpts_rot[:,0]-mp_rot[0],rpts_rot[:,1]-mp_rot[1],'.')
 	plt.plot(mp_rot[0]-mp_rot[0],mp_rot[1]-mp_rot[1],'go')
 	plt.plot(mp_rot2[0]-mp_rot[0],mp_rot2[1]-mp_rot[1],'rx')
+	plt_square()
 
-
-	
-	my_position += 1.0/distance(vec_total,(0,0)) * vec_total * 0.001
-	if distance(my_position_prev,my_position) < 0.001:
-		my_position+=1.0/distance(vec_total_prev,(0,0)) * vec_total_prev * 0.001
+	qq=0.01
+	my_position += 1.0/distance(vec_total,(0,0)) * vec_total * qq
+	if distance(my_position_prev,my_position) < qq:
+		my_position+=1.0/distance(vec_total_prev,(0,0)) * vec_total_prev * qq
 	vec_total_prev = vec_total.copy()
 	my_position_prev = my_position.copy()
 

@@ -483,6 +483,13 @@ class Bair_Car_Data_temp:
             print e.message, e.args
 
 
+def total_num_loaded_bag_files(BCD):
+    ctr = 0
+    for k in BCD.bag_folders_dic:
+        bf = BCD.bag_folders_dic[k]
+        ctr += len(bf.files)
+    return ctr
+
 
 
 
@@ -509,14 +516,15 @@ class Bair_Car_Data:
     def load_bag_folders(self,train_preprocessed_only=True,num_to_load=4):
         cprint("Bair_Car_Data::load_bag_folders",'red','on_yellow')
         self.bag_folders_weighted = []
-        m=memory()
-        free_propotion = m['free']/(1.0*m['total'])
-        if free_propotion < 0.20:
+        #m=memory()
+        #free_propotion = m['free']/(1.0*m['total'])
+        #if free_propotion < 0.20:
+        if total_num_loaded_bag_files(self) < 3400:
             fs = self.bag_folders_dic.keys()
             if not fs == None:
                 random.shuffle(fs)
-                for i in range(len(fs)/4):
-                    print("Bair_Car_Data::load_bag_folders, unloading ",self.bag_folders_dic[fs[i]])
+                for i in range(len(fs)/6):
+                    cprint("Bair_Car_Data::load_bag_folders, unloading "+fn(fs[i]),'red','on_blue')
                     del self.bag_folders_dic[fs[i]]
         train_preprocessed_bag_folder_path = opjD('train_preprocessed_bag_folder_path')
         ctr = 0
@@ -525,9 +533,7 @@ class Bair_Car_Data:
             random.shuffle(self.bag_folder_paths)
             for f in self.bag_folder_paths:               
                 if f not in self.bag_folders_dic.keys():
-                    m=memory()
-                    free_propotion = m['free']/(1.0*m['total'])
-                    if free_propotion < 0.15:
+                    if total_num_loaded_bag_files(self) > 3400:
                         break
 
                     if train_preprocessed_only and len(gg(opj(train_preprocessed_bag_folder_path,f.split('/')[-1]+'.pkl'))) == 1:
@@ -555,7 +561,8 @@ class Bair_Car_Data:
         if False: #except Exception as e:
             cprint("Bair_Car_Data::__init__ ********** Exception ******* with "+f,'red')
             print e.message, e.args
-
+        cprint("Here are the loaded bag files:",'red','on_white')
+        pprint(self.bag_folders_dic.keys())
 
 
 
