@@ -56,6 +56,13 @@ build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
 		I1007 13:24:02.158380  6710 caffe.cpp:379] Average Backward pass: 152.4 ms.
 		I1007 13:24:02.158437  6710 caffe.cpp:381] Average Forward-Backward: 323.99 ms.
 
+# if error, "libcudart.so.7.0: cannot open shared object file", do:
+#      sudo ldconfig /usr/local/cuda/lib
+# [see: http://qinhongwei.com/2016/05/08/how-to-install-caffe-on-NVIDIA-TX1/]
+#
+
+
+
 sudo apt-get --assume-yes install python-pip 
 sudo easy_install cython 
 
@@ -94,6 +101,7 @@ source ~/.bashrc
 
 ZED setup: note, ZED_SDK_Linux_JTX1_v1.1.0_32b_JP21.run works, v1.1.1_64b doesn't.
 
+test ZED with: /usr/local/zed/tool/ZED\ Explorer
 
 #################
 ### Setup ROS ###
