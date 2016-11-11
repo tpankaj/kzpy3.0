@@ -101,7 +101,7 @@ source ~/.bashrc
 
 ZED setup: note, ZED_SDK_Linux_JTX1_v1.1.0_32b_JP21.run works, v1.1.1_64b doesn't.
 
-test ZED with: /usr/local/zed/tool/ZED\ Explorer
+test ZED with: /usr/local/zed/tools/ZED\ Explorer
 
 #################
 ### Setup ROS ###
