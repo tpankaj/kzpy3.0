@@ -16,7 +16,8 @@ alias rcd='cd /media/ubuntu/rosbags'
 alias ssd='sudo shutdown -h now'
 alias rcn='echo $COMPUTER_NAME'
 alias riv='rosrun image_view image_view image:=/bair_car/zed/right/image_rect_color'
-
+alias rlat='rostopic echo /bair_car/GPS2_lat'
+alias test_caffe='cd ~/caffe; build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0'
 ######################## for .bashrc from MacBook #################
 #
 #echo "source ~/8August2016_common_aliases"
