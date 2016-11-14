@@ -223,6 +223,10 @@ alias ssd='sudo shutdown -h now'
 alias rcn='echo $COMPUTER_NAME'
 alias riv='rosrun image_view image_view image:=/bair_car/zed/right/image_rect_color'
 
+alias test_caffe='cd ~/caffe; build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0'
+alias zede=
+
+#ln -s ~/kzpy3/teg2/bdd_car_versions/bdd_car_GPS2/bair_car/ bair_car
 ######################## for .bashrc from MacBook #################
 #
 #echo "source ~/8August2016_common_aliases"
