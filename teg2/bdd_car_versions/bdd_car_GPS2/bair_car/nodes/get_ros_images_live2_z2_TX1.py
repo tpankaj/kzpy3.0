@@ -198,7 +198,7 @@ while not rospy.is_shutdown():
 									ctr += 1
 				else:
 					if time_step:
-						print("No GPS fix. "+time_str)
+						print("No GPS fix. "+time_str())
 
 			
 			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
