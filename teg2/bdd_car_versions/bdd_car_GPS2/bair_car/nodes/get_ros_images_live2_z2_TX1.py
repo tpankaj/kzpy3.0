@@ -128,14 +128,20 @@ rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=came
 
 
 ctr = 0
+
+from computer_name import *
+from kzpy3.teg2.global_run_params import *
+
+t0 = time.time()
+time_step = True
 while not rospy.is_shutdown():
 	if True: #state in [3,5,6,7]:
 		
-		if np.mod(ctr,1000)==0:
-			print d2s("state =",state)
-		ctr+=1
-		if ctr > 65000:
-			ctr = 0
+		#if np.mod(ctr,1000)==0:
+		#	print d2s("state =",state)
+		#ctr+=1
+		#if ctr > 65000:
+		#	ctr = 0
 		#print (A,B,len(left_list),len(right_list))
 		try:
 			pass
@@ -179,23 +185,33 @@ while not rospy.is_shutdown():
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
 
-			if False:
-				#print GPS2_long
-				if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
-					if np.sqrt( (GPS2_lat_orig-GPS2_lat)**2 + (GPS2_long_orig-GPS2_long)**2 ) > GPS2_radius:
-						pass
-						#caf_steer = 49
-						#caf_motor = 49
-						#print "GPS2 stopping car."
+			if True:
+				if np.abs(GPS2_lat) > 0 and np.abs(GPS2_lat) > 0:
+					if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
+						dist = lat_lon_to_dist_meters(GPS2_lat_orig,GPS2_long_orig,GPS2_lat,GPS2_long)
+						if dist > GPS2_radius_meters:
+							caf_steer = 49
+							caf_motor = 49
+							if np.mod(int(10*time.time()),10):
+								if time_step: #np.mod(ctr,1000) == 0:
+									print(d2s("GPS2 stopping car because dist",dist,"> GPS2_radius_meters",GPS2_radius_meters,time_str()))
+									ctr += 1
+				else:
+					if time_step:
+						print("No GPS fix. "+time_str)
+
 			
 			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
 			#print camera_heading
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+
+		time_step = False
+		if time.time() - t0 > 1.0:
+			t0 = time.time()
+			time_step = True
 	else:
 		pass
 			
-
-
 
 
 

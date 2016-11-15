@@ -5,7 +5,8 @@ alias rls='ls -al /media/ubuntu/rosbags'
 alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
 alias rlog='rm -r ~/.ros/log/*'
 alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
-alias rlac='roslaunch bair_car bair_car.launch use_zed:=true record:=true caffe:=true'
+#alias rlac='roslaunch bair_car bair_car.launch use_zed:=true record:=true caffe:=true'
+alias rgla='cd ~/kzpy3;git pull;cd;roslaunch bair_car bair_car.launch use_zed:=true record:=true'
 alias rgy='rostopic echo /bair_car/gyro'
 alias rgp='rostopic echo /bair_car/gps'
 alias rac='rostopic echo /bair_car/acc'
@@ -18,6 +19,7 @@ alias rcn='echo $COMPUTER_NAME'
 alias riv='rosrun image_view image_view image:=/bair_car/zed/right/image_rect_color'
 alias rlat='rostopic echo /bair_car/GPS2_lat'
 alias test_caffe='cd ~/caffe; build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0'
+alias zed_explorer='/usr/local/zed/tools/ZED\ Explorer'
 ######################## for .bashrc from MacBook #################
 #
 #echo "source ~/8August2016_common_aliases"

@@ -10,6 +10,8 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Location = 'local'
+
+
 GPS2_lat_orig = 37.881404 #-999.99
 GPS2_long_orig = -122.2743327 #-999.99
 GPS2_radius = 0.0004
