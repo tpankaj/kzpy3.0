@@ -196,6 +196,9 @@ while not rospy.is_shutdown():
 								if time_step: #np.mod(ctr,1000) == 0:
 									print(d2s("GPS2 stopping car because dist",dist,"> GPS2_radius_meters",GPS2_radius_meters,time_str()))
 									ctr += 1
+						else:
+							if time_step:
+								print(d2s("dist =",dist))
 				else:
 					if time_step:
 						print("No GPS fix. "+time_str())

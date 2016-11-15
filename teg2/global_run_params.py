@@ -1,7 +1,7 @@
 # This should be place in ~ (home dir).
 # This is used to specifiy caffe mode and data file name information
 
-
+from kzpy3.utils import *
 
 MLK_pm_lat,MLK_pm_lon = 37.881556,-122.278434
 MLK_pm2_lat,MLK_pm2_lon = 37.881496, -122.278552 # 12 meters from pitcher's mound.
