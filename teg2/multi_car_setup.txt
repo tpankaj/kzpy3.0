@@ -23,7 +23,8 @@ mac: 18443932076L
 #
 Mr. Silver
 ssh ubuntu@192.168.43.53
-unusable because of Arduino grounding problem.
+# √ unusable because of Arduino grounding problem.
+GPS totally off
 ##################################
 
 ##################################
