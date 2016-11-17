@@ -24,7 +24,7 @@ mac: 18443932076L
 Mr. Silver
 ssh ubuntu@192.168.43.53
 # √ unusable because of Arduino grounding problem.
-GPS totally off
+GPS poor resolution
 ##################################
 
 ##################################
@@ -39,6 +39,7 @@ mac: 18443933021L
 Mr. Teal
 ssh ubuntu@192.168.43.54
 mac: 18443935037L
+problem: red wire interferes with fan blade.
 ##################################
 
 ##################################
@@ -73,5 +74,12 @@ charge computers
 
 
 PS1="Mr. Orange: \W$ "
+
+
+checklist:
+each computer: has name set in .bashrc
+has name set in computer.py
+does not have GPS stuff set in computer.py
+has rgla working
 
 

@@ -9,7 +9,7 @@ MLK_pm2_lat,MLK_pm2_lon = 37.881496, -122.278552 # 12 meters from pitcher's moun
 RFS_lat,RFS_lon = 37.91590,-122.3337223
 RFS_lat2,RFS_lon2 = 37.915846, -122.333404 # 28 meters from field center.
 
-M_1408_lat,M_1408_lon = 37.8814082,-122.2722957
+M_1408_lat,M_1408_lon = 37.881401062, -122.27230072 #37.8814082,-122.2722957
 
 miles_per_deg_lat = 68.94
 miles_per_deg_lon_at_37p88 = 54.41
