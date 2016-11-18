@@ -196,10 +196,10 @@ while not rospy.is_shutdown():
 				if np.abs(GPS2_lat) > 0 and np.abs(GPS2_lat) > 0:
 					if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
 						if time_step:
-							print(GPS2_lat_orig,GPS2_lat,GPS2_lat_orig,GPS2_long)
+							print(GPS2_lat_orig,GPS2_lat,GPS2_long_orig,GPS2_long)
 						if state == 4 and state_transition_time_s > 20:
 
-							GPS2_lat_orig = GPS2_lat; GPS2_lat_orig = GPS2_long;
+							GPS2_lat_orig = GPS2_lat; GPS2_long_orig = GPS2_long;
 							print("Set GPS2 origin to current coordiates because in state 4 for 20+ s")
 						dist = lat_lon_to_dist_meters(GPS2_lat_orig,GPS2_long_orig,GPS2_lat,GPS2_long)
 						if dist > GPS2_radius_meters:
