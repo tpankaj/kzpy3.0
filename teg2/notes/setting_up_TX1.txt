@@ -252,3 +252,7 @@ git clone repoman@repo.eecs.berkeley.edu:projects/bdd/rc-car.git
 http://unix.stackexchange.com/questions/22367/where-are-networkmanagers-wifi-settings-stored
 ls /etc/NetworkManager/system-connections/
 
+
+set date over network:
+
+sudo date --set="$(ssh karlzipser@192.168.43.243 date)"
