@@ -189,7 +189,7 @@ while not rospy.is_shutdown():
 
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
-			if state == 4 and state_transition_time_s > 20:
+			if state == 4 and state_transition_time_s > 60:
 				print("Shutting down because in state 4 for 60+ s")
 				unix('sudo shutdown -h now')
 			if True:
