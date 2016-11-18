@@ -44,6 +44,7 @@ class Arduino:
         self.steer_pub = rospy.Publisher('steer', std_msgs.msg.Int32, queue_size=100)
         self.motor_pub = rospy.Publisher('motor', std_msgs.msg.Int32, queue_size=100)
         self.encoder_pub = rospy.Publisher('encoder', std_msgs.msg.Float32, queue_size=100)
+        self.state_transition_time_s_pub = rospy.Publisher('encoder', std_msgs.msg.Int32, queue_size=100)
         ### sensor publishers (from Arduino)
 
         #self.gps_pub = rospy.Publisher('gps', sensor_msgs.msg.NavSatFix, queue_size=100)
@@ -147,14 +148,15 @@ class Arduino:
                 servos_str = self.ser_servos.readline()
                 exec('servos_tuple = list({0})'.format(servos_str))
                 ### parse servos serial
-                info['state'], info['steer'], info['motor'], info['encoder'], _ = servos_tuple
+                info['state'], info['steer'], info['motor'], info['encoder'], info['state_transition_time_s'] = servos_tuple
                 self.info_state = info['state'] # 9/27/16
                 ### publish ROS
                 self.state_pub.publish(std_msgs.msg.Int32(info['state']))
                 self.steer_pub.publish(std_msgs.msg.Int32(info['steer']))
                 self.motor_pub.publish(std_msgs.msg.Int32(info['motor']))
                 self.encoder_pub.publish(std_msgs.msg.Float32(info['encoder']))
-                
+                self.state_transition_time_s_pub.publish(std_msgs.msg.Int32(info['state_transition_time_s']))
+               
                 ### write servos serial
                 write_to_servos = False
                 for var, queue in (('steer', self.cmd_steer_queue),

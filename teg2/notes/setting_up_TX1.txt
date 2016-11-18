@@ -256,3 +256,6 @@ ls /etc/NetworkManager/system-connections/
 set date over network:
 
 sudo date --set="$(ssh karlzipser@192.168.43.243 date)"
+
+
+http://wiki.ros.org/web_video_server

@@ -48,6 +48,7 @@ right_list = []
 A = 0
 B = 0
 state = 0
+state_transition_time_s = 0
 
 def state_callback(data):
 	global state
@@ -55,7 +56,6 @@ def state_callback(data):
 def right_callback(data):
 	global A,B, left_list, right_list, solver
 	A += 1
-	
 	cimg = bridge.imgmsg_to_cv2(data,"bgr8")
 	if len(right_list) > 5:
 		right_list = right_list[-5:]
@@ -67,6 +67,10 @@ def left_callback(data):
 	if len(left_list) > 5:
 		left_list = left_list[-5:]
 	left_list.append(cimg)
+def state_transition_time_s_callback(data):
+	global state_transition_time_s
+	state_transition_time_s = data.data
+
 
 GPS2_lat = -999.99
 GPS2_long = -999.99
@@ -117,6 +121,7 @@ import time
 rospy.Subscriber("/bair_car/zed/right/image_rect_color",Image,right_callback,queue_size = 1)
 rospy.Subscriber("/bair_car/zed/left/image_rect_color",Image,left_callback,queue_size = 1)
 rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32,state_callback)
+rospy.Subscriber('/bair_car/state_transition_time_s', std_msgs.msg.Int32, state_transition_time_s_callback)
 steer_cmd_pub = rospy.Publisher('cmd/steer', std_msgs.msg.Int32, queue_size=100)
 motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
 
@@ -184,10 +189,15 @@ while not rospy.is_shutdown():
 
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
-
+			if state == 4 and state_transition_time_s > 20:
+				print("Shutting down because in state 4 for 60+ s")
+				unix('sudo shutdown -h now')
 			if True:
 				if np.abs(GPS2_lat) > 0 and np.abs(GPS2_lat) > 0:
 					if GPS2_lat_orig > -999 and GPS2_long_orig > -999:
+						if state == 4 and state_transition_time_s > 20:
+							GPS2_lat_orig = GPS2_lat; GPS2_lat_orig = GPS2_long;
+							print("Set GPS2 origin to current coordiates because in state 4 for 20+ s")
 						dist = lat_lon_to_dist_meters(GPS2_lat_orig,GPS2_long_orig,GPS2_lat,GPS2_long)
 						if dist > GPS2_radius_meters:
 							caf_steer = 49
@@ -204,9 +214,11 @@ while not rospy.is_shutdown():
 						print("No GPS fix. "+time_str())
 
 			
-			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))#camera_heading))
-			#print camera_heading
+			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+
+			if time_step:
+				print(d2s("In state",state,"for",state_transition_time_s,"seconds"))
 
 		time_step = False
 		if time.time() - t0 > 1.0:
