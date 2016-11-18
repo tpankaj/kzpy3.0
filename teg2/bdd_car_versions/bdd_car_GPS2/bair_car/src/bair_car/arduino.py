@@ -155,6 +155,7 @@ class Arduino:
                 self.steer_pub.publish(std_msgs.msg.Int32(info['steer']))
                 self.motor_pub.publish(std_msgs.msg.Int32(info['motor']))
                 self.encoder_pub.publish(std_msgs.msg.Float32(info['encoder']))
+                print servos_tuple,info['state_transition_time_s']
                 self.state_transition_time_s_pub.publish(std_msgs.msg.Int32(info['state_transition_time_s']))
                
                 ### write servos serial
