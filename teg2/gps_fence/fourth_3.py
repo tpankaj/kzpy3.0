@@ -6,10 +6,15 @@ class Points:
 	def __init__(self):
 		self.my_position = (np.random.random(2)-0.5)/4.0
 		self.pts = []
-		r = 1.0
+		r = 20.0/10.0
 		for a in range(0,360,5):
 			x = r*np.sin(np.deg2rad(a))
 			y = r*np.cos(np.deg2rad(a))
+			self.pts.append([x,y])
+		r2 = 100.0/10.0
+		for a in range(0,360,5):
+			x = r2*np.sin(np.deg2rad(a))
+			y = r2*np.cos(np.deg2rad(a))
 			self.pts.append([x,y])
 		for i in range(20):
 			p = 2*np.random.random(2) - 1

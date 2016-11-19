@@ -56,21 +56,21 @@ def get_pts2(v1,w,h,d,to_one_scale_factor,y_offset,graphics=False):
 	v_right = [a2+object_screen_width/2.,d]
 	v_bottom = [h*(1-d/m),d]
 	x0 = v_left[0] * to_one_scale_factor
-	y0 = -v_bottom[0] * to_one_scale_factor + y_offset
+	y0 = -v_bottom[0] * to_one_scale_factor + y_offset*to_one_scale_factor
 	x1 = v_right[0] * to_one_scale_factor
-	y1 = -v_bottom[0] * to_one_scale_factor + y_offset
+	y1 = -v_bottom[0] * to_one_scale_factor + y_offset*to_one_scale_factor
 	x2 = v_left[0] * to_one_scale_factor
-	y2 = h/w*object_screen_width-v_bottom[0] * to_one_scale_factor + y_offset
+	y2 = (h/w*object_screen_width-v_bottom[0]) * to_one_scale_factor + y_offset*to_one_scale_factor
 	x3 = v_right[0] * to_one_scale_factor
-	y3 = h/w*object_screen_width-v_bottom[0] * to_one_scale_factor + y_offset
+	y3 = (h/w*object_screen_width-v_bottom[0]) * to_one_scale_factor + y_offset*to_one_scale_factor
 	if graphics:
 		plt.figure(3)
 		plot([x0,x1,x3,x2,x0],[-y0,-y1,-y3,-y2,-y0],'k')
 	return [[x0,y0],[x1,y1],[x2,y2],[x3,y3]],m
 
 
-def get_pts3(v1,w,h,d,graphics=False):
-	pts,m = get_pts2(v1,w,h,d,1.0,0.075,True)
+def get_pts3(v1,w,h,d,to_one_scale_factor,y_offset,graphics=False):
+	pts,m = get_pts2(v1,w,h,d,to_one_scale_factor,y_offset,True)
 	img_pts = []
 	for p in pts:
 		img_pts.append(pt_to_img_coordinates(p,(380,520)))
@@ -118,8 +118,11 @@ def mi_picture(img,img_pts,m,graphics=False):
 
 def main():
 
-	screen_distance = 0.025
-
+	screen_distance = 0.005
+	to_one_scale_factor = 7.0 / screen_distance * 0.01
+	y_offset = 0.075+0.00485
+	shape_height = 0.08
+	shape_width = shape_height / 4.0
 	img_start = imread(opjD('temp.png')) #zeros((300,300))
 
 	p = Points()
@@ -128,6 +131,8 @@ def main():
 		pts_R = p.do_update()
 		figure(3)
 		clf()
+		plot([-10,10],[0,0],'r')
+		plot([0,0],[-10,10],'r')
 		rng = 0.1
 		plt.xlim(-rng,rng)
 		plt.ylim(-rng,rng)
@@ -149,6 +154,7 @@ def main():
 
 		import operator
 		dist_sorted = sorted(enumerate(dist), key=operator.itemgetter(1))
+
 		for i in range(len(dist_sorted)-1,-1,-1):
 			s = dist_sorted[i]
 			rp = pts_R[s[0]]
@@ -169,8 +175,10 @@ def main():
 			y = pt[1]
 			figure(2)
 			plot(x,y,'ro')
-			img_pts,m = get_pts3([x,y],0.02,0.08,screen_distance,False)
-			mi_picture(img,img_pts,m,False)
+			img_pts,m = get_pts3([x,y],shape_width,shape_height,screen_distance,to_one_scale_factor,y_offset,False)
+
+			#mi_picture(img,img_pts,m,False)
+
 		#img[100,0]=0.33
 		#mi(img,'img')#mi(img[:,50:150],'img')
 		plt.pause(0.001)
