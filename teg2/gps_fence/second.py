@@ -1,6 +1,7 @@
 # export ROS_MASTER_URI=http://192.168.43.113:11311
 
-
+from kzpy3.teg2.global_run_params import *
+from kzpy3.teg2.gps_fence.geometry import *
 from kzpy3.vis import *
 import roslib
 import std_msgs.msg
@@ -60,22 +61,38 @@ rospy.Subscriber('/bair_car/GPS2_angle', std_msgs.msg.Float32, callback=GPS2_ang
 plt.ion()
 
 
+miles_per_deg_lat = 68.94
+miles_per_deg_lon_at_37p88 = 54.41
+meters_per_mile = 1609.34
 
+GPS2_lat_orig,GPS2_long_orig = 37.8814506531,-122.27844238
+rng = 50
+plt.figure(1)
 
-GPS2_lat_orig = 37.8814506531
-GPS2_long_orig = -122.27844238
-
+#plt.xlim(GPS2_long_orig-rng,GPS2_long_orig+rng)
+#plt.ylim(GPS2_lat_orig-rng,GPS2_lat_orig+rng)
+plt.xlim(-rng,rng)
+plt.ylim(-rng,rng)
+plt_square()
+ctr = 0
 while not rospy.is_shutdown():
-	plt.figure(1)
-	plt.xlim(GPS2_long_orig-0.022,GPS2_long_orig+0.022)
-	plt.ylim(GPS2_lat_orig-0.022,GPS2_lat_orig+0.022)
+
 	try:
 		print GPS2_lat,GPS2_long,GPS2_speed,GPS2_angle
 		if GPS2_lat > -999:
-			plt.plot(GPS2_long,GPS2_lat,'o')
+			dx = (GPS2_lat-GPS2_lat_orig)*miles_per_deg_lat*meters_per_mile
+			dy = (GPS2_long-GPS2_long_orig)*miles_per_deg_lon_at_37p88*meters_per_mile
+			rp = rotatePoint([dx,dy],[dx+1,dy],GPS2_angle)
+			if np.mod(ctr,2) == 0:
+				clr = 'r'
+			else:
+				clr = 'k'
+			#plt.plot(dy,dx,clr+'o')
+			plt.plot([dy,rp[1]],[dx,rp[0]],clr)
 		plt.pause(0.5);#time.sleep(0.5)
 	except Exception as e:
 		print e.message, e.args
+	ctr += 1
 
 
 
