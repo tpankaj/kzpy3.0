@@ -17,7 +17,7 @@ meters_per_mile = 1609.34
 
 GPS2_lat_orig = M_1408_lat
 GPS2_long_orig = M_1408_lon
-GPS2_radius_meters = 80
+GPS2_radius_meters = 8000
 
 def lat_lon_to_dist_meters(lat_A,lon_A,lat_B,lon_B):
 	dx = (lat_A-lat_B)*miles_per_deg_lat*meters_per_mile
