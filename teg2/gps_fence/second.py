@@ -66,7 +66,8 @@ miles_per_deg_lon_at_37p88 = 54.41
 meters_per_mile = 1609.34
 
 GPS2_lat_orig,GPS2_long_orig = 37.8814506531,-122.27844238
-rng = 50
+GPS2_lat_orig,GPS2_long_orig = 37.9166107178,-122.334060669
+rng = 20
 plt.figure(1)
 
 #plt.xlim(GPS2_long_orig-rng,GPS2_long_orig+rng)
