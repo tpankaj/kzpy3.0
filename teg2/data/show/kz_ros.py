@@ -6,5 +6,5 @@ rivl='rosrun image_view image_view image:=/bair_car/zed/left/image_rect_color'
 
 bags = sorted(gg(opj(sys.argv[1],'*.bag')))
 for b in bags[int(sys.argv[2]):int(sys.argv[3])]:
-	unix('rosbag play ' + b)
+	unix('rosbag play ' + b + ' --rate 1')
 
