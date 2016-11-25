@@ -17,20 +17,15 @@ meters_per_mile = 1609.34
 
 GPS2_lat_orig = M_1408_lat
 GPS2_long_orig = M_1408_lon
-<<<<<<< HEAD
 GPS2_radius_meters = 800000000
 
 
 RFS_start_lat,RFS_start_lon = 37.916731,-122.334096
 RFS_end_lat,RFS_end_lon = 337.918258,-122.3342703
-=======
-GPS2_radius_meters = 8000
->>>>>>> f878418be64d794c85583620af33eff750181cc8
+
+GPS2_radius_meters = 80000000
 
 def lat_lon_to_dist_meters(lat_A,lon_A,lat_B,lon_B):
-	dx = (lat_A-lat_B)*miles_per_deg_lat*meters_per_mile
-	dy = (lon_A-lon_B)*miles_per_deg_lon_at_37p88*meters_per_mile
-	return np.sqrt(dx**2+dy**2)
-
-
-
+        dx = (lat_A-lat_B)*miles_per_deg_lat*meters_per_mile
+        dy = (lon_A-lon_B)*miles_per_deg_lon_at_37p88*meters_per_mile
+        return np.sqrt(dx**2+dy**2)
