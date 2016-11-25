@@ -59,12 +59,12 @@ void loop() {
   button_B_state = digitalRead(button_B);
   button_C_state = digitalRead(button_C);
   button_D_state = digitalRead(button_D);
-/*
+
   Serial.println(button_A_state);
   Serial.println(button_B_state);
   Serial.println(button_C_state);
   Serial.println(button_D_state);
-*/
+
   
   if (I > 0) {
       a = I/10000;
@@ -163,6 +163,7 @@ c = (I - a * 10000 - b * 1000)/100
 d = (I - a * 10000 - b * 1000 - c * 100)/10
 e = (I - a * 10000 - b * 1000 - c * 100 - d * 10)
 */
+
 
 
 

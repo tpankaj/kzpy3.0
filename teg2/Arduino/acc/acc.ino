@@ -9,9 +9,9 @@ Adafruit_MMA8451 mma = Adafruit_MMA8451();
 
 void setup()  
 {
+  
   Serial.begin(115200);
   gyro_setup();
-  
   //Serial.println("Adafruit MMA8451 test!");
   if (! mma.begin()) {
     //Serial.println("Couldnt start");
@@ -125,7 +125,7 @@ void gyro_setup() {
 }
 void gyro_loop() {
   updateGyroValues();
-  //updateHeadings();
+  updateHeadings();
   Serial.print("(");
   Serial.print(STATE_GYRO);
   Serial.print(",");
@@ -137,7 +137,7 @@ void gyro_loop() {
   Serial.println(")");
   //printDPS();
   //Serial.print("   -->   ");
-  //printHeadings();
+  printHeadings2();
   //Serial.println();
 }
 void printDPS()
@@ -158,6 +158,19 @@ void printHeadings()
   Serial.print("  Z: ");
   Serial.print(heading[2]);
 }
+void printHeadings2()
+{
+  Serial.print("('head',");
+  Serial.print(heading[0]);
+  Serial.print(',');
+
+  Serial.print(heading[1]);
+  Serial.print(',');
+
+  Serial.print(heading[2]);
+  Serial.println(')');
+}
+
 void updateHeadings()
 {
   float deltaT=getDeltaTMicros();

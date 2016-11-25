@@ -119,7 +119,8 @@ def mi_picture(img,img_pts,m,graphics=False):
 def main():
 
 	screen_distance = 0.005
-	to_one_scale_factor = 7.0 / screen_distance * 0.01
+	rng = 19.2
+	to_one_scale_factor = rng*10 * 7.0 / screen_distance * 0.01
 	y_offset = 0.075+0.00485
 	shape_height = 0.08
 	shape_width = shape_height / 4.0
@@ -127,15 +128,16 @@ def main():
 
 	p = Points()
 	for i in range(1000):
-		img = img_start.copy()
+		#img = img_start.copy()
 		pts_R = p.do_update()
 		figure(3)
 		clf()
-		plot([-10,10],[0,0],'r')
-		plot([0,0],[-10,10],'r')
-		rng = 0.1
+		plot([-rng,rng],[0,0],'r')
+		plot([0,0],[-rng,rng],'r')
+		
 		plt.xlim(-rng,rng)
 		plt.ylim(-rng,rng)
+		#mi(img,3)
 		figure(2)
 		clf()
 		plt.xlim(-1.5,1.5)

@@ -4,18 +4,18 @@
 //
 void setup() {
   Serial.begin(115200);
-  GPS_setup();
+  //GPS_setup();
   gyro_setup();
   //motor_servo_setup();
-  sonar_setup();
+  //sonar_setup();
   //encoder_setup();
 }
 
 void loop() {
-  GPS_loop();
+  //GPS_loop();
   gyro_loop();
   //motor_servo_loop();
-  sonar_loop();
+  //sonar_loop();
   //encoder_loop();
 }
 //

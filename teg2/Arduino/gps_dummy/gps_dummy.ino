@@ -27,6 +27,12 @@ void loop() {
     Serial.print(99); Serial.print(")");
     Serial.println();
  
+    Serial.print("('GPS2',");
+    Serial.print(99); Serial.print(",");
+    Serial.print(99); Serial.print(",");
+    Serial.print(99); Serial.print(")");
+    Serial.println();
+ 
   }
 
 

@@ -292,7 +292,7 @@ void LED_loop() {
     Serial.print(button_B_state);    
     Serial.println(")");
 */   
-  delay(100);
+  delay(10);
 }
 
 
