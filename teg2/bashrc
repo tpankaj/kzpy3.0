@@ -29,6 +29,7 @@ alias mrora='ssh ubuntu@192.168.43.113'
 alias mrtea='ssh ubuntu@192.168.43.54'
 alias mrbla='ssh ubuntu@192.168.43.196'
 alias mrwhi='ssh ubuntu@192.168.43.63'
+alias ssh_date='sudo date --set="$(ssh karlzipser@192.168.43.243 date)"'
 ######################## for .bashrc from MacBook #################
 #
 #echo "source ~/8August2016_common_aliases"
