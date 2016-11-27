@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(2.0)
     while not rospy.is_shutdown():
-	save_pub.publish(std_msgs.msg.Int32(1))
+        save_pub.publish(std_msgs.msg.Int32(1))
         for f in os.listdir(bag_rec_folder):
             if '.bag' != os.path.splitext(f)[1]:
                 continue
@@ -48,6 +48,7 @@ if __name__ == '__main__':
             start = time.time()
             subprocess.call(['mv', f_rec, f_mv])
             elapsed = time.time() - start
+            unix('rm '+opj(bag_rec_folder,'*.bag')) # 27 Nov 2016, to remove untransferred bags
             print('Done in {0} secs\n'.format(elapsed))
             save_pub.publish(std_msgs.msg.Int32(1))
             
