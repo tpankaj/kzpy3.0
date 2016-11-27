@@ -1,5 +1,5 @@
 from kzpy3.vis import *
-import roslib
+#import roslib
 import std_msgs.msg
 import rospy
 rivl='rosrun image_view image_view image:=/bair_car/zed/left/image_rect_color'
