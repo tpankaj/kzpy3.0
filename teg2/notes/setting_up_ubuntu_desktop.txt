@@ -183,3 +183,8 @@ pip install termcolor
 sudo apt-get purge lightdm
 sudo apt-get install lightdm
 dpkg-reconfigure lightdm
+
+
+
+# to fix caffe python problem:
+conda install libgcc
