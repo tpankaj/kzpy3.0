@@ -5,7 +5,7 @@ bfp = '/media/karlzipser/rosbags/caffe_direct_local_sidewalks_05Dec16_15h03m35s_
 preprocess_bag_data(bfp,[]);
 
 
-L=load_obj('/media/karlzipser/rosbags/caffe_direct_local_sidewalks_05Dec16_15h03m35s_Mr_Blue/.preprocessed2/left_image_bound_to_data.pkl')
+L=load_obj('/home/karlzipser/Desktop/direct_home_06Dec16_08h10m47s_Mr_Blue/.preprocessed2/left_image_bound_to_data.pkl')
 ts = sorted(L.keys())
 dts = [0]
 for i in range(1,len(ts)):
