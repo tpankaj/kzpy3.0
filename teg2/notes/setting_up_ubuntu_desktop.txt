@@ -188,3 +188,6 @@ dpkg-reconfigure lightdm
 
 # to fix caffe python problem:
 conda install libgcc
+
+
+git clone git://github.com/ros/rospkg.git

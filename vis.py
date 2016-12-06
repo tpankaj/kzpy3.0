@@ -23,6 +23,9 @@ import matplotlib.pyplot as plt  # the Python plotting package
 plt.ion()
 plot = plt.plot
 hist = plt.hist
+xlim = plt.xlim
+ylim = plt.ylim
+clf = plt.clf
 figure = plt.figure
 plt.ion()
 plt.show()
