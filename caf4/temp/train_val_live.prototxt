@@ -1,0 +1,220 @@
+layer {
+	name: "steer_motor_target_data"
+	type: "DummyData"
+	top: "steer_motor_target_data"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 20
+		}
+	}
+}
+
+
+
+layer {
+        name: "metadata"
+        type: "DummyData"
+        top: "metadata"
+        dummy_data_param {
+                shape {
+                        dim: 1
+                        dim: 6
+                        dim: 14
+                        dim: 26
+                }
+        }
+}
+
+
+
+
+layer {
+	name: "ZED_data"
+	type: "DummyData"
+	top: "ZED_data"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 4
+			dim: 376
+			dim: 672
+		}
+	}
+}
+layer {
+	name: "ZED_data_pool1"
+	type: "Pooling"
+	bottom: "ZED_data"
+	top: "ZED_data_pool1"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad: 0
+	}
+}
+layer {
+	name: "ZED_data_pool2"
+	type: "Pooling"
+	bottom: "ZED_data_pool1"
+	top: "ZED_data_pool2"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad: 0
+	}
+}
+
+	
+###################### Convolutional Layer Set 'conv1' ######################
+#
+layer {
+	name: "conv1a"
+	type: "Convolution"
+	bottom: "ZED_data"
+	top: "conv1a"
+	convolution_param {
+		num_output: 96
+		group: 1
+		kernel_size: 11
+		stride: 3
+		pad: 0
+		weight_filler {
+			type: "gaussian" 
+			std: 0.1
+		}
+	}
+}
+
+
+layer {
+	name: "conv1b"
+	type: "Convolution"
+	bottom: "ZED_data_pool1"
+	top: "conv1b"
+	convolution_param {
+		num_output: 96
+		group: 1
+		kernel_size: 11
+		stride: 3
+		pad: 0
+		weight_filler {
+			type: "gaussian" 
+			std: 0.1
+		}
+	}
+}
+
+layer {
+	name: "conv1b1"
+	type: "Convolution"
+	bottom: "ZED_data_pool1"
+	top: "conv1b1"
+	convolution_param {
+		num_output: 96
+		group: 1
+		kernel_size: 11
+		stride: 3
+		pad_h: 2
+		pad_w: 1
+		weight_filler {
+			type: "gaussian" 
+			std: 0.1
+		}
+	}
+}
+
+layer {
+	name: "conv1c"
+	type: "Convolution"
+	bottom: "ZED_data_pool2"
+	top: "conv1c"
+	convolution_param {
+		num_output: 96
+		group: 1
+		kernel_size: 11
+		stride: 1
+		pad: 0
+		weight_filler {
+			type: "gaussian" 
+			std: 0.1
+		}
+	}
+}
+layer {
+	name: "conv1c_c"
+	type: "Convolution"
+	bottom: "conv1c"
+	top: "conv1c_c"
+	convolution_param {
+		num_output: 96
+		group: 1
+		kernel_size: 11
+		stride: 1
+		pad_h: 5
+		pad_w: 5
+		weight_filler {
+			type: "gaussian" 
+			std: 0.1
+		}
+	}
+}
+
+
+
+layer {
+	name: "conv1a_pool"
+	type: "Pooling"
+	bottom: "conv1a"
+	top: "conv1a_pool"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
+	}
+}
+layer {
+	name: "conv1a_pool1"
+	type: "Pooling"
+	bottom: "conv1a"
+	top: "conv1a_pool1"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad_h: 1
+		pad_w: 1
+	}
+}
+
+layer {
+	name: "conv1b_pool"
+	type: "Pooling"
+	bottom: "conv1b"
+	top: "conv1b_pool"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
+	}
+}
+
+layer {
+	name: "conv1c_pool"
+	type: "Pooling"
+	bottom: "conv1c"
+	top: "conv1c_pool"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
+	}
+}
