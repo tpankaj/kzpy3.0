@@ -45,7 +45,7 @@ loaded_bag_files_names = []
 
 def bag_file_loader_thread():
 	global loaded_bag_files_names
-	for j in range(50):
+	for j in range(25): # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
 		try:
 			r = random.choice(run_names)
 			BF = BF_dic[r]
@@ -82,7 +82,9 @@ for j in range(100):
 	good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
 	
 	cprint(d2s('len(good_bag_timestamps) =',len(good_bag_timestamps)),'blue')
-
+	if len(good_bag_timestamps) < 100:
+		print('skipping')
+		continue
 	ts = sorted(bid['left'].keys())
 	for i in range(len(ts)):
 		t = ts[i]
@@ -96,4 +98,4 @@ for j in range(100):
 
 cv2.destroyAllWindows()
 
-;
+
