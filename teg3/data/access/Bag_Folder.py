@@ -6,8 +6,8 @@ def init(path, preprocessed_dir='.preprocessed',left_image_bound_to_data_name='l
     BF = {}
 
     BF['path'] = path
-
-    cprint('Bag_Folder::__init__, path = '+path,'yellow','on_red')
+    run_name = path.split('/')[-1]
+    cprint('Bag_Folder::__init__, run = '+run_name,'yellow','on_red')
     BF['bag_files'] = sorted(glob.glob(opj(path,'*.bag')))
     BF['bag_file_num_dic'] = {}
     for bf in BF['bag_files']:

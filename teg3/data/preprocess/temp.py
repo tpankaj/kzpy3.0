@@ -4,7 +4,6 @@ bfp = '/media/karlzipser/rosbags/direct_home_06Dec16_16h01m42s_Mr_Blue'
 
 preprocess_bag_data(bfp,[]);
 
-
 L=load_obj('/home/karlzipser/Desktop/direct_home_06Dec16_16h01m42s_Mr_Blue/.preprocessed2/left_image_bound_to_data.pkl')
 
 if False:
@@ -34,12 +33,12 @@ plot(BF['data']['good_start_timestamps'],zeros(len(BF['data']['good_start_timest
 #plot(BF['data']['raw_timestamps'],100*BF['data']['state'],'r')
 #plot(BF['data']['raw_timestamps'],100*BF['data']['acc_z'],'r')
 
-bf = BF['bag_file_num_dic'][60]  
-bid = Bag_File.load_images(bf) 
-plot(bid['left'].keys(),2000+np.zeros(len(bid['left'].keys())),'go')
+bf = BF['bag_file_num_dic'][15]  
+bid = Bag_File.load_images(bf)
+bag_left_timestamps = sorted(bid['left'].keys())
+plot(bag_left_timestamps,2000+np.zeros(bag_left_timestamps),'go')
 
-
-good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(ts))
+good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
 plot(good_bag_timestamps,2000+np.zeros(len(good_bag_timestamps)),'ro')
 
 
@@ -65,3 +64,22 @@ hist(dts)
 """
 
 pass
+
+
+
+if False:
+	bf = random.choice(BF['bag_file_num_dic'])
+	bid = Bag_File.load_images(bf)
+	bag_left_timestamps = sorted(bid['left'].keys())
+	plot(bag_left_timestamps,2000+np.zeros(len(bag_left_timestamps)),'go')
+
+	good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
+	plot(good_bag_timestamps,2000+np.zeros(len(good_bag_timestamps)),'ro')
+
+	ts = sorted(bid['left'].keys())
+	for t in ts:
+		mi(bid['left'][t],'left')
+		#mi(bid['right'][BF['left_image_bound_to_data'][t]['right_image']],'right')
+		plt.pause(0.0001)
+
+
