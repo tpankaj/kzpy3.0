@@ -58,7 +58,7 @@ def bag_file_loader_thread():
 			loaded_bag_files_names.append(bf)
 		except Exception as e:
 			cprint("********** Exception ***********************",'red')
-			print(emessage, e.args)
+			print(e.message, e.args)
 
 	print("DONE!!!!!!!!!!!!!!!")
 

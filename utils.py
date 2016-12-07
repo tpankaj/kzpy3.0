@@ -16,7 +16,7 @@ if False:
         pass
     except Exception as e:
         cprint("********** Exception ***********************",'red')
-        print(emessage, e.args)
+        print(e.message, e.args)
 #
 ####################################
 
