@@ -61,7 +61,7 @@ ones = np.ones
 imresize = scipy.misc.imresize
 reshape = np.reshape
 mod = np.mod
-
+array = np.array
 
 def opj(*args):
     if len(args) == 0:

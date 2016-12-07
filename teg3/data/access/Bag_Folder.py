@@ -21,6 +21,12 @@ def init(path, preprocessed_dir='.preprocessed',left_image_bound_to_data_name='l
             BF['left_image_bound_to_data'][ts]['acc'] = [0.,9.8,0.]
     BF['data'] = {}
     BF['data']['raw_timestamps'] = sorted(BF['left_image_bound_to_data'].keys())
+
+    BF['data']['raw_timestamp_deltas'] = [0]
+    for i in range(1,len(BF['data']['raw_timestamps'])):
+        BF['data']['raw_timestamp_deltas'].append(BF['data']['raw_timestamps'][i] - BF['data']['raw_timestamps'][i-1])
+    BF['data']['raw_timestamp_deltas'] = array(BF['data']['raw_timestamp_deltas'])
+
     BF['good_timestamps_to_raw_timestamps_indicies__dic'] = {}
     BF['img_dic'] = {}
     BF['img_dic']['left'] = {}
@@ -125,6 +131,7 @@ def init(path, preprocessed_dir='.preprocessed',left_image_bound_to_data_name='l
     good_timestamps_list = sorted(list(good_timestamps_set))
     del good_timestamps_set
 
+    cprint('basic checking done','yellow')
     for i in range(len(good_timestamps_list)-2): # Here we assume that isolated state 4 timepoints are rounding/sampling errors.
         t0 = good_timestamps_list[i]
         t1 = good_timestamps_list[i+1]
@@ -206,15 +213,16 @@ def _is_timestamp_valid_data(BF,t):
     state = BF['left_image_bound_to_data'][t]['state']
     motor = BF['left_image_bound_to_data'][t]['motor']
     steer = BF['left_image_bound_to_data'][t]['steer']
-    if state not in [1,3,5,6,7]:
+    if state not in [1]:#[1,3,5,6,7]: Disallowing caffe states altogether
         valid = False
     if motor < 51: # i.e., there must be at least a slight forward motor command 
-        valid = False    
-    if state in [3,5,6,7]: # Some strange things can happen when human takes control, steering gets stuck at max
-        if steer > 99:
-            valid = False
-        elif steer < 1: # Can get stuck in steer = 0
-            valid = False
+        valid = False
+    if False:
+        if state in [3,5,6,7]: # Some strange things can happen when human takes control, steering gets stuck at max
+            if steer > 99:
+                valid = False
+            elif steer < 1: # Can get stuck in steer = 0
+                valid = False
     return valid
     
 
