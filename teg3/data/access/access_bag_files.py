@@ -45,7 +45,7 @@ loaded_bag_files_names = []
 
 def bag_file_loader_thread():
 	global loaded_bag_files_names
-	for j in range(100):
+	for j in range(50):
 		try:
 			r = random.choice(run_names)
 			BF = BF_dic[r]
@@ -66,14 +66,17 @@ def bag_file_loader_thread():
 import threading
 threading.Thread(target=bag_file_loader_thread).start()
 
-"""
+
 	
 
 for j in range(100):
 	r = random.choice(run_names)
 	BF = BF_dic[r]
-	bf = random.choice(BF['bag_file_num_dic'])
-	bid = Bag_File.load_images(bf)
+	if 'bag_file_image_data' not in BF:
+		continue
+	if len(BF['bag_file_image_data']) < 1:
+		continue
+	bid = an_element(BF['bag_file_image_data'])
 	bag_left_timestamps = sorted(bid['left'].keys())
 
 	good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
@@ -92,5 +95,5 @@ for j in range(100):
 	#plt.pause(1.0/60.0)
 
 cv2.destroyAllWindows()
-"""
+
 ;
