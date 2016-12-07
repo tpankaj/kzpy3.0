@@ -41,11 +41,19 @@ BF_dic = load_Bag_Folders(opjD('runs'))
 
 run_names = BF_dic.keys()
 
-loaded_bag_files_names = []
+loaded_bag_files_names = {}
 
 def bag_file_loader_thread():
 	global loaded_bag_files_names
-	for j in range(25): # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
+	for j in range(1000): # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
+		cprint(d2s(j),'red','on_blue')
+		if len(loaded_bag_files_names) > 75:
+			bf = a_key(loaded_bag_files_names)
+			cprint('deleting '+bf)
+			r = loaded_bag_files_names[bf]
+			loaded_bag_files_names.pop(bf)
+			BF = BF_dic[r]
+			BF['bag_file_image_data'].pop(bf)
 		try:
 			r = random.choice(run_names)
 			BF = BF_dic[r]
@@ -55,7 +63,7 @@ def bag_file_loader_thread():
 			if bf in BF['bag_file_image_data']:
 				continue
 			BF['bag_file_image_data'][bf] = Bag_File.load_images(bf)
-			loaded_bag_files_names.append(bf)
+			loaded_bag_files_names[bf] = r
 		except Exception as e:
 			cprint("********** Exception ***********************",'red')
 			print(e.message, e.args)
@@ -67,7 +75,7 @@ import threading
 threading.Thread(target=bag_file_loader_thread).start()
 
 
-	
+time.sleep(30)
 
 for j in range(100):
 	r = random.choice(run_names)
