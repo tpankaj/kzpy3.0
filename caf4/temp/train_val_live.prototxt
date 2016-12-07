@@ -30,23 +30,36 @@ layer {
 
 
 layer {
-	name: "ZED_data"
+	name: "ZED_data_left"
 	type: "DummyData"
-	top: "ZED_data"
+	top: "ZED_data_left"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 4
+			dim: 9
 			dim: 376
 			dim: 672
 		}
 	}
 }
 layer {
-	name: "ZED_data_pool1"
+	name: "ZED_data_right"
+	type: "DummyData"
+	top: "ZED_data_right"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 9
+			dim: 376
+			dim: 672
+		}
+	}
+}
+layer {
+	name: "ZED_data_pool1_left"
 	type: "Pooling"
-	bottom: "ZED_data"
-	top: "ZED_data_pool1"
+	bottom: "ZED_data_left"
+	top: "ZED_data_pool1_left"
 	pooling_param {
 		pool: MAX
 		kernel_size: 3
