@@ -4,7 +4,8 @@ import kzpy3.teg3.data.access.Bag_Folder as Bag_Folder
 
 
 
-def preprocess_Bag_Folder(bag_folders_path = opjD('runs')):
+def preprocess_Bag_Folder(bag_folders_path = opjD('runs'),NUM_STATE_ONE_STEPS=10):
+	
 	bag_folders_paths_list = sorted(gg(opj(bag_folders_path,'*')),key=natural_keys)
 
 	for bfp in bag_folders_paths_list:
@@ -21,7 +22,7 @@ def preprocess_Bag_Folder(bag_folders_path = opjD('runs')):
 			BF = Bag_Folder.init(bfp,
 				preprocessed_dir=preprocessed_dir,
 				left_image_bound_to_data_name=left_image_bound_to_data_name,
-				NUM_STATE_ONE_STEPS=10)
+				NUM_STATE_ONE_STEPS=NUM_STATE_ONE_STEPS)
 			save_obj(BF,opj(bfp,preprocessed_dir,'Bag_Folder.pkl'))
 
 		
