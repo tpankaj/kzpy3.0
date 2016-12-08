@@ -26,6 +26,7 @@ hist = plt.hist
 xlim = plt.xlim
 ylim = plt.ylim
 clf = plt.clf
+pause = plt.pause
 figure = plt.figure
 plt.ion()
 plt.show()

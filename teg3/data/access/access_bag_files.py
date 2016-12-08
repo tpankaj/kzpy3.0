@@ -6,7 +6,7 @@ import cv2
 import threading
 
 
-
+NUM_STATE_ONE_STEPS = 30
 
 def load_Bag_Folders(bag_folders_path = opjD('runs')):
 
@@ -83,13 +83,41 @@ def bag_file_loader_thread(delay_before_delete=60):
 			try:
 				r = random.choice(BF_dic.keys())
 				BF = BF_dic[r]
-				if 'bag_file_image_data' not in BF:
-					BF['bag_file_image_data'] = {}
+				dic_keys = ['bag_file_image_data','good_bag_timestamps','binned_timestamps','binned_steers','bid_timestamps']
+				for dk in dic_keys:
+					if dk not in BF:
+						BF[dk] = {}
 				bf = random.choice(BF['bag_file_num_dic'])
 				if bf in BF['bag_file_image_data']:
 					continue
 				BF['bag_file_image_data'][bf] = Bag_File.load_images(bf)
 				loaded_bag_files_names[bf] = r
+
+				bid = BF['bag_file_image_data'][bf]
+
+				bag_left_timestamps = sorted(bid['left'].keys())
+
+				good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
+				
+				cprint(d2s('THREAD:: ',bf.split('/')[-1],'len(good_bag_timestamps) =',len(good_bag_timestamps)),'blue')
+
+				binned_timestamps = [[],[]]
+				binned_steers = [[],[]]
+
+				for t in good_bag_timestamps:
+					steer = BF['left_image_bound_to_data'][t]['steer']
+					if steer < 43 or steer > 55:
+						binned_timestamps[0].append(t)
+						binned_steers[0].append(steer)
+					else:
+						binned_timestamps[1].append(t)
+						binned_steers[1].append(steer)
+
+				BF['good_bag_timestamps'][bf] = good_bag_timestamps
+				BF['binned_timestamps'][bf] = binned_timestamps
+				BF['binned_steers'][bf] = binned_steers
+				BF['bid_timestamps'][bf] = sorted(bid['left'].keys())
+
 			except Exception as e:
 				cprint("THREAD:: ********** Exception ***********************",'red')
 				print(e.message, e.args)
@@ -123,7 +151,7 @@ steer_rect_color = [0,0,255]
 while True:
 	if show_image_data_please_exit:
 		cv2.destroyAllWindows()
-		cprint('exiting show_image_data()')
+		cprint('MAIN:: exiting show_image_data()')
 		break #return
 	elif not thread_please_show_image_data:
 		time.sleep(1)
@@ -131,46 +159,98 @@ while True:
 		r = random.choice(BF_dic.keys())
 		BF = BF_dic[r]
 		if 'bag_file_image_data' not in BF:
+			time.sleep(1)
 			continue
 		if len(BF['bag_file_image_data']) < 1:
 			time.sleep(1)
 			continue
 		bf = a_key(BF['bag_file_image_data'])
-		bid = BF['bag_file_image_data'][bf]
-		if bf.split('/')[-1] not in played_bagfile_dic:
-			played_bagfile_dic[bf.split('/')[-1]] = 0
-		played_bagfile_dic[bf.split('/')[-1]] += 1
-		bag_left_timestamps = sorted(bid['left'].keys())
-
-		good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
-		
-		cprint(d2s('MAIN:: ',bf.split('/')[-1],'len(good_bag_timestamps) =',len(good_bag_timestamps)),'blue')
-
-		steer_list = []
-		for t in good_bag_timestamps:
-			steer_list.append(np.abs(BF['left_image_bound_to_data'][t]['steer']-49))
-		figure('steer')
-		clf()
-		plt.hist(steer_list,bins=10)
-		xlim(0,99)
-		plt.pause(0.01)
-
-
-		if len(good_bag_timestamps) < 100:
+		if len(BF['good_bag_timestamps'][bf]) < 100:
 			print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
 			continue
-		ts = sorted(bid['left'].keys()) #sorted(good_bag_timestamps) #
-		for i in range(len(ts)):
-			t = ts[i]
-			#mi(bid['left'][t],'left')
-			steer = BF['left_image_bound_to_data'][t]['steer']
-			motor = BF['left_image_bound_to_data'][t]['motor']
-			state = BF['left_image_bound_to_data'][t]['state']
-			img = bid['left'][t].copy()
-			apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
-			apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
-			apply_rect_to_img(img,state,-4,4,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=True,horizontal=False)
-			cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
+		bid = BF['bag_file_image_data'][bf]
+		if bf not in played_bagfile_dic:
+			played_bagfile_dic[bf] = 0
+		played_bagfile_dic[bf] += 1
 
-			if cv2.waitKey(33) & 0xFF == ord('q'):
-			    break
+		if False:
+			figure('steer')
+			clf()
+			bins = range(0,105,3)
+			plt.hist(BF['binned_steers'][bf][0],bins=bins)
+			plt.hist(BF['binned_steers'][bf][1],bins=bins)
+			xlim(0,99)
+			pause(0.01)
+		"""
+        if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
+            timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
+        elif len(self.binned_timestamp_nums[0]) > 0:
+            timestamp_num = random.choice(self.binned_timestamp_nums[0])
+        elif len(self.binned_timestamp_nums[1]) > 0:
+            timestamp_num = random.choice(self.binned_timestamp_nums[1])
+        else:
+            return None
+        """
+
+		"""
+						steer_list = []
+						for t in good_bag_timestamps:
+							steer_list.append(np.abs(BF['left_image_bound_to_data'][t]['steer']-49))
+						steer_list = sorted(steer_list)
+						figure('steer')
+						clf()
+						plt.hist(steer_list,bins=10)
+						xlim(0,99)
+						plt.pause(0.01)
+		"""
+
+		if False:
+			ts = BF['bid_timestamps'][bf]
+			for i in range(len(ts)):
+				t = ts[i]
+				#mi(bid['left'][t],'left')
+				steer = BF['left_image_bound_to_data'][t]['steer']
+				motor = BF['left_image_bound_to_data'][t]['motor']
+				state = BF['left_image_bound_to_data'][t]['state']
+				img = bid['left'][t].copy()
+				apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+				apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+				apply_rect_to_img(img,state,-4,4,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=True,horizontal=False)
+				cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
+
+				if cv2.waitKey(3) & 0xFF == ord('q'):
+				    break
+
+		if True:
+			if len(BF['binned_timestamps'][bf][0]) > 0 and len(BF['binned_timestamps'][bf][1]) > 0:
+				rt = random.choice(BF['binned_timestamps'][bf][np.random.randint(2)])
+			elif len(BF['binned_timestamps'][bf][0]) > 0:
+				rt = random.choice(BF['binned_timestamps'][bf][0])
+			elif len(BF['binned_timestamps'][bf][1]) > 0:
+				rt = random.choice(BF['binned_timestamps'][bf][1])
+			else:
+				continue		
+
+
+			ts = BF['bid_timestamps'][bf]
+			for i in range(len(ts)):
+				if ts[i] == rt:
+					if len(ts) > i+NUM_STATE_ONE_STEPS:
+						for j in range(i,i+NUM_STATE_ONE_STEPS):
+							t = ts[j]
+
+							steer = BF['left_image_bound_to_data'][t]['steer']
+							motor = BF['left_image_bound_to_data'][t]['motor']
+							state = BF['left_image_bound_to_data'][t]['state']
+							img = bid['left'][t].copy()
+							apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+							apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+							apply_rect_to_img(img,state,-4,4,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=True,horizontal=False)
+							cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
+
+							if cv2.waitKey(33) & 0xFF == ord('q'):
+							    break
+						break
+					else:
+						cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
+
