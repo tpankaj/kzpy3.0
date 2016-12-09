@@ -237,6 +237,10 @@ while True:
 			else:
 				continue		
 
+			data = {}
+			topics = ['steer','motor','state','gyro_x','gyro_y','gyro_z']
+			for tp in topics:
+				data[tp] = []
 
 			ts = BF['bid_timestamps'][bf]
 			for i in range(len(ts)):
@@ -247,17 +251,30 @@ while True:
 
 							steer = BF['left_image_bound_to_data'][t]['steer']
 							motor = BF['left_image_bound_to_data'][t]['motor']
-							state = BF['left_image_bound_to_data'][t]['state']
+							#state = BF['left_image_bound_to_data'][t]['state']
 							gyro_x = BF['left_image_bound_to_data'][t]['gyro'][0]
 							gyro_y = BF['left_image_bound_to_data'][t]['gyro'][1]
 							gyro_z = BF['left_image_bound_to_data'][t]['gyro'][2]
-							img = bid['left'][t].copy()
+							img_left = bid['left'][t]
+							img_right = bid['right'][t]
+							img = img_left.copy()
 							apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 							apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
 							apply_rect_to_img(img,gyro_x,-150,150,steer_rect_color,steer_rect_color,0.1,0.03,center=True,reverse=True,horizontal=False)
 							apply_rect_to_img(img,gyro_y,-150,150,steer_rect_color,steer_rect_color,0.13,0.03,center=True,reverse=True,horizontal=False)
 							apply_rect_to_img(img,gyro_z,-150,150,steer_rect_color,steer_rect_color,0.16,0.03,center=True,reverse=True,horizontal=False)
 							cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
+
+							data['steer'].append(steer)
+							data['motor'].append(motor)
+							data['gyro_x'].append(gyro_x)
+							data['gyro_y'].append(gyro_y)
+							data['gyro_z'].append(gyro_z)
+							data['gyro_xy_mag'].append(np.sqrt(gyro_x**2+gyro_y**2))
+							data['left'].append(img_left)
+							data['right'].append(img_right)
+
+							caffe_net.train_step(data)
 
 							if cv2.waitKey(33) & 0xFF == ord('q'):
 							    break
