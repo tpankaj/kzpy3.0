@@ -5,13 +5,17 @@ from kzpy3.teg3.data.preprocess.preprocess_Bag_Folders import get_preprocess_dir
 import cv2
 import threading
 
-
 NUM_STATE_ONE_STEPS = 30
-
 played_bagfile_dic = {}
+thread_please_load_data = True # thread_please_load_data = False
+bag_file_loader_thread_please_exit = False
+loaded_bag_files_names = {}
+steer_rect_color = [0,0,255]
+
+
+
 
 def load_Bag_Folders(bag_folders_path = opjD('runs')):
-
 	BF_dic = {}
 
 	bag_folders_paths_list = sorted(gg(opj(bag_folders_path,'*')),key=natural_keys)
@@ -45,17 +49,12 @@ def load_Bag_Folders(bag_folders_path = opjD('runs')):
 
 
 
-thread_please_load_data = True
-thread_please_show_image_data = True
-
-loaded_bag_files_names = {}
 
 
-bag_file_loader_thread_please_exit = False
-
-def bag_file_loader_thread(delay_before_delete=5*60):
+def bag_file_loader_thread(BF_dic,delay_before_delete):
 	global loaded_bag_files_names
 	while True: # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
+		#print ("here",time.time())
 		if bag_file_loader_thread_please_exit:
 			cprint('THREAD:: exiting bag_file_loader_thread()')
 			return
@@ -130,183 +129,112 @@ def bag_file_loader_thread(delay_before_delete=5*60):
 
 
 
-show_image_data_please_exit = False
 
-#def show_image_data():
 
-			#plt.pause(1.0/60.0)
 
-#cv2.destroyAllWindows()
+
+
+def get_data(BF_dic):
+	data = {}
+	r = random.choice(BF_dic.keys())
+	BF = BF_dic[r]
+	if 'bag_file_image_data' not in BF:
+		time.sleep(1)
+		return None
+	if len(BF['bag_file_image_data']) < 1:
+		time.sleep(1)
+		return None
+	bf = a_key(BF['bag_file_image_data'])
+	if len(BF['good_bag_timestamps'][bf]) < 100:
+		print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
+		return None
+	bid = BF['bag_file_image_data'][bf]
+	if bf not in played_bagfile_dic:
+		played_bagfile_dic[bf] = 0
+	played_bagfile_dic[bf] += 1
+
+	if len(BF['binned_timestamps'][bf][0]) > 0 and len(BF['binned_timestamps'][bf][1]) > 0:
+		rt = random.choice(BF['binned_timestamps'][bf][np.random.randint(2)])
+	elif len(BF['binned_timestamps'][bf][0]) > 0:
+		rt = random.choice(BF['binned_timestamps'][bf][0])
+	elif len(BF['binned_timestamps'][bf][1]) > 0:
+		rt = random.choice(BF['binned_timestamps'][bf][1])
+	else:
+		return None		
+
+	topics = ['left','right','steer','motor','state','gyro_x','gyro_y','gyro_z','gyro_yz_mag']
+	for tp in topics:
+		data[tp] = []
+
+	ts = BF['bid_timestamps'][bf]
+	for i in range(len(ts)):
+		if ts[i] == rt:
+			if len(ts) > i+NUM_STATE_ONE_STEPS:
+				for j in range(i,i+NUM_STATE_ONE_STEPS):
+					t = ts[j]
+
+					steer = BF['left_image_bound_to_data'][t]['steer']
+					motor = BF['left_image_bound_to_data'][t]['motor']
+					#state = BF['left_image_bound_to_data'][t]['state']
+					gyro_x = BF['left_image_bound_to_data'][t]['gyro'][0]
+					gyro_y = BF['left_image_bound_to_data'][t]['gyro'][1]
+					gyro_z = BF['left_image_bound_to_data'][t]['gyro'][2]
+					gyro_yz_mag = np.sqrt(gyro_y**2+gyro_z**2)
+					img_left = bid['left'][t]
+					right_timestamp = BF['left_image_bound_to_data'][t]['right_image']
+					img_right = bid['right'][right_timestamp]
+
+					data['steer'].append(steer)
+					data['motor'].append(motor)
+					data['gyro_x'].append(gyro_x)
+					data['gyro_y'].append(gyro_y)
+					data['gyro_z'].append(gyro_z)
+					data['gyro_yz_mag'].append(gyro_yz_mag)
+					data['left'].append(img_left)
+					data['right'].append(img_right)
+
+				break
+			else:
+				cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
+	return data
+
+
+
+
 
 
 
 BF_dic = load_Bag_Folders(opjD('runs'))
 
-threading.Thread(target=bag_file_loader_thread).start()
+threading.Thread(target=bag_file_loader_thread,args=(BF_dic,5*60)).start()
 
-
-
-steer_rect_color = [0,0,255]
-
-
-#time.sleep(30) # to let some data get loaded
-
-#threading.Thread(target=show_image_data).start()
-
-
+"""
+for i in range(40):
+	print "waiting..."
+	time.sleep(1)
+"""
 while True:
-	if show_image_data_please_exit:
-		cv2.destroyAllWindows()
-		cprint('MAIN:: exiting show_image_data()')
-		break #return
-	elif not thread_please_show_image_data:
-		time.sleep(1)
-	else:
-		r = random.choice(BF_dic.keys())
-		BF = BF_dic[r]
-		if 'bag_file_image_data' not in BF:
-			time.sleep(1)
-			continue
-		if len(BF['bag_file_image_data']) < 1:
-			time.sleep(1)
-			continue
-		bf = a_key(BF['bag_file_image_data'])
-		if len(BF['good_bag_timestamps'][bf]) < 100:
-			print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
-			continue
-		bid = BF['bag_file_image_data'][bf]
-		if bf not in played_bagfile_dic:
-			played_bagfile_dic[bf] = 0
-		played_bagfile_dic[bf] += 1
+	data = get_data(BF_dic)
+	if data != None:
+		for i in range(len(data['left'])):
+			img = data['left'][i].copy()
+			steer = data['steer'][i]
+			motor = data['motor'][i]
+			gyro_x = data['gyro_x'][i]
+			gyro_yz_mag = data['gyro_yz_mag'][i]
 
-		if False:
-			figure('steer')
-			clf()
-			bins = range(0,105,3)
-			plt.hist(BF['binned_steers'][bf][0],bins=bins)
-			plt.hist(BF['binned_steers'][bf][1],bins=bins)
-			xlim(0,99)
-			pause(0.01)
-		"""
-        if len(self.binned_timestamp_nums[0]) > 0 and len(self.binned_timestamp_nums[1]) > 0:
-            timestamp_num = random.choice(self.binned_timestamp_nums[np.random.randint(len(self.binned_timestamp_nums))])
-        elif len(self.binned_timestamp_nums[0]) > 0:
-            timestamp_num = random.choice(self.binned_timestamp_nums[0])
-        elif len(self.binned_timestamp_nums[1]) > 0:
-            timestamp_num = random.choice(self.binned_timestamp_nums[1])
-        else:
-            return None
-        """
+			apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+			apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+			apply_rect_to_img(img,gyro_yz_mag,-150,150,steer_rect_color,steer_rect_color,0.13,0.03,center=True,reverse=True,horizontal=False)
+			apply_rect_to_img(img,gyro_x,-150,150,steer_rect_color,steer_rect_color,0.16,0.03,center=True,reverse=True,horizontal=False)
 
-		"""
-						steer_list = []
-						for t in good_bag_timestamps:
-							steer_list.append(np.abs(BF['left_image_bound_to_data'][t]['steer']-49))
-						steer_list = sorted(steer_list)
-						figure('steer')
-						clf()
-						plt.hist(steer_list,bins=10)
-						xlim(0,99)
-						plt.pause(0.01)
-		"""
-
-		if False:
-			ts = BF['bid_timestamps'][bf]
-			for i in range(len(ts)):
-				t = ts[i]
-				#mi(bid['left'][t],'left')
-				steer = BF['left_image_bound_to_data'][t]['steer']
-				motor = BF['left_image_bound_to_data'][t]['motor']
-				state = BF['left_image_bound_to_data'][t]['state']
-				img = bid['left'][t].copy()
-				apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
-				apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
-				apply_rect_to_img(img,state,-150,150,steer_rect_color,steer_rect_color,0.1,0.1,center=True,reverse=True,horizontal=False)
-				cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
-
-				if cv2.waitKey(3) & 0xFF == ord('q'):
-				    break
-
-		if True:
-			if len(BF['binned_timestamps'][bf][0]) > 0 and len(BF['binned_timestamps'][bf][1]) > 0:
-				rt = random.choice(BF['binned_timestamps'][bf][np.random.randint(2)])
-			elif len(BF['binned_timestamps'][bf][0]) > 0:
-				rt = random.choice(BF['binned_timestamps'][bf][0])
-			elif len(BF['binned_timestamps'][bf][1]) > 0:
-				rt = random.choice(BF['binned_timestamps'][bf][1])
-			else:
-				continue		
-
-			data = {}
-			topics = ['steer','motor','state','gyro_x','gyro_y','gyro_z']
-			for tp in topics:
-				data[tp] = []
-
-			ts = BF['bid_timestamps'][bf]
-			for i in range(len(ts)):
-				if ts[i] == rt:
-					if len(ts) > i+NUM_STATE_ONE_STEPS:
-						for j in range(i,i+NUM_STATE_ONE_STEPS):
-							t = ts[j]
-
-							steer = BF['left_image_bound_to_data'][t]['steer']
-							motor = BF['left_image_bound_to_data'][t]['motor']
-							#state = BF['left_image_bound_to_data'][t]['state']
-							gyro_x = BF['left_image_bound_to_data'][t]['gyro'][0]
-							gyro_y = BF['left_image_bound_to_data'][t]['gyro'][1]
-							gyro_z = BF['left_image_bound_to_data'][t]['gyro'][2]
-							img_left = bid['left'][t]
-							img_right = bid['right'][t]
-							img = img_left.copy()
-							apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
-							apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
-							apply_rect_to_img(img,gyro_x,-150,150,steer_rect_color,steer_rect_color,0.1,0.03,center=True,reverse=True,horizontal=False)
-							apply_rect_to_img(img,gyro_y,-150,150,steer_rect_color,steer_rect_color,0.13,0.03,center=True,reverse=True,horizontal=False)
-							apply_rect_to_img(img,gyro_z,-150,150,steer_rect_color,steer_rect_color,0.16,0.03,center=True,reverse=True,horizontal=False)
-							cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8'))
-
-							data['steer'].append(steer)
-							data['motor'].append(motor)
-							data['gyro_x'].append(gyro_x)
-							data['gyro_y'].append(gyro_y)
-							data['gyro_z'].append(gyro_z)
-							data['gyro_xy_mag'].append(np.sqrt(gyro_x**2+gyro_y**2))
-							data['left'].append(img_left)
-							data['right'].append(img_right)
-
-							caffe_net.train_step(data)
-
-							if cv2.waitKey(33) & 0xFF == ord('q'):
-							    break
-						break
-					else:
-						cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
+			cv2.imshow('left',cv2.cvtColor(img,cv2.COLOR_RGB2BGR))#.astype('uint8')
+			if cv2.waitKey(33) & 0xFF == ord('q'):
+			    break
+		#caffe_net.train_step(data)			    
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-class Timer:
-    def __init__(self, time_s):
-    	self.time_s = time_s
-    	self.start_time = time.time()
-    def check(self):
-    	if time.time() - self.start_time > self.time_s:
-    		return True
-    	else:
-    		return False
-    def reset(self, time_s):
-    	self.time_s = time_s
-    	self.start_time = time.time()
