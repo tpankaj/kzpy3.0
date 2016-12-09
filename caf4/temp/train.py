@@ -21,8 +21,10 @@ weights_file_path = None #opjD('z2/z2.caffemodel') #
 
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
+	print("")
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
 		print(l)
+	print("")
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
 		print(l)
 	return solver
@@ -67,4 +69,3 @@ solver = setup_solver()
 ('conv1c', (96, 4, 11, 11))
 
 """
-;
