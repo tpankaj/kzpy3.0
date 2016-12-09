@@ -3,12 +3,22 @@ from kzpy3.caf4.Caffe_Net import *
 
 caffe_net = Caffe_Net('/home/karlzipser/kzpy3/caf3/z2/solver_live.prototxt','version 1')
 
+		    
+loaded_bag_files_names = {}
+played_bagfile_dic = {}
+
 BF_dic = load_Bag_Folders(opjD('runs'))
 
-threading.Thread(target=bag_file_loader_thread,args=(BF_dic,5*60)).start()
+threading.Thread(target=bag_file_loader_thread,args=(BF_dic,5*60,loaded_bag_files_names,played_bagfile_dic)).start()
+
+"""
+for i in range(40):
+	print "waiting..."
+	time.sleep(1)
+"""
 
 while True:
-	data = get_data(BF_dic)
+	data = get_data(BF_dic,played_bagfile_dic)
 	if data != None:
 		for i in range(len(data['left'])):
 			img = data['left'][i].copy()
