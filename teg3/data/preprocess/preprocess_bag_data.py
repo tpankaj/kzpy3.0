@@ -59,12 +59,28 @@ def preprocess_bag_data(bag_folder_path,bagfile_range=[]):
             for topic in single_value_topics:
                 for m in bag.read_messages(topics=['/bair_car/'+topic]):
                     t = round(m.timestamp.to_time(),3) # millisecond resolution
+                    if not isinstance(m[1].data,(int,long,float)):
+                        print("if not isinstance(m[1].data,(int,long,float)):")
+                        print(d2s("m[1].data = ",m[1].data))
+                        assert(False)
                     A[topic][t] = m[1].data
 
             for topic in vector3_topics:
                 if topic != 'gps':
                     for m in bag.read_messages(topics=['/bair_car/'+topic]):
                         t = round(m.timestamp.to_time(),3)
+                        if not isinstance(m[1].x,(int,long,float)):
+                            print("if not isinstance(m[1].x,(int,long,float)):")
+                            print(d2s("m[1].x = ",m[1].x))
+                            assert(False)
+                        if not isinstance(m[1].y,(int,long,float)):
+                            print("if not isinstance(m[1].y,(int,long,float)):")
+                            print(d2s("m[1].y = ",m[1].y))
+                            assert(False)
+                        if not isinstance(m[1].z,(int,long,float)):
+                            print("if not isinstance(m[1].x,(int,long,float)):")
+                            print(d2s("m[1].z = ",m[1].z)) 
+                            assert(False)
                         A[topic][t] = (m[1].x,m[1].y,m[1].z)
 
             try:
@@ -163,6 +179,12 @@ def _bind_left_image_timestamps_to_data(A):
                 error_log.append((k,l))
                 left_image_bound_to_data[k][l] = 'no data'
                 print (k,l)
+                cprint("""
+            except:
+                error_log.append((k,l))
+                left_image_bound_to_data[k][l] = 'no data'
+                print (k,l)                    
+                    """,'red','on_blue')
     print error_log
     return left_image_bound_to_data,error_log
 
