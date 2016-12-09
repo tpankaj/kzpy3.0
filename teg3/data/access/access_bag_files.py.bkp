@@ -6,10 +6,10 @@ import cv2
 import threading
 
 NUM_STATE_ONE_STEPS = 30
-
+played_bagfile_dic = {}
 thread_please_load_data = True # thread_please_load_data = False
 bag_file_loader_thread_please_exit = False
-
+loaded_bag_files_names = {}
 steer_rect_color = [0,0,255]
 
 
@@ -51,10 +51,9 @@ def load_Bag_Folders(bag_folders_path = opjD('runs')):
 
 
 
-def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,played_bagfile_dic): 
-
+def bag_file_loader_thread(delay_before_delete=5*60):
+	global loaded_bag_files_names
 	while True: # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
-		#print ("here",time.time())
 		if bag_file_loader_thread_please_exit:
 			cprint('THREAD:: exiting bag_file_loader_thread()')
 			return
@@ -134,7 +133,7 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 
 
 
-def get_data(BF_dic,played_bagfile_dic):
+def get_data():
 	data = {}
 	r = random.choice(BF_dic.keys())
 	BF = BF_dic[r]
@@ -197,6 +196,10 @@ def get_data(BF_dic,played_bagfile_dic):
 			else:
 				cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
 	return data
+
+
+while True:
+	pass
 
 
 

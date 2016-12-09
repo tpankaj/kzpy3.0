@@ -556,3 +556,15 @@ def nvidia_smi_continuous():
     while True:                                     
         unix('nvidia-smi')
         time.sleep(5)
+
+class Timer:
+    def __init__(self, time_s):
+        self.time_s = time_s
+        self.start_time = time.time()
+    def check(self):
+        if time.time() - self.start_time > self.time_s:
+            return True
+        else:
+            return False
+    def reset(self):
+        self.start_time = time.time()
