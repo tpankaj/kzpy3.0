@@ -3,14 +3,14 @@ import kzpy3.teg3.data.access.Bag_Folder as Bag_Folder
 import kzpy3.teg3.data.access.Bag_File as Bag_File
 from kzpy3.teg3.data.preprocess.preprocess_Bag_Folders import get_preprocess_dir_name_info as get_preprocess_dir_name_info
 import cv2
-import threading
+
 
 NUM_STATE_ONE_STEPS = 30
 
 thread_please_load_data = True # thread_please_load_data = False
 bag_file_loader_thread_please_exit = False
 
-steer_rect_color = [0,0,255]
+
 
 
 
@@ -133,20 +133,24 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 
 
 
+verbose = False
 
 def get_data(BF_dic,played_bagfile_dic):
 	data = {}
 	r = random.choice(BF_dic.keys())
 	BF = BF_dic[r]
 	if 'bag_file_image_data' not in BF:
+		print("""if 'bag_file_image_data' not in BF:""")
 		time.sleep(1)
 		return None
 	if len(BF['bag_file_image_data']) < 1:
+		print("""if len(BF['bag_file_image_data']) < 1:""")
 		time.sleep(1)
 		return None
 	bf = a_key(BF['bag_file_image_data'])
 	if len(BF['good_bag_timestamps'][bf]) < 100:
-		print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
+		if verbose:
+			print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
 		return None
 	bid = BF['bag_file_image_data'][bf]
 	if bf not in played_bagfile_dic:
@@ -184,6 +188,7 @@ def get_data(BF_dic,played_bagfile_dic):
 					right_timestamp = BF['left_image_bound_to_data'][t]['right_image']
 					img_right = bid['right'][right_timestamp]
 
+					data['path'] = bf
 					data['steer'].append(steer)
 					data['motor'].append(motor)
 					data['gyro_x'].append(gyro_x)
@@ -195,7 +200,8 @@ def get_data(BF_dic,played_bagfile_dic):
 
 				break
 			else:
-				cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
+				if verbose:
+					cprint("MAIN:: ERROR!!!!!!!!! if len(ts) > i+10: failed")
 	return data
 
 

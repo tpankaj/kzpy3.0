@@ -48,7 +48,7 @@ layer {
 	bottom: "ZED_data"
 	top: "ZED_data_pool1"
 	pooling_param {
-		pool: MAX
+		pool: AVE
 		kernel_size: 3
 		stride: 2
 		pad: 0
@@ -60,7 +60,7 @@ layer {
 	bottom: "ZED_data_pool1"
 	top: "ZED_data_pool2"
 	pooling_param {
-		pool: MAX
+		pool: AVE
 		kernel_size: 3
 		stride: 2
 		pad: 0
@@ -206,12 +206,7 @@ layer {
 	}
 }
 	
-layer {
-	name: "ip2_relu"
-	type: "ReLU"
-	bottom: "ip2"
-	top: "ip2"
-}
+
 	
 ############################################################
 
