@@ -42,3 +42,4 @@ export PYTHONPATH=~:$PYTHONPATH
 #export PYTHONPATH=~/kzpy3/caf2/layers:$PYTHONPATH
 export PYTHONSTARTUP=~/kzpy3/vis.py
 export PATH=~/kzpy3/scripts:$PATH
+export PATH=~/caffe/build/tools:$PATH

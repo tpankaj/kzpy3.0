@@ -61,7 +61,7 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 		elif not thread_please_load_data:
 			time.sleep(1)
 		else:
-			if len(loaded_bag_files_names) > 50:
+			if len(loaded_bag_files_names) > 50: # if using flip images, halve the number of bag files loaded
 				cprint('THREAD:: pause before deleting '+bf,'blue','on_red')
 				time.sleep(delay_before_delete)
 
@@ -95,7 +95,7 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 				bf = random.choice(BF['bag_file_num_dic'])
 				if bf in BF['bag_file_image_data']:
 					continue
-				BF['bag_file_image_data'][bf] = Bag_File.load_images(bf)
+				BF['bag_file_image_data'][bf] = Bag_File.load_images(bf,color_mode="rgb8",include_flip=True)
 				loaded_bag_files_names[bf] = r
 
 				bid = BF['bag_file_image_data'][bf]
@@ -134,20 +134,23 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 
 
 verbose = False
-
-def get_data(BF_dic,played_bagfile_dic):
+save_get_data_timer = Timer(60)
+def get_data(BF_dic,played_bagfile_dic,used_timestamps):
 	data = {}
 	r = random.choice(BF_dic.keys())
 	BF = BF_dic[r]
 	if 'bag_file_image_data' not in BF:
-		print("""if 'bag_file_image_data' not in BF:""")
-		time.sleep(1)
+		#print("""if 'bag_file_image_data' not in BF:""")
+		#time.sleep(1)
 		return None
 	if len(BF['bag_file_image_data']) < 1:
-		print("""if len(BF['bag_file_image_data']) < 1:""")
-		time.sleep(1)
+		#print("""if len(BF['bag_file_image_data']) < 1:""")
+		#time.sleep(1)
 		return None
 	bf = a_key(BF['bag_file_image_data'])
+	if bf not in BF['good_bag_timestamps']:
+		cprint(bf + """ not in BF['good_bag_timestamps']""")
+		return None
 	if len(BF['good_bag_timestamps'][bf]) < 100:
 		if verbose:
 			print(d2s('MAIN:: skipping',bf.split('/')[-1],"len(good_bag_timestamps) < 100"))
@@ -166,7 +169,7 @@ def get_data(BF_dic,played_bagfile_dic):
 	else:
 		return None		
 
-	topics = ['left','right','steer','motor','state','gyro_x','gyro_y','gyro_z','gyro_yz_mag']
+	topics = ['left','right','left_flip','right_flip','steer','motor','state','gyro_x','gyro_y','gyro_z','gyro_yz_mag']
 	for tp in topics:
 		data[tp] = []
 
@@ -174,6 +177,13 @@ def get_data(BF_dic,played_bagfile_dic):
 	for i in range(len(ts)):
 		if ts[i] == rt:
 			if len(ts) > i+NUM_STATE_ONE_STEPS:
+				if rt not in used_timestamps:
+					used_timestamps[rt] = 0
+				used_timestamps[rt] += 1
+				if save_get_data_timer.check():
+					save_obj(played_bagfile_dic,opjD('played_bagfile_dic'))
+					save_obj(used_timestamps,opjD('used_timestamps'))
+					save_get_data_timer.reset()
 				for j in range(i,i+NUM_STATE_ONE_STEPS):
 					t = ts[j]
 
@@ -188,6 +198,9 @@ def get_data(BF_dic,played_bagfile_dic):
 					right_timestamp = BF['left_image_bound_to_data'][t]['right_image']
 					img_right = bid['right'][right_timestamp]
 
+					img_left_flip = bid['left_flip'][t]
+					img_right_flip = bid['right_flip'][right_timestamp]
+
 					data['path'] = bf
 					data['steer'].append(steer)
 					data['motor'].append(motor)
@@ -197,6 +210,8 @@ def get_data(BF_dic,played_bagfile_dic):
 					data['gyro_yz_mag'].append(gyro_yz_mag)
 					data['left'].append(img_left)
 					data['right'].append(img_right)
+					data['left_flip'].append(img_left_flip)
+					data['right_flip'].append(img_right_flip)
 
 				break
 			else:

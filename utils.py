@@ -568,3 +568,8 @@ class Timer:
             return False
     def reset(self):
         self.start_time = time.time()
+
+def fname(path):
+    return path.split('/')[-1]
+
+    

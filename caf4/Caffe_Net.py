@@ -17,7 +17,7 @@ class Caffe_Net:
 		self.version = version
 		self.solver = _setup_solver(solver_file_path)
 		if weights_file_mode == 'most recent':
-			weights_file_path = most_recent_file_in_folder(weights_file_path)
+			weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','.caffemodel'])
 		elif weights_file_mode == 'this one':
 			pass
 		elif weights_file_mode == None:
@@ -59,7 +59,7 @@ class Caffe_Net:
 				cprint(_array_to_int_list(self.solver.net.blobs['ip2'].data[0,:][:]),'red')
 				self.print_timer.reset()
 			if self.visualize_timer.check():	
-				visualize_solver_data(self.solver,self.version)
+				visualize_solver_data(self.solver,self.version,flip)
 				self.visualize_timer.reset()
 
 	"""
@@ -91,6 +91,6 @@ def _load_data_into_model(solver,version,data,flip):
 	if version == 'version 1':
 		return load_data_into_model_version_1(solver,data,flip)
 
-def visualize_solver_data(solver,version):
+def visualize_solver_data(solver,version,flip):
 	if version == 'version 1':
-		return visualize_solver_data_version_1(solver)
+		return visualize_solver_data_version_1(solver,flip)
