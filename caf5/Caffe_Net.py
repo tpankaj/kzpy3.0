@@ -7,7 +7,7 @@ if USE_GPU:
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 from kzpy3.utils import *
-from kzpy3.caf4.load_data_into_model_versions import *
+from kzpy3.caf5.load_data_into_model_versions import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 

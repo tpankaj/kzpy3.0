@@ -124,3 +124,17 @@ t3 = time.time()
 mi(d,'cv2.flip')
 print shape(d)
 print(t1-t0,t3-t2)
+
+
+
+bid = load_images('/home/karlzipser/Desktop/bair_car_data/direct_1Sept2016_Mr_Orange_local_sidewalks/bair_car_2016-09-01-09-23-43_73.bag.pkl')
+l = a_key(bid['left'])
+li = bid['left'][l]
+lf = bid['left_flip'][l]
+r = a_key(bid['left'])
+ri = bid['left'][r]
+rf = bid['left_flip'][r]
+mi(li,1,[2,2,1],do_clf=False)
+mi(lf,1,[2,2,2],do_clf=False)
+mi(ri,1,[2,2,3],do_clf=False)
+mi(rf,1,[2,2,4],do_clf=False)

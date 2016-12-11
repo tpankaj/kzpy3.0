@@ -52,6 +52,10 @@ imread = scipy.misc.imread
 imsave = scipy.misc.imsave
 #opj = os.path.join
 gg = glob.glob
+
+def sgg(d):
+    return sorted(gg(d))
+
 shape = np.shape
 randint = np.random.randint
 #random = np.random.random # - this makes a conflict, so don't use it.

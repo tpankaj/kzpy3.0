@@ -1,7 +1,7 @@
 from kzpy3.vis import *
-import kzpy3.teg3.data.access.Bag_Folder as Bag_Folder
-import kzpy3.teg3.data.access.Bag_File as Bag_File
-from kzpy3.teg3.data.preprocess.preprocess_Bag_Folders import get_preprocess_dir_name_info as get_preprocess_dir_name_info
+import kzpy3.teg4.data.access.Bag_Folder as Bag_Folder
+import kzpy3.teg4.data.access.Bag_File as Bag_File
+from kzpy3.teg4.data.preprocess.preprocess_Bag_Folders import get_preprocess_dir_name_info as get_preprocess_dir_name_info
 import cv2
 
 
