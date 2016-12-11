@@ -4,9 +4,9 @@ import kzpy3.teg4.data.access.Bag_Folder as Bag_Folder
 
 
 
-def preprocess_Bag_Folder(bag_folders_path = opjD('runs'),NUM_STATE_ONE_STEPS=30,graphics=True):
+def preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_rgb_1to4_path,NUM_STATE_ONE_STEPS=30,graphics=True):
 	
-	bag_folders_paths_list = sorted(gg(opj(bag_folders_path,'*')),key=natural_keys)
+	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
 
 	try:
 		for bfp in bag_folders_paths_list:
@@ -17,13 +17,15 @@ def preprocess_Bag_Folder(bag_folders_path = opjD('runs'),NUM_STATE_ONE_STEPS=30
 
 			if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:
 				print('')
-				cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
-				BF = load_obj(opj(bfp,'Bag_Folder.pkl'))
+				if graphics:
+					cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
+					BF = load_obj(opj(bfp,'Bag_Folder.pkl'))
 			else:
-				BF = Bag_Folder.init(bfp,
+				BF = Bag_Folder.init(bfp,bfp.replace('meta','rgb_1to4'),
 					left_image_bound_to_data_name=left_image_bound_to_data_name,
 					NUM_STATE_ONE_STEPS=NUM_STATE_ONE_STEPS)
-				save_obj(BF,opj(bfp,'Bag_Folder.pkl'))
+				if BF != None:
+					save_obj(BF,opj(bfp,'Bag_Folder.pkl'))
 
 			if graphics:
 				figure(run_name+' timecourses')

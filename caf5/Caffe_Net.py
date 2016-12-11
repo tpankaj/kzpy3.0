@@ -45,6 +45,8 @@ class Caffe_Net:
 			if self.train_steps == 0:
 				self.train_start_time = time.time()
 			self.solver.step(1)
+			#self.solver.net.forward(start='conv1',end='euclidean')
+			#self.solver.net.backward()
 			self.train_steps += 1
 			a = self.solver.net.blobs['steer_motor_target_data'].data[0,:] - self.solver.net.blobs['ip2'].data[0,:]
 			self.loss.append(np.sqrt(a * a).mean())

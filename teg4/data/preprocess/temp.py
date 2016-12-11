@@ -126,8 +126,9 @@ print shape(d)
 print(t1-t0,t3-t2)
 
 
+import kzpy3.teg4.data.access.Bag_File as Bag_File 
+bid = Bag_File.load_images('/home/karlzipser/Desktop/bair_car_data_rgb_1to4/direct_2Sept2016_Mr_Orange_to_Evans_and_back_2/bair_car_2016-09-02-11-52-00_36.bag.pkl' )
 
-bid = load_images('/home/karlzipser/Desktop/bair_car_data/direct_1Sept2016_Mr_Orange_local_sidewalks/bair_car_2016-09-01-09-23-43_73.bag.pkl')
 l = a_key(bid['left'])
 li = bid['left'][l]
 lf = bid['left_flip'][l]
@@ -138,3 +139,5 @@ mi(li,1,[2,2,1],do_clf=False)
 mi(lf,1,[2,2,2],do_clf=False)
 mi(ri,1,[2,2,3],do_clf=False)
 mi(rf,1,[2,2,4],do_clf=False)
+
+

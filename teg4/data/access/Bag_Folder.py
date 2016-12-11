@@ -1,19 +1,23 @@
 from kzpy3.vis import *
 import cv2
 
-def init(path, left_image_bound_to_data_name='left_image_bound_to_data.pkl',NUM_STATE_ONE_STEPS=10):
+def init(bag_folders_path_meta_path,bag_folders_rgb_1to4_path, left_image_bound_to_data_name='left_image_bound_to_data.pkl',NUM_STATE_ONE_STEPS=10):
 
     BF = {}
 
-    BF['path'] = path
-    run_name = path.split('/')[-1]
+    BF['path'] = bag_folders_rgb_1to4_path
+    run_name = bag_folders_rgb_1to4_path.split('/')[-1]
     cprint('Bag_Folder::__init__, run = '+run_name,'yellow','on_red')
-    BF['bag_files'] = sorted(glob.glob(opj(path,'*.bag')))
+    BF['bag_files'] = sorted(glob.glob(opj(bag_folders_rgb_1to4_path,'*.bag.pkl')))
+    #print opj(bag_folders_rgb_1to4_path,'*.bag.pkl')
+    #cprint(d2s("""BF['bag_files'] =""",BF['bag_files']))
+    if len(BF['bag_files']) == 0:
+        return None
     BF['bag_file_num_dic'] = {}
     for bf in BF['bag_files']:
         n = atoi(bf.split('.bag')[-2].split('_')[-1])
         BF['bag_file_num_dic'][n] = bf
-    left_path = opj(path,left_image_bound_to_data_name)
+    left_path = opj(bag_folders_path_meta_path,left_image_bound_to_data_name)
     BF['left_image_bound_to_data'] = load_obj(left_path)
 
     if 'acc' not in an_element(BF['left_image_bound_to_data']):

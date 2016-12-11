@@ -29,19 +29,20 @@ layer {
 
 
 
-layer {
-	name: "ZED_data"
-	type: "DummyData"
-	top: "ZED_data"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 12
-			dim: 376
-			dim: 672
-		}
-	}
-}
+#layer {
+#	name: "ZED_data"
+#	type: "DummyData"
+#	top: "ZED_data"
+#	dummy_data_param {
+#		shape {
+#			dim: 1
+#			dim: 12
+#			dim: 376
+#			dim: 672
+#		}
+#	}
+#}
+#
 #layer {
 #	name: "MVN"
 #	type: "MVN"
@@ -53,31 +54,43 @@ layer {
 #		eps: -128
 #	}
 #}
-layer {
-	name: "ZED_data_pool1"
-	type: "Pooling"
-	bottom: "ZED_data" #"MVN" #
-	top: "ZED_data_pool1"
-	pooling_param {
-		pool: AVE
-		kernel_size: 3
-		stride: 2
-		pad: 0
-	}
-}
+#layer {
+#	name: "ZED_data_pool1"
+#	type: "Pooling"
+#	bottom: "ZED_data" #"MVN" #
+#	top: "ZED_data_pool1"
+#	pooling_param {
+#		pool: AVE
+#		kernel_size: 3
+#		stride: 2
+#		pad: 0
+#	}
+#}
+#layer {
+#	name: "ZED_data_pool2"
+#	type: "Pooling"
+#	bottom: "ZED_data_pool1"
+#	top: "ZED_data_pool2"
+#	pooling_param {
+#		pool: AVE
+#		kernel_size: 3
+#		stride: 2
+#		pad: 0
+#	}
+#}
 layer {
 	name: "ZED_data_pool2"
-	type: "Pooling"
-	bottom: "ZED_data_pool1"
+	type: "DummyData"
 	top: "ZED_data_pool2"
-	pooling_param {
-		pool: AVE
-		kernel_size: 3
-		stride: 2
-		pad: 0
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 12
+			dim: 94
+			dim: 168
+		}
 	}
 }
-
 	
 ###################### Convolutional Layer Set 'conv1' ######################
 #

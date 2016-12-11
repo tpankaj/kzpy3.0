@@ -9,7 +9,7 @@ bridge = cv_bridge.CvBridge()
 
 
 def load_images(bag_file_path,color_mode="rgb8",include_flip=True):
-    print "Bag_File.load_images:: loading " + bag_file_path
+    #print "Bag_File.load_images:: loading " + bag_file_path
     bag_img_dic = {}
     sides=['left','right']
     if bag_file_path.split('.')[-1] == 'bag':

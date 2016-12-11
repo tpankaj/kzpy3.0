@@ -54,7 +54,7 @@ imsave = scipy.misc.imsave
 gg = glob.glob
 
 def sgg(d):
-    return sorted(gg(d))
+    return sorted(gg(d),key=natural_keys)
 
 shape = np.shape
 randint = np.random.randint

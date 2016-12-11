@@ -15,7 +15,7 @@ bag_file_loader_thread_please_exit = False
 
 
 
-def load_Bag_Folders(bag_folders_path = opjD('runs')):
+def load_Bag_Folders(bag_folders_path):
 	BF_dic = {}
 
 	bag_folders_paths_list = sorted(gg(opj(bag_folders_path,'*')),key=natural_keys)
@@ -24,20 +24,20 @@ def load_Bag_Folders(bag_folders_path = opjD('runs')):
 
 		run_name = bfp.split('/')[-1]
 
-		preprocessed_dir,left_image_bound_to_data_name = get_preprocess_dir_name_info(bfp)
+		left_image_bound_to_data_name = get_preprocess_dir_name_info(bfp)
 
-		if len(gg(opj(bfp,preprocessed_dir,'Bag_Folder.pkl'))) == 1:
+		if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:
 			print('')
-			cprint(opj(run_name,preprocessed_dir,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
-			BF = load_obj(opj(bfp,preprocessed_dir,'Bag_Folder.pkl'))
+			cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
+			BF = load_obj(opj(bfp,'Bag_Folder.pkl'))
 		else:
+			break
 			if False:
 				BF = Bag_Folder.init(bfp,
-					preprocessed_dir=preprocessed_dir,
 					left_image_bound_to_data_name=left_image_bound_to_data_name,
 					NUM_STATE_ONE_STEPS=NUM_STATE_ONE_STEPS)
-				save_obj(BF,opj(bfp,preprocessed_dir,'Bag_Folder.pkl'))
-			cprint('ERROR!!! '+opj(run_name,preprocessed_dir,'Bag_Folder.pkl')+' does not exist!','yellow','on_red')
+				save_obj(BF,opj(bfp,'Bag_Folder.pkl'))
+			cprint('ERROR!!! '+opj(run_name,'Bag_Folder.pkl')+' does not exist!','yellow','on_red')
 			assert(False)
 
 		if run_name in BF_dic:
@@ -53,16 +53,15 @@ def load_Bag_Folders(bag_folders_path = opjD('runs')):
 
 def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,played_bagfile_dic): 
 
-	while True: # 50 brings us to 80.9 GiB, 75 brings us to 106.2. This is 56 loaded bag files, about 28 minutes of data, about 1% of 40 hours.
-		#print ("here",time.time())
+	while True:
 		if bag_file_loader_thread_please_exit:
 			cprint('THREAD:: exiting bag_file_loader_thread()')
 			return
 		elif not thread_please_load_data:
 			time.sleep(1)
 		else:
-			if len(loaded_bag_files_names) > 50: # if using flip images, halve the number of bag files loaded
-				cprint('\n\nTHREAD:: pause before deleting '+bf+'\n\n,'blue','on_red')
+			if len(loaded_bag_files_names) > 500:
+				cprint('\n\nTHREAD:: pause before deleting '+bf+'\n\n,','blue','on_red')
 				time.sleep(delay_before_delete)
 
 				played_bagfile_dic_keys = []
@@ -85,45 +84,50 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 						BF = BF_dic[r]
 						BF['bag_file_image_data'].pop(bf)
 						ctr += 1
-			try:
+			if True: #try:
 				r = random.choice(BF_dic.keys())
 				BF = BF_dic[r]
 				dic_keys = ['bag_file_image_data','good_bag_timestamps','binned_timestamps','binned_steers','bid_timestamps']
 				for dk in dic_keys:
 					if dk not in BF:
 						BF[dk] = {}
-				bf = random.choice(BF['bag_file_num_dic'])
-				if bf in BF['bag_file_image_data']:
-					continue
-				BF['bag_file_image_data'][bf] = Bag_File.load_images(bf,color_mode="rgb8",include_flip=True)
-				loaded_bag_files_names[bf] = r
+				#print BF['bag_file_num_dic']
+				if len(BF['bag_file_num_dic']) > 0:
+					try:
+						bf = random.choice(BF['bag_file_num_dic'])
+					except:
+						continue
+					if bf in BF['bag_file_image_data']:
+						continue
+					BF['bag_file_image_data'][bf] = Bag_File.load_images(bf,color_mode="rgb8",include_flip=True)
+					loaded_bag_files_names[bf] = r
 
-				bid = BF['bag_file_image_data'][bf]
+					bid = BF['bag_file_image_data'][bf]
 
-				bag_left_timestamps = sorted(bid['left'].keys())
+					bag_left_timestamps = sorted(bid['left'].keys())
 
-				good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
-				
-				cprint(d2s('THREAD:: ',bf.split('/')[-1],'len(good_bag_timestamps) =',len(good_bag_timestamps)),'blue')
+					good_bag_timestamps = list(set(BF['data']['good_start_timestamps']) & set(bag_left_timestamps))
+					
+					#cprint(d2s('THREAD:: ',bf.split('/')[-1],'len(good_bag_timestamps) =',len(good_bag_timestamps)),'blue')
 
-				binned_timestamps = [[],[]]
-				binned_steers = [[],[]]
+					binned_timestamps = [[],[]]
+					binned_steers = [[],[]]
 
-				for t in good_bag_timestamps:
-					steer = BF['left_image_bound_to_data'][t]['steer']
-					if steer < 43 or steer > 55:
-						binned_timestamps[0].append(t)
-						binned_steers[0].append(steer)
-					else:
-						binned_timestamps[1].append(t)
-						binned_steers[1].append(steer)
+					for t in good_bag_timestamps:
+						steer = BF['left_image_bound_to_data'][t]['steer']
+						if steer < 43 or steer > 55:
+							binned_timestamps[0].append(t)
+							binned_steers[0].append(steer)
+						else:
+							binned_timestamps[1].append(t)
+							binned_steers[1].append(steer)
 
-				BF['good_bag_timestamps'][bf] = good_bag_timestamps
-				BF['binned_timestamps'][bf] = binned_timestamps
-				BF['binned_steers'][bf] = binned_steers
-				BF['bid_timestamps'][bf] = sorted(bid['left'].keys())
+					BF['good_bag_timestamps'][bf] = good_bag_timestamps
+					BF['binned_timestamps'][bf] = binned_timestamps
+					BF['binned_steers'][bf] = binned_steers
+					BF['bid_timestamps'][bf] = sorted(bid['left'].keys())
 
-			except Exception as e:
+			else: #except Exception as e:
 				cprint("THREAD:: ********** Exception ***********************",'red')
 				print(e.message, e.args)
 
