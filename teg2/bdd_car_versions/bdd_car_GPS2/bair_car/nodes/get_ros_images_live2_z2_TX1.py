@@ -54,7 +54,10 @@ state_transition_time_s = 0
 def state_callback(data):
 	global state, previous_state
 	if state != data.data:
-		previous_state = state
+		if state in [3,5,6,7]:
+			previous_state = 3
+		else:
+			previous_state = state
 	state = data.data
 def right_callback(data):
 	global A,B, left_list, right_list, solver
