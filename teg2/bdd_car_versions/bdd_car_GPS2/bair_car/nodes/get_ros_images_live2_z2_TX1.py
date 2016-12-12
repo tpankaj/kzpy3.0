@@ -106,14 +106,7 @@ def camera_heading_callback(msg):
 		c = 99
 	c = 99-c
 	camera_heading = int(c)
-"""
-def GPS2_lat_orig_callback(msg):
-	global GPS2_lat_orig
-	GPS2_lat_orig = msg.data
-def GPS2_long_orig_callback(msg):
-	global GPS2_long_orig
-	GPS2_long_orig = msg.data
-"""
+
 ##
 ########################################################
 
@@ -178,10 +171,10 @@ while not rospy.is_shutdown():
 		pass
 
 	if state == 4 and state_transition_time_s > 30:
-		print("Shutting down because in state 4 for 60+ s")
+		print("Shutting down because in state 4 for 30+ s")
 		unix('sudo shutdown -h now')
 	if time_step.check():
-		print(d2s("In state",state,"for",state_transition_time_s,"seconds"))
+		print(d2s("In state",state,"for",state_transition_time_s,"seconds, previous_state =",previous_state))
 		time_step.reset()
 
 
