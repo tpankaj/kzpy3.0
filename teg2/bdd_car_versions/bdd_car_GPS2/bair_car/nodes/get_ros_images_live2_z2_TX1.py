@@ -140,35 +140,36 @@ t0 = time.time()
 time_step = Timer(1)
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
-		if (previous_state not in [3,5,6,7]) and (state_transition_time_s > 5.0) or previous_state in [3,5,6,7]:
+		if (previous_state not in [3,5,6,7]):
+			time.sleep(5)
 
-			if len(left_list) > 4:
-				l0 = left_list[-2]
-				l1 = left_list[-1]
-				r0 = right_list[-2]
-				r1 = right_list[-1]
+		if len(left_list) > 4:
+			l0 = left_list[-2]
+			l1 = left_list[-1]
+			r0 = right_list[-2]
+			r1 = right_list[-1]
 
-				solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
-				from computer_name import *	
+			solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+			solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+			from computer_name import *	
 
-				solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
-				solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
-				solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-				solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-				solver.net.blobs['metadata'].data[0,4,:,:] = Play
-				solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-				
-				solver.net.forward()
+			solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
+			solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
+			solver.net.blobs['metadata'].data[0,2,:,:] = Follow
+			solver.net.blobs['metadata'].data[0,3,:,:] = Direct
+			solver.net.blobs['metadata'].data[0,4,:,:] = Play
+			solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
+			
+			solver.net.forward()
 
-				caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
-				caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
-				print caf_steer
-				
-				steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
-				motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
+			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
+			print caf_steer
+			
+			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
+			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
 
 	else:
 		pass
