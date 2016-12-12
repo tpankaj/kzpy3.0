@@ -144,7 +144,7 @@ t0 = time.time()
 time_step = Timer(1)
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
-		if state_transition_time_s > 1.0 | previous_state in [3,5,6,7]:
+		if (state_transition_time_s > 1.0) or (previous_state in [3,5,6,7]):
 
 			if len(left_list) > 4:
 				l0 = left_list[-2]
