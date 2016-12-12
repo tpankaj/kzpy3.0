@@ -167,7 +167,8 @@ while not rospy.is_shutdown():
 
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
-			print caf_steer
+			
+			#print caf_steer
 			
 			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
