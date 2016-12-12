@@ -80,7 +80,9 @@ def load_data_into_model_version_1(solver,data,flip,show_data=False):
 						t = t + 49
 						target_data[i] = t
 
-				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 128
+				#solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 128
+				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
+				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 0.5
 
 				Direct = 0.
 				Follow = 0.
