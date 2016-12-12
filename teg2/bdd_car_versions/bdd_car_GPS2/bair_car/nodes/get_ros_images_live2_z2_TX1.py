@@ -48,10 +48,13 @@ right_list = []
 A = 0
 B = 0
 state = 0
+previous_state = 0
 state_transition_time_s = 0
 
 def state_callback(data):
-	global state
+	global state, previous_state
+	if state != data.data:
+		previous_state = state
 	state = data.data
 def right_callback(data):
 	global A,B, left_list, right_list, solver
@@ -141,7 +144,7 @@ t0 = time.time()
 time_step = Timer(1)
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
-		if True: #state in [3] and state_transition_time_s > 1.0:
+		if state_transition_time_s > 1.0 | previous_state in [3,5,6,7]:
 
 			if len(left_list) > 4:
 				l0 = left_list[-2]
