@@ -138,10 +138,10 @@ from computer_name import *
 from kzpy3.teg2.global_run_params import *
 
 t0 = time.time()
-time_step = Timer(5)
+time_step = Timer(2)
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
-		if state_transition_time_s > 1.0:
+		if state in [6] and state_transition_time_s > 1.0:
 
 			if len(left_list) > 4:
 				l0 = left_list[-2]
