@@ -29,8 +29,8 @@ class Caffe_Net:
 			self.solver.net.copy_from(weights_file_path)
 		self.train_steps = 0
 		self.train_start_time = 0
-		self.print_timer = Timer(5)
-		self.visualize_timer = Timer(1)
+		self.print_timer = Timer(2)
+		self.visualize_timer = Timer(5)
 		self.save_loss_timer = Timer(10*60)
 		self.loss = []
 		self.loss1000 = []

@@ -87,7 +87,7 @@ def bag_file_loader_thread(BF_dic,BF_dic_keys_weights,delay_before_delete,loaded
 						BF['bag_file_image_data'].pop(bf)
 						ctr += 1
 			if True: #try:
-				r = random.choice(BF_ BF_dic.keys())
+				r = random.choice(BF_dic.keys())
 				BF = BF_dic[r]
 				if type(BF) != dict:
 					continue
