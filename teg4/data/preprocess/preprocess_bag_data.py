@@ -15,6 +15,17 @@ which is simply all the original timestamps and sensor readings but no image dat
 8 Sept. 2016
 """
 
+#bag_folders = sgg(opj(sys.argv[1],'*')) #gg('/home/karlzipser/Desktop/bair_car_data/*')
+# bag_folders = sgg('/media/karlzipser/bair_car_data_4/racing/*')
+"""
+for b in bag_folders:
+        try:
+            preprocess_bag_data(b)
+        except Exception,e:
+            print e
+"""
+
+
 from kzpy3.utils import *
 import rospy
 import rosbag

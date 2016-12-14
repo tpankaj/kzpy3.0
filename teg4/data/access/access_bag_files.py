@@ -15,43 +15,45 @@ bag_file_loader_thread_please_exit = False
 
 
 
-def load_Bag_Folders(bag_folders_path):
+def load_Bag_Folders(bag_folders_path_meta_path,bag_folders_rgb_1to4_path):
 	BF_dic = {}
+	BF_dic_keys_weights = []
+	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
 
-	bag_folders_paths_list = sorted(gg(opj(bag_folders_path,'*')),key=natural_keys)
-
+	ctr = 0
 	for bfp in bag_folders_paths_list:
+		
 
-		run_name = bfp.split('/')[-1]
-
+		if False: #ctr > 3:
+			print "Temp, returning"
+			return BF_dic
+		num_bag_files = len(gg(opj(bag_folders_path_meta_path.replace('meta','rgb_1to4'),'*')))
+		run_name = fname(bfp)
+		for i in range(int(num_bag_files/10)):
+			BF_dic_keys_weights.append(run_name)
 		left_image_bound_to_data_name = get_preprocess_dir_name_info(bfp)
-
+		#cprint(opj(bfp,'Bag_Folder.pkl'),'blue','on_green')
 		if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:
 			print('')
 			cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
 			BF = load_obj(opj(bfp,'Bag_Folder.pkl'))
 		else:
-			break
-			if False:
-				BF = Bag_Folder.init(bfp,
-					left_image_bound_to_data_name=left_image_bound_to_data_name,
-					NUM_STATE_ONE_STEPS=NUM_STATE_ONE_STEPS)
-				save_obj(BF,opj(bfp,'Bag_Folder.pkl'))
 			cprint('ERROR!!! '+opj(run_name,'Bag_Folder.pkl')+' does not exist!','yellow','on_red')
+			continue
 			assert(False)
 
 		if run_name in BF_dic:
 			cprint('ERROR!!! '+run_name+' already in BF_dic!','yellow','on_red')
 			assert(False)
 		BF_dic[run_name] = BF
-
-	return BF_dic
-
-
+		ctr += 1
+	return BF_dic,BF_dic_keys_weights
 
 
 
-def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,played_bagfile_dic): 
+
+
+def bag_file_loader_thread(BF_dic,BF_dic_keys_weights,delay_before_delete,loaded_bag_files_names,played_bagfile_dic): 
 
 	while True:
 		if bag_file_loader_thread_please_exit:
@@ -60,8 +62,8 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 		elif not thread_please_load_data:
 			time.sleep(1)
 		else:
-			if len(loaded_bag_files_names) > 500:
-				cprint('\n\nTHREAD:: pause before deleting '+bf+'\n\n,','blue','on_red')
+			if len(loaded_bag_files_names) > 1000:
+				cprint('\n\nTHREAD:: pause before deleting '+bf+'\n\n,,','blue','on_red')
 				time.sleep(delay_before_delete)
 
 				played_bagfile_dic_keys = []
@@ -85,8 +87,10 @@ def bag_file_loader_thread(BF_dic,delay_before_delete,loaded_bag_files_names,pla
 						BF['bag_file_image_data'].pop(bf)
 						ctr += 1
 			if True: #try:
-				r = random.choice(BF_dic.keys())
+				r = random.choice(BF_ BF_dic.keys())
 				BF = BF_dic[r]
+				if type(BF) != dict:
+					continue
 				dic_keys = ['bag_file_image_data','good_bag_timestamps','binned_timestamps','binned_steers','bid_timestamps']
 				for dk in dic_keys:
 					if dk not in BF:
@@ -143,6 +147,8 @@ def get_data(BF_dic,played_bagfile_dic,used_timestamps):
 	data = {}
 	r = random.choice(BF_dic.keys())
 	BF = BF_dic[r]
+	if type(BF) != dict:
+		return None
 	if 'bag_file_image_data' not in BF:
 		#print("""if 'bag_file_image_data' not in BF:""")
 		#time.sleep(1)

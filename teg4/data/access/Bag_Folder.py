@@ -6,10 +6,10 @@ def init(bag_folders_path_meta_path,bag_folders_rgb_1to4_path, left_image_bound_
     BF = {}
 
     BF['path'] = bag_folders_rgb_1to4_path
-    run_name = bag_folders_rgb_1to4_path.split('/')[-1]
+    run_name = fname(bag_folders_rgb_1to4_path)
     cprint('Bag_Folder::__init__, run = '+run_name,'yellow','on_red')
     BF['bag_files'] = sorted(glob.glob(opj(bag_folders_rgb_1to4_path,'*.bag.pkl')))
-    #print opj(bag_folders_rgb_1to4_path,'*.bag.pkl')
+    print opj(bag_folders_rgb_1to4_path,'*.bag.pkl')
     #cprint(d2s("""BF['bag_files'] =""",BF['bag_files']))
     if len(BF['bag_files']) == 0:
         return None

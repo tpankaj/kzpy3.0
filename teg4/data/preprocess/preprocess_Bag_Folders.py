@@ -6,17 +6,20 @@ import kzpy3.teg4.data.access.Bag_Folder as Bag_Folder
 
 def preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_rgb_1to4_path,NUM_STATE_ONE_STEPS=30,graphics=True):
 	
-	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
-
 	try:
-		for bfp in bag_folders_paths_list:
+		bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
 
+	
+		for bfp in bag_folders_paths_list:
+			print bfp
 			run_name = bfp.split('/')[-1]
 
 			left_image_bound_to_data_name = get_preprocess_dir_name_info(bfp)
+			if left_image_bound_to_data_name == None:
+				continue
 
 			if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:
-				print('')
+				print('\t exists')
 				if graphics:
 					cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')
 					BF = load_obj(opj(bfp,'Bag_Folder.pkl'))
@@ -54,4 +57,8 @@ def preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_rgb_1to4_path,N
 
 
 def get_preprocess_dir_name_info(bfp):
-	return sgg(opj(bfp,'left*'))[-1]
+	fl = sgg(opj(bfp,'left*'))
+	if len(fl) > 0:
+		return sgg(opj(bfp,'left*'))[-1]
+	else:
+		return None

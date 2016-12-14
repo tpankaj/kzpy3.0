@@ -2,10 +2,10 @@
 #//anaconda/bin/python
 #
 import caffe
-USE_GPU = True
-if USE_GPU:
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
+#USE_GPU = True
+#if USE_GPU:
+#	caffe.set_device(0)
+#	caffe.set_mode_gpu()
 from kzpy3.utils import *
 from kzpy3.caf5.load_data_into_model_versions import *
 import cv2
@@ -31,6 +31,7 @@ class Caffe_Net:
 		self.train_start_time = 0
 		self.print_timer = Timer(5)
 		self.visualize_timer = Timer(1)
+		self.save_loss_timer = Timer(10*60)
 		self.loss = []
 		self.loss1000 = []
 		self.stop_training = False
@@ -41,6 +42,7 @@ class Caffe_Net:
 		else:
 			flip = True
 		result = _load_data_into_model(self.solver,self.version,data,flip)
+		#print result
 		if result:
 			if self.train_steps == 0:
 				self.train_start_time = time.time()
@@ -52,17 +54,21 @@ class Caffe_Net:
 			self.loss.append(np.sqrt(a * a).mean())
 			if len(self.loss) >= 1000:
 				self.loss1000.append(array(self.loss[-1000:]).mean())
-				#self.loss = []
+				self.loss = []
 			if self.print_timer.check():
 				print(d2s('self.solver.step(1)',time.time()),self.train_steps, dp(1./((time.time()-self.train_start_time)/(1.*self.train_steps)),2) )
-				print(self.train_steps,np.array(self.loss[-99:]).mean())
+				if len(self.loss1000) > 0:
+					print(self.train_steps,self.loss1000[-1])
 				print(self.solver.net.blobs['metadata'].data[0,:,5,5])
-				print(_array_to_int_list(self.solver.net.blobs['steer_motor_target_data'].data[0,:][:]))
-				cprint(_array_to_int_list(self.solver.net.blobs['ip2'].data[0,:][:]),'red')
+				cprint(_array_to_int_list(self.solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
+				cprint(_array_to_int_list(self.solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
 				self.print_timer.reset()
 			if self.visualize_timer.check():	
 				visualize_solver_data(self.solver,self.version,flip)
 				self.visualize_timer.reset()
+			if self.save_loss_timer.check():
+				save_obj(self.loss1000,opjD('loss1000'))
+				self.save_loss_timer.reset()
 
 	"""
 	def train(self,access_bag_files__get_data,BF_dic,played_bagfile_dicBF_dic,played_bagfile_dic):

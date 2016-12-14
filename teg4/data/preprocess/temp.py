@@ -141,3 +141,23 @@ mi(ri,1,[2,2,3],do_clf=False)
 mi(rf,1,[2,2,4],do_clf=False)
 
 
+
+
+l=load_obj('/home/karlzipser/Desktop/loss.pkl' )
+l2 = []
+t2 = []
+ctr = 0
+a = 0
+for i in range(len(l)):
+	a += l[i]
+	ctr += 1
+	if ctr > 1000:
+		l2.append(a/(1.*ctr))
+		t2.append(i)
+		a = 0
+		ctr = 0
+figure(1)
+clf()
+#plot(l)
+plot(t2,l2,'ro-')
+

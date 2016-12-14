@@ -576,4 +576,11 @@ class Timer:
 def fname(path):
     return path.split('/')[-1]
 
-    
+
+def pname(path):
+    p = path.split('/')[:-1]
+    pstr = ""
+    for s in p:
+        if len(s)>0:
+            pstr += '/' + s
+    return pstr

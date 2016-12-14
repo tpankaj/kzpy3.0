@@ -75,3 +75,15 @@ def bag_folders_save_images(bag_folders_src_path,bag_folders_dst_path):
             bag_folder_save_images(bfp,opj(bag_folders_dst_path,fname(bfp)))
         else:
             cprint('Excluding '+bfp,'green','on_blue')
+
+
+def bag_folders_transfer_meta(bag_folders_src_path,bag_folders_dst_path):
+    bag_folders_paths = sorted(glob.glob(opj(bag_folders_src_path,'*')))
+    for bfp in bag_folders_paths:
+        unix('mkdir -p '+opj(bag_folders_dst_path,fname(bfp)))
+        meta_dirs = sorted(glob.glob(opj(bfp,'.pre*')))
+        for m in meta_dirs:
+            data = sorted(glob.glob(opj(m,'left*')))
+            data += sorted(glob.glob(opj(m,'pre*')))
+            for d in data:
+                unix(d2s('scp ',d,opj(bag_folders_dst_path,fname(bfp))))
