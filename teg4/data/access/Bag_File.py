@@ -78,7 +78,8 @@ def bag_folders_save_images(bag_folders_src_path,bag_folders_dst_path):
 
 
 def bag_folders_transfer_meta(bag_folders_src_path,bag_folders_dst_path):
-    bag_folders_paths = sorted(glob.glob(opj(bag_folders_src_path,'*')))
+    #bag_folders_src_path,bag_folders_dst_path='/media/karlzipser/bair_car_data_6/bair_car_data','/home/karlzipser/Desktop/bair_car_data/meta/'
+    #bag_folders_paths = sorted(glob.glob(opj(bag_folders_src_path,'*')))
     for bfp in bag_folders_paths:
         unix('mkdir -p '+opj(bag_folders_dst_path,fname(bfp)))
         meta_dirs = sorted(glob.glob(opj(bfp,'.pre*')))
@@ -86,4 +87,10 @@ def bag_folders_transfer_meta(bag_folders_src_path,bag_folders_dst_path):
             data = sorted(glob.glob(opj(m,'left*')))
             data += sorted(glob.glob(opj(m,'pre*')))
             for d in data:
-                unix(d2s('scp ',d,opj(bag_folders_dst_path,fname(bfp))))
+                cprint(opj(opj(bag_folders_dst_path,fname(bfp))),'yellow')
+                unix_str = d2s('scp ',d,opj(bag_folders_dst_path,fname(bfp)))
+                if len(gg(opj(bag_folders_dst_path,fname(bfp),fname(d)))) == 0: # test this first
+                    cprint(unix_str,'red')
+                    unix(unix_str)
+                else:
+                    cprint(d2s('NOT',unix_str))

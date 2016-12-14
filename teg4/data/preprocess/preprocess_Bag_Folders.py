@@ -4,13 +4,16 @@ import kzpy3.teg4.data.access.Bag_Folder as Bag_Folder
 
 
 
-def preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_rgb_1to4_path,NUM_STATE_ONE_STEPS=30,graphics=True):
+def preprocess_Bag_Folder(bag_folders_path_meta_path,NUM_STATE_ONE_STEPS=30,graphics=True):
 	
-	try:
-		bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
+	
+	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
 
 	
-		for bfp in bag_folders_paths_list:
+	for bfp in bag_folders_paths_list:
+
+		try:
+
 			print bfp
 			run_name = bfp.split('/')[-1]
 
@@ -50,9 +53,9 @@ def preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_rgb_1to4_path,N
 
 				plt.pause(0.001)
 
-	except Exception as e:
-		cprint("********** Exception ***********************",'red')
-		print(e.message, e.args)			
+		except Exception as e:
+			cprint("********** Exception ***********************",'red')
+			print(e.message, e.args)			
 
 
 

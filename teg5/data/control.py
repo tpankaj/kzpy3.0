@@ -18,7 +18,7 @@ BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,
 thread_id = 'loader_thread'
 command_dic = {}
 command_dic[thread_id] = 'start' #  command_dic[thread_id] = 'pause' # command_dic[thread_id] = 'stop'
-delay_before_delete = 5*60
+delay_before_delete = 1*60
 
 threading.Thread(target=access_bag_files.bag_file_loader_thread,
 	args=(thread_id,command_dic,data_path,BagFolder_dic,BagFolders_weighted,delay_before_delete,loaded_bag_files_names,played_bagfile_dic)).start()
