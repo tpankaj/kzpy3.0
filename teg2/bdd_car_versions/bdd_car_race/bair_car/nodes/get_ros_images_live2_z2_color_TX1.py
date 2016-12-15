@@ -165,18 +165,18 @@ while not rospy.is_shutdown():
 				#solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
 				#solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
 
-				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = l0[:,:,0]
-				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = l1[:,:,0]
-				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = r0[:,:,0]
-				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = r1[:,:,0]
-				solver.net.blobs['ZED_data_pool2'].data[0,4,:,:] = l0[:,:,1]
-				solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = l1[:,:,1]
-				solver.net.blobs['ZED_data_pool2'].data[0,6,:,:] = r0[:,:,1]
-				solver.net.blobs['ZED_data_pool2'].data[0,7,:,:] = r1[:,:,1]
-				solver.net.blobs['ZED_data_pool2'].data[0,8,:,:] = l0[:,:,2]
-				solver.net.blobs['ZED_data_pool2'].data[0,9,:,:] = l1[:,:,2]
-				solver.net.blobs['ZED_data_pool2'].data[0,10,:,:] = r0[:,:,2]
-				solver.net.blobs['ZED_data_pool2'].data[0,11,:,:] = r1[:,:,2]
+				solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,0]
+				solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,0]
+				solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,0]
+				solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,0]
+				solver.net.blobs['ZED_data'].data[0,4,:,:] = l0[:,:,1]
+				solver.net.blobs['ZED_data'].data[0,5,:,:] = l1[:,:,1]
+				solver.net.blobs['ZED_data'].data[0,6,:,:] = r0[:,:,1]
+				solver.net.blobs['ZED_data'].data[0,7,:,:] = r1[:,:,1]
+				solver.net.blobs['ZED_data'].data[0,8,:,:] = l0[:,:,2]
+				solver.net.blobs['ZED_data'].data[0,9,:,:] = l1[:,:,2]
+				solver.net.blobs['ZED_data'].data[0,10,:,:] = r0[:,:,2]
+				solver.net.blobs['ZED_data'].data[0,11,:,:] = r1[:,:,2]
 					
 
 
@@ -191,7 +191,12 @@ while not rospy.is_shutdown():
 				
 				#if verbose:
 				#	print "solver.net.forward()"
-				solver.net.forward()
+				solver.net.forward(start='ZED_data',end='ZED_data_pool2')
+
+				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
+				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 0.5
+
+				solver.net.forward(start='conv1',end='ip2')
 
 				caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 				caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
