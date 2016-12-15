@@ -46,8 +46,7 @@ foldername = foldername + time_str() + '_'
 
 foldername = foldername + computer_name
 
-print("New foldername = "+foldername)
-time.sleep(3)
+
 
 
 

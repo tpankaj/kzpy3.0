@@ -6,7 +6,8 @@ import std_msgs.msg
 
 
 from computer_name import foldername
-
+print("*** New foldername = "+foldername+ '***')
+time.sleep(3)
 
 if __name__ == '__main__':
     rospy.init_node('rosbag_node', anonymous=True)

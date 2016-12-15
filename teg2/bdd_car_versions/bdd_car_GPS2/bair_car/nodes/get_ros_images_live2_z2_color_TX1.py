@@ -163,9 +163,9 @@ while not rospy.is_shutdown():
 				solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
 				solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
 				solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
-				from computer_name import *	
+					
 
-				solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
+				solver.net.blobs['metadata'].data[0,0,:,:] = Racing#target_data[0]/99. #current steer
 				solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
 				solver.net.blobs['metadata'].data[0,2,:,:] = Follow
 				solver.net.blobs['metadata'].data[0,3,:,:] = Direct
