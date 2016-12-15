@@ -138,7 +138,7 @@ from kzpy3.teg2.global_run_params import *
 
 t0 = time.time()
 time_step = Timer(1)
-caffe_enter_timer = Timer(5)
+caffe_enter_timer = Timer(2)
 verbose = False
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
@@ -146,7 +146,7 @@ while not rospy.is_shutdown():
 			previous_state = state
 			caffe_enter_timer.reset()
 		if not caffe_enter_timer.check():
-			print caffe_enter_timer.check()
+			#print caffe_enter_timer.check()
 			print "waiting before entering caffe mode..."
 			time.sleep(0.1)
 			continue
