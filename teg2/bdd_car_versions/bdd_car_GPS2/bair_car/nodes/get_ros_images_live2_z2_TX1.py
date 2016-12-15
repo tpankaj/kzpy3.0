@@ -139,7 +139,7 @@ from kzpy3.teg2.global_run_params import *
 t0 = time.time()
 time_step = Timer(1)
 caffe_enter_timer = Timer(5)
-verbose = True
+verbose = False
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
 		if (previous_state not in [3,5,6,7]):
@@ -170,8 +170,8 @@ while not rospy.is_shutdown():
 				solver.net.blobs['metadata'].data[0,4,:,:] = Play
 				solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 				
-				if verbose:
-					print "solver.net.forward()"
+				#if verbose:
+				#	print "solver.net.forward()"
 				solver.net.forward()
 
 				caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
