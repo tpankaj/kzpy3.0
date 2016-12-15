@@ -3,12 +3,13 @@
 
 from kzpy3.utils import time_str
 
-computer_name = 'Mr_Orange'
+computer_name = 'Mr_X'
 Direct = 1.
 Follow = 0.
 Play = 0.
 Furtive = 0.
-Caf = 1.0
+Caf = 0.0
+Racing = 0.0
 Location = 'local'
 
 
@@ -24,6 +25,8 @@ elif Follow == 1:
 	task = 'follow'
 elif Furtive == 1:
 	task = 'furtive'
+elif Racing == 1:
+	task = 'racing'
 else:
 	assert(False)
 
@@ -43,7 +46,8 @@ foldername = foldername + time_str() + '_'
 
 foldername = foldername + computer_name
 
-
+print("New foldername = "+foldername)
+time.sleep(3)
 
 
 
