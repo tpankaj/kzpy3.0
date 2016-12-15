@@ -143,6 +143,7 @@ verbose = True
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
 		if (previous_state not in [3,5,6,7]):
+			previous_state = state
 			caffe_enter_timer.reset()
 		if not caffe_enter_timer.check():
 			print caffe_enter_timer.check()
