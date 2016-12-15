@@ -88,7 +88,8 @@ def load_data_into_model_version_1(solver,data,flip,show_data=False):
 				Follow = 0.
 				Play = 0.
 				Furtive = 0.
-				Caf = 0
+				Caf = 0.
+				Racing = 0
 
 				if 'follow' in data['path']:
 					Follow = 1.0
@@ -100,8 +101,11 @@ def load_data_into_model_version_1(solver,data,flip,show_data=False):
 					Furtive = 1.0
 				if 'caffe' in data['path']:
 					Caf = 1.0
+				if 'racing' in data['path']:
+					Racing = 1.0
+					Direct = 1.0
 
-				solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
+				solver.net.blobs['metadata'].data[0,0,:,:] = Racing#target_data[0]/99. #current steer
 				solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
 				solver.net.blobs['metadata'].data[0,2,:,:] = Follow
 				solver.net.blobs['metadata'].data[0,3,:,:] = Direct

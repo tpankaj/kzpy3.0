@@ -7,7 +7,7 @@ from cv_bridge import CvBridge, CvBridgeError
 bridge = cv_bridge.CvBridge()
 
 
-def preview(bag_folder_path,dst_folder=opjD('previews')):
+def preview(bag_folder_path,dst_folder=opjD('bair_car_data','previews')):
 
     dst_folder_bag_folder = opj(dst_folder,fname(bag_folder_path))
     unix('mkdir -p '+dst_folder_bag_folder)
@@ -52,3 +52,13 @@ def preview(bag_folder_path,dst_folder=opjD('previews')):
         dst_png = dst_png.replace('.bag','.png')
         print(dst_png)
         imsave(dst_png,img1)
+
+
+def previews(bag_folder_path,dst_folder=opjD('bair_car_data','previews')):
+    bag_folders = sgg(opj(bag_folder_path,'*'))
+    for bf in bag_folders:
+        try:
+            preview(bf,dst_folder)
+        except Exception as e:
+            cprint("********** Exception ***********************",'red')
+            print(e.message, e.args)

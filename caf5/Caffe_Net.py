@@ -30,7 +30,7 @@ class Caffe_Net:
 		self.train_steps = 0
 		self.train_start_time = 0
 		self.print_timer = Timer(2)
-		self.visualize_timer = Timer(5)
+		self.visualize_timer = Timer(2)
 		self.save_loss_timer = Timer(10*60)
 		self.loss = []
 		self.loss1000 = []

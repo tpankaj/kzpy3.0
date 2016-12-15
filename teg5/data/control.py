@@ -11,7 +11,7 @@ used_timestamps = {}
 data_path = '/home/karlzipser/Desktop/bair_car_data'
 NUM_STATE_ONE_STEPS = 30
 
-ignore_most=['Orange','sidewalks','campus','caffe','play','follow','furtive','local','racing']
+ignore_most=['August','sidewalks','campus','caffe','play','follow','furtive','local']
 
 BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,ignore=['caffe'])
 
@@ -64,7 +64,9 @@ def get_data_thread(BagFolder_dic,played_bagfile_dic,used_timestamps,NUM_STATE_O
 			time.sleep(1./30000.)
 		timer.reset()
 
-time.sleep(3*60)
+wait_delay = 2*60
+cprint(d2s('Waiting',wait_delay,'seconds to let data thread load a lot of data.'))
+time.sleep(wait_delay)
 threading.Thread(target=get_data_thread,args=(BagFolder_dic,played_bagfile_dic,used_timestamps,NUM_STATE_ONE_STEPS)).start()
 time.sleep(5)
 

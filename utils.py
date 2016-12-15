@@ -584,3 +584,12 @@ def pname(path):
         if len(s)>0:
             pstr += '/' + s
     return pstr
+
+def sequential_means(data,n):
+    a = array(data)
+    d = []
+    x = []
+    for i in range(0,len(a),n):
+        d.append(a[i:i+n].mean())
+        x.append(i)
+    return x,d
