@@ -195,7 +195,7 @@ while not rospy.is_shutdown():
 	if time_step.check():
 		print(d2s("In state",state,"for",state_transition_time_s,"seconds, previous_state =",previous_state))
 		time_step.reset()
-	if not folder_display_timer.check():
-		print("*** Data foldername = "+foldername+ '***')
+		if not folder_display_timer.check():
+			print("*** Data foldername = "+foldername+ '***')
 
 
