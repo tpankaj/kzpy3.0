@@ -65,7 +65,7 @@
             /$(arg car_name)/encoder
             /$(arg car_name)/gps
             /$(arg car_name)/gyro
-            /$(arg car_name)/head
+            /$(arg car_name)/gyro_heading
             /$(arg car_name)/acc
             /$(arg car_name)/motor
             /$(arg car_name)/sonar
