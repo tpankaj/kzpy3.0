@@ -591,5 +591,5 @@ def sequential_means(data,n):
     x = []
     for i in range(0,len(a),n):
         d.append(a[i:i+n].mean())
-        x.append(i)
+        x.append(i+n/2)
     return x,d

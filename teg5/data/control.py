@@ -95,3 +95,11 @@ while True:
 		#print data['path']
 		#time.sleep(1)
 		caffe_net.train_step(data)
+
+
+"""
+l=load_obj('/home/karlzipser/Desktop/loss1000.pkl' )
+plot(l,'.')
+x,d = sequential_means(l,500)
+plot(x,d,'ro-')
+"""

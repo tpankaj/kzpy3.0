@@ -15,8 +15,8 @@ from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
-solver_file_path = opjh("kzpy3/caf3/z2/solver_live.prototxt")
-weights_file_path = opjh('kzpy3/caf3/z2/z2.caffemodel') #
+solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
+weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel') #
 def setup_solver():
 	solver = caffe.SGDSolver(solver_file_path)
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
@@ -160,14 +160,30 @@ while not rospy.is_shutdown():
 				r0 = right_list[-2]
 				r1 = right_list[-1]
 
-				solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-				solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+				#solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
+				#solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
+				#solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
+				#solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
+
+				solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = l0[:,:,0]
+				solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = l1[:,:,0]
+				solver.net.blobs['ZED_data_pool2'].data[0,2,:,:] = r0[:,:,0]
+				solver.net.blobs['ZED_data_pool2'].data[0,3,:,:] = r1[:,:,0]
+				solver.net.blobs['ZED_data_pool2'].data[0,4,:,:] = l0[:,:,1]
+				solver.net.blobs['ZED_data_pool2'].data[0,5,:,:] = l1[:,:,1]
+				solver.net.blobs['ZED_data_pool2'].data[0,6,:,:] = r0[:,:,1]
+				solver.net.blobs['ZED_data_pool2'].data[0,7,:,:] = r1[:,:,1]
+				solver.net.blobs['ZED_data_pool2'].data[0,8,:,:] = l0[:,:,2]
+				solver.net.blobs['ZED_data_pool2'].data[0,9,:,:] = l1[:,:,2]
+				solver.net.blobs['ZED_data_pool2'].data[0,10,:,:] = r0[:,:,2]
+				solver.net.blobs['ZED_data_pool2'].data[0,11,:,:] = r1[:,:,2]
+					
+
+
 				from computer_name import *	
 
-				solver.net.blobs['metadata'].data[0,0,:,:] = 0#target_data[0]/99. #current steer
-				solver.net.blobs['metadata'].data[0,1,:,:] = Caf#target_data[len(target_data)/2]/99. #current motor
+				solver.net.blobs['metadata'].data[0,0,:,:] = Racing#target_data[0]/99. #current steer
+				solver.net.blobs['metadata'].data[0,1,:,:] = 0#target_data[len(target_data)/2]/99. #current motor
 				solver.net.blobs['metadata'].data[0,2,:,:] = Follow
 				solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 				solver.net.blobs['metadata'].data[0,4,:,:] = Play
