@@ -141,6 +141,7 @@ time_step = Timer(1)
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
 		if (previous_state not in [3,5,6,7]):
+			print "sleeping..."
 			time.sleep(1)
 			continue
 
@@ -168,7 +169,7 @@ while not rospy.is_shutdown():
 			caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 			caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
 			
-			#print caf_steer
+			print caf_steer
 			
 			steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
 			motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
