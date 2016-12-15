@@ -139,6 +139,7 @@ from kzpy3.teg2.global_run_params import *
 t0 = time.time()
 time_step = Timer(1)
 caffe_enter_timer = Timer(2)
+folder_display_timer = Timer(30)
 verbose = False
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
@@ -194,6 +195,7 @@ while not rospy.is_shutdown():
 	if time_step.check():
 		print(d2s("In state",state,"for",state_transition_time_s,"seconds, previous_state =",previous_state))
 		time_step.reset()
-
+	if not folder_display_timer.check():
+		print("*** Data foldername = "+foldername+ '***')
 
 
