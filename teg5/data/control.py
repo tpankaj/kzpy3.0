@@ -74,32 +74,82 @@ time.sleep(5)
 
 import caffe
 USE_GPU = True
-if USE_GPU:
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
+
+if True:
+	if USE_GPU:
+		caffe.set_device(0)
+		caffe.set_mode_gpu()
+	from kzpy3.caf5.Caffe_Net import *
+	solver_file_path = opjh("kzpy3/caf5/z2_color/solver1.prototxt")
+	version = 'version 1'
+	weights_file_mode = 'most recent'
+	weights_file_path = opjD('z2_color')
+
+
+	caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path)
+	while True:
+		try:
+			data = data_list[-1]
+		except Exception as e:
+			cprint("********** Exception ***********************",'red')
+			print(e.message, e.args)
+		if data != None:
+			#print data['path']
+			#time.sleep(1)
+			caffe_net.train_step(data)
+
+
+def plot_loss1000():
+	l=load_obj('/home/karlzipser/Desktop/loss1000.pkl' )
+	plot(l,'.')
+	x,d = sequential_means(l,500)
+	plot(x,d,'ro-')
+
+
 from kzpy3.caf5.Caffe_Net import *
-solver_file_path = opjh("kzpy3/caf5/z2_color/solver1.prototxt")
-version = 'version 1'
-weights_file_mode = 'most recent'
-weights_file_path = opjD('z2_color')
+
+def caffe_net_thread(thread_id,solver_file_path,version,weights_file_mode,weights_file_path,command_dic,gpu_num):
+	caffe.set_device(gpu_num)
+	caffe.set_mode_gpu()
+	caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path)
+	cprint(d2s('Starting thread ',thread_id),'yellow','on_blue')
+	state = command_dic[thread_id]
+	while True:
+		command = command_dic[thread_id]
+		if command == 'pause':
+			if state == 'pause':
+				pass
+			else:
+				state = 'pause'
+				cprint(d2s('Pausing thread ',thread_id),'yellow','on_blue')
+			time.sleep(1)
+			continue
+		if command == 'start' and state == 'pause':
+			state = 'running'
+			cprint(d2s('Unpausing thread ',thread_id),'yellow','on_blue')			
+		if command == 'stop':
+			cprint(d2s('Stopping thread ',thread_id),'yellow','on_blue')
+			return
+		try:
+			data = data_list[-(1+gpu_num)]
+		except Exception as e:
+			cprint("********** Exception ***********************",'red')
+			print(e.message, e.args)			
+		if data != None:
+			caffe_net.train_step(data)
 
 
-caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path)
-while True:
-	try:
-		data = data_list[-1]
-	except Exception as e:
-		cprint("********** Exception ***********************",'red')
-		print(e.message, e.args)
-	if data != None:
-		#print data['path']
-		#time.sleep(1)
-		caffe_net.train_step(data)
+if False:
+	for gpu_num in range(2):
+		thread_id = d2s('caffe net',gpu_num)
+		solver_file_path = opjh(d2n("kzpy3/caf5/z2_color/solver",gpu_num,".prototxt"))
+		version = 'version 1'
+		weights_file_mode = 'most recent'
+		weights_file_path = opjD('z2_color')
+		command_dic = {}
+		command_dic[thread_id] = 'start' # command_dic[thread_id] = 'stop'
+		threading.Thread(target=caffe_net_thread,args=(thread_id,solver_file_path,version,weights_file_mode,weights_file_path,command_dic,gpu_num)).start()
 
 
-"""
-l=load_obj('/home/karlzipser/Desktop/loss1000.pkl' )
-plot(l,'.')
-x,d = sequential_means(l,500)
-plot(x,d,'ro-')
-"""
+
+

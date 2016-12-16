@@ -166,7 +166,7 @@ def visualize_solver_data_version_1(solver,flip):
 		#print(img.min(),img.max())
 		apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 		apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
-		mi(img,layer_to_use)
+		mi(img,layer_to_use,img_title=d2s(solver.net.blobs['metadata'].data[0,:,0,0]))
 
 		pause(0.001)
 		#cv2.imshow('left',cv2.cvtColor((255*img).astype(np.uint8),cv2.COLOR_RGB2BGR))#.astype('uint8')

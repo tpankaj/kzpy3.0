@@ -5,8 +5,8 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 ########################################################
 #          SETUP SECTION
 #
-solver_file_path = opjh("kzpy3/caf3/z2/solver.prototxt")
-weights_file_path = opjD('z2/z2.caffemodel') #
+solver_file_path = opjh("kzpy3/caf5/z2_color/solver1.prototxt")
+weights_file_path = opjD('z2_color/z2_color.caffemodel') #
 #
 ########################################################
 
@@ -19,17 +19,21 @@ def setup_solver():
 	return solver
 
 solver = setup_solver()
-
+weights_file_path = opjD('z2_color')
+weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','caffemodel'])
+solver.net.copy_from(weights_file_path)
 plt.ion()
+
 for n in range(96):
 	width = 11
-	img = np.zeros((2*width+7,2*width+7))
-	img[2:width+2,2:width+2] = solver.net.params['conv1'][0].data[n,0,:,:]
-	img[2:width+2,-(width+2):-2] = solver.net.params['conv1'][0].data[n,2,:,:]
-	img[-(width+2):-2,2:width+2] = solver.net.params['conv1'][0].data[n,1,:,:]
-	img[-(width+2):-2,-(width+2):-2] = solver.net.params['conv1'][0].data[n,3,:,:]
+	img = np.zeros((2*width+7,2*width+7,3))
+	for c in range(3):
+		img[2:width+2,2:width+2,c] = solver.net.params['conv1'][0].data[n,0+4*c,:,:]
+		img[2:width+2,-(width+2):-2,c] = solver.net.params['conv1'][0].data[n,2+4*c,:,:]
+		img[-(width+2):-2,2:width+2,c] = solver.net.params['conv1'][0].data[n,1+4*c,:,:]
+		img[-(width+2):-2,-(width+2):-2,c] = solver.net.params['conv1'][0].data[n,3+4*c,:,:]
 
-	mi(img,'conv1',img_title=d2s('conv1 channel',n)) 
-
+	mi(z2o(img),'conv1',img_title=d2s('conv1 channel',n)) 
+	imsave(opjD('temp',d2n(n,'.png')),img)
 	plt.pause(1)
 
