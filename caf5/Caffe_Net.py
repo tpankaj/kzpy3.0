@@ -13,20 +13,25 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
 class Caffe_Net:
 
-	def __init__(self,solver_file_path,version,weights_file_mode=None,weights_file_path=None):
+	def __init__(self,solver_file_path,version,weights_file_mode=None,weights_file_path=None,restore_solver=False):
 		self.version = version
 		self.solver = _setup_solver(solver_file_path)
-		if weights_file_mode == 'most recent':
-			weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','caffemodel'])
-		elif weights_file_mode == 'this one':
-			pass
-		elif weights_file_mode == None:
-			pass
+		if restore_solver:
+			weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','solverstate'])
+			self.solver.restore(weights_file_path)
+			print(d2n("*** self.solver.restore(",weights_file_path,") ***"))
 		else:
-			assert(False)
-		if weights_file_path != None:
-			cprint("loading " + weights_file_path,'red','on_yellow')
-			self.solver.net.copy_from(weights_file_path)
+			if weights_file_mode == 'most recent':
+				weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','caffemodel'])
+			elif weights_file_mode == 'this one':
+				pass
+			elif weights_file_mode == None:
+				pass
+			else:
+				assert(False)
+			if weights_file_path != None:
+				cprint("loading " + weights_file_path,'red','on_yellow')
+				self.solver.net.copy_from(weights_file_path)
 		self.train_steps = 0
 		self.train_start_time = 0
 		self.print_timer = Timer(2)
@@ -41,7 +46,7 @@ class Caffe_Net:
 			flip = False
 		else:
 			flip = True
-		result = _load_data_into_model(self.solver,self.version,data,flip)
+		result = _load_data_into_model(self.solver,self.version,data,flip,False,True)
 		#print result
 		if result:
 			if self.train_steps == 0:
@@ -95,9 +100,9 @@ def _array_to_int_list(a):
 		l.append(int(d*100))
 	return l
 
-def _load_data_into_model(solver,version,data,flip):
+def _load_data_into_model(solver,version,data,flip,show_data,camera_dropout):
 	if version == 'version 1':
-		return load_data_into_model_version_1(solver,data,flip)
+		return load_data_into_model_version_1(solver,data,flip,show_data,camera_dropout)
 
 def visualize_solver_data(solver,version,flip):
 	if version == 'version 1':

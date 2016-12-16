@@ -18,7 +18,7 @@ BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,
 thread_id = 'loader_thread'
 command_dic = {}
 command_dic[thread_id] = 'start' #  command_dic[thread_id] = 'pause' # command_dic[thread_id] = 'stop'
-delay_before_delete = 1*60
+delay_before_delete = 30
 
 threading.Thread(target=access_bag_files.bag_file_loader_thread,
 	args=(thread_id,command_dic,data_path,BagFolder_dic,BagFolders_weighted,delay_before_delete,loaded_bag_files_names,played_bagfile_dic)).start()
@@ -82,11 +82,11 @@ if True:
 	from kzpy3.caf5.Caffe_Net import *
 	solver_file_path = opjh("kzpy3/caf5/z2_color/solver1.prototxt")
 	version = 'version 1'
-	weights_file_mode = 'most recent'
-	weights_file_path = opjD('z2_color')
+	weights_file_mode = None #most recent'
+	weights_file_path = None #opjD('z2_color')
 
 
-	caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path)
+	caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
 	while True:
 		try:
 			data = data_list[-1]
