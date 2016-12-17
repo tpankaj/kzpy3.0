@@ -200,6 +200,9 @@ while not rospy.is_shutdown():
 
 				caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 				caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
+
+				if caf_motor > 60:
+					caf_motor = (caf_motor-60)/39.0*10.0 + 60
 				
 				if verbose:
 					print caf_steer
