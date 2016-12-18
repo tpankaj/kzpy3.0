@@ -82,7 +82,7 @@ def bag_file_loader_thread(thread_id,command_dic,data_path,BagFolder_dic,BagFold
 			indicies.reverse()
 			ctr = 0
 			for i in indicies:
-				if if ctr >= 25: #ctr >= 0.25*len(indicies): # if ctr >= 25:
+				if ctr >= 25: #ctr >= 0.25*len(indicies): # if ctr >= 25:
 					break
 				bf = played_bagfile_dic_keys[i]
 				if bf in loaded_bag_files_names:

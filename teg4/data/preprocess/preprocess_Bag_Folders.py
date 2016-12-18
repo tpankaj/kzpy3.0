@@ -4,7 +4,7 @@ import kzpy3.teg4.data.access.Bag_Folder as Bag_Folder
 
 
 
-def preprocess_Bag_Folder(bag_folders_path_meta_path,NUM_STATE_ONE_STEPS=30,graphics=True):
+def preprocess_Bag_Folder(bag_folders_path_meta_path,NUM_STATE_ONE_STEPS=30,graphics=False):
 	
 	
 	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
@@ -19,6 +19,7 @@ def preprocess_Bag_Folder(bag_folders_path_meta_path,NUM_STATE_ONE_STEPS=30,grap
 
 			left_image_bound_to_data_name = get_preprocess_dir_name_info(bfp)
 			if left_image_bound_to_data_name == None:
+				cprint("if left_image_bound_to_data_name == None:",'red')
 				continue
 
 			if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:

@@ -59,10 +59,10 @@ def bag_folder_save_images(bag_folder_src_path,bag_folder_dst_path):
     bag_file_paths = sorted(glob.glob(opj(bag_folder_src_path,'*.bag')))
     for bf in bag_file_paths:
         bag_file_dst_path = opj(bag_folder_dst_path)
-        unix('mkdir -p '+bag_file_dst_path)
         bag_file_dst_path = opj(bag_file_dst_path,fname(bf)+'.pkl')
         print bag_file_dst_path
         save_images(bf,bag_file_dst_path)
+
 
 def bag_folders_save_images(bag_folders_src_path,bag_folders_dst_path):
     bag_folders_paths = sorted(glob.glob(opj(bag_folders_src_path,'*')))
@@ -79,7 +79,7 @@ def bag_folders_save_images(bag_folders_src_path,bag_folders_dst_path):
 
 def bag_folders_transfer_meta(bag_folders_src_path,bag_folders_dst_path):
     #bag_folders_src_path,bag_folders_dst_path='/media/karlzipser/bair_car_data_6/bair_car_data','/home/karlzipser/Desktop/bair_car_data/meta/'
-    #bag_folders_paths = sorted(glob.glob(opj(bag_folders_src_path,'*')))
+    bag_folders_paths = sgg(opj(bag_folders_src_path,'*'))
     for bfp in bag_folders_paths:
         unix('mkdir -p '+opj(bag_folders_dst_path,fname(bfp)))
         meta_dirs = sorted(glob.glob(opj(bfp,'.pre*')))

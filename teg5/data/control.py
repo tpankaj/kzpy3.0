@@ -3,6 +3,19 @@ import kzpy3.teg5.data.access_bag_files as access_bag_files
 import threading
 
 
+import caffe
+USE_GPU = True
+if USE_GPU:
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
+from kzpy3.caf5.Caffe_Net import *
+solver_file_path = opjh("kzpy3/caf5/z2_color/solver.prototxt")
+version = 'version 1b'
+weights_file_mode = None #'most recent'
+weights_file_path = None #opjD('z2_color')
+caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
+
+
 
 loaded_bag_files_names = {}
 played_bagfile_dic = {}
@@ -13,12 +26,12 @@ NUM_STATE_ONE_STEPS = 30
 
 ignore_most=['August','sidewalks','campus','caffe','play','follow','furtive','local']
 
-BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,ignore=['caffe'])
+BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,ignore=['caffe','racing'])
 
 thread_id = 'loader_thread'
 command_dic = {}
 command_dic[thread_id] = 'start' #  command_dic[thread_id] = 'pause' # command_dic[thread_id] = 'stop'
-delay_before_delete = 30
+delay_before_delete = 5*60
 
 threading.Thread(target=access_bag_files.bag_file_loader_thread,
 	args=(thread_id,command_dic,data_path,BagFolder_dic,BagFolders_weighted,delay_before_delete,loaded_bag_files_names,played_bagfile_dic)).start()
@@ -64,7 +77,7 @@ def get_data_thread(BagFolder_dic,played_bagfile_dic,used_timestamps,NUM_STATE_O
 			time.sleep(1./30000.)
 		timer.reset()
 
-wait_delay = 2*60
+wait_delay = 120
 cprint(d2s('Waiting',wait_delay,'seconds to let data thread load a lot of data.'))
 time.sleep(wait_delay)
 threading.Thread(target=get_data_thread,args=(BagFolder_dic,played_bagfile_dic,used_timestamps,NUM_STATE_ONE_STEPS)).start()
@@ -72,23 +85,13 @@ time.sleep(5)
 
 
 
-import caffe
-USE_GPU = True
 
 if True:
-	if USE_GPU:
-		caffe.set_device(0)
-		caffe.set_mode_gpu()
-	from kzpy3.caf5.Caffe_Net import *
-	solver_file_path = opjh("kzpy3/caf5/z2_color/solver1.prototxt")
-	version = 'version 1'
-	weights_file_mode = None #most recent'
-	weights_file_path = None #opjD('z2_color')
 
-
-	caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
+	#print 'here 1'
 	while True:
 		try:
+			#print 'here 2'
 			data = data_list[-1]
 		except Exception as e:
 			cprint("********** Exception ***********************",'red')
@@ -96,11 +99,15 @@ if True:
 		if data != None:
 			#print data['path']
 			#time.sleep(1)
+			#print 'here 3'
 			caffe_net.train_step(data)
+			#print 'here 4'
+		else:
+			print "data == None"
 
 
-def plot_loss1000():
-	l=load_obj('/home/karlzipser/Desktop/loss1000.pkl' )
+def plot_loss1000(path='/home/karlzipser/Desktop/loss1000.pkl'):
+	l=load_obj(path)
 	plot(l,'.')
 	x,d = sequential_means(l,500)
 	plot(x,d,'ro-')

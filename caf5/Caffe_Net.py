@@ -35,7 +35,7 @@ class Caffe_Net:
 		self.train_steps = 0
 		self.train_start_time = 0
 		self.print_timer = Timer(2)
-		self.visualize_timer = Timer(2)
+		self.visualize_timer = Timer(5)
 		self.save_loss_timer = Timer(10*60)
 		self.loss = []
 		self.loss1000 = []
@@ -103,7 +103,19 @@ def _array_to_int_list(a):
 def _load_data_into_model(solver,version,data,flip,show_data,camera_dropout):
 	if version == 'version 1':
 		return load_data_into_model_version_1(solver,data,flip,show_data,camera_dropout)
+	if version == 'version 1b':
+		return load_data_into_model_version_1b(solver,data,flip,show_data,camera_dropout)
+	if version == 'version 2':
+		return load_data_into_model_version_2(solver,data,flip,show_data,camera_dropout)
+	assert(False)
 
 def visualize_solver_data(solver,version,flip):
 	if version == 'version 1':
 		return visualize_solver_data_version_1(solver,flip)
+	if version == 'version 1b':
+		return visualize_solver_data_version_1b(solver,flip)
+	if version == 'version 2':
+		return visualize_solver_data_version_2(solver,flip)
+	assert(False)
+
+

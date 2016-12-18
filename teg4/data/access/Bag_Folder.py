@@ -12,6 +12,7 @@ def init(bag_folders_path_meta_path,bag_folders_rgb_1to4_path, left_image_bound_
     print opj(bag_folders_rgb_1to4_path,'*.bag.pkl')
     #cprint(d2s("""BF['bag_files'] =""",BF['bag_files']))
     if len(BF['bag_files']) == 0:
+        cprint("if len(BF['bag_files']) == 0:",'red')
         return None
     BF['bag_file_num_dic'] = {}
     for bf in BF['bag_files']:
@@ -80,45 +81,56 @@ def init(bag_folders_path_meta_path,bag_folders_rgb_1to4_path, left_image_bound_
         #assert('encoder' in SL[ts])
         if not 'encoder' in SL[ts]:
             bad_timestamps_list.append(ts)
+            cprint("if not 'encoder' in SL[ts]:")
             continue
         #assert('encoder' in SL[ts])
         if not 'gyro' in SL[ts]:
             bad_timestamps_list.append(ts)
+            cprint("if not 'gyro' in SL[ts]:")
             continue
         #assert('encoder' in SL[ts])
         if not 'motor' in SL[ts]:
             bad_timestamps_list.append(ts)
+            cprint("if not 'motor' in SL[ts]:")
             continue
         #assert('encoder' in SL[ts])
         if not 'steer' in SL[ts]:
             bad_timestamps_list.append(ts)
+            cprint("if not 'steer' in SL[ts]:")
             continue
         #assert('encoder' in SL[ts])
         if not 'state' in SL[ts]:
             bad_timestamps_list.append(ts)
+            cprint("if not 'state' in SL[ts]:")
             continue
         #assert('encoder' in SL[ts])
         if not type(SL[ts]['encoder']) == float:
+            cprint("if not type(SL[ts]['encoder']) == float:")
             bad_timestamps_list.append(ts)
             continue
         #assert('encoder' in SL[ts])
         if not len(SL[ts]['gyro']) == 3:
             bad_timestamps_list.append(ts)
+            cprint("if not len(SL[ts]['gyro']) == 3:")
             continue
         if not len(SL[ts]['acc']) == 3:
             bad_timestamps_list.append(ts)
+            cprint(" if not len(SL[ts]['acc']) == 3:")
             continue
         #assert('encoder' in SL[ts])
         if not type(SL[ts]['motor']) == float:
             bad_timestamps_list.append(ts)
+            cprint("if not type(SL[ts]['motor']) == float:")
             continue
         #assert('encoder' in SL[ts])
         if not type(SL[ts]['steer']) == float:
             bad_timestamps_list.append(ts)
+            cprint("if not type(SL[ts]['steer']) == float:")
             continue
         #assert('encoder' in SL[ts])
         if not type(SL[ts]['state']) == float:
             bad_timestamps_list.append(ts)
+            cprint("if not type(SL[ts]['state']) == float:")
             continue
 
     if len(bad_timestamps_list) > 0:
