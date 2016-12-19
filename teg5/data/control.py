@@ -3,19 +3,6 @@ import kzpy3.teg5.data.access_bag_files as access_bag_files
 import threading
 
 
-import caffe
-USE_GPU = True
-if USE_GPU:
-	caffe.set_device(0)
-	caffe.set_mode_gpu()
-from kzpy3.caf5.Caffe_Net import *
-solver_file_path = opjh("kzpy3/caf5/z2_color/solver.prototxt")
-version = 'version 1b'
-weights_file_mode = None #'most recent'
-weights_file_path = None #opjD('z2_color')
-caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
-
-
 
 loaded_bag_files_names = {}
 played_bagfile_dic = {}
@@ -85,6 +72,19 @@ time.sleep(5)
 
 
 
+import caffe
+USE_GPU = True
+if USE_GPU:
+	caffe.set_device(0)
+	caffe.set_mode_gpu()
+from kzpy3.caf5.Caffe_Net import *
+solver_file_path = opjh("kzpy3/caf5/z2_color/solver.prototxt")
+version = 'version 1b'
+weights_file_mode = None #'most recent'
+weights_file_path = None #opjD('z2_color')
+caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
+
+
 
 if True:
 
@@ -106,13 +106,25 @@ if True:
 			print "data == None"
 
 
-def plot_loss1000(path='/home/karlzipser/Desktop/loss1000.pkl'):
-	l=load_obj(path)
+def plot_loss1000(paths='/home/karlzipser/Desktop/loss1000.pkl',max_num_points=100000):
+	if type(paths) != list:
+		paths = [paths]
+	l = []
+	for path in paths:
+		l = l + list(load_obj(path))
+	if len(l) > max_num_points:
+		l = l[:max_num_points]
 	plot(l,'.')
-	x,d = sequential_means(l,500)
+	x,d = sequential_means(l,100)
 	plot(x,d,'ro-')
 
+def plot_loss_comparison(max_num_points=2000):
+	figure('loss')
+	clf()
+	plot_loss1000('/home/karlzipser/Desktop/z2_color_trained_12_15_2016/_loss1000.pkl',max_num_points)
+	plot_loss1000('/home/karlzipser/Desktop/loss1000.pkl',max_num_points)
 
+"""
 from kzpy3.caf5.Caffe_Net import *
 
 def caffe_net_thread(thread_id,solver_file_path,version,weights_file_mode,weights_file_path,command_dic,gpu_num):
@@ -158,5 +170,6 @@ if False:
 		threading.Thread(target=caffe_net_thread,args=(thread_id,solver_file_path,version,weights_file_mode,weights_file_path,command_dic,gpu_num)).start()
 
 
-
+"""
+pass
 

@@ -585,11 +585,12 @@ def pname(path):
             pstr += '/' + s
     return pstr
 
-def sequential_means(data,n):
+def sequential_means(data,nn):
     a = array(data)
     d = []
     x = []
+    n = min(len(a),nn)
     for i in range(0,len(a),n):
         d.append(a[i:i+n].mean())
-        x.append(i+n/2)
+        x.append(i+n/2.)
     return x,d
