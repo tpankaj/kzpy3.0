@@ -1,23 +1,11 @@
 # Installing Caffe, ZED SDK and ROS on Jetson TX1, starting from TK1 install on 31 March 2016
-# [ 21 December, 2016: the process is a moving target, updates included here]
-#
-# Caffe install based primarily on this page:
-#   http://planspace.org/20150614-the_nvidia_jetson_tk1_with_caffe_on_mnist/
-#
-#
-# Frist, flash Jetpack to the Jetson TX1
-#  conntect ubuntu host to TX1 with micro USB
-#  run Jetpack---.run on host
-#  follow directions, using all defaults except need to select TX1 as opposed
-#  to TK1. After going into forced recovery mode, must press Enter (this is not
-#  obvious).
-#  Requires ~18 minutes.
+# New version for Ubuntu 16.04 Jetson TX1, 22 December 2016
 #
 # Shut down TX1, disconnect micro USB, power up.
 #
 # In system settings, turn off screen lock, set time zone
 #
-# --don't do this: ran ocv.sh in ~/OpenCV4Tegra to install openCV
+# It seems good to use the standard setup, then delete stuff that is not wanted.
 #
 # Flashing does not always succeed. If there are problems, try flashing again
 #
@@ -33,106 +21,24 @@ sudo apt-get --assume-yes install git
 git clone https://github.com/karlzipser/kzpy3.0.git
 mv kzpy3.0 kzpy3
 
-
-
 # in separate terminal,
 vi kzpy3/teg6/setting_up_TX1.txt
 
 
+git clone https://github.com/jetsonhacks/installCaffeJTX1.git
+sudo ./jetson_clocks.sh
+./installCaffeCuDNN.sh
 
 
-
-
-sudo apt-get --assume-yes install \
-    libprotobuf-dev protobuf-compiler gfortran \
-    libboost-dev cmake libleveldb-dev libsnappy-dev \
-    libboost-thread-dev libboost-system-dev \
-    libatlas-base-dev libhdf5-serial-dev libgflags-dev \
-    libgoogle-glog-dev liblmdb-dev gcc-4.7 g++-4.7 \
-    python-numpy \
-    libboost-filesystem-dev \
-    python-dev \
-    libboost-python-dev 
-# above requires ~ 10 minutes
-
-
-
-
-git clone https://github.com/BVLC/caffe.git
-cd caffe
-cp Makefile.config.example Makefile.config
-
-# Don't use the python layer. No changes necessary to Makefile.config
-# Or rather, modify to this:
-INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/
-# and uncomment 
-USE_CUDNN := 1
-
-make -j 4 all
-# make -j 4 test
-# make -j 4 runtest # this takes forever
-
-build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
-
-		TX1 Alexnet benchmarks [without cuDNN]
-		Batchsize = 10
-		with GPU
-		I1007 13:24:02.158314  6710 caffe.cpp:377] Average Forward pass: 171.171 ms.
-		I1007 13:24:02.158380  6710 caffe.cpp:379] Average Backward pass: 152.4 ms.
-		I1007 13:24:02.158437  6710 caffe.cpp:381] Average Forward-Backward: 323.99 ms.
-
-# if error, "libcudart.so.7.0: cannot open shared object file", do:
-#      sudo ldconfig /usr/local/cuda/lib
-# [see: http://qinhongwei.com/2016/05/08/how-to-install-caffe-on-NVIDIA-TX1/]
-#
-
-
-
-
-
-
-sudo apt-get --assume-yes install python-pip 
-sudo easy_install cython 
-
-# this was necessary after I didn't include all NVIDA visionworks packages in the install.
-# sudo apt-get --assume-yes install libfreetype6-dev
-
-# [takes a long time, is required for import caffe to work]
-sudo pip install -U scikit-image
-sudo pip install protobuf
-
-
-
-
-make pycaffe
-
-
-
-
-# add to .bashrc, at end:
-export PYTHONPATH=~/caffe/python:$PYTHONPATH 
-# at this point, caffe appears to work in python.
-
+git clone https://github.com/ferhatkurt/Jetson.git
 
 
 
 
 
 ############# install ROS ################
-# ROS   http://wiki.ros.org/indigo/Installation/UbuntuARM
-# not necessary: uncomment lines in /etc/apt/sources.list
-sudo update-locale LANG=C LANGUAGE=C LC_ALL=C LC_MESSAGES=POSIX
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
-sudo apt-get update
-sudo apt-get install ros-indigo-desktop
+git clone https://github.com/jetsonhacks/installROSTX1.git
 
-sudo apt-get install python-rosdep
-sudo rosdep init
-rosdep update
-
-echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
-source ~/.bashrc
 
 ###################
 
@@ -143,12 +49,11 @@ source ~/.bashrc
 # need to install Firefox with Ubuntu Software application
 # Then search for ZED SDK TX1.
 #
-# ZED setup: note, ZED_SDK_Linux_JTX1_v1.1.0_32b_JP21.run works, v1.1.1_64b doesn't 
-# with the TX1 flash from August 2016.
-# i.e., situation with ZED and TX1 is fluid. Expect complications.
-#
 # test ZED with:
 /usr/local/zed/tools/ZED\ Explorer
+# alias:
+zed_explorer
+#
 # This sets up necessary calibration, requires monitor.
 #
 ##########################
