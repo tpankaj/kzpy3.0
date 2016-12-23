@@ -28,9 +28,13 @@ vi kzpy3/teg6/setting_up_TX1.txt
 git clone https://github.com/jetsonhacks/installCaffeJTX1.git
 sudo ./jetson_clocks.sh
 ./installCaffeCuDNN.sh
-
+or do bash installCaffeCuDNN.sh in kzpy3/teg6
+# This gives caffe, but not python support.
 
 git clone https://github.com/ferhatkurt/Jetson.git
+# delete all stuff about installing caffe (except pycaffe) and the web demo. This gives ipython and caffe support.
+or do bash JetsonTX1_Caffe_with_KZ.sh in kzpy3/teg6
+
 
 
 
@@ -38,7 +42,7 @@ git clone https://github.com/ferhatkurt/Jetson.git
 
 ############# install ROS ################
 git clone https://github.com/jetsonhacks/installROSTX1.git
-
+of do bash installROS.sh in kzpy3/teg6
 
 ###################
 
