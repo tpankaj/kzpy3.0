@@ -1,6 +1,6 @@
 import rospy
 import std_msgs.msg
-
+import roslib; roslib.load_manifest('bair_car')
 class Car:
 
     def __init__(self):
