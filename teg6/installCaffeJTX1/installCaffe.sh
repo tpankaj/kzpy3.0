@@ -38,7 +38,7 @@ echo "INCLUDE_DIRS += /usr/include/hdf5/serial/" >> Makefile.config
 /bin/echo -e "\e[1;32mCompiling Caffe\e[0m"
 make -j4 all
 # Run the tests to make sure everything works
-/bin/echo -e "\e[1;32mRunning Caffe Tests\e[0m"
-make -j4 runtest
+#/bin/echo -e "\e[1;32mRunning Caffe Tests\e[0m"
+# make -j4 runtest
 # The following is a quick timing test ...
-# tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
+tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0

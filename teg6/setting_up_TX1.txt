@@ -10,6 +10,14 @@
 # Flashing does not always succeed. If there are problems, try flashing again
 #
 
+
+git clone https://github.com/karlzipser/kzpy3.0.git
+mv kzpy3.0 kzpy3
+
+
+rm -r VisionWorks-SFM-0.88-Samples
+rm -r NVIDIA_CUDA-8.0_Samples
+
 ####### sudo, no password, this is handy if dangerous #########
 # http://askubuntu.com/questions/147241/execute-sudo-without-password
 sudo visudo
@@ -17,9 +25,7 @@ sudo visudo
 ubuntu ALL=(ALL) NOPASSWD: ALL
 ######
 
-sudo apt-get --assume-yes install git
-git clone https://github.com/karlzipser/kzpy3.0.git
-mv kzpy3.0 kzpy3
+
 
 # in separate terminal,
 vi kzpy3/teg6/setting_up_TX1.txt
@@ -212,7 +218,7 @@ sudo date 120622432007.55
             #
 ######################################################
 
-
+http://wiki.ros.org/rospy/Troubleshooting
 ########
 # other stuff
 git clone repoman@repo.eecs.berkeley.edu:projects/bdd/rc-car.git
