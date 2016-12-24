@@ -8,6 +8,7 @@ Next steps:
 2) train out to 1s
 3) train relative changes
 4) train with gyro x/y magnitude
+5) new network with multi scales, areas and summaries, and immitated feedback.
 """
 
 loaded_bag_files_names = {}
@@ -17,9 +18,11 @@ used_timestamps = {}
 data_path = '/home/karlzipser/Desktop/bair_car_data'
 NUM_STATE_ONE_STEPS = 30
 
-ignore_most=['August','sidewalks','campus','caffe','play','follow','furtive','local']
-
-BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,ignore=['nothing!'])
+ignore_first = ['caffe','racing','home']
+ignore_most = ['August','sidewalks','campus','caffe','play','follow','furtive','local','racing']
+ignore_nothing = ['ignore nothing!']
+ignore_Nov_Dec = ['Nov','Dec','caffe','racing','home']
+BagFolder_dic,BagFolders_weighted = access_bag_files.load_Bag_Folders(data_path,ignore=ignore_Nov_Dec)#['nothing!'])
 
 thread_id = 'loader_thread'
 command_dic = {}
@@ -83,20 +86,24 @@ USE_GPU = True
 if USE_GPU:
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
-from kzpy3.caf5.Caffe_Net import *
-solver_file_path = opjh("kzpy3/caf5/z2_color/solver.prototxt")
-version = 'version 1b'
-weights_file_mode = 'this one'  #None #'most recent'
+from kzpy3.caf6.Caffe_Net import *
+solver_file_path = opjh("kzpy3/caf6/z2_color_3_step/solver.prototxt")
+version = 'version 2'
+weights_file_mode = 'most recent' #None #'this one'  #None #'most recent'
 #weights_file_path = '/home/karlzipser/Desktop/z2_color_continue_training_of_12_19_2016/z2_color_iter_11700000.caffemodel' # None #opjD('z2_color')
-weights_file_path = '/home/karlzipser/Desktop/z2_color_continue_training_of_12_19_2016_again/z2_color_iter_5900000.caffemodel' # None #opjD('z2_color')
+weights_file_path = '/home/karlzipser/Desktop/z2_color_3_step' # None #opjD('z2_color')
 caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
 
 
+timer = Timer(30*60)
 
 if True:
-
-	#print 'here 1'
 	while True:
+		if timer.check():
+			timer.reset()
+			wait_delay = 60
+			cprint(d2s('Waiting',wait_delay,'seconds to let data thread load a lot of data.'))
+			time.sleep(wait_delay)
 		try:
 			#print 'here 2'
 			data = data_list[-1]
