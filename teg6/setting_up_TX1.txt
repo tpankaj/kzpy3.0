@@ -87,10 +87,6 @@ Add to .bashrc: source ~/catkin_ws/devel/setup.bash
 sudo apt-get install libpcl1 ros-kinetic-pcl-ros ros-kinetic-image-view
 cd ~/catkin_ws/src
 git clone https://github.com/stereolabs/zed-ros-wrapper.git
-
-# It may be necessary to do this: in zed-ros-wrapper/CMakeLists.txt put in:
-# SET(CUDA_VERSION "7.0")
-
 cd ~/catkin_ws
 catkin_make
 
