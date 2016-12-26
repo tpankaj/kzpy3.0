@@ -47,6 +47,8 @@ def get_bag_names_dic(meta_dir,rgb_1to4_dir):
 
 
 
+
+
 def load_bag_file(bag_names_dic,BagFolder_dic,bag_img_dic,meta_dir,rgb_1to4_dir):
 	timer = Timer(10)
 	while True:
@@ -89,28 +91,18 @@ def load_bag_file(bag_names_dic,BagFolder_dic,bag_img_dic,meta_dir,rgb_1to4_dir)
 			assert(False)
 
 
+
+
+
 def deload_bag_file(bag_name,bag_names_dic,bag_img_dic):
 	assert(bag_name in bag_img_dic)
 	del bag_img_dic[bag_name]
 	bag_names_dic[bag_name] = False
 
 
-bag_names_dic = get_bag_names_dic(meta_dir,rgb_1to4_dir)
-
-bag_img_dic = {}
-
-BagFolder_dic = {}
-
-load_bag_file(bag_names_dic,BagFolder_dic,bag_img_dic,meta_dir,rgb_1to4_dir)
-
-
-NUM_STATE_ONE_STEPS = 30
 
 
 
-
-verbose = True
-save_get_data_timer = Timer(60)
 def get_data(BagFolder_dic,bag_img_dic,NUM_STATE_ONE_STEPS):
 	if True:
 		data = {}
@@ -216,4 +208,20 @@ def get_data(BagFolder_dic,bag_img_dic,NUM_STATE_ONE_STEPS):
 		return None	
 	return data
 
+
+
+bag_names_dic = get_bag_names_dic(meta_dir,rgb_1to4_dir)
+
+bag_img_dic = {}
+
+BagFolder_dic = {}
+t0=time.time()
+for i in range(500):
+	load_bag_file(bag_names_dic,BagFolder_dic,bag_img_dic,meta_dir,rgb_1to4_dir)
+t1=time.time()
+print t1-t0 #57 sec
+
+NUM_STATE_ONE_STEPS = 30
+
+verbose = True
 
