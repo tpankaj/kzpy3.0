@@ -28,6 +28,7 @@ ylim = plt.ylim
 clf = plt.clf
 pause = plt.pause
 figure = plt.figure
+title = plt.title
 plt.ion()
 plt.show()
 PP,FF = plt.rcParams,'figure.figsize'
