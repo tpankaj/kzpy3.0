@@ -66,6 +66,7 @@ imresize = scipy.misc.imresize
 reshape = np.reshape
 mod = np.mod
 array = np.array
+sqrt = np.sqrt
 
 def opj(*args):
     if len(args) == 0:
