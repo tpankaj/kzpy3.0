@@ -207,6 +207,11 @@ Result:
 ('vase', 0.032202046408711389)
 i.e., attending to face vs. vase yields statistially different p-image values in both
 face and face regions across all four paintings.
+
+for position in ['face','vase']:
+	T = stats.ttest_ind(stats_dic[d2c('attend_face',position)],stats_dic[d2c('read_letters',position)],False)
+	print(position,T[1])
+
 """
 
 

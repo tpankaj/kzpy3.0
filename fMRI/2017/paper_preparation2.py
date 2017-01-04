@@ -14,7 +14,7 @@ the two attention conditions for the face and vase regions.
 folders_dic = {}
 
 
-if True:
+if False:
 	Subject = 'S1_2014'
 	path = '/Users/karlzipser/Desktop/19July2015_1Jan2016_p-imaging_results/p_images_alone/S1_2014_reorganized'
 
@@ -31,7 +31,7 @@ if True:
 		opj(path,'read_letters/b_2')])
 
 
-if False:
+if True:
 	Subject = 'S6_2015'
 	path = '/Users/karlzipser/Desktop/19July2015_1Jan2016_p-imaging_results/p_images_alone/S6_2015_reorganized'
 
