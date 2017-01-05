@@ -40,7 +40,7 @@ for l in dir_lst:
 	a = l.split('.')[0].split('-')
 	t = l.split('.')[-1]
 	
-	if t == 'png' or t == 'jpeg' or t == 'pdf':
+	if t == 'png' or t == 'jpg' or t == 'pdf':
 		if a[0].isdigit():
 			
 			if len(l.split('.')[0].split('__')) > 1:

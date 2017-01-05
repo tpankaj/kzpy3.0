@@ -11,10 +11,13 @@ title(Subject)
 #plt.axis((-0.2,2.2,-0.2,2.2))
 L,H = -0.05,1.1
 plt.axis((L,H,L,H))
+plt.axis((0,2,0,2.2)) # S2
+#plt.axis((0.3,0.9,0,1.6)) # S4
+#plt.axis((0.3,0.6,-0.2,1.2)) # S3
 plt.errorbar(read_letters_face.mean(),read_letters_vase.mean(),xerr=read_letters_face.std()/2.,yerr=read_letters_vase.std()/2.,fmt='go',markersize=m)
 plt.errorbar(attend_face_face.mean(),attend_face_vase.mean(),xerr=attend_face_face.std()/2.,yerr=attend_face_vase.std()/2.,fmt='ro',markersize=m)
 plt.errorbar(attend_vase_face.mean(),attend_vase_vase.mean(),xerr=attend_vase_face.std()/2.,yerr=attend_vase_vase.std()/2.,fmt='bo',markersize=m)
-plt_square()
+#plt_square()
 
 from matplotlib.backends.backend_pdf import PdfPages
 
