@@ -61,7 +61,8 @@ print("imports complete")
 
 #work_path = '/Volumes/30June2015_4TB_fMRI_data_drive/Desktop'
 #work_path = '/Volumes/26Oct2014/Desktop'
-work_path = '/Users/karlzipser/2015/12'
+#work_path = '/Users/karlzipser/2015/12'
+work_path = '/Volumes/30June2015_4TB_fMRI_data_drive_COPY/Desktop/'
 #######################################################################################################
 ################### PART I: dcm -> nii -> .feat ################
 #
@@ -479,6 +480,99 @@ def get_activation_image_new(xy2p,vs,H=96,W=128,num_to_average = 'all'):
 				img3[x,y] = v/num_to_average
 	return img3
 
+
+
+
+def make_single_run_p_images(subject,year,month,day,session,pp,sub_experiments,conditions,experiment,num_to_average,mapping_year=False,mapping_month=False,mapping_day=False,mapping_session=False,mapping_pp=False,USE_Z_SCORING=False):
+	'''
+	'''
+	if not mapping_year:
+		mapping_year = year
+	if not mapping_month:
+		mapping_month = month
+	if not mapping_day:
+		mapping_day = day
+	if not mapping_session:
+		mapping_session = session
+	if not mapping_pp:
+		mapping_pp = pp
+
+	USE_STD_SCORING = not USE_Z_SCORING
+
+	print('USE_Z_SCORING = ' + str(USE_Z_SCORING))
+
+	rf_path = opj(work_path,'Research/data/subjects',subject,str(mapping_year),str(mapping_month),str(mapping_day),str(mapping_session),'stats',mapping_pp)
+	rf_x_vol_nii = nib.load(opj(rf_path,'rf_x_vol.Wedge_annulus.6000.nii.gz'))
+	rf_y_vol_nii = nib.load(opj(rf_path,'rf_y_vol.Wedge_annulus.6000.nii.gz'))
+	rf_r_vol_nii = nib.load(opj(rf_path,'rf_r_vol.Wedge_annulus.6000.nii.gz'))
+	std1_vol_nii = nib.load(opj(work_path,'Research/data/experiments',experiment,'Wedge_annulus/sequence1/subjects',subject,str(mapping_year),str(mapping_month),str(mapping_day),str(mapping_session),'stats',mapping_pp,'all_average.nii.gz'))
+	std2_vol_nii = nib.load(opj(work_path,'Research/data/experiments',experiment,'Wedge_annulus/sequence2/subjects',subject,str(mapping_year),str(mapping_month),str(mapping_day),str(mapping_session),'stats',mapping_pp,'all_average.nii.gz'))
+	rf_x_vol=rf_x_vol_nii.get_data()
+	rf_y_vol=rf_y_vol_nii.get_data()
+	rf_r_vol=rf_r_vol_nii.get_data()
+	std1_vol = std1_vol_nii.get_data()
+	std2_vol = std2_vol_nii.get_data()
+
+	for sub_ex in sub_experiments:
+		for task in conditions:
+			_,run_numbers = dir_as_dic_and_list(opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'func_runs',pp))
+			for run_number in run_numbers:
+				stats_path = opj(work_path,'Research/data/experiments',experiment,sub_ex,task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp,str(run_number))
+				nii1=nib.load(opj(stats_path,'betas.nipy_GLM.nii.gz'))
+				aa1 = nii1.get_data()
+
+				points = []
+				selected_xyz = []
+
+				for x in range(np.shape(rf_x_vol)[0]):
+					for y in range(np.shape(rf_x_vol)[1]):
+						for z in range(np.shape(rf_x_vol)[2]):
+							if rf_r_vol[x,y,z] > 0.9:
+								points.append([rf_x_vol[x,y,z],rf_y_vol[x,y,z]])
+								selected_xyz.append([x,y,z])
+				print(len(selected_xyz))
+
+				xy2p,p2xys = kzpy.fMRI.rf.get_mappings(points,W=128,N=30)
+
+				z_aa1 = 0.0*aa1
+
+
+
+				if USE_Z_SCORING:
+					for xyz in selected_xyz:
+						x,y,z = xyz[0],xyz[1],xyz[2]
+						sd = np.std(aa1[x,y,z,:])
+						if np.isfinite(sd):
+							if not sd == 0:
+								z_aa1[x,y,z,:] = aa1[x,y,z,:] - np.mean(aa1[x,y,z,:])
+								z_aa1[x,y,z,:] /= sd
+				elif USE_STD_SCORING:
+					for xyz in selected_xyz:
+						x,y,z = xyz[0],xyz[1],xyz[2]
+						sd = (np.std(std1_vol[x,y,z,:])+np.std(std2_vol[x,y,z,:]))/2.0#np.std(aa1[x,y,z,:])#
+						if np.isfinite(sd):
+							if not sd == 0:
+								z_aa1[x,y,z,:] = aa1[x,y,z,:] - aa1[x,y,z,-1] # NOTE, EXPECT LAST STIMULUS TO BE THE BLANK!!!! #np.mean(aa1[x,y,z,:]) #np.mean(aa1[x,y,z,:])
+								z_aa1[x,y,z,:] /= sd
+				else:
+					os.sys.exit('UNKNOWING SCORING')				
+
+
+				p_image_png_dir = opj(stats_path,'p_images/png_std')
+				p_image_npy_dir = opj(stats_path,'p_images/npy')
+				os.system('mkdir -p ' + p_image_png_dir)
+				os.system('mkdir -p ' + p_image_npy_dir)
+				for TR in range(np.shape(aa1)[3]):
+					vs = []
+					for xyz in selected_xyz:
+						vs.append(z_aa1[xyz[0],xyz[1],xyz[2],TR])
+					img = get_activation_image_new(xy2p,vs,H=96,W=128,num_to_average=num_to_average)
+					scipy.misc.imsave(opj(p_image_png_dir,str(TR)+'.png'),img)
+					np.save(opj(p_image_npy_dir,str(TR)+'.npy'),img)
+
+
+
+
 def make_p_images(subject,year,month,day,session,pp,sub_experiments,conditions,experiment,num_to_average,mapping_year=False,mapping_month=False,mapping_day=False,mapping_session=False,mapping_pp=False,USE_Z_SCORING=False):
 	'''
 	'''
@@ -698,6 +792,85 @@ def KK_visit_nipy_GLM(stats_path,stimulus_txt_path):
 
 	betas_nii = nib.Nifti1Image(vol_betas, affine, header)
 	nib.save(betas_nii, opj(stats_path,'betas.nipy_GLM.nii.gz'))
+
+
+def KK_visit_nipy_GLM_single_run(stats_path,stimulus_txt_path):
+
+	cprint('stats_path =' + stats_path,'red','on_yellow')
+
+	stimulus_txt = np.loadtxt(stimulus_txt_path)
+	n_Secs = len(stimulus_txt)
+	n_TRs_all = 300
+	n_images = np.int(np.max(stimulus_txt))
+
+	stimulus_REGRESSORS = np.zeros((n_Secs, n_images))
+	for s in range(n_Secs):
+	    if stimulus_txt[s] > 0:
+	        stimulus_REGRESSORS[s,stimulus_txt[s]-1] = 1
+
+	hrf = KK_getcanonicalhrf()
+	hrf_1Hz = hrf[::5]
+	#PP[FF]=3,3
+	#plt.figure('hrf_1Hz')
+	#plt.plot(hrf_1Hz,'.-')
+	#mi(stimulus_REGRESSORS,'stimulus_REGRESSORS')
+
+	HRF_REG = np.zeros((n_TRs_all,n_images))
+	stimulus_times = np.arange(0,n_Secs)
+	TR_times = 0.9 * np.arange(0,n_TRs_all)
+
+	for i in range(n_images):
+	    r = stimulus_REGRESSORS[:,i]
+	    hp = np.convolve(r, hrf_1Hz)[:(np.shape(r)[0])]
+	    hp_interp = np.interp(TR_times,stimulus_times,hp)
+	    HRF_REG[:,i]=hp_interp
+	#PP[FF] = 5,8
+	#mi(HRF_REG,'HRF_REG')
+
+	stats_path = gg(opj(stats_path,'*.feat'))[0]
+	nii = nib.load(opj(stats_path,'filtered_func_data.nii.gz'))
+	data = nii.get_data()
+	header = nii.get_header()
+	affine = nii.get_affine()
+	
+	Voxels,Vox_xyzs = vol_to_voxels(data)
+
+	# - http://nipy.org/nipy/api/generated/nipy.modalities.fmri.glm.html
+
+	from nipy.modalities.fmri.glm import GeneralLinearModel
+
+	n_TRs = 294
+	n_voxels = np.shape(Voxels)[1]
+	#n_images = 24
+
+	DATA = Voxels
+
+	REGRESSORS = HRF_REG.copy()[6:] # this deals with DELETE volumes
+
+	model = GeneralLinearModel(REGRESSORS)
+	model.fit(DATA)
+
+	#mi(DATA,1,[1,1,1],'DATA ' + str(np.shape(DATA)))
+	#mi(REGRESSORS,2,[1,1,1],'REGRESSORS ' + str(np.shape(REGRESSORS)))
+
+	betas = model.get_beta()
+	#mi(betas,3,[1,1,1],'betas ' + str(np.shape(betas)))
+
+	mse = model.get_mse()
+	#plt.figure('mse ' + str(np.shape(mse)))
+	#plt.plot(mse)
+
+	vol_betas = vox_list_to_vol(betas,Vox_xyzs,data[:,:,:,0].copy())
+
+	betas_nii = nib.Nifti1Image(vol_betas, affine, header)
+	s = stats_path.split('/')
+	s[-1]='betas.nipy_GLM.nii.gz'
+	s[-4]='stats'
+	s0 = '/'.join(s[:-1])
+	print '*************' +'mkdir -p '+s0 + '*************' + '/'.join(s)
+	unix('mkdir -p '+s0,False)
+
+	nib.save(betas_nii,'/'.join(s))
 	
 
 def KK_visit_Vermeer_GLM(stats_path):
@@ -825,6 +998,7 @@ ex,sess = 'Vermeer0',vermeer0_ses
 #ex,sess = 'Kay_images',kay_img_ses
 Get_Betas = False
 Make_P_Images = False
+Make_Single_Run_P_Images = False
 Combine_P_Images = True
 use_z_scoring = False
 fix_mask_radius = 5
@@ -861,29 +1035,43 @@ if True: #######################################################################
 	
 	if not save_images:
 		mi_save = mi
-
+	sub_experiments,conditions,experiment = Exp_Dic[ex]
 	SES = {}
 	for ses in sess:
 		SES[ses]={}
 		subject,year,month,day,session,pp = Ses_Dic[ses]
-		sub_experiments,conditions,experiment = Exp_Dic[ex]
+
 		mapping_year,mapping_month,mapping_day,mapping_session,mapping_pp = False,False,False,False,False
 		if ses == 'KK_23':
 			mapping_year,mapping_month,mapping_day,mapping_session,mapping_pp = (2015,6,21,0,'pp_a0')
-		#######################################################################################################
-		if Get_Betas: # get betas
 
-			for task in conditions: #['attend_figure','attend_ground','attend_position','attend_skin','attend_texture','read_letters']:#['attend_face','attend_object','attend_space','read_letters']:
-				stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
-				stimulus_txt_path = opj(work_path,'Research/stimuli',experiment,sub_experiments[0],'stimulus.txt')
-				KK_visit_nipy_GLM(stats_path,stimulus_txt_path)
+		for task in conditions:
+			 #'S1_2014',2015,6,20,0,'pp_a0',[6,10,25,32] #  
+			_,run_numbers = dir_as_dic_and_list(opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'func_runs',pp))                                                       
+
+			#sub_experiments,conditions,experiment = ['Vermeer'],['attend_face'],'Kendrick_Kay_visit_19to26June2015'
+			#######################################################################################################
+			if Get_Betas: # get betas
+				for run_number in run_numbers:
+					 #['attend_figure','attend_ground','attend_position','attend_skin','attend_texture','read_letters']:#['attend_face','attend_object','attend_space','read_letters']:
+					stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
+					func_runs_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'func_runs',pp,str(run_number))
+					stimulus_txt_path = opj(work_path,'Research/stimuli',experiment,sub_experiments[0],'stimulus.txt')
+					#KK_visit_nipy_GLM(stats_path,stimulus_txt_path)
+					KK_visit_nipy_GLM_single_run(func_runs_path,stimulus_txt_path)
 		#######################################################################################################
 		if Make_P_Images:
 			make_p_images(subject,year,month,day,session,pp,sub_experiments,conditions,experiment,30,mapping_year,mapping_month,mapping_day,mapping_session,mapping_pp,use_z_scoring)
+		if Make_Single_Run_P_Images:
+			make_single_run_p_images(subject,year,month,day,session,pp,sub_experiments,conditions,experiment,30,mapping_year,mapping_month,mapping_day,mapping_session,mapping_pp,use_z_scoring)
 		#######################################################################################################
+			
+
+		SINGLE_RUN = True
 		if Combine_P_Images:
 
 			if sub_experiments[0] == 'Vermeer' or sub_experiments[0] == 'Kay_images':
+
 				mirror_flip = [False,True]
 				scale_factor = [1.4,1.2,1.0]
 				n_images = 4
@@ -893,127 +1081,47 @@ if True: #######################################################################
 				
 				task_ctr = 0
 				for task in conditions:
+					_,run_numbers = dir_as_dic_and_list(opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'func_runs',pp))                                                       
+
 					task_ctr+=1
-					ctr = 0
-					for i in range(n_images):
-						avg_img = np.zeros((96,128))
-						for j in range(len(mirror_flip)):
-							for k in range(len(scale_factor)):
-								stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
-								img1 = scipy.misc.imread(opj(stats_path,'p_images/png_std/'+str(ctr)+'.png'))#  '/Users/davidzipser/Desktop/Pictures_Desktop/new_'+task_str+'/'+str(ctr)+'.png')
-								img1 = img_varient(img1,scale_factor[k],mirror_flip[j])
+					
+					for run_number in run_numbers:
+						ctr = 0
+						for i in range(n_images):
+								avg_img = np.zeros((96,128))
+								for j in range(len(mirror_flip)):
+									for k in range(len(scale_factor)):
+										stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
+										if SINGLE_RUN:
+											img1 = scipy.misc.imread(opj(stats_path,str(run_number),'p_images/png_std/'+str(ctr)+'.png'))
+										else:
+											img1 = scipy.misc.imread(opj(stats_path,'p_images/png_std/'+str(ctr)+'.png'))#  '/Users/davidzipser/Desktop/Pictures_Desktop/new_'+task_str+'/'+str(ctr)+'.png')
+										img1 = img_varient(img1,scale_factor[k],mirror_flip[j])
 
-								avg_img += img1
-								ctr += 1
-								#mi(img1,tng+task_str,[4,6,ctr],str(ctr))
-						mn = avg_img.mean()
-						for x in range(np.shape(avg_img)[0]):
-							for y in range(np.shape(avg_img)[1]):
-								if np.sqrt((x-np.shape(avg_img)[0]/2)**2+(y-np.shape(avg_img)[1]/2)**2) < fix_mask_radius:
-									avg_img[x,y] = mn
-						#mi(z2o(z_aggressive_score_img(avg_img/6.0,3.0,-2))**2,tng+' avg HERE!'+task_str,[4,1,i+1])
-						title_str = ''
-						if (not save_images and i == 0) or save_images:
-							title_str = task
-						mi_save(z2o(avg_img)**1.0,opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
-						avg_img_big = scipy.misc.imresize(avg_img,[768,1024])
-						ci = kzpy.img.yb_color_modulation_of_grayscale_image(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),z2o(avg_img_big)**3.0,(1.0-z2o(avg_img_big))**3.0)
-						mi_save(ci,opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
-						
-			elif sub_experiments[0] == 'Three_circles':
-				n_images = 4
-				scale_factor = [2.0,1.5,1.0]
-				for i in range(len(Img_Dic[sub_experiments[0]])):
-					mi_save(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),'differences: ' + opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+i*(1+len(conditions))],title_str)	
-					mi_save(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),'differences: ' + opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+i*(1+len(conditions))],title_str)	
-
-				
-				#del img
-				task_ctr = 0
-				avgs = []
-				for task in conditions:
-					task_ctr+=1
-					ctr = 0
-					for i in range(n_images):
-						avg_img = np.zeros((96,128))
-						for k in range(len(scale_factor)):
-							stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
-							img1 = scipy.misc.imread(opj(stats_path,'p_images/png_std/'+str(ctr)+'.png'))#  '/Users/davidzipser/Desktop/Pictures_Desktop/new_'+task_str+'/'+str(ctr)+'.png')
-							img1 = img_varient(img1,scale_factor[k],False)
-							avg_img += img1
-							ctr += 1
-							mi_save(img1,opj(subject,sub_experiments[0],str(month),str(day),'separate'),[4,6,ctr],str(ctr))
-							mn = avg_img.mean()
-							for x in range(np.shape(avg_img)[0]):
-								for y in range(np.shape(avg_img)[1]):
-									if np.sqrt((x-np.shape(avg_img)[0]/2)**2+(y-np.shape(avg_img)[1]/2)**2) < fix_mask_radius:
-										avg_img[x,y] = mn
-						title_str = ''
-						if (not save_images and i == 0) or save_images:
-							title_str = task+' '
-						mi_save(z2o(avg_img)**1.0,opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+i*(1+len(conditions))],title_str + str(i))
-						avgs.append(avg_img)
-				avg = np.array(avgs).mean(axis=0)
-				for i in range(n_images):
-					avg_img_big = scipy.misc.imresize(z2o(avgs[i]-avg),[768,1024])
-					ci = kzpy.img.yb_color_modulation_of_grayscale_image(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),(z2o(avg_img_big)**1.0)**3.0,(1.0-z2o(avg_img_big))**3.0,False)
-					mi_save(ci,'differences: ' + opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str + str(i))
-					mi_save(z2o(avgs[i]-avg)**1.0,'differences: ' + opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str + str(i))
-
-			elif sub_experiments[0] == 'Overlapping_face_place':
-				mirror_flip = [False]
-				scale_factor = [1.0]
-				n_images = 8
-				for i in range(len(Img_Dic[sub_experiments[0]])):
-					mi_save(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False)[130:637,308:715],opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+i*(1+len(conditions))],'')	
-					mi_save(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False)[130:637,308:715],opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+i*(1+len(conditions))],'')	
-				
-				task_ctr = 0
-				SES[ses]['Tasks'] = {}
-				SES[ses]['Tasks']['attend_face']=[]
-				SES[ses]['Tasks']['attend_place']=[]
-				for task in conditions:
-					task_ctr+=1
-					ctr = 0
-					for i in range(n_images):
-						avg_img = np.zeros((96,128))
-						for j in range(len(mirror_flip)):
-							for k in range(len(scale_factor)):
-								stats_path = opj(work_path,'Research/data/experiments',experiment,sub_experiments[0],task,'subjects',subject,str(year),str(month),str(day),str(session),'stats',pp)
-								img1 = scipy.misc.imread(opj(stats_path,'p_images/png_std/'+str(ctr)+'.png'))#  '/Users/davidzipser/Desktop/Pictures_Desktop/new_'+task_str+'/'+str(ctr)+'.png')
-								img1 = img_varient(img1,scale_factor[k],mirror_flip[j])
-
-								avg_img += img1
-								ctr += 1
-								#mi_save(img1,tng+task_str,[4,6,ctr],str(ctr))
-						mn = avg_img.mean()
-						for x in range(np.shape(avg_img)[0]):
-							for y in range(np.shape(avg_img)[1]):
-								if np.sqrt((x-np.shape(avg_img)[0]/2)**2+(y-np.shape(avg_img)[1]/2)**2) < 0: #fix_mask_radius:
-									avg_img[x,y] = mn
-						#mi_save(z2o(z_aggressive_score_img(avg_img/6.0,3.0,-2))**2,tng+' avg HERE!'+task_str,[4,1,i+1])
-						title_str = ''
-						if (not save_images and i == 0) or save_images:
-							title_str = task
-						avg_img_big = scipy.misc.imresize(avg_img,[768,1024])
-						avg_img_big = avg_img_big[130:637,308:715]
-						mi_save(z2o(avg_img_big)**1.0,opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
-						SES[ses]['Tasks'][task].append(z2o(avg_img_big))
-						#ci = kzpy.img.yb_color_modulation_of_grayscale_image(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),z2o(avg_img_big)**3.0,(1.0-z2o(avg_img_big))**3.0)
-						stim = (z2o(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False)[:,:,0])-0.5)[130:637,308:715]
-						ci = stim * z2o(avg_img_big)**2
-						mi_save(ci,opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
-				for i in range(len(Img_Dic[sub_experiments[0]])):
-					mi_save(SES[ses]['Tasks']['attend_face'][i]-SES[ses]['Tasks']['attend_place'][i],opj(subject,sub_experiments[0],str(month),str(day),'DIFF'),[n_images+1,1+len(conditions),1+1+i*(1+len(conditions))],title_str)
-					mi_save(-SES[ses]['Tasks']['attend_face'][i]+SES[ses]['Tasks']['attend_place'][i],opj(subject,sub_experiments[0],str(month),str(day),'DIFF'),[n_images+1,1+len(conditions),1+2+i*(1+len(conditions))],title_str)
-					stim = (z2o(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False)[:,:,0])-0.5)[130:637,308:715]
-					ci = stim * z2o(SES[ses]['Tasks']['attend_face'][i]-SES[ses]['Tasks']['attend_place'][i])**2
-					mi_save(ci,opj(subject,sub_experiments[0],str(month),str(day),'DIFF MOD'),[n_images+1,1+len(conditions),1+1+i*(1+len(conditions))],title_str)
-					ci = stim * z2o(-SES[ses]['Tasks']['attend_face'][i]+SES[ses]['Tasks']['attend_place'][i])**2
-					mi_save(ci,opj(subject,sub_experiments[0],str(month),str(day),'DIFF MOD'),[n_images+1,1+len(conditions),1+2+i*(1+len(conditions))],title_str)
+										avg_img += img1
+										ctr += 1
+										#mi(img1,tng+task_str,[4,6,ctr],str(ctr))
+								mn = avg_img.mean()
+								imsave(opjD(opj(subject,sub_experiments[0],str(month),str(day),str(run_number),task).replace('/','-')+'_'+str(i)+'.png'),avg_img)
+								for x in range(np.shape(avg_img)[0]):
+									for y in range(np.shape(avg_img)[1]):
+										if np.sqrt((x-np.shape(avg_img)[0]/2)**2+(y-np.shape(avg_img)[1]/2)**2) < fix_mask_radius:
+											avg_img[x,y] = mn
+								#mi(z2o(z_aggressive_score_img(avg_img/6.0,3.0,-2))**2,tng+' avg HERE!'+task_str,[4,1,i+1])
+								title_str = ''
+								if (not save_images and i == 0) or save_images:
+									title_str = task
+								mi_save(z2o(avg_img)**1.0,opj(subject,sub_experiments[0],str(month),str(day)),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
+								avg_img_big = scipy.misc.imresize(avg_img,[768,1024])
+								ci = kzpy.img.yb_color_modulation_of_grayscale_image(img_varient(Img_Dic[sub_experiments[0]][i],scale_factor[0],False),z2o(avg_img_big)**3.0,(1.0-z2o(avg_img_big))**3.0)
+								mi_save(ci,opj(subject,sub_experiments[0],str(month),str(day),'YB'),[n_images+1,1+len(conditions),1+task_ctr+i*(1+len(conditions))],title_str)
+								pause(0.001)
 
 			else:
 				os.sys.exit('ERROR, unknown sub_experiment: ' + sub_experiments[0])		
+
+
+
 if False:
 	for i in range(len(Img_Dic[sub_experiments[0]])):
 		titles = ['','','']
