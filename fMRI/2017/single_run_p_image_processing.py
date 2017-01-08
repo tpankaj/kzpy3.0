@@ -234,3 +234,66 @@ for s in subjects.keys():
 
 
 
+
+
+
+plt.close('all')
+
+matplotlib.rcParams.update({'font.size': 22})
+matplotlib.rcParams.update({'lines.linewidth': 5})
+matplotlib.rcParams.update({'axes.linewidth': 5})
+matplotlib.rcParams.update({'lines.markersize': 5})
+m = 20
+#figure(Subject,facecolor="white")
+
+symbols = {}
+symbols['S1_2014'] = 'o'
+symbols['S6_2015'] = 'D'
+symbols['S1_2015'] = 's'
+
+def plot_with_error(a,b,s='o',m=5,fig=False,color='r'):
+	if fig != False:
+		figure(fig)
+	plt.errorbar(a.mean(),b.mean(),xerr=a.std()/sqrt(len(a)),yerr=b.std()/sqrt(len(b)),fmt=s+color,markersize=m)
+mn,mx = -1,3
+
+plt_dic = {}
+plt_dic['rf,ff'] = ['read letters','attention task','Face Region','r']
+plt_dic['rv,vv'] = ['read letters','attention task','Vase Region','b']
+plt_dic['rf,vf'] = ['read letters','attention task','Face Region','b']
+plt_dic['rv,fv'] = ['read letters','attention task','Vase Region','r']
+
+for fig in plt_dic:
+	figure(plt_dic[fig][2],facecolor="white")
+	clf()
+	plot([mn,mx],[mn,mx],'k:')
+	plt.axis((mn,mx,mn,mx))
+	plt_square()
+	plt.ylabel(plt_dic[fig][1])
+	plt.xlabel(plt_dic[fig][0])
+	title(plt_dic[fig][2])
+
+for s in subjects.keys():
+	for p in sorted(painting_dic[s].keys()):
+		vv=region_stats[s,'attend_vase',p,'vase']
+		fv=region_stats[s,'attend_face',p,'vase']
+		rv=region_stats[s,'read_letters',p,'vase']
+		vf=region_stats[s,'attend_vase',p,'face']
+		ff=region_stats[s,'attend_face',p,'face']
+		rf=region_stats[s,'read_letters',p,'face']
+		for fig in plt_dic:
+			exec("""plot_with_error("""+fig+""",s=symbols[s],m=m,fig='"""+plt_dic[fig][2]+"""',color='"""+plt_dic[fig][3]+"""')""")
+
+		print(d2f('\t',s,dp(ttest(vv,fv),n),dp(ttest(vf,ff),n),dp(ttest(vv,rv),n),dp(ttest(rf,ff),n),dp(ttest(vf,rf),n),dp(ttest(rv,fv),n),p))
+
+
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+for f in ['Face Region','Vase Region']:
+	fig = figure(f)
+	pp = PdfPages(opjD(f.replace(' ','-')+'.pdf'))
+	pp.savefig(fig)
+	pp.close()
+
+
