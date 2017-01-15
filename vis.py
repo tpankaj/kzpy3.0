@@ -44,12 +44,12 @@ def kzpy_vis_test():
     plt.hist(np.random.randn(10000),bins=100)
     True
 
-def hist(data):
+def hist(data,bins=100):
     """
     default hist behavior
     """
     plt.clf()
-    plt.hist(data,bins=100)
+    plt.hist(data,bins=bins)
     pass
 plot = plt.plot
 figure = plt.figure

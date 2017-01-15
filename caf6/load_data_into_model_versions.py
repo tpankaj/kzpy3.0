@@ -165,6 +165,7 @@ def visualize_solver_data_version_1(solver,flip):
 
 
 def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_dropout=False):
+	#return True
 	if 'left' in data:
 		if len(data['left']) >= 10:
 
@@ -173,6 +174,7 @@ def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_drop
 				target_data += data['motor'][:10]
 				#mi(data['left'][0][:,:,:],'left')
 				#mi(data['right'][0][:,:,:],'right')
+				
 				if not flip:
 					solver.net.blobs['ZED_data_pool2'].data[0,0,:,:] = data['left'][0][:,:,0]
 					solver.net.blobs['ZED_data_pool2'].data[0,1,:,:] = data['left'][1][:,:,0]
@@ -208,27 +210,14 @@ def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_drop
 						t = -t
 						t = t + 49
 						target_data[i] = t
+				
 
-				#solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 128
 				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
 				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 0.5
-
-				if False:#camera_dropout:
-					ri = random.randint(0,5)
-					if ri == 0:
-						#print 'here 0'
-						#time.sleep(0.1)
-						for e in [0,1,4,5,8,9]:
-							solver.net.blobs['ZED_data_pool2'].data[0,e,:,:] *= 0
-					elif ri == 1:
-						#print 'here 1'
-						#time.sleep(0.1)
-						for e in [2,3,6,7,10,11]:
-							solver.net.blobs['ZED_data_pool2'].data[0,2:3,:,:] *= 0
-					else:
-						pass
+				
 
 
+				
 				Direct = 0.
 				Follow = 0.
 				Play = 0.
@@ -259,7 +248,7 @@ def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_drop
 
 				for i in range(len(target_data)):
 					solver.net.blobs['steer_motor_target_data'].data[0,i] = target_data[i]/99.
-
+				
 
 
 			if show_data:
