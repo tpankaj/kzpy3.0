@@ -557,10 +557,10 @@ def in_range(e,a,b):
             return True
     return False
 
-def nvidia_smi_continuous():
+def nvidia_smi_continuous(t=5):
     while True:                                     
         unix('nvidia-smi')
-        time.sleep(5)
+        time.sleep(t)
 
 class Timer:
     def __init__(self, time_s):

@@ -45,11 +45,12 @@ class Caffe_Net:
 
 
 
-	def train_step(self,solver):
+	def train_step(self,solver=False):
 
-		self.solver.net.blobs['ZED_data_pool2'].data[:] = solver.net.blobs['ZED_data_pool2'].data[:]
-		self.solver.net.blobs['metadata'].data[:] = solver.net.blobs['metadata'].data[:]
-		self.solver.net.blobs['steer_motor_target_data'].data[:] = solver.net.blobs['steer_motor_target_data'].data[:]
+		if solver:
+			self.solver.net.blobs['ZED_data_pool2'].data[:] = solver.net.blobs['ZED_data_pool2'].data[:]
+			self.solver.net.blobs['metadata'].data[:] = solver.net.blobs['metadata'].data[:]
+			self.solver.net.blobs['steer_motor_target_data'].data[:] = solver.net.blobs['steer_motor_target_data'].data[:]
 		
 		if self.train_steps == 0:
 			self.train_start_time = time.time()

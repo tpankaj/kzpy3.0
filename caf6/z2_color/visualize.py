@@ -6,7 +6,6 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 #          SETUP SECTION
 #
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver.prototxt")
-weights_file_path = opjD('z2_color/z2_color.caffemodel') #
 #
 ########################################################
 
@@ -20,6 +19,7 @@ def setup_solver():
 
 solver = setup_solver()
 weights_file_path = opjD('z2_color')
+#weights_file_path = '/home/karlzipser/Desktop/z2_color/z2_color_0_a_iter_600000.caffemodel'
 weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','caffemodel'])
 solver.net.copy_from(weights_file_path)
 plt.ion()

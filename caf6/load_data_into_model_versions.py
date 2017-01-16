@@ -211,9 +211,10 @@ def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_drop
 						t = t + 49
 						target_data[i] = t
 				
-
-				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
-				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 0.5
+				#print type(solver.net.blobs['ZED_data_pool2'].data[0,0,0,0])
+				if False:
+					solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
+					solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] -= 0.5
 				
 
 
@@ -297,8 +298,8 @@ def visualize_solver_data_version_1b(solver,flip):
 		#apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 		#apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
 		mi(img,layer_to_use,img_title=d2s(solver.net.blobs['metadata'].data[0,:,0,0],flip))
-
-		pause(0.001)
+		#print solver.net.blobs['steer_motor_target_data'].data[:]
+		pause(0.0001)
 
 	return True
 
