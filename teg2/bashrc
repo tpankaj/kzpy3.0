@@ -24,7 +24,7 @@ alias test_caffe='cd ~/caffe; build/tools/caffe time --model=models/bvlc_alexnet
 alias zed_explorer='/usr/local/zed/tools/ZED\ Explorer'
 alias mrsil='ssh ubuntu@192.168.43.227'
 alias mryel='ssh ubuntu@192.168.43.79'
-alias mrblu='ssh ubuntu@192.168.43.53'
+alias mrblu='ssh ubuntu@192.168.43.193'
 alias mrora='ssh ubuntu@192.168.43.113'
 alias mrtea='ssh ubuntu@192.168.43.54'
 alias mrbla='ssh ubuntu@192.168.43.134'
