@@ -3,15 +3,15 @@ from kzpy3.vis import *
 
 import caffe
 USE_GPU = True
-gpu = 1
+gpu = 0
 if USE_GPU:
 	caffe.set_device(gpu)
 	caffe.set_mode_gpu()
 from kzpy3.caf6.Caffe_Net import *
 solver_file_path = opjh("kzpy3/caf6/z2_color/solver_"+str(gpu)+"_a.prototxt")
 version = 'version 1b'
-weights_file_mode = 'this one' #None #'most recent' #'this one'  #None #'most recent'
-weights_file_path = opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
+weights_file_mode = None #'this one' #None #'most recent' #'this one'  #None #'most recent'
+weights_file_path = None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
 
 caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
 
@@ -19,8 +19,8 @@ caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_pa
 
 
 import h5py
-hdf5_filename = '/media/karlzipser/ExtraDrive1/solver_inputs.hdf5'
-solver_inputs = h5py.File(hdf5_filename)
+hdf5_filename = '/media/karlzipser/ExtraDrive1/runs/direct_1Sept2016_Mr_Orange_local_sidewalks.hdf5'
+solver_inputs = h5py.File(hdf5_filename,'r')
 
 
 
@@ -42,7 +42,7 @@ def plot_performance(steer,motor,loss1000):
 	plt.title(time_str('Pretty'))
 
 
-timer = Timer(60)
+timer = Timer(6)
 
 ks = solver_inputs.keys()
 print len(ks)
