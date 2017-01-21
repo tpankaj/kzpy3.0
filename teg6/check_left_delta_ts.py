@@ -13,8 +13,8 @@ for r in run_paths:
 
 		for i in range(1,len(ts)):
 			dt = ts[i]-ts[i-1]
-			if dt > 0.2:
-				dt = 0.2
+			if dt > 1.2:
+				dt = 1.2
 			dts.append(dt)
 		figure(1)
 		clf()
