@@ -1,6 +1,7 @@
 ############# data collection shortcuts (smartphone login) #######
 #
 # cd; cd kzpy3; git pull; cd
+alias ls='ls -al'
 alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
 alias rls='ls -al /media/ubuntu/rosbags'
 alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
@@ -25,7 +26,7 @@ alias zed_explorer='/usr/local/zed/tools/ZED\ Explorer'
 alias mrsil='ssh ubuntu@192.168.43.227'
 alias mryel='ssh ubuntu@192.168.43.79'
 alias mrblu='ssh ubuntu@192.168.43.53'
-alias mrora='ssh ubuntu@192.168.43.113'
+alias mrora='ssh ubuntu@192.168.43.95'
 alias mrtea='ssh ubuntu@192.168.43.54'
 alias mrbla='ssh ubuntu@192.168.43.134'
 alias mrwhi='ssh ubuntu@192.168.43.63'
