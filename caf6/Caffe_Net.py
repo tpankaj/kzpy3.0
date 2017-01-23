@@ -83,9 +83,22 @@ class Caffe_Net:
 		
 
 
+def setup_solver(solver_file_path):
+	solver = caffe.SGDSolver(solver_file_path)
 
+	print("")
+	
+	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
+		print(l)
 
+	print("")
+	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
+		if 'split' not in l[0]:
+			print(l)
 
+	return solver
+
+"""
 def setup_solver(solver_file_path):
 	solver = caffe.SGDSolver(solver_file_path)
 	for l in [(k, v.data.shape) for k, v in solver.net.blobs.items()]:
@@ -93,6 +106,7 @@ def setup_solver(solver_file_path):
 	for l in [(k, v[0].data.shape) for k, v in solver.net.params.items()]:
 		print(l)
 	return solver
+"""
 
 def _array_to_int_list(a):
 	l = []
@@ -105,6 +119,8 @@ def load_data_into_model(solver,version,data,flip,show_data,camera_dropout):
 		return load_data_into_model_version_1(solver,data,flip,show_data,camera_dropout)
 	if version == 'version 1b':
 		return load_data_into_model_version_1b(solver,data,flip,show_data,camera_dropout)
+	if version == 'version 1c':
+		return load_data_into_model_version_1c(solver,data,flip,show_data,camera_dropout)
 	if version == 'version 2':
 		return load_data_into_model_version_2(solver,data,flip,show_data,camera_dropout)
 	assert(False)
@@ -114,6 +130,8 @@ def visualize_solver_data(solver,version,flip):
 		return visualize_solver_data_version_1(solver,flip)
 	if version == 'version 1b':
 		return visualize_solver_data_version_1b(solver,flip)
+	if version == 'version 1c':
+		return visualize_solver_data_version_1c(solver,flip)
 	if version == 'version 2':
 		return visualize_solver_data_version_2(solver,flip)
 	assert(False)

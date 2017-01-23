@@ -3,7 +3,9 @@ import kzpy3.teg4.data.access.Bag_File as Bag_File
 import cv2
 import h5py
 
-meta_dir = opjD('bair_car_data','meta')
+
+meta_dir = opjD('bair_car_data','temp_meta_location/test_data')
+#meta_dir = opjD('bair_car_data','meta')
 rgb_1to4_dir = opjD('bair_car_data','rgb_1to4')
 
 verbose = False
@@ -12,7 +14,7 @@ verbose = False
 
 
 
-def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['xxx'],to_require=['caffe']):#['caffe','home','racing']):
+def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['xxx'],to_require=['direct']):#['caffe','home','racing']):
 
 	_,all_run_names = dir_as_dic_and_list(meta_dir)
 
@@ -372,7 +374,7 @@ if True:
 			if previous_run_name != 'nothing':
 				hdf5_runs_dic[previous_run_name].close()
 			previous_run_name = run_name
-		file_name = '/media/karlzipser/ExtraDrive1/caffe_runs/' + run_name + '.hdf5'
+		file_name = '/media/karlzipser/ExtraDrive1/test_runs/' + run_name + '.hdf5'
 		if run_name not in hdf5_runs_dic:
 			hdf5_runs_dic[run_name] = h5py.File(file_name)
 		solver_inputs = hdf5_runs_dic[run_name]

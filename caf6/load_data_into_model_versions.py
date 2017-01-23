@@ -306,6 +306,23 @@ def visualize_solver_data_version_1b(solver,flip):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def load_data_into_model_version_2(solver,data,flip,show_data=False,camera_dropout=False):
 	if 'left' in data:
 		if len(data['left']) >= 10:

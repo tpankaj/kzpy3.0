@@ -1,5 +1,3 @@
-
-
 layer {
 	name: "Left_168"
 	type: "DummyData"
@@ -96,7 +94,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "rgc_0_relu"
+	type: "ReLU"
+	bottom: "rgc_0"
+	top: "rgc_0"
+}
 
 layer {
 	name: "rgc_1"
@@ -116,7 +119,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "rgc_1_relu"
+	type: "ReLU"
+	bottom: "rgc_1"
+	top: "rgc_1"
+}
 
 
 layer {
@@ -136,6 +144,12 @@ layer {
 			std: 0.1
 		}
 	}
+}
+layer {
+	name: "V1_IV_3x3_relu"
+	type: "ReLU"
+	bottom: "V1_IV_3x3"
+	top: "V1_IV_3x3"
 }
 layer {
 	name: "V1_IV_3x3_pool"
@@ -169,7 +183,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "V1_IV_5x5_relu"
+	type: "ReLU"
+	bottom: "V1_IV_5x5"
+	top: "V1_IV_5x5"
+}
 layer {
 	name: "V1_IV_7x7"
 	type: "Convolution"
@@ -188,7 +207,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "V1_IV_7x7_relu"
+	type: "ReLU"
+	bottom: "V1_IV_7x7"
+	top: "V1_IV_7x7"
+}
 
 
 layer {
@@ -222,6 +246,12 @@ layer {
 	}
 }
 layer {
+	name: "V1_IV_surround_nin_0_relu"
+	type: "ReLU"
+	bottom: "V1_IV_surround_nin_0"
+	top: "V1_IV_surround_nin_0"
+}
+layer {
 	name: "V1_IV_surround_nin_1"
 	type: "Convolution"
 	bottom: "V1_IV_concat"
@@ -239,7 +269,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "V1_IV_surround_nin_1_relu"
+	type: "ReLU"
+	bottom: "V1_IV_surround_nin_1"
+	top: "V1_IV_surround_nin_1"
+}
 
 layer {
 	name: "V1_IV_center_nin_0"
@@ -260,6 +295,13 @@ layer {
 	}
 }
 layer {
+	name: "V1_IV_center_nin_0_relu"
+	type: "ReLU"
+	bottom: "V1_IV_center_nin_0"
+	top: "V1_IV_center_nin_0"
+}
+
+layer {
 	name: "V1_IV_center_nin_1"
 	type: "Convolution"
 	bottom: "V1_IV_concat"
@@ -277,6 +319,12 @@ layer {
 		}
 	}
 }
+layer {
+	name: "V1_IV_center_nin_1_relu"
+	type: "ReLU"
+	bottom: "V1_IV_center_nin_1"
+	top: "V1_IV_center_nin_1"
+}
 
 layer {
 	name: "V1_IV_surround_pool"
@@ -291,7 +339,12 @@ layer {
 		pad_w: 1
 	}
 }
-
+layer {
+	name: "V1_IV_surround_pool_relu"
+	type: "ReLU"
+	bottom: "V1_IV_surround_pool"
+	top: "V1_IV_surround_pool"
+}
 
 layer {
   name: "V1_concat"
@@ -323,6 +376,12 @@ layer {
 	}
 }
 layer {
+	name: "V1_nin_0_relu"
+	type: "ReLU"
+	bottom: "V1_nin_0"
+	top: "V1_nin_0"
+}
+layer {
 	name: "V1_nin_1"
 	type: "Convolution"
 	bottom: "V1_nin_0"
@@ -340,7 +399,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "V1_nin_1_relu"
+	type: "ReLU"
+	bottom: "V1_nin_1"
+	top: "V1_nin_1"
+}
 
 
 
@@ -364,6 +428,13 @@ layer {
 	}
 }
 layer {
+	name: "V2_IV_3x3_relu"
+	type: "ReLU"
+	bottom: "V2_IV_3x3"
+	top: "V2_IV_3x3"
+}
+
+layer {
 	name: "V2_IV_3x3_pool"
 	type: "Pooling"
 	bottom: "V2_IV_3x3"
@@ -375,6 +446,12 @@ layer {
 		pad_h: 0
 		pad_w: 0
 	}
+}
+layer {
+	name: "V2_IV_3x3_pool_relu"
+	type: "ReLU"
+	bottom: "V2_IV_3x3_pool"
+	top: "V2_IV_3x3_pool"
 }
 
 layer {
@@ -395,7 +472,12 @@ layer {
 		}
 	}
 }
-
+layer {
+	name: "V2_IV_5x5_relu"
+	type: "ReLU"
+	bottom: "V2_IV_5x5"
+	top: "V2_IV_5x5"
+}
 layer {
 	name: "V2_IV_7x7"
 	type: "Convolution"
@@ -413,4 +495,10 @@ layer {
 			std: 0.1
 		}
 	}
+}
+layer {
+	name: "V2_IV_7x7_relu"
+	type: "ReLU"
+	bottom: "V2_IV_7x7"
+	top: "V2_IV_7x7"
 }
