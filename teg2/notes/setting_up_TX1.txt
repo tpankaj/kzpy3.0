@@ -155,7 +155,8 @@ $ roslaunch bair_car bair_car.launch use_zed:=true record:=true
 
 
 
-
+######### prompt,e.g. #########
+PS1='Mr_Audi:\W\ $ '
 
 ############## screen ########
 # http://www.howtogeek.com/howto/ubuntu/keep-your-ssh-session-running-when-you-disconnect/
