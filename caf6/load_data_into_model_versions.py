@@ -297,6 +297,7 @@ def visualize_solver_data_version_1b(solver,flip):
 			steer_rect_color = blue
 		#apply_rect_to_img(img,steer,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 		#apply_rect_to_img(img,motor,0,99,steer_rect_color,steer_rect_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+		figure(layer_to_use,figsize=(4,2))
 		mi(img,layer_to_use,img_title=d2s(solver.net.blobs['metadata'].data[0,:,0,0],flip))
 		#print solver.net.blobs['steer_motor_target_data'].data[:]
 		pause(0.0001)

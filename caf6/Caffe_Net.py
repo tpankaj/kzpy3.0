@@ -82,9 +82,7 @@ class Caffe_Net:
 			self.save_loss_timer.reset()
 		
 
-
-def setup_solver(solver_file_path):
-	solver = caffe.SGDSolver(solver_file_path)
+def print_solver(solver):
 
 	print("")
 	
@@ -96,7 +94,14 @@ def setup_solver(solver_file_path):
 		if 'split' not in l[0]:
 			print(l)
 
+
+
+def setup_solver(solver_file_path):
+	solver = caffe.SGDSolver(solver_file_path)
+	print_solver(solver)
 	return solver
+
+
 
 """
 def setup_solver(solver_file_path):

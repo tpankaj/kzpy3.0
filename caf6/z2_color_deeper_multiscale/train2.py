@@ -12,16 +12,17 @@ if USE_GPU:
 from kzpy3.caf6.Caffe_Net import *
 
 
+
+
 def plot_performance(steer,motor,loss1000):
 	figure('loss1000')
 	clf()
-	plot(loss1000)
-	plt.ylim(0.045,0.06)
+	plot(loss1000[-min(len(loss1000),1000):])
+	plt.ylim(0.040,0.06)
 	plt.title(time_str('Pretty'))
 	plt.xlabel(solver_file_path)
 	figure('steer')
 	clf()
-
 	s1000 = steer[-(min(len(steer),10000)):]
 	s = array(s1000)
 	plot(s[:,0],s[:,1],'o')
@@ -32,6 +33,9 @@ def plot_performance(steer,motor,loss1000):
 	plt.title(time_str('Pretty'))
 	plt.xlabel(solver_file_path)
 	plt.ylabel(dp(np.corrcoef(s[:,0],s[:,1])[0,1],2))
+
+
+
 
 #solver_file_path = opjh("kzpy3/caf6/z2_color/solver_"+str(gpu)+"_a.prototxt")
 solver_file_path = opjh("kzpy3/caf6/z2_color_deeper_multiscale/solver.prototxt")
@@ -123,5 +127,11 @@ if False: # Testing
 			id_timer.reset()
 	
 
-
-
+if False:
+	for i in range(48):
+		mi(caffe_net.solver.net.blobs['conv1'].data[0,i,:,:],'conv1')
+		pause(1)
+	for i in range(256):
+		mi(caffe_net.solver.net.blobs['conv2'].data[0,i,:,:],'conv2 ')
+		pause(1) 
+    	mi(caffe_net.solver.net.blobs['ZED_data_pool2'].data[0,0,:,:],'ZED_data_pool2 ')

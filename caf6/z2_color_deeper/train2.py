@@ -12,16 +12,18 @@ if USE_GPU:
 from kzpy3.caf6.Caffe_Net import *
 
 
+
+
+
 def plot_performance(steer,motor,loss1000):
 	figure('loss1000')
 	clf()
-	plot(loss1000)
-	plt.ylim(0.045,0.09)
+	plot(loss1000[-min(len(loss1000),1000):])
+	plt.ylim(0.040,0.06)
 	plt.title(time_str('Pretty'))
 	plt.xlabel(solver_file_path)
 	figure('steer')
 	clf()
-
 	s1000 = steer[-(min(len(steer),10000)):]
 	s = array(s1000)
 	plot(s[:,0],s[:,1],'o')
@@ -32,6 +34,10 @@ def plot_performance(steer,motor,loss1000):
 	plt.title(time_str('Pretty'))
 	plt.xlabel(solver_file_path)
 	plt.ylabel(dp(np.corrcoef(s[:,0],s[:,1])[0,1],2))
+
+
+
+
 
 #solver_file_path = opjh("kzpy3/caf6/z2_color/solver_"+str(gpu)+"_a.prototxt")
 solver_file_path = opjh("kzpy3/caf6/z2_color_deeper/solver.prototxt")
@@ -45,7 +51,7 @@ caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_pa
 
 
 
-runs_folder = '/media/karlzipser/ExtraDrive1/runs'
+runs_folder = '/media/karlzipser/ExtraDrive1/test_runs'
 assert(len(gg(opj(runs_folder,'*'))) > 0)
 run_names = sorted(gg(opj(runs_folder,'*.hdf5')),key=natural_keys)
 solver_inputs_dic = {}
@@ -77,7 +83,7 @@ motor = []
 T = 6
 timer = Timer(T)
 id_timer = Timer(3*T)
-while True:
+while False:
 	random.shuffle(ks)
 	for k in ks:
 		hdf5_filename = keys[k]
@@ -104,12 +110,12 @@ pass
 figure('loss')
 hist(loss)
 print np.median(loss)
-save_obj(loss,opjD('z2_color_deeper/0.035_direct_local_sidewalk_test_data_01Nov16_14h59m31s_Mr_Orange.loss'))
+save_obj(loss,opjD('z2_color_deeper/0.0338_direct_local_sidewalk_test_data_01Nov16_14h59m31s_Mr_Orange.loss'))
 
 """
 
 
-if False: # Testing
+if True: # Testing
 	loss = []
 	ctr = 0
 	for k in ks:

@@ -5,7 +5,7 @@ os.chdir(home_path) # this is for the sake of the train_val.prototxt
 ########################################################
 #          SETUP SECTION
 #
-solver_file_path = opjh("kzpy3/caf6/z2_color_deeper_multiscale/solver.prototxt")
+solver_file_path = opjh("kzpy3/caf6/z2_color_deeper_multiscale2/solver.prototxt")
 #
 ########################################################
 
@@ -18,12 +18,13 @@ def setup_solver():
 	return solver
 
 solver = setup_solver()
-weights_file_path = opjD('z2_color_deeper')
-weights_file_path = '/home/karlzipser/Desktop/z2_color_deeper_multiscale' #/z2_color_deeper_iter_2200000.caffemodel'
-weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color_deeper_multiscale','caffemodel'])
+weights_file_path = opjD('z2_color_deeper_multiscale2')
+weights_file_path = '/home/karlzipser/Desktop/z2_color_deeper_multiscale2' #/z2_color_deeper_iter_2200000.caffemodel'
+weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color_deeper_multiscale2','caffemodel'])
 solver.net.copy_from(weights_file_path)
 plt.ion()
-layer = 'conv1'
+
+layer = 'conv1_A'
 for n in range(96):
 	width = 11
 	img = np.zeros((2*width+7,2*width+7,3))

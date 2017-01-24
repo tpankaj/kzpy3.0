@@ -1,5 +1,5 @@
-# /home/karlzipser/kzpy3/caf6/z2_color
-# Tuesday, 24 Jan 2017, 12:25:56 PM
+# /home/karlzipser/kzpy3/caf6/z2_color_streamline
+# Tuesday, 24 Jan 2017, 12:29:12 PM
 
 layer {
 	name: "steer_motor_target_data"
@@ -52,7 +52,7 @@ layer {
 	bottom: "ZED_data_pool2"
 	top: "conv1"
 	convolution_param {
-		num_output: 96
+		num_output: 384
 		group: 1
 		kernel_size: 11
 		stride: 3
@@ -111,7 +111,7 @@ layer {
 	bottom: "conv1_metadata_concat"
 	top: "conv2"
 	convolution_param {
-		num_output: 256
+		num_output: 1024
 		group: 2
 		kernel_size: 3
 		stride: 2
