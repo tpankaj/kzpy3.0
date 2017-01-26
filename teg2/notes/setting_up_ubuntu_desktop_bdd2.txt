@@ -43,6 +43,8 @@ driver   : xserver-xorg-video-nouveau - distro free builtin
 
 # http://www.yourownlinux.com/2016/06/how-to-install-nvidia-367-27-stable-graphics-drivers-in-linux.html
 
+http://askubuntu.com/questions/851069/latest-nvidia-driver-on-ubuntu-16-04
+
 sudo service lightdm stop
 sudo dpkg -i cuda-repo-ubuntu1604-8-0-local_8.0.44-1_amd64.deb
 sudo apt-get update
