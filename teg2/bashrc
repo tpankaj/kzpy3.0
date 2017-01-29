@@ -37,6 +37,7 @@ alias ssh_date='sudo date --set="$(ssh karlzipser@192.168.43.243 date)"'
 #export DISPLAY=:0.0
 alias gacp="git add .;git commit -m 'gacp';git push origin master"
 alias gckzpy3="git clone https://github.com/karlzipser/kzpy3.0.git"
+git config --global credential.helper "cache --timeout=86400"
 alias ipy="ipython --no-banner"
 export PYTHONPATH=~:$PYTHONPATH
 #export PYTHONPATH=~/kzpy3/caf/layers:$PYTHONPATH
@@ -44,3 +45,7 @@ export PYTHONPATH=~:$PYTHONPATH
 export PYTHONSTARTUP=~/kzpy3/vis.py
 export PATH=~/kzpy3/scripts:$PATH
 export PATH=~/caffe/build/tools:$PATH
+
+export PYTHONPATH=~/caffe/python:$PYTHONPATH
+
+
