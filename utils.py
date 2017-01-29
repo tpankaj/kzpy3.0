@@ -48,6 +48,8 @@ except:
 import socket
 host_name = socket.gethostname()
 home_path = os.path.expanduser("~")
+import getpass
+username = getpass.getuser()
 imread = scipy.misc.imread
 imsave = scipy.misc.imsave
 #opj = os.path.join

@@ -1,10 +1,10 @@
 from kzpy3.teg4.data.preprocess.preprocess_bag_data import *
 
-run_paths = sorted(gg('/media/karlzipser/rosbags/*'))
+run_paths = sorted(gg('/media/karlzipser/rosbags/new/*'))
 
 for r in run_paths:
 	if 'lost' not in r:
-		preprocess_bag_data(r)
+		#preprocess_bag_data(r)
 		L = load_obj(opj(r,'.preprocessed2/left_image_bound_to_data.pkl'))
 
 		ts = sorted(L.keys())
