@@ -9,7 +9,7 @@ from kzpy3.caf6.protos import *
 model_path = opjh("kzpy3/caf6/z2_color_nin_test2")
 version = 'version 1b'
 gpu = 0
-base_lr = 0.001
+base_lr = 0.01
 snapshot = 100000
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit

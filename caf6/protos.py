@@ -58,6 +58,22 @@ layer {
 	p = p.replace("BOTTOM",bottom)
 	return p
 
+def drop(bottom,ratio):
+	p = """
+layer {
+\tname: "BOTTOM_drop"
+\ttype: "Dropout"
+\tbottom: "BOTTOM"
+\ttop: "BOTTOM"
+\tdropout_param {
+\t\tdropout_ratio: RATIO
+\t}
+}
+	"""
+	p = p.replace("BOTTOM",bottom)
+	p = p.replace("RATIO",str(ratio))
+	return p
+
 def deconv(top,bottom,num_output,group,kernel_size,stride,pad,weight_filler_type,std=0):
 	return conv(top,bottom,num_output,group,kernel_size,stride,pad,weight_filler_type,std).replace('Convolution','Deconvolution')
 
