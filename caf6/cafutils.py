@@ -109,27 +109,28 @@ def train(caffe_net,solver_inputs_dic,keys,version,model_file_path,time_limit=No
 	T = 6
 	timer = Timer(T)
 	id_timer = Timer(3*T)
-	ks = keys.keys()
-	random.shuffle(ks)
-	for k in ks:
-		if time_limit != None:
-			if limit_timer.check():
-				break
-		hdf5_filename = keys[k]
-		solver_inputs = solver_inputs_dic[hdf5_filename]
-		caffe_net.solver.net.blobs['ZED_data_pool2'].data[:] = solver_inputs[k]['ZED_data_pool2'][:]/255.-0.5
-		caffe_net.solver.net.blobs['metadata'].data[:] = solver_inputs[k]['metadata'][:]
-		caffe_net.solver.net.blobs['steer_motor_target_data'].data[:] = solver_inputs[k]['steer_motor_target_data'][:]
-		caffe_net.train_step()
-		steer.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,9],caffe_net.solver.net.blobs['ip2'].data[0,9]])
-		motor.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,19],caffe_net.solver.net.blobs['ip2'].data[0,19]])
-		ctr += 1
-		if timer.check():
-			plot_performance(steer,motor,caffe_net.loss1000,"TRAIN " + model_file_path,ylims)
-			timer.reset()
-		if id_timer.check():
-			cprint(model_file_path,'blue','on_yellow')
-			id_timer.reset()
+	while True:
+		ks = keys.keys()
+		random.shuffle(ks)
+		for k in ks:
+			if time_limit != None:
+				if limit_timer.check():
+					return
+			hdf5_filename = keys[k]
+			solver_inputs = solver_inputs_dic[hdf5_filename]
+			caffe_net.solver.net.blobs['ZED_data_pool2'].data[:] = solver_inputs[k]['ZED_data_pool2'][:]/255.-0.5
+			caffe_net.solver.net.blobs['metadata'].data[:] = solver_inputs[k]['metadata'][:]
+			caffe_net.solver.net.blobs['steer_motor_target_data'].data[:] = solver_inputs[k]['steer_motor_target_data'][:]
+			caffe_net.train_step()
+			steer.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,9],caffe_net.solver.net.blobs['ip2'].data[0,9]])
+			motor.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,19],caffe_net.solver.net.blobs['ip2'].data[0,19]])
+			ctr += 1
+			if timer.check():
+				plot_performance(steer,motor,caffe_net.loss1000,"TRAIN " + model_file_path,ylims)
+				timer.reset()
+			if id_timer.check():
+				cprint(model_file_path,'blue','on_yellow')
+				id_timer.reset()
 
 
 def test(caffe_net,solver_inputs_dic,keys,version,model_path,time_limit):
