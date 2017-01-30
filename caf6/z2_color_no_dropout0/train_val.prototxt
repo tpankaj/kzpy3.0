@@ -1,5 +1,5 @@
 # /home/karlzipser/kzpy3/caf6/z2_color_no_dropout0
-# Sunday, 29 Jan 2017, 09:02:27 AM
+# Monday, 30 Jan 2017, 08:36:24 AM
 
 layer {
 	name: "steer_motor_target_data"

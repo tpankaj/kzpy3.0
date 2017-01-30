@@ -9,7 +9,7 @@ from kzpy3.caf6.protos import *
 model_path = opjh("kzpy3/caf6/z2_color_dropout0")
 version = 'version 1b'
 gpu = 0
-base_lr = 0.01
+base_lr = 0.0
 snapshot = 100000
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
@@ -18,7 +18,7 @@ weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016'
 runs_folder = '/media/karlzipser/ExtraDrive1/runs'
 test_runs_folder = '/media/karlzipser/ExtraDrive1/test_runs'
 
-TRAIN = True
+TRAIN = False
 
 train_val_lst = [
 	d2s('#',model_path),
@@ -76,7 +76,7 @@ if TEST:
 	write_solver(model_path,base_lr=0.0,snapshot=100000000)
 	test_solver_inputs_dic,test_keys = get_solver_inputs_dic_ks(test_runs_folder)
 	median_errors = []
-	while True:
+	if True:
 		if len(gg(opjD(fname(model_path),'*.caffemodel'))) > 0:
 			test_caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=False)
 			e = test(test_caffe_net,test_solver_inputs_dic,test_keys,version,model_path,test_time_limit)
