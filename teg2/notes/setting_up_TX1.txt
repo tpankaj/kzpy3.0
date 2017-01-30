@@ -260,3 +260,25 @@ sudo date --set="$(ssh karlzipser@192.168.43.243 date)"
 
 
 http://wiki.ros.org/web_video_server
+
+
+
+
+
+
+
+PS1="Mr_Silver: \W$ " #"Mr_Blue_original_clone: \W$ "
+export PATH=/usr/local/cuda-7.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export LD_LIBRARY_PATH=/usr/local/cuda-7.0/lib:
+export __GL_PERFMON_MODE=1
+
+source /opt/ros/indigo/setup.bash
+source ~/catkin_ws/devel/setup.bash
+source ~/kzpy3/teg2/bashrc
+
+echo "sleep before rla..."
+sleep 30
+rrm
+rlog
+rla
+
