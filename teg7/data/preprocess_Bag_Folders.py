@@ -1,6 +1,6 @@
 from kzpy3.vis import *
 #import kzpy3.teg6.data.access.Bag_Folder as Bag_Folder
-import kzpy3.teg6.Bag_Folder as Bag_Folder
+import kzpy3.teg7.Bag_Folder as Bag_Folder
 
 """
 bag_folders_path_meta_path = opjD('bair_car_data/temp_meta_location/Smyth')
