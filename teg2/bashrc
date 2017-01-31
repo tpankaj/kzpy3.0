@@ -31,6 +31,8 @@ alias mrtea='ssh ubuntu@192.168.43.54'
 alias mrbla='ssh ubuntu@192.168.43.134'
 alias mrwhi='ssh ubuntu@192.168.43.63'
 alias ssh_date='sudo date --set="$(ssh karlzipser@192.168.43.243 date)"'
+
+alias rstat='python kzpy3/teg7/data/rosstatus.py'
 ######################## for .bashrc from MacBook #################
 #
 #echo "source ~/8August2016_common_aliases"

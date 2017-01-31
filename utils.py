@@ -468,7 +468,7 @@ def memory():
     return ret
 
 
-def most_recent_file_in_folder(path,str_elements):
+def most_recent_file_in_folder(path,str_elements=[]):
     files = gg(opj(path,'*'))
     if len(files) == 0:
         return None
