@@ -76,13 +76,15 @@ def plot_performance(steer,motor,loss1000,solver_file_path,ylims=None):
 
 
 
-def get_solver_inputs_dic_ks(runs_folder):
+def get_solver_inputs_dic_ks(runs_folder,to_require=[''],to_ignore=[]):
 	assert(len(gg(opj(runs_folder,'*'))) > 0)
 	run_names = sorted(gg(opj(runs_folder,'*.hdf5')),key=natural_keys)
 	solver_inputs_dic = {}
 	keys = {}
 	k_ctr = 0
 	for hdf5_filename in run_names:
+		if (str_contains_one(hdf5_filename,to_ignore)) or (not str_contains_one(hdf5_filename,to_require)):
+			continue
 		try:
 			solver_inputs_dic[hdf5_filename] = h5py.File(hdf5_filename,'r')
 			print hdf5_filename
