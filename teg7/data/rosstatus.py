@@ -29,6 +29,7 @@ timer = Timer(6)
 steer_div = 5
 motor_div = 5
 bag_str = ''
+rosbag_folder = '/'
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
@@ -42,7 +43,7 @@ while not rospy.is_shutdown():
 		for i in range(105/motor_div):
 			motor_lst.append(' ')
 		motor_lst[int(99/2./motor_div)] = '|'
-		motor_lst[max((motor)/motor_div)] = 'M'
+		motor_lst[motor/motor_div] = 'M'
 		motor_str = ""
 		for s in steer_lst:
 			steer_lst += s
@@ -50,7 +51,7 @@ while not rospy.is_shutdown():
 			motor_str += m
 		if len(bag_files) > 0:
 			bag_str = bag_files[-1].split('_')[-1]
-		print(d2s(steer_str,motor_str,state,motor,steer,bag_str))
+		print(d2s(steer_str,motor_str,state,motor,steer,bag_str,rosbag_folder.split('/')[-1]))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
