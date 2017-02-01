@@ -33,13 +33,13 @@ while not rospy.is_shutdown():
 
 	while(timer.check() == False):
 		steer_lst = []
-		for i in range(103/steer_div):
+		for i in range(105/steer_div):
 			steer_lst.append(' ')
 		steer_lst[int(99/2./steer_div)] = '|'
 		steer_lst[max((99-steer)/steer_div-1,0)] = 'S'
 		steer_str = ""
 		motor_lst = []
-		for i in range(103/motor_div):
+		for i in range(105/motor_div):
 			steer_lst.append(' ')
 		motor_lst[int(99/2./motor_div)] = '|'
 		motor_lst[max((99-motor)/motor_div-1,0)] = 'M'
