@@ -4,6 +4,7 @@
 from kzpy3.utils import time_str
 
 computer_name = 'Mr_X'
+
 Direct = 1.
 Follow = 0.
 Play = 0.
@@ -14,6 +15,9 @@ Location = 'local'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
+
+motor_gain = 1.0
+steer_gain = 1.0
 
 GPS2_lat_orig = 37.881404 #-999.99
 GPS2_long_orig = -122.2743327 #-999.99
