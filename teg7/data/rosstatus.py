@@ -32,7 +32,7 @@ while not rospy.is_shutdown():
 
 	while(timer.check() == False):
 		steer_lst = []
-		for i in range(99/steer_div):
+		for i in range(100/steer_div):
 			steer_lst.append(' ')
 		steer_lst[int(steer/2./steer_div)] = '|'
 		steer_lst[steer/steer_div] = 'S'
