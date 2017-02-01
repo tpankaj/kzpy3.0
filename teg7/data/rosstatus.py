@@ -26,7 +26,7 @@ rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32, callback=state_callback)
 
 timer = Timer(6)
 
-while True:
+while not rospy.is_shutdown():
 	while(timer.check() == False):
 		print(d2s(state,motor,steer))
 		time.sleep(0.2)

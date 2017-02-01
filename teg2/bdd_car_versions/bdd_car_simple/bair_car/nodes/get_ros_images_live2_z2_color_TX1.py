@@ -205,6 +205,7 @@ try:
 					caf_steer = int((caf_steer-49.) * steer_gain + 49)
 
 
+
 					if caf_motor > 99:
 						caf_motor = 99
 					if caf_motor < 0:
@@ -214,8 +215,10 @@ try:
 					if caf_steer < 0:
 						caf_steer = 0
 
+					print caf_motor,caf_steer,motor_gain,steer_gain
+					
 					if verbose:
-						print caf_steer
+						print caf_steer,caf_motor
 					
 					if state in [3,6]:			
 						steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
