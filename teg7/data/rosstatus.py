@@ -24,7 +24,7 @@ rospy.Subscriber('/bair_car/steer', std_msgs.msg.Int32, callback=steer_callback)
 rospy.Subscriber('/bair_car/motor', std_msgs.msg.Int32, callback=motor_callback)
 rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32, callback=state_callback)
 
-timer = Timer(6)
+timer = Timer(15)
 
 steer_div = 5
 motor_div = 5
@@ -55,13 +55,12 @@ while not rospy.is_shutdown():
 		if len(bag_files) > 0:
 			bag_str = bag_files[-1].split('_')[-1]
 
-		print(d2s(steer_str,motor_str,state,motor,steer,bag_str,rosbag_folder.split('/')[-1]))
+		print(d2s(steer_str,motor_str,state,motor,steer,bag_str))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
 	if len(bag_files) > 0:
-		pass
-		#print bag_files[-1]
+		rosbag_folder.split('/')[-1]
 	else:
 		print "No bag files saved yet."
 	time.sleep(0.2)
