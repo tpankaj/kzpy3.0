@@ -42,10 +42,12 @@ while not rospy.is_shutdown():
 		for i in range(105/motor_div):
 			motor_lst.append(' ')
 		motor_lst[int(99/2./motor_div)] = '|'
-		motor_lst[max((99-motor)/motor_div-1,0)] = 'M'
+		motor_lst[max((motor)/motor_div)] = 'M'
 		motor_str = ""
-		for s in motor_lst:
-			motor_str += s
+		for s in steer_lst:
+			steer_lst += s
+		for m in motor_lst:
+			motor_str += m
 		print(d2s(steer_str,motor_str,state,motor,steer,rosbag_folder.split('_')[-1]))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
