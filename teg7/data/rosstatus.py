@@ -58,12 +58,13 @@ while not rospy.is_shutdown():
 		for m in motor_lst:
 			motor_str += m
 
-		if len(bag_files) > 0:
-			bag_str = bag_files[-1].split('_')[-1]
-
 		if ctr >= 5:
-			bag_str += rosbag_folder.split('Mr_')[-1]
+			if len(bag_files) > 0:
+				bag_str = bag_files[-1].split('_')[-1]
+			bag_str += ' Mr_' + rosbag_folder.split('Mr_')[-1]
 			ctr = 0
+		else:
+			bag_str = ""
 		ctr += 1
 
 		print(d2s(steer_str,motor_str,state,motor,steer,bag_str))
