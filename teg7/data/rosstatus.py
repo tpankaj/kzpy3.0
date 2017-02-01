@@ -39,7 +39,7 @@ while not rospy.is_shutdown():
 		steer_str = ""
 		for s in steer_lst:
 			steer_str += s
-		print(d2s(state,motor,steer,steer_str))
+		print(d2s(steer_str,state,motor,steer))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
