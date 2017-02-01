@@ -141,6 +141,7 @@ t0 = time.time()
 time_step = Timer(1)
 caffe_enter_timer = Timer(2)
 folder_display_timer = Timer(30)
+reload_timer = Timer(30)
 verbose = False
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
@@ -160,11 +161,6 @@ while not rospy.is_shutdown():
 				l1 = left_list[-1]
 				r0 = right_list[-2]
 				r1 = right_list[-1]
-
-				#solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,1]/255.0-.5
-				#solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,1]/255.0-.5
-				#solver.net.blobs['ZED_data'].data[0,2,:,:] = r0[:,:,1]/255.0-.5
-				#solver.net.blobs['ZED_data'].data[0,3,:,:] = r1[:,:,1]/255.0-.5
 
 				solver.net.blobs['ZED_data'].data[0,0,:,:] = l0[:,:,0]
 				solver.net.blobs['ZED_data'].data[0,1,:,:] = l1[:,:,0]
@@ -235,5 +231,10 @@ while not rospy.is_shutdown():
 		time_step.reset()
 		if not folder_display_timer.check():
 			print("*** Data foldername = "+foldername+ '***')
+	if reload_timer.check():
+		reload(kzpy3.teg2.bdd_car_versions.computer_name)
+		from kzpy3.teg2.bdd_car_versions.computer_name import *
+		reload_timer.reset()
+
 
 
