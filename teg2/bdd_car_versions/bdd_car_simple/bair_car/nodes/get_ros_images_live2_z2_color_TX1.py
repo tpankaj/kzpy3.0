@@ -215,10 +215,8 @@ try:
 					if caf_steer < 0:
 						caf_steer = 0
 
-					print caf_motor,caf_steer,motor_gain,steer_gain
-
 					if verbose:
-						print caf_steer,caf_motor
+						print caf_motor,caf_steer,motor_gain,steer_gain,state
 					
 					if state in [3,6]:			
 						steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
