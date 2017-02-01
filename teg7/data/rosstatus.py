@@ -27,7 +27,8 @@ rospy.Subscriber('/bair_car/state', std_msgs.msg.Int32, callback=state_callback)
 timer = Timer(6)
 
 steer_div = 5
-
+motor_div = 5
+rosbag_folder = 'blah_nada.bag'
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
@@ -45,7 +46,7 @@ while not rospy.is_shutdown():
 		motor_str = ""
 		for s in motor_lst:
 			motor_str += s
-		print(d2s(steer_str,motor_str,state,motor,steer))
+		print(d2s(steer_str,motor_str,state,motor,steer,rosbag_folder.split('_')[-1]))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
