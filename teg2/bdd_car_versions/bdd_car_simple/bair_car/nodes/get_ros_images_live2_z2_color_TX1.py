@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-	"""
-	reed to run roslaunch first, e.g.,
+"""
+reed to run roslaunch first, e.g.,
 
-	roslaunch bair_car bair_car.launch use_zed:=true record:=false
-	"""
+roslaunch bair_car bair_car.launch use_zed:=true record:=false
+"""
 try:
 
 	########################################################
