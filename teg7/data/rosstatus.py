@@ -30,7 +30,7 @@ steer_div = 5
 motor_div = 5
 bag_str = ''
 rosbag_folder = '/'
-assert(False)
+
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
