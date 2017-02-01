@@ -180,9 +180,6 @@ while not rospy.is_shutdown():
 				solver.net.blobs['ZED_data'].data[0,11,:,:] = r1[:,:,2]
 					
 
-
-				from computer_name import *	
-
 				solver.net.blobs['metadata'].data[0,0,:,:] = Racing#target_data[0]/99. #current steer
 				solver.net.blobs['metadata'].data[0,1,:,:] = 0#target_data[len(target_data)/2]/99. #current motor
 				solver.net.blobs['metadata'].data[0,2,:,:] = Follow
@@ -190,8 +187,7 @@ while not rospy.is_shutdown():
 				solver.net.blobs['metadata'].data[0,4,:,:] = Play
 				solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 				
-				#if verbose:
-				#	print "solver.net.forward()"
+
 				solver.net.forward(start='ZED_data',end='ZED_data_pool2')
 
 				solver.net.blobs['ZED_data_pool2'].data[:,:,:,:] /= 255.0
@@ -202,14 +198,31 @@ while not rospy.is_shutdown():
 				caf_steer = 100*solver.net.blobs['ip2'].data[0,9]
 				caf_motor = 100*solver.net.blobs['ip2'].data[0,19]
 
+				"""
 				if caf_motor > 60:
 					caf_motor = (caf_motor-60)/39.0*10.0 + 60
-				
+				"""
+
+				caf_motor = int((caf_motor-49.) * motor_gain + 49)
+				caf_steer = int((caf_steer-49.) * steer_gain + 49)
+
+
+				if caf_motor > 99:
+					caf_motor = 99
+				if caf_motor < 0:
+					caf_motor = 0
+				if caf_steer > 99:
+					caf_steer = 99
+				if caf_steer < 0:
+					caf_steer = 0
+
 				if verbose:
 					print caf_steer
 				
-				steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
-				motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
+				if state in [3,6]:			
+					steer_cmd_pub.publish(std_msgs.msg.Int32(caf_steer))
+				if state in [6,7]:
+					motor_cmd_pub.publish(std_msgs.msg.Int32(caf_motor))
 
 	else:
 		pass

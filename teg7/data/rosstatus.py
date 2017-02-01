@@ -32,6 +32,9 @@ while True:
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
-	print bag_files[-1]
+	if len(bag_files):
+		print bag_files[-1]
+	else:
+		print "No bag files saved yet."
 	time.sleep(2)
 	timer.reset()

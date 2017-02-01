@@ -13,8 +13,8 @@ for i in [9,10]:
 bag_folders_src_location = opj('/media',username,'rosbags')
 #bag_folders_src_location = opjD('')
 bag_folders_src = opj(bag_folders_src_location,'new' )
-bag_folders_dst_rgb1to4_path = opjD('bair_car_data/rgb_1to4')
-bag_folders_dst_meta_path = opjD('bair_car_data/meta')
+bag_folders_dst_rgb1to4_path = opjD('bair_car_data_new/rgb_1to4')
+bag_folders_dst_meta_path = opjD('bair_car_data_new/meta')
 
 runs = sgg(opj(bag_folders_src,'*'))
 

@@ -8,15 +8,19 @@ from kzpy3.caf6.protos import *
 #
 model_path = opjh("kzpy3/caf6/z2_color_nin_test")
 version = 'version 1b'
-gpu = 1
-base_lr = 0.01
+gpu = 0
+base_lr = 0.005
 snapshot = 100000
+to_require=['']
+to_ignore=['left']
+restore_solver = False
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
 weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'
 weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
-runs_folder = '/media/karlzipser/ExtraDrive1/runs'
-test_runs_folder = '/media/karlzipser/ExtraDrive1/test_runs'
+runs_folder = opjD('hdf5','runs')
+test_runs_folder = opjD('hdf5','test_runs')
+
 
 TRAIN = True
 
@@ -99,5 +103,10 @@ if TRAIN:
 	write_solver(model_path,base_lr=base_lr,snapshot=snapshot)
 	solver_inputs_dic,keys = get_solver_inputs_dic_ks(runs_folder)
 	caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=False)
-	train(caffe_net,solver_inputs_dic,keys,version,model_path,train_time_limit)
+	while True:
+		try:
+			train(caffe_net,solver_inputs_dic,keys,version,model_path,train_time_limit)
+		except Exception as e:
+			cprint("********** Exception ***********************",'red')
+			print(e.message, e.args)
 

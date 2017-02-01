@@ -8,11 +8,11 @@ from kzpy3.caf6.protos import *
 #
 model_path = opjh("kzpy3/caf6/z2_color_more")
 version = 'version 1b'
-gpu = 0
+gpu = 1
 base_lr = 0.005
 snapshot = 100000
-to_require=['Smyth']
-to_ignore=['caffe']
+to_require=['Smyth','racing']
+to_ignore=['left']
 restore_solver = False
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
@@ -96,5 +96,9 @@ if TRAIN:
 	write_solver(model_path,base_lr=base_lr,snapshot=snapshot)
 	solver_inputs_dic,keys = get_solver_inputs_dic_ks(runs_folder,to_require=to_require,to_ignore=to_ignore)
 	caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=restore_solver)
-	train(caffe_net,solver_inputs_dic,keys,version,model_path,train_time_limit)
-
+	while True:
+		try:
+			train(caffe_net,solver_inputs_dic,keys,version,model_path,train_time_limit)
+		except Exception as e:
+			cprint("********** Exception ***********************",'red')
+			print(e.message, e.args)

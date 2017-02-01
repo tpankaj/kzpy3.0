@@ -50,7 +50,7 @@ def plot_performance(steer,motor,loss1000,solver_file_path,ylims=None):
 		plt.ylim(ylims[0],ylims[1])
 	plt.title(time_str('Pretty'))
 	plt.xlabel(solver_file_path)
-	figure(solver_file_path + ' steer',figsize=(2,2))
+	figure(solver_file_path + ' steer',figsize=(4,2))
 	clf()
 	s1000 = steer[-(min(len(steer),10000)):]
 	s = array(s1000)
