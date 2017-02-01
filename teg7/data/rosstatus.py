@@ -65,7 +65,7 @@ while not rospy.is_shutdown():
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
 	if len(bag_files) > 0:
-		rosbag_folder.split('/')[-1]
+		print rosbag_folder.split('/')[-1]
 	else:
 		print "No bag files saved yet."
 	time.sleep(0.2)
