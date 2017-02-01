@@ -40,19 +40,22 @@ while not rospy.is_shutdown():
 		steer_lst[int(99/2./steer_div)] = '|'
 		steer_lst[max((99-steer)/steer_div-1,0)] = 'S'
 		steer_str = ""
+		for s in steer_lst:
+			steer_str += s
+		
 		motor_lst = []
 		for i in range(105/motor_div):
 			motor_lst.append(' ')
 		motor_lst[int(99/2./motor_div)] = '|'
 		motor_lst[motor/motor_div] = 'M'
 		motor_str = ""
-		for s in steer_lst:
-			steer_lst += s
 		for m in motor_lst:
 			motor_str += m
-		#if len(bag_files) > 0:
-		#	bag_str = bag_files[-1].split('_')[-1]
-		print(d2s(steer_str,motor_str,state,motor,steer))#,bag_str,rosbag_folder.split('/')[-1]))
+
+		if len(bag_files) > 0:
+			bag_str = bag_files[-1].split('_')[-1]
+
+		print(d2s(steer_strstate,motor,steer))#,bag_str,rosbag_folder.split('/')[-1]))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
