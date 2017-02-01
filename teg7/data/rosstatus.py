@@ -28,7 +28,7 @@ timer = Timer(6)
 
 steer_div = 5
 motor_div = 5
-rosbag_folder = 'blah_nada.bag'
+bag_str = ''
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
@@ -48,7 +48,9 @@ while not rospy.is_shutdown():
 			steer_lst += s
 		for m in motor_lst:
 			motor_str += m
-		print(d2s(steer_str,motor_str,state,motor,steer,rosbag_folder.split('_')[-1]))
+		if len(bag_files) > 0:
+			bag_str = bag_files[-1].split('_')[-1]
+		print(d2s(steer_str,motor_str,state,motor,steer,bag_str))
 		time.sleep(0.2)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
