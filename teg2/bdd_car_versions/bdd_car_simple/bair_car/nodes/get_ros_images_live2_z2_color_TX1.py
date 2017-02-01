@@ -15,9 +15,8 @@ try:
 	from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 	import cv2
 	os.chdir(home_path) # this is for the sake of the train_val.prototxt
-	import computer_name
-	computer_name = reload(computer_name)
-	from computer_name import *
+	import run_params
+	from run_params import *
 
 	#solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel') #
@@ -238,8 +237,8 @@ try:
 			if not folder_display_timer.check():
 				print("*** Data foldername = "+foldername+ '***')
 		if reload_timer.check():
-			reload(computer_name)
-			from computer_name import *
+			reload(run_params)
+			from run_params import *
 			reload_timer.reset()
 
 except Exception as e:
