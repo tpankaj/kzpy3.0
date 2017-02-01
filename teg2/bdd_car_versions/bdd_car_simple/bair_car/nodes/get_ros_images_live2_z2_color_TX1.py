@@ -14,7 +14,8 @@ from kzpy3.utils import *
 from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
-from computer_name import *
+import kzpy3.teg2.bdd_car_versions.computer_name
+from kzpy3.teg2.bdd_car_versions.computer_name import *
 
 #solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel') #
