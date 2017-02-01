@@ -2,7 +2,7 @@ from kzpy3.utils import *
 import roslib
 import std_msgs.msg
 import rospy
-
+assert(False)
 steer = 0
 def steer_callback(msg):
 	global steer
