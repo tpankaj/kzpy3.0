@@ -40,7 +40,7 @@ while not rospy.is_shutdown():
 			steer_lst.append(' ')
 		steer_lst[int(99/2./steer_div)] = '|'
 		steer_lst[int(0/2./steer_div)] = '|'
-		steer_lst[int(99/1./steer_div)] = '|'
+		steer_lst[int(99/1./steer_div)-1] = '|'
 		steer_lst[max((99-steer)/steer_div-1,0)] = 'S'
 		steer_str = ""
 		for s in steer_lst:
@@ -51,7 +51,7 @@ while not rospy.is_shutdown():
 			motor_lst.append(' ')
 		motor_lst[int(99/2./motor_div)] = '|'
 		motor_lst[int(0/2./motor_div)] = '|'
-		motor_lst[int(99/1./motor_div)] = '|'
+		motor_lst[int(99/1./motor_div)-1] = '|'
 		motor_lst[motor/motor_div] = 'M'
 		motor_str = ""
 		for m in motor_lst:
