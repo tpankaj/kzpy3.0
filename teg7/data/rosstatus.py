@@ -29,8 +29,8 @@ timer = Timer(15)
 steer_div = 5
 motor_div = 5
 bag_str = ''
-rosbag_folder = '/'
-bag_files = []
+rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
+bag_files = sgg(opj(rosbag_folder,'*.bag'))
 
 while not rospy.is_shutdown():
 
