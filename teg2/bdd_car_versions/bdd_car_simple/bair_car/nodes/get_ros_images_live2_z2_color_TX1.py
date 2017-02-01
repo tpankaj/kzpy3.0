@@ -16,6 +16,7 @@ try:
 	import cv2
 	os.chdir(home_path) # this is for the sake of the train_val.prototxt
 	import computer_name
+	computer_name = reload(computer_name)
 	from computer_name import *
 
 	#solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
