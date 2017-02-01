@@ -2,7 +2,7 @@ from kzpy3.utils import *
 import roslib
 import std_msgs.msg
 import rospy
-assert(False)
+
 steer = 0
 def steer_callback(msg):
 	global steer
@@ -30,6 +30,7 @@ steer_div = 5
 motor_div = 5
 bag_str = ''
 rosbag_folder = '/'
+assert(False)
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
