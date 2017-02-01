@@ -142,7 +142,7 @@ time_step = Timer(1)
 caffe_enter_timer = Timer(2)
 folder_display_timer = Timer(30)
 reload_timer = Timer(30)
-verbose = False
+#verbose = False
 while not rospy.is_shutdown():
 	if state in [3,5,6,7]:
 		if (previous_state not in [3,5,6,7]):

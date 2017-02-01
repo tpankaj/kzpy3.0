@@ -15,7 +15,7 @@ Location = 'local'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
-
+verbose = False
 motor_gain = 1.0
 steer_gain = 1.0
 
