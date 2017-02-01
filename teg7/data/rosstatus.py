@@ -35,7 +35,7 @@ while not rospy.is_shutdown():
 		for i in range(100/steer_div):
 			steer_lst.append(' ')
 		steer_lst[int(99/2./steer_div)] = '|'
-		steer_lst[steer/steer_div] = 'S'
+		steer_lst[max((99-steer)/steer_div,0)] = 'S'
 		steer_str = ""
 		for s in steer_lst:
 			steer_str += s
@@ -47,5 +47,5 @@ while not rospy.is_shutdown():
 		print bag_files[-1]
 	else:
 		print "No bag files saved yet."
-	time.sleep(1)
+	time.sleep(0.2)
 	timer.reset()
