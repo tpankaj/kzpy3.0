@@ -36,5 +36,5 @@ while not rospy.is_shutdown():
 		print bag_files[-1]
 	else:
 		print "No bag files saved yet."
-	time.sleep(2)
+	time.sleep(1)
 	timer.reset()
