@@ -5,7 +5,7 @@ import rospy
 import std_msgs.msg
 
 
-from computer_name import foldername
+from run_params import foldername
 
 time.sleep(3)
 
