@@ -239,7 +239,7 @@ try:
 			reload_timer.reset()
 
 except Exception as e:
-    cprint("********** Exception ***********************",'red')
-    print(e.message, e.args)
+	cprint("********** Exception ***********************",'red')
+	print(e.message, e.args)
 	rospy.signal_shutdown(d2s(e.message,e.args))
 
