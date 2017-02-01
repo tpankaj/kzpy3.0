@@ -62,7 +62,7 @@ while not rospy.is_shutdown():
 			bag_str = bag_files[-1].split('_')[-1]
 
 		if ctr >= 5:
-			bag_str += 'Mr_' + rosbag_folder.split('  Mr_')[-1]
+			bag_str += ' Mr_' + rosbag_folder.split('Mr_')[-1]
 			ctr = 0
 		ctr += 1
 
