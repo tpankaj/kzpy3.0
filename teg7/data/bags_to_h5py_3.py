@@ -4,9 +4,9 @@ import cv2
 import h5py
 
 
-meta_dir = opjD('bair_car_data','meta_process_now')
+meta_dir = opjD('bair_car_data_new','meta')
 
-rgb_1to4_dir = opjD('bair_car_data','rgb_1to4')
+rgb_1to4_dir = opjD('bair_car_data_new','rgb_1to4')
 
 verbose = False
 
@@ -410,7 +410,7 @@ if True:
 									if result:
 										visualize_solver_data(caffe_net.solver,version,flip)
 									cprint(d2s('ctr =',ctr,'rate =',dp(ctr/(time.time()-t0),1),'Hz','size =',dp(os.path.getsize(file_name)/10**12.,4),'TB'),'red','on_yellow') #ctr = 0
-									cprint(d2s('timestampe percent =', 100*len(timestamps)/(1.*len(BagFolder_dic[run_name]['good_bag_timestamps'][bf]))),'green')
+									cprint(d2s('timestamp percent =', 100*len(timestamps)/(1.*len(BagFolder_dic[run_name]['good_bag_timestamps'][bf]))),'green')
 									timer.reset()
 	hdf5_runs_dic[previous_run_name].close()
 	for r in hdf5_runs_dic.keys():
