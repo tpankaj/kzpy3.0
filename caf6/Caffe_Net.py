@@ -11,6 +11,8 @@ from kzpy3.caf6.load_data_into_model_versions import *
 import cv2
 os.chdir(home_path) # this is for the sake of the train_val.prototxt
 
+os.environ['GLOG_minloglevel'] = '2'
+
 class Caffe_Net:
 
 	def __init__(self,solver_file_path,version,weights_file_mode=None,weights_file_path=None,restore_solver=False):

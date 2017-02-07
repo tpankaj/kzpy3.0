@@ -12,7 +12,7 @@ backup_locations = []
 for i in [10]:#9,10]:
 	backup_locations.append(opj('/media',username,'bair_car_data_'+str(i)))
 
-bag_folders_src_location = opj('/media',username,'rosbags1')
+bag_folders_src_location = opj('/media',username,'rosbags')
 #bag_folders_src_location = opjD('')
 bag_folders_src = opj(bag_folders_src_location,'new' )
 bag_folders_dst_rgb1to4_path = opjD('bair_car_data_new/rgb_1to4')

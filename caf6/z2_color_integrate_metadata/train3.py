@@ -6,7 +6,7 @@ from kzpy3.caf6.protos import *
 ##############################################################################
 ##############################################################################
 #
-model_path = opjh("kzpy3/caf6/z2_color_more")
+model_path = opjh("kzpy3/caf6/z2_color_integrate_metadata")
 version = 'version 1b'
 gpu = 1
 base_lr = 0.005
@@ -16,18 +16,25 @@ to_ignore=['left']
 restore_solver = False
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
-weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'
-weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
-runs_folder = opjD('hdf5','runs')
-test_runs_folder = opjD('hdf5','test_runs')
+weights_file_mode = None #'most recent' # 'this one' #None #'most recent' #None #'most recent'
+weights_file_path =  None #opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
+runs_folder = opjD('bair_car_data','hdf5','runs')
+test_runs_folder = opjD('bair_car_data','hdf5','test_runs')
 
-TRAIN = True
+TRAIN = False
 
 train_val_lst = [
 	d2s('#',model_path),
 	d2s('#',time_str('Pretty')),
 	dummy('steer_motor_target_data',(1,20)),
 	dummy('metadata',(1,6,14,26)),
+	dummy('xy_gradient_data',(1,2,14,26)),
+	dummy('steer_data',(1,10,14,26)),
+	dummy('motor_data',(1,10,14,26)),
+	dummy('radar_data',(1,120,14,26)),
+
+
+
 	dummy('ZED_data_pool2',(1,12,94,168)),
 
 	conv("conv1",'ZED_data_pool2',96,1,11,3,0,"gaussian",std='0.00001'),
@@ -35,9 +42,17 @@ train_val_lst = [
 	pool("conv1","MAX",3,2,0),
 	drop('conv1_pool',0.0),
 
-	concat('conv1_metadata_concat',["conv1_pool","metadata"],1),
+	concat('conv1_metadata_concat',['conv1_pool','metadata',
+		'xy_gradient_data','steer_data','motor_data','radar_data'],1),
 
-	conv("conv2",'conv1_metadata_concat',256,2,3,2,0,"gaussian",std='0.1'),
+	conv("nin1",'conv1_metadata_concat',96,1,1,1,0,"gaussian",std='0.1'),
+	relu("nin1"),
+
+	conv("nin2",'nin1',96,1,1,1,0,"gaussian",std='0.1'),
+	relu("nin2"),
+
+
+	conv("conv2",'nin2',256,2,3,2,0,"gaussian",std='0.1'),
 	relu("conv2"),
 	pool("conv2","MAX",3,2,0),
 	drop('conv2_pool',0.0),

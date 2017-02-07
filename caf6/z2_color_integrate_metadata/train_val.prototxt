@@ -1,5 +1,5 @@
-# /home/karlzipser/kzpy3/caf6/z2_color_more
-# Wednesday, 01 Feb 2017, 07:50:18 AM
+# /home/karlzipser/kzpy3/caf6/z2_color_integrate_metadata
+# Sunday, 05 Feb 2017, 09:06:12 AM
 
 layer {
 	name: "steer_motor_target_data"
@@ -12,20 +12,22 @@ layer {
 		}
 	}
 }
+	
 
 layer {
-	name: "behavioral_mode"
+	name: "metadata"
 	type: "DummyData"
-	top: "behavioral_mode"
+	top: "metadata"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 20
+			dim: 6
 			dim: 14
 			dim: 26
 		}
 	}
 }
+	
 
 layer {
 	name: "xy_gradient_data"
@@ -40,6 +42,38 @@ layer {
 		}
 	}
 }
+	
+
+layer {
+	name: "steer_data"
+	type: "DummyData"
+	top: "steer_data"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 10
+			dim: 14
+			dim: 26
+		}
+	}
+}
+	
+
+layer {
+	name: "motor_data"
+	type: "DummyData"
+	top: "motor_data"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 10
+			dim: 14
+			dim: 26
+		}
+	}
+}
+	
+
 layer {
 	name: "radar_data"
 	type: "DummyData"
@@ -53,45 +87,7 @@ layer {
 		}
 	}
 }
-layer {
-	name: "lidar_data"
-	type: "DummyData"
-	top: "radar_data"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 180
-			dim: 14
-			dim: 26
-		}
-	}
-}
-layer {
-	name: "steer_data"
-	type: "DummyData"
-	top: "steer_data"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 15
-			dim: 14
-			dim: 26
-		}
-	}
-}
-layer {
-	name: "motor_data"
-	type: "DummyData"
-	top: "motor_data"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 15
-			dim: 14
-			dim: 26
-		}
-	}
-}
+	
 
 layer {
 	name: "ZED_data_pool2"
@@ -150,25 +146,33 @@ layer {
 	}
 }
 	
+
+layer {
+	name: "conv1_pool_drop"
+	type: "Dropout"
+	bottom: "conv1_pool"
+	top: "conv1_pool"
+	dropout_param {
+		dropout_ratio: 0.0
+	}
+}
 	
 
 layer {
 	type: 'Concat'
 	name: 'conv1_metadata_concat'
 	bottom: "conv1_pool"
-	bottom: "behavioral_mode"
-	bottom: "radar_data"
-	bottom: "lidar_data"
+	bottom: "metadata"
+	bottom: "xy_gradient_data"
 	bottom: "steer_data"
 	bottom: "motor_data"
-	bottom: "xy_gradient_data"
+	bottom: "radar_data"
 	top: 'conv1_metadata_concat'
 	concat_param {
 		axis: 1
 	}
 }
-	
-
+		
 
 layer {
 	name: "nin1"
@@ -176,7 +180,7 @@ layer {
 	bottom: "conv1_metadata_concat"
 	top: "nin1"
 	convolution_param {
-		num_output: 200
+		num_output: 96
 		group: 1
 		kernel_size: 1
 		stride: 1
@@ -188,19 +192,23 @@ layer {
 		}
 	}
 }
+	
+
 layer {
 	name: "nin1_relu"
 	type: "ReLU"
 	bottom: "nin1"
 	top: "nin1"
 }
+	
+
 layer {
 	name: "nin2"
 	type: "Convolution"
 	bottom: "nin1"
 	top: "nin2"
 	convolution_param {
-		num_output: 100
+		num_output: 96
 		group: 1
 		kernel_size: 1
 		stride: 1
@@ -212,19 +220,20 @@ layer {
 		}
 	}
 }
+	
+
 layer {
 	name: "nin2_relu"
 	type: "ReLU"
 	bottom: "nin2"
 	top: "nin2"
 }
-
-
+	
 
 layer {
 	name: "conv2"
 	type: "Convolution"
-	bottom: "conv1_metadata_concat"
+	bottom: "nin2"
 	top: "conv2"
 	convolution_param {
 		num_output: 256
@@ -263,6 +272,16 @@ layer {
 	}
 }
 	
+
+layer {
+	name: "conv2_pool_drop"
+	type: "Dropout"
+	bottom: "conv2_pool"
+	top: "conv2_pool"
+	dropout_param {
+		dropout_ratio: 0.0
+	}
+}
 	
 
 layer {
@@ -287,7 +306,15 @@ layer {
 }
 	
 
-
+layer {
+	name: "ip1_drop"
+	type: "Dropout"
+	bottom: "ip1"
+	top: "ip1"
+	dropout_param {
+		dropout_ratio: 0.0
+	}
+}
 	
 
 layer {

@@ -273,7 +273,7 @@ def load_data_into_model_version_1b(solver,data,flip,show_data=False,camera_drop
 	return False
 
 def visualize_solver_data_version_1b(solver,flip):
-	layer_to_use = 'ZED_data_pool2'
+	layer_to_use = 'ZED_data_pool2' #'T' #
 	r = 2
 	for i in range(2):
 
