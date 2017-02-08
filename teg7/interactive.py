@@ -38,19 +38,22 @@ to list runs. The first number is simply a count (starting with 0), the second n
 is the number of bag files in the run. A bag file is 1GB of raw data (much less here)
 and take up about 30s, although this varies with image complexity.
 
-To choose a new run (say, run 66), type:
+To choose a new run (say, run 53), type:
 
-SR(66)
+SR(53)
+VR()
 
 Note that the prompt on the command line lists the current run. Note that run 0 is selected by default.
 
 Now try:
 
-AR(495,510)
+AR(900,920)
 
 This will show going from non-data to data.
 
-Note, sometimes there is a gap in the frames. The program will report this and pause during this time.
+Note, sometimes there is a gap in the frames, as in this example.
+The program will report this and pause during this time.
+Using the TX1 dev. board cleans this up dramatically.
 """
 
 i_variables = ['run_','runs','run_path','meta_path','rgb_1to4_path','B_','left_images']
