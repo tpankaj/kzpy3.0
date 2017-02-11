@@ -1,3 +1,5 @@
+PS1="$COMPUTER_NAME: \W$ "
+
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
   SESSION_TYPE=remote/ssh
   echo "This is a remote/ssh login"
