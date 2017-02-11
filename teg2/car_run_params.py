@@ -32,7 +32,7 @@ solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
 #weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
 verbose = True
-motor_gain = 2.0
+motor_gain = 1.0
 steer_gain = 1.0
 
 GPS2_lat_orig = 37.881404 #-999.99
@@ -46,6 +46,7 @@ GPS2_radius = 0.0004
 if computer_name == 'Mr_Orange':
 	pass
 if computer_name == 'Mr_Silver':
+	motor_gain = 0.3
 	pass
 if computer_name == 'Mr_Blue':
 	pass
