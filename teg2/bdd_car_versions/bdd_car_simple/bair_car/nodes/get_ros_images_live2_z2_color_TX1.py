@@ -139,7 +139,7 @@ try:
 	ctr = 0
 
 
-	from kzpy3.teg2.global_run_params import *
+	#from kzpy3.teg2.global_run_params import *
 
 	t0 = time.time()
 	time_step = Timer(1)
