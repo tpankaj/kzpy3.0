@@ -88,7 +88,7 @@ if Follow == 1:
 model_name = solver_file_path.split('/')[-2]
 
 if Caf == 1:
-	foldername = foldername + model_name +'_'
+	foldername = foldername + 'caffe_' + model_name +'_'
 
 foldername = foldername + task + '_'
 
