@@ -20,6 +20,9 @@ if False:
 #
 ####################################
 
+def print_stars(n=1):
+    for i in range(n):
+        print("""*************************************************""")
 
 # - import common modules
 import os

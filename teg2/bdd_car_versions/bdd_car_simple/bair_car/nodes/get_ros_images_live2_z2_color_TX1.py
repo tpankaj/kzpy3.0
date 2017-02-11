@@ -28,8 +28,10 @@ try:
 		return solver
 	solver = setup_solver()
 	if weights_file_path != None:
+		print_stars(2)
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
+		print_stars(2)
 	#
 	########################################################
 
