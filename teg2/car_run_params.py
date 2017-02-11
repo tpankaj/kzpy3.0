@@ -26,7 +26,7 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'Smyth_tape'
+Location = 'temp'#'Smyth_tape'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
@@ -35,9 +35,7 @@ verbose = True
 
 steer_gain = 1.0
 
-GPS2_lat_orig = 37.881404 #-999.99
-GPS2_long_orig = -122.2743327 #-999.99
-GPS2_radius = 0.0004
+
 #
 ###################################################################
 
@@ -47,7 +45,7 @@ if computer_name == 'Mr_Orange':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Silver':
-	motor_gain = 0.3
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Blue':
 	motor_gain = 1.0
@@ -108,6 +106,13 @@ foldername = foldername + time_str() + '_'
 
 foldername = foldername + computer_name
 
+
+
+
+
+GPS2_lat_orig = 37.881404 #-999.99
+GPS2_long_orig = -122.2743327 #-999.99
+GPS2_radius = 0.0004
 
 MLK_pm_lat,MLK_pm_lon = 37.881556,-122.278434
 MLK_pm2_lat,MLK_pm2_lon = 37.881496, -122.278552 # 12 meters from pitcher's mound.
