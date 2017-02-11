@@ -2,6 +2,8 @@
 
 from kzpy3.utils import *
 
+print "***************** car_run_params.py"
+
 computer_name = "MR_Unknown"
 try:  
    computer_name = os.environ["COMPUTER_NAME"]
