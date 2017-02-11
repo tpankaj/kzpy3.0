@@ -22,9 +22,9 @@ Direct = 1.
 Follow = 0.
 Play = 0.
 Furtive = 0.
-Caf = 0.0
+Caf = 1.0
 Racing = 0.0
-Location = 'auto_start'
+Location = 'Smyth_tape'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 #weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
