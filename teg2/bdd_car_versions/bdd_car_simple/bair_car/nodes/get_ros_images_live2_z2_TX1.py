@@ -133,7 +133,7 @@ motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
 
 ctr = 0
 
-from computer_name import *
+from kzpy3.teg2.car_run_params import *
 from kzpy3.teg2.global_run_params import *
 
 t0 = time.time()
