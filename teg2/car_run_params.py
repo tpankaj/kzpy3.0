@@ -1,6 +1,7 @@
 # This is used to specifiy caffe mode and data file name information
 
-from kzpy3.utils import *
+
+from kzpy3.utils import time_str
 
 print "***************** car_run_params.py"
 

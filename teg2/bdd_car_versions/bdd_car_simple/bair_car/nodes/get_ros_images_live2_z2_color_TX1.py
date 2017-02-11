@@ -15,6 +15,7 @@ try:
 	from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 	import cv2
 	os.chdir(home_path) # this is for the sake of the train_val.prototxt
+	import from kzpy3.teg2.car_run_params
 	from kzpy3.teg2.car_run_params import *
 
 	#solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
@@ -139,6 +140,7 @@ try:
 
 
 	from kzpy3.teg2.global_run_params import *
+	import kzpy3.teg2.car_run_params
 	from kzpy3.teg2.car_run_params import *
 
 	t0 = time.time()
