@@ -15,8 +15,6 @@ try:
 	from kzpy3.teg1.rosbag_work.get_data_from_bag_files2 import *
 	import cv2
 	os.chdir(home_path) # this is for the sake of the train_val.prototxt
-	#import run_params
-	#from run_params import *
 	import kzpy3.teg2.car_run_params
 	from kzpy3.teg2.car_run_params import *
 
@@ -31,8 +29,10 @@ try:
 		return solver
 	solver = setup_solver()
 	if weights_file_path != None:
+		print_stars(2)
 		print "loading " + weights_file_path
 		solver.net.copy_from(weights_file_path)
+		print_stars(2)
 	#
 	########################################################
 
@@ -140,6 +140,8 @@ try:
 
 
 	from kzpy3.teg2.global_run_params import *
+	import kzpy3.teg2.car_run_params
+	from kzpy3.teg2.car_run_params import *
 
 	t0 = time.time()
 	time_step = Timer(1)
@@ -237,11 +239,8 @@ try:
 			if not folder_display_timer.check():
 				print("*** Data foldername = "+foldername+ '***')
 		if reload_timer.check():
-			#reload(run_params)
-			#from run_params import *
-			reload(kzpy3.teg2.car_run_params)
-			from kzpy3.teg2.car_run_params import *
-
+			reload(run_params)
+			from run_params import *
 			reload_timer.reset()
 
 except Exception as e:
