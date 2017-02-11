@@ -32,7 +32,7 @@ solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
 weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
 #weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
 verbose = True
-motor_gain = 1.0
+
 steer_gain = 1.0
 
 GPS2_lat_orig = 37.881404 #-999.99
@@ -44,25 +44,34 @@ GPS2_radius = 0.0004
 ####################### specific car settings ################
 #
 if computer_name == 'Mr_Orange':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Silver':
 	motor_gain = 0.3
 	pass
 if computer_name == 'Mr_Blue':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_White':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Black':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Teal':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Audi':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Purple':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_LightBlue':
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Yellow':
+	motor_gain = 1.0
 	pass
 #
 ###################################################################

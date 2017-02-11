@@ -7,6 +7,8 @@ alias rls='ls -al /media/ubuntu/rosbags'
 alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
 alias rlog='rm -r ~/.ros/log/*'
 alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
+alias rlab='(rla 3>&1 1>&2 2>&3 | grep -v "slMat2cvMat: mat type currently not supported 0 0") 3>&1 1>&2 2>&3'
+
 #alias rlac='roslaunch bair_car bair_car.launch use_zed:=true record:=true caffe:=true'
 alias rgla='cd ~/kzpy3;git pull;cd;roslaunch bair_car bair_car.launch use_zed:=true record:=true'
 alias rgy='rostopic echo /bair_car/gyro'

@@ -10,7 +10,7 @@ else
         sleep 30
         rrm
         rlog
-        #rla
+        rla
         #(rla 3>&1 1>&2 2>&3 | grep -v "slMat2cvMat: mat type currently not supported 0 0") 3>&1 1>&2 2>&3
 
 fi
