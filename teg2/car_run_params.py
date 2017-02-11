@@ -29,8 +29,8 @@ Racing = 0.0
 Location = 'Smyth_tape'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
-weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
-#weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
+#weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
+weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
 verbose = True
 
 steer_gain = 1.0
