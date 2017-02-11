@@ -45,7 +45,7 @@ if computer_name == 'Mr_Orange':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Silver':
-	motor_gain = 1.0
+	motor_gain = 0.5
 	pass
 if computer_name == 'Mr_Blue':
 	motor_gain = 1.0
