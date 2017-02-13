@@ -1,7 +1,7 @@
 from kzpy3.caf6.cafutils import *
 from kzpy3.caf6.Caffe_Net import *
 from kzpy3.caf6.protos import *
-
+# rsync -rav /home/karlzipser/Desktop/bair_car_data/ /media/karlzipser/ExtraDrive1/
 ##############################################################################
 ##############################################################################
 ##############################################################################
@@ -9,16 +9,17 @@ from kzpy3.caf6.protos import *
 model_path = opjh("kzpy3/caf6/z2_color_more")
 version = 'version 1b'
 gpu = 1
+restore_solver = True
 base_lr = 0.005
 snapshot = 100000
 to_require=['Smyth','racing']
-to_ignore=['left']
+to_ignore=['NOTHING']
 restore_solver = False
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
 weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'
 weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
-runs_folder = opjD('hdf5','runs')
+runs_folder = opjD('bair_car_data','hdf5','runs')
 test_runs_folder = opjD('hdf5','test_runs')
 
 TRAIN = True
@@ -81,7 +82,7 @@ if TEST:
 	median_errors = []
 	if True:
 		if len(gg(opjD(fname(model_path),'*.caffemodel'))) > 0:
-			test_caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=False)
+			test_caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=restore_solver)
 			e = test(test_caffe_net,test_solver_inputs_dic,test_keys,version,model_path,test_time_limit)
 			median_errors.append(e)
 			figure('TEST ' + model_path + 'median errors',figsize=(2,2))

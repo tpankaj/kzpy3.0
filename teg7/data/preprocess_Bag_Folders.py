@@ -9,7 +9,7 @@ preprocess_Bag_Folder(bag_folders_path_meta_path,bag_folders_path_rgb1to4_path,N
 """
 
 
-def preprocess_Bag_Folders(bag_folders_path_meta_path,bag_folders_path_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1]):
+def preprocess_Bag_Folders(bag_folders_path_meta_path,bag_folders_path_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1],pkl_name='Bag_Folder.pkl'):
 	
 	
 	bag_folders_paths_list = sorted(gg(opj(bag_folders_path_meta_path,'*')),key=natural_keys)
@@ -27,7 +27,7 @@ def preprocess_Bag_Folders(bag_folders_path_meta_path,bag_folders_path_rgb1to4_p
 				cprint("if left_image_bound_to_data_name == None:",'red')
 				continue
 
-			if len(gg(opj(bfp,'Bag_Folder.pkl'))) == 1:
+			if len(gg(opj(bfp,pkl_name))) == 1:
 				print('\t exists')
 				if False: #graphics:
 					cprint(opj(run_name,'Bag_Folder.pkl')+' exists, loading it.','yellow','on_red')

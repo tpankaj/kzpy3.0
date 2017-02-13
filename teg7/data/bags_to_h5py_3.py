@@ -374,7 +374,7 @@ if True:
 			if previous_run_name != 'nothing':
 				hdf5_runs_dic[previous_run_name].close()
 			previous_run_name = run_name
-		file_name = opjD('bair_car_data_new','runs',run_name + '.hdf5')
+		file_name = opjD('bair_car_data_new','hdf5','runs',run_name + '.hdf5')
 		if run_name not in hdf5_runs_dic:
 			hdf5_runs_dic[run_name] = h5py.File(file_name)
 		solver_inputs = hdf5_runs_dic[run_name]

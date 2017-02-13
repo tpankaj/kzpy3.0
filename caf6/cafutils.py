@@ -57,7 +57,7 @@ def plot_performance(steer,motor,loss1000,solver_file_path,ylims=None):
 	m1000 = motor[-(min(len(motor),10000)):]
 	m = array(m1000)
 	plt.subplot(1,2,1)
-	plot(s[:,0],s[:,1],'o')
+	plot(s[:1000,0],s[:1000,1],'o')
 	plt.xlim(0,1.0)
 	plt.ylim(0,1.0)
 	plot([-1,5,1.5],[-1,5,1.5],'r')

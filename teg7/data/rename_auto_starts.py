@@ -1,4 +1,4 @@
-path = '/media/karlzipser/rosbags1/new'
+path = '/media/karlzipser/rosbags/new'
 
 runs = sgg(opj(path,'*'))
 

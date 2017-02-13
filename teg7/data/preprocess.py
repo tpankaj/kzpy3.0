@@ -12,11 +12,11 @@ backup_locations = []
 for i in [10]:#9,10]:
 	backup_locations.append(opj('/media',username,'bair_car_data_'+str(i)))
 
-bag_folders_src_location = opj('/media',username,'rosbags1')
+bag_folders_src_location = opj('/media',username,'rosbags')
 #bag_folders_src_location = opjD('')
 bag_folders_src = opj(bag_folders_src_location,'new' )
-bag_folders_dst_rgb1to4_path = opjD('bair_car_data_new/rgb_1to4')
-bag_folders_dst_meta_path = opjD('bair_car_data_new/meta')
+bag_folders_dst_rgb1to4_path = opjD('bair_car_data/rgb_1to4')
+bag_folders_dst_meta_path = opjD('bair_car_data/meta')
 
 runs = sgg(opj(bag_folders_src,'*'))
 
@@ -47,7 +47,10 @@ bag_folders_transfer_meta(bag_folders_src,bag_folders_dst_meta_path)
 
 bag_folders_save_images(bag_folders_src,bag_folders_dst_rgb1to4_path)
 
-preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,3,5,6,7])
+if False:
+	preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,3,5,6,7])
+if True:
+	preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=60,graphics=False,accepted_states=[1,3,5,6,7],pkl_name='Bag_Folder_60_state_one_steps.pkl')
 
 """
 for bkp in backup_locations:
@@ -55,6 +58,10 @@ for bkp in backup_locations:
 		unix(d2s('mkdir -p',(opj(bkp,'bair_car_data',fname(r)))))
 		unix(d2s('scp -r',r,opj(bkp,'bair_car_data')))
 		#shutil.copytree(r,opj(bkp,'bair_car_data',fname(r)))
+
+
+preprocess_Bag_Folders(opjD('bair_car_data_new/meta_temp_location'),opjD('bair_car_data_new/rgb_1to4'),NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,3,5,6,7])
+
 """
 os.rename(bag_folders_src,opj(bag_folders_src_location,'processsed'))
 
