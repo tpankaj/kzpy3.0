@@ -26,12 +26,12 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'Smyth_tape'
+Location = 'auto_start'
 
 solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
-#weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
-weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
-verbose = True
+weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
+#weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel"
+verbose = False
 
 steer_gain = 1.0
 
@@ -42,7 +42,7 @@ steer_gain = 1.0
 ####################### specific car settings ################
 #
 if computer_name == 'Mr_Orange':
-	motor_gain = 1.25
+	motor_gain = 1.#1.25
 	pass
 if computer_name == 'Mr_Silver':
 	motor_gain = 1.25
