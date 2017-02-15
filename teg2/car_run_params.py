@@ -2,6 +2,7 @@
 
 
 from kzpy3.utils import time_str
+from kzpy3.utils import opjh
 import os
 
 print "***************** car_run_params.py"
