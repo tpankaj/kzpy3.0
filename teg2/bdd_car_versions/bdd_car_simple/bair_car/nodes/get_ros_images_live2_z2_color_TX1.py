@@ -145,6 +145,7 @@ try:
 	time_step = Timer(1)
 	caffe_enter_timer = Timer(2)
 	folder_display_timer = Timer(30)
+	git_pull_timer = Timer(60)
 	reload_timer = Timer(5)
 	#verbose = False
 	while not rospy.is_shutdown():
@@ -243,6 +244,10 @@ try:
 			from kzpy3.teg2.car_run_params import *
 
 			reload_timer.reset()
+			
+		if git_pull_timer.check():
+			unix(opjh('kzpy3/kzpy3_git_pull.sh'))
+			git_pull_timer.reset()
 
 except Exception as e:
 	print("********** Exception ***********************",'red')
