@@ -29,7 +29,7 @@ else
         echo "sleep before rla..."
         sleep 60
         cd ~/kzpy3
-        git pull #did this work?
+        git pull # Did this work?
         cd
         rrm
         rlog
