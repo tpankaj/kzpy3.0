@@ -28,9 +28,9 @@ Caf = 1.0
 Racing = 0.0
 Location = 'auto_start'
 
-solver_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/solver_live.prototxt"
-#weights_file_path = "/home/ubuntu/kzpy3/caf5/z2_color/z2_color.caffemodel"
-weights_file_path = "/home/ubuntu/kzpy3/caf6/z2_color_more/z2_color_more_3.caffemodel"
+solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
+#weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
+weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_3.caffemodel")
 verbose = False
 
 steer_gain = 1.0
