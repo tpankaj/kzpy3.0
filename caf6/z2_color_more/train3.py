@@ -14,7 +14,6 @@ base_lr = 0.005
 snapshot = 100000
 to_require=['Smyth','racing']
 to_ignore=['NOTHING']
-restore_solver = False
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
 weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'

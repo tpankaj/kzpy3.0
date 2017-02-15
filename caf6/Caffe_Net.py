@@ -18,14 +18,14 @@ class Caffe_Net:
 	def __init__(self,solver_file_path,version,weights_file_mode=None,weights_file_path=None,restore_solver=False):
 		self.version = version
 		self.solver = setup_solver(solver_file_path)
-
+		self.model_name = solver_file_path.split('/')[-2]
 		if restore_solver:
-			weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','solverstate'])
+			weights_file_path = most_recent_file_in_folder(weights_file_path,[self.model_name,'solverstate'])
 			self.solver.restore(weights_file_path)
 			print(d2n("*** self.solver.restore(",weights_file_path,") ***"))
 		else:
 			if weights_file_mode == 'most recent':
-				weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color','caffemodel'])
+				weights_file_path = most_recent_file_in_folder(weights_file_path,[self.model_name,'caffemodel'])
 			elif weights_file_mode == 'this one':
 				pass
 			elif weights_file_mode == None:
@@ -130,6 +130,8 @@ def load_data_into_model(solver,version,data,flip,show_data,camera_dropout):
 		return load_data_into_model_version_1c(solver,data,flip,show_data,camera_dropout)
 	if version == 'version 2':
 		return load_data_into_model_version_2(solver,data,flip,show_data,camera_dropout)
+	if version == 'version z3':
+		return load_data_into_model_version_z3(solver,data,flip,show_data,camera_dropout)
 	assert(False)
 
 def visualize_solver_data(solver,version,flip):
@@ -141,6 +143,8 @@ def visualize_solver_data(solver,version,flip):
 		return visualize_solver_data_version_1c(solver,flip)
 	if version == 'version 2':
 		return visualize_solver_data_version_2(solver,flip)
+	if version == 'version z3':
+		return visualize_solver_data_version_z3(solver,flip)
 	assert(False)
 
 

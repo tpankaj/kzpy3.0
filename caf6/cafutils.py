@@ -65,7 +65,7 @@ def plot_performance(steer,motor,loss1000,solver_file_path,ylims=None):
 	plt.xlabel(solver_file_path)
 	plt.ylabel(dp(np.corrcoef(s[:,0],s[:,1])[0,1],2))
 	plt.subplot(1,2,2)
-	plot(m[:,0],m[:,1],'o')
+	plot(m[:1000,0],m[:1000,1],'o')
 	plt.xlim(0,1.0)
 	plt.ylim(0,1.0)
 	plot([-1,5,1.5],[-1,5,1.5],'r')
@@ -122,10 +122,11 @@ def train(caffe_net,solver_inputs_dic,keys,version,model_file_path,time_limit=No
 			solver_inputs = solver_inputs_dic[hdf5_filename]
 			caffe_net.solver.net.blobs['ZED_data_pool2'].data[:] = solver_inputs[k]['ZED_data_pool2'][:]/255.-0.5
 			caffe_net.solver.net.blobs['metadata'].data[:] = solver_inputs[k]['metadata'][:]
+			#caffe_net.solver.net.blobs['metadata2'].data[:] = solver_inputs[k]['metadata2'][:]
 			caffe_net.solver.net.blobs['steer_motor_target_data'].data[:] = solver_inputs[k]['steer_motor_target_data'][:]
 			caffe_net.train_step()
 			steer.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,9],caffe_net.solver.net.blobs['ip2'].data[0,9]])
-			motor.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,19],caffe_net.solver.net.blobs['ip2'].data[0,19]])
+			motor.append([caffe_net.solver.net.blobs['steer_motor_target_data'].data[0,39],caffe_net.solver.net.blobs['ip2'].data[0,19]])
 			ctr += 1
 			if timer.check():
 				plot_performance(steer,motor,caffe_net.loss1000,"TRAIN " + model_file_path,ylims)

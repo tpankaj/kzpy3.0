@@ -4,9 +4,9 @@ import cv2
 import h5py
 
 
-meta_dir = opjD('bair_car_data_new','meta')
+meta_dir = opjD('bair_car_data','meta_states_1_6_good')
 
-rgb_1to4_dir = opjD('bair_car_data_new','rgb_1to4')
+rgb_1to4_dir = opjD('bair_car_data','rgb_1to4')
 
 verbose = False
 
@@ -14,7 +14,7 @@ verbose = False
 
 
 
-def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['xxx'],to_require=['direct']):#['caffe','home','racing']):
+def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['left'],to_require=['']):#['caffe','home','racing']):
 
 	_,all_run_names = dir_as_dic_and_list(meta_dir)
 
@@ -307,32 +307,13 @@ def visualize_data(data,dt=33,image_only=False):
 
 import caffe
 from kzpy3.caf6.Caffe_Net import *
-solver_file_path = opjh("kzpy3/caf6/z2_color/solver.prototxt")
-version = 'version 1b'
+solver_file_path = opjh("kzpy3/caf6/z3_start/solver.prototxt")
+version = 'version z3'
 weights_file_mode = None
 weights_file_path = None
 caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
 
 
-
-
-
-
-if False:
-	import h5py
-	hdf5_filename = '/media/karlzipser/ExtraDrive1/solver_inputs.hdf5'
-	solver_inputs = h5py.File(hdf5_filename,'r')
-	ks = solver_inputs.keys()
-	while True:
-		k = random.choice(ks)
-		grp = solver_inputs[k]
-		for i in range(12):
-			mi(grp['ZED_data_pool2'][0,i,:,:],1)
-			print(grp['metadata'][:])
-			print(grp['steer_motor_target_data'][:])
-			pause(0.5)
-		#grp['metadata']
-		#grp['steer_motor_target_data']
 
 
 
@@ -346,7 +327,7 @@ if False:
 
 if True:
 
-	timer = Timer(30)
+	timer = Timer(60)
 
 	bag_names_dic = get_bag_names_dic(meta_dir,rgb_1to4_dir)
 	bag_names_list = sorted(bag_names_dic,key=natural_keys)
@@ -358,7 +339,7 @@ if True:
 	skip_bag_dic = {}
 	BagFolder_dic = {}
 	
-	NUM_STATE_ONE_STEPS = 30
+	NUM_STATE_ONE_STEPS = 60
 	ctr = 0
 	t0 = time.time()
 
@@ -374,7 +355,7 @@ if True:
 			if previous_run_name != 'nothing':
 				hdf5_runs_dic[previous_run_name].close()
 			previous_run_name = run_name
-		file_name = opjD('bair_car_data_new','hdf5','runs',run_name + '.hdf5')
+		file_name = opjD('bair_car_data','hdf5','z3_runs_states_1_6_good',run_name + '.hdf5')
 		if run_name not in hdf5_runs_dic:
 			hdf5_runs_dic[run_name] = h5py.File(file_name)
 		solver_inputs = hdf5_runs_dic[run_name]
@@ -401,6 +382,7 @@ if True:
 										grp = solver_inputs.create_group(n)
 										grp['ZED_data_pool2'] = caffe_net.solver.net.blobs['ZED_data_pool2'].data[:,:,:,:].astype('uint8')
 										grp['metadata'] = caffe_net.solver.net.blobs['metadata'].data[:]
+										grp['metadata2'] = caffe_net.solver.net.blobs['metadata2'].data[:]
 										grp['steer_motor_target_data'] = caffe_net.solver.net.blobs['steer_motor_target_data'].data[:]
 
 								if timer.check(): #mod(ctr,30)==0:#
