@@ -1,4 +1,4 @@
-net: "/home/tushar/documents/school/berkeley/spring-2017/research/bdd/kzpy3/caf6/z2_color_lstm/train_val.prototxt"
+net: "/home/tushar/documents/school/berkeley/spring-2017/research/bdd/kzpy3/caf6/z2_color_lstm/deploy.lstm.test.prototxt"
 test_iter: 1
 test_interval: 1000000
 test_initialization: false
