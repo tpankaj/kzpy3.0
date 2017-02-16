@@ -43,7 +43,7 @@ steer_gain = 1.0
 ####################### specific car settings ################
 #
 if computer_name == 'Mr_Orange':
-	motor_gain = 0.6#1.25
+	motor_gain = 0.8#1.25
 	pass
 if computer_name == 'Mr_Silver':
 	motor_gain = 1.25
