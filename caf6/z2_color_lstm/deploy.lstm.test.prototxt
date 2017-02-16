@@ -1,8 +1,9 @@
+############## Dummy data #################
 input: "data"
 input_shape {
   dim: 1
-  dim: 1
-  dim: 4096
+  dim: 20
+  dim: 1000 # number of time samples
 }
 input: "dummy"
 input_shape {
@@ -10,6 +11,7 @@ input_shape {
   dim: 1
 }
 
+############# Fully connected layers ###################
 layer {
   name: "ip1"
   type: "InnerProduct"
@@ -36,13 +38,14 @@ layer {
   bottom: "ip1"
   top: "ip2"
   inner_product_param {
-      num_output: 1
+      num_output: 20
       weight_filler {
           type: "xavier"
       }
   }
 }
 
+# ############## LSTM layer ##################
 layer {
   name: "lstm1"
   type: "LSTM"
@@ -57,6 +60,8 @@ layer {
     }
   }
 }
+
+################### Final fully connected layer ######################
 layer {
   name: "fc8-final"
   type: "InnerProduct"
@@ -83,6 +88,8 @@ layer {
     axis: 2
   }
 }
+
+###################### Softmax loss layer #########################
 layer {
   name: "probs"
   type: "Softmax"
