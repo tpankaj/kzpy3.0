@@ -24,6 +24,13 @@ layer {
 }
 
 layer {
+  name: "ip1_relu"
+  type: "ReLU"
+  bottom: "ip1"
+  top: "ip1"
+}
+
+layer {
   name: "ip2"
   type: "InnerProduct"
   bottom: "ip1"
