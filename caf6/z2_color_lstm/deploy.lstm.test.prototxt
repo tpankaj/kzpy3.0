@@ -1,23 +1,43 @@
 ############## Dummy data #################
-input: "steer_motor_target_data"
-input_shape {
-  dim: 1
-  dim: 20
-  dim: 1000 # number of time samples
+layer {
+   name: "steer_motor_target_data"
+   type: "DummyData"
+   top: "steer_motor_target_data"
+   dummy_data_param {
+      shape {
+         dim: 1
+         dim: 20
+         dim: 1024 # number of time samples
+      }
+   }
 }
-input: "dummy"
-input_shape {
-  dim: 1
-  dim: 6
-  dim: 14
-  dim: 26
+
+layer {
+   name: "metadata"
+   type: "DummyData"
+   top: "metadata"
+   dummy_data_param {
+       shape {
+          dim: 1
+          dim: 6
+          dim: 14
+          dim: 26
+       }
+   }
 }
-input: "ZED_data_pool2"
-input_shape {
-  dim: 1
-  dim: 12
-  dim: 94
-  dim: 168
+
+layer {
+	name: "ZED_data_pool2"
+	type: "DummyData"
+	top: "ZED_data_pool2"
+	dummy_data_param {
+		shape {
+			dim: 1
+			dim: 12
+			dim: 94
+			dim: 168
+		}
+	}
 }
 
 ###################### Convolutional Layer Set 'conv1' ######################
@@ -71,7 +91,7 @@ layer {
 	type: 'Concat'
 	name: 'conv1_metadata_concat'
 	bottom: "conv1_pool"
-	bottom: "dummy"
+	bottom: "metadata"
 	top: 'conv1_metadata_concat'
 	concat_param {
 		axis: 1
