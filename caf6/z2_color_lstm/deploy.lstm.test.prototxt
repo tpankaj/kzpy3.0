@@ -11,9 +11,22 @@ input_shape {
 }
 
 layer {
-  name: "ip2"
+  name: "ip1"
   type: "InnerProduct"
   bottom: "data"
+  top: "ip1"
+  inner_product_param {
+     num_output: 512
+     weight_filler {
+        type: "xavier"
+     }
+  }
+}
+
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "ip1"
   top: "ip2"
   inner_product_param {
       num_output: 1
