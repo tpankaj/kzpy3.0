@@ -2,6 +2,7 @@
 
 
 from kzpy3.utils import time_str
+from kzpy3.utils import opjh
 import os
 
 print "***************** car_run_params.py"
@@ -30,7 +31,7 @@ Location = 'Smyth_tape'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
-weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_3.caffemodel")
+weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel")
 verbose = False
 
 steer_gain = 1.0
@@ -42,7 +43,7 @@ steer_gain = 1.0
 ####################### specific car settings ################
 #
 if computer_name == 'Mr_Orange':
-	motor_gain = 0.9#1.25
+	motor_gain = 0.8#1.25
 	pass
 if computer_name == 'Mr_Silver':
 	motor_gain = 1.25
@@ -54,10 +55,10 @@ if computer_name == 'Mr_White':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Black':
-	motor_gain = 1.0
+	motor_gain = 0.4
 	pass
 if computer_name == 'Mr_Teal':
-	motor_gain = 1.45
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Audi':
 	motor_gain = 1.0

@@ -26,7 +26,7 @@ alias rlat='rostopic echo /bair_car/GPS2_lat'
 alias rstat='python kzpy3/teg7/data/rosstatus.py'
 alias test_caffe='cd ~/caffe; build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0'
 alias zed_explorer='/usr/local/zed/tools/ZED\ Explorer'
-# sudo vi /etc/hosts
+# sudo vi /etc/hosts # to edit hosts
 alias mrsil='ssh ubuntu@Mr_Silver'
 alias mryel='ssh ubuntu@Mr_Yellow'
 alias mrblu='ssh ubuntu@Mr_Blue'
