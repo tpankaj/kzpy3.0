@@ -18,7 +18,7 @@ train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
 weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'
 weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
-runs_folder = opjD('hdf5','runs')
+runs_folder = opjD('bair_car_data','hdf5','runs')
 test_runs_folder = opjD('hdf5','test_runs')
 
 

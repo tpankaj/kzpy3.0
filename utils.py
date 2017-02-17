@@ -600,3 +600,11 @@ def sequential_means(data,nn):
         d.append(a[i:i+n].mean())
         x.append(i+n/2.)
     return x,d
+
+
+def tab_list_print(l,n=1,color=None,on_color=None):
+    for e in l:
+        s = ''
+        for j in range(n):
+            s += '\t'
+        cprint(s+e,color,on_color)

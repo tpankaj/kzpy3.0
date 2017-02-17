@@ -27,7 +27,10 @@ if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 # many other tests omitted
 else
         echo "sleep before rla..."
-        sleep 30
+        sleep 60
+        cd ~/kzpy3
+        git pull
+        cd
         rrm
         rlog
         rla

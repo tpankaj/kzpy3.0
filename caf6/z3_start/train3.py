@@ -6,20 +6,19 @@ from kzpy3.caf6.protos import *
 ##############################################################################
 ##############################################################################
 #
-model_path = opjh("kzpy3/caf6/z2_color_more")
-version = 'version 1b'
-gpu = 1
-restore_solver = True
-base_lr = 0.005
-snapshot = 100000
-to_require=['Smyth','racing']
-to_ignore=['NOTHING']
+model_path = opjh("kzpy3/caf6/z3_start")
+version = 'version z3'
+gpu = 0
 restore_solver = False
+base_lr = 0.001
+snapshot = 100000
+to_require=['']
+to_ignore=['left']
 train_time_limit = None # None means no time  limit
 test_time_limit = None #30 # None means no time  limit
 weights_file_mode = 'most recent' # 'this one' #None #'most recent' #None #'most recent'
-weights_file_path =  opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
-runs_folder = opjD('bair_car_data','hdf5','runs')
+weights_file_path = opjD(fname(model_path)) #opjD('z2_color_trained_12_15_2016') #opjD('z2_color_long_train_21_Jan2017') #None #opjh('kzpy3/caf6/z2_color/z2_color.caffemodel') #None #'/home/karlzipser/Desktop/z2_color' # None #opjD('z2_color')
+runs_folder = opjD('bair_car_data','hdf5','z3_runs_states_1_6_good')
 test_runs_folder = opjD('hdf5','test_runs')
 
 TRAIN = True
@@ -27,16 +26,25 @@ TRAIN = True
 train_val_lst = [
 	d2s('#',model_path),
 	d2s('#',time_str('Pretty')),
-	dummy('steer_motor_target_data',(1,20)),
+	dummy('steer_motor_target_data',(1,60)),
 	dummy('metadata',(1,6,14,26)),
+	dummy('metadata2',(1,60,14,26)),
 	dummy('ZED_data_pool2',(1,12,94,168)),
+	dummy('metadata_gradient',(1,2,14,26)),
+
+	concat('metadata2_concat',['metadata_gradient',"metadata2"],1),
+
+	conv("nin1",'metadata2_concat',60,1,1,1,0,"gaussian",std='0.1'),
+	relu("nin1"),
+	conv("nin2",'nin1',20,1,1,1,0,"gaussian",std='0.1'),
+	relu("nin2"),
 
 	conv("conv1",'ZED_data_pool2',96,1,11,3,0,"gaussian",std='0.00001'),
 	relu("conv1"),
 	pool("conv1","MAX",3,2,0),
 	drop('conv1_pool',0.0),
 
-	concat('conv1_metadata_concat',["conv1_pool","metadata"],1),
+	concat('conv1_metadata_concat',['nin2',"conv1_pool","metadata"],1),
 
 	conv("conv2",'conv1_metadata_concat',256,2,3,2,0,"gaussian",std='0.1'),
 	relu("conv2"),
@@ -45,7 +53,7 @@ train_val_lst = [
 	ip("ip1","conv2_pool",512,"xavier",std=0),
 	relu('ip1'),
 	drop('ip1',0.0),
-	ip("ip2","ip1",20,"xavier",std=0),
+	ip("ip2","ip1",60,"xavier",std=0),
 	euclidean("euclidean","steer_motor_target_data","ip2")
 ]
 #
@@ -97,6 +105,11 @@ if TRAIN:
 	write_solver(model_path,base_lr=base_lr,snapshot=snapshot)
 	solver_inputs_dic,keys = get_solver_inputs_dic_ks(runs_folder,to_require=to_require,to_ignore=to_ignore)
 	caffe_net = Caffe_Net(opj(model_path,'solver.prototxt'),version,weights_file_mode,weights_file_path,restore_solver=restore_solver)
+	for y in range(14):
+		for x in range(26):
+			caffe_net.solver.net.blobs['metadata_gradient'].data[0,0,y,x] = y/25.0
+			caffe_net.solver.net.blobs['metadata_gradient'].data[0,1,y,x] = x/25.0
+			#caffe_net.solver.net.blobs['metadata_gradient'].data[:] = z2o(caffe_net.solver.net.blobs['metadata_gradient'].data[:])
 	while True:
 		try:
 			train(caffe_net,solver_inputs_dic,keys,version,model_path,train_time_limit)
