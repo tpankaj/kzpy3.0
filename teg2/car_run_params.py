@@ -26,7 +26,7 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'auto_start'
+Location = 'Smyth_tape'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
@@ -96,7 +96,7 @@ if Follow == 1:
 model_name = solver_file_path.split('/')[-2]
 
 if Caf == 1:
-	foldername = foldername + 'caffe_' + model_name +'_'
+	foldername = foldername + 'caffe2_' + model_name +'_'
 
 foldername = foldername + task + '_'
 

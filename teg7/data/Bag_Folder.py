@@ -240,7 +240,7 @@ def _is_timestamp_valid_data(BF,t,accepted_states=[1]):
         valid = False
     if motor < 53: # i.e., there must be at least a slight forward motor command 
         valid = False
-    if False:
+    if True:
         if state in [3,5,6,7]: # Some strange things can happen when human takes control, steering gets stuck at max
             if steer > 99:
                 valid = False
