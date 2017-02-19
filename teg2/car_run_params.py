@@ -27,7 +27,7 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'Smyth_tape_two_meters'
+Location = 'Smyth_tape__to_edge'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
