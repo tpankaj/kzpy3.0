@@ -58,13 +58,13 @@ Using the TX1 dev. board cleans this up dramatically.
 
 i_variables = ['run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','unsaved_labels']
 
-i_labels = ['night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
+i_labels = ['play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
 
 i_functions = ['function_close_all_windows','function_set_plot_time_range','function_set_label','function_current_run','function_help','function_set_paths','function_list_runs','function_set_run','function_visualize_run','function_animate','function_run_loop']
 for q in i_variables + i_functions + i_labels:
 	exec(d2n(q,' = ',"\'",q,"\'")) # I use leading underscore because this facilitates auto completion in ipython
 
-i_label_abbreviations = {night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
+i_label_abbreviations = {play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
 
 I = {}
 
@@ -188,7 +188,7 @@ LR()
 
 
 
-def function_set_label(k,v):
+def function_set_label(k,v=True):
 	"""
 	function_set_label(k,v)
 		SL
