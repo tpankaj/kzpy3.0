@@ -142,13 +142,13 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB0
 
 sudo apt-get update
 
-sudo apt-get install ros-kinetic-desktop-full
+sudo apt-get install -y ros-kinetic-desktop-full
 
 sudo rosdep init
 rosdep update
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
-sudo apt-get install python-rosinstall
+sudo apt-get install -y python-rosinstall
 
 
 http://www.webupd8.org/2011/03/sublime-text-2-ubuntu-ppa.html
@@ -196,3 +196,10 @@ conda install libgcc
 
 
 git clone git://github.com/ros/rospkg.git
+
+
+
+# for laptop amcl:
+http://www.pyimagesearch.com/2016/10/24/ubuntu-16-04-how-to-install-opencv/
+pip install python-opencv
+sudo apt-get install python3-tk
