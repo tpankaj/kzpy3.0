@@ -4,17 +4,16 @@ import cv2
 import h5py
 
 
-meta_dir = opjD('bair_car_data','meta_states_1_6_good')
+meta_dir = opjD('bair_car_data_new','meta')
 
-rgb_1to4_dir = opjD('bair_car_data','rgb_1to4')
+rgb_1to4_dir = opjD('bair_car_data_new','rgb_1to4')
 
 verbose = False
 
 
 
 
-
-def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['left'],to_require=['']):#['caffe','home','racing']):
+def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['xxx'],to_require=['direct']):#['caffe','home','racing']):
 
 	_,all_run_names = dir_as_dic_and_list(meta_dir)
 
@@ -52,28 +51,6 @@ def get_bag_names_dic(meta_dir,rgb_1to4_dir,to_ignore = ['left'],to_require=['']
 
 
 
-
-
-if False:
-
-	BagFolder_dic = {}
-	bag_img_dic = {}
-
-
-	bn = 'direct_local_21Nov16_17h39m00s_Mr_Yellow/bair_car_2016-11-21-18-03-39_30.bag.pkl'
-	run_name = bn.split('/')[0]
-
-	bf = fname(bn)
-
-	cprint('loading '+opj(run_name,'Bag_Folder.pkl'),'yellow','on_red')
-	BagFolder_dic[run_name] = load_obj(opj(meta_dir,run_name,'Bag_Folder.pkl'))
-	bag_img_dic[bn] = Bag_File.load_images(opj(rgb_1to4_dir,bn),color_mode="rgb8",include_flip=True)
-	bag_names_dic[bn] == True
-
-	good_bag_timestamps = list(set(BagFolder_dic[run_name]['data']['good_start_timestamps']) & set(bag_img_dic[bn]['left'].keys()))
-	if len(good_bag_timestamps) < 100:
-		if verbose:
-			print(d2n('\t',bn,' len(good_bag_timestamps) < 100'))
 
 
 
@@ -172,6 +149,9 @@ def get_data(run_name,bf,rt,BagFolder_dic,bag_img_dic,skip_bag_dic,NUM_STATE_ONE
 			data[tp] = []
 
 		ts = BF['bid_timestamps'][bf]
+
+
+		
 		for i in range(len(ts)):
 			if ts[i] == rt:
 				if len(ts) > i+NUM_STATE_ONE_STEPS:
@@ -307,8 +287,8 @@ def visualize_data(data,dt=33,image_only=False):
 
 import caffe
 from kzpy3.caf6.Caffe_Net import *
-solver_file_path = opjh("kzpy3/caf6/z3_start/solver.prototxt")
-version = 'version z3'
+solver_file_path = opjh("kzpy3/caf6/z2_color/solver.prototxt")
+version = 'version 1b'
 weights_file_mode = None
 weights_file_path = None
 caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_path,False)
@@ -325,9 +305,11 @@ caffe_net = Caffe_Net(solver_file_path,version,weights_file_mode,weights_file_pa
 
 
 
+
+
 if True:
 
-	timer = Timer(60)
+	timer = Timer(30)
 
 	bag_names_dic = get_bag_names_dic(meta_dir,rgb_1to4_dir)
 	bag_names_list = sorted(bag_names_dic,key=natural_keys)
@@ -339,7 +321,7 @@ if True:
 	skip_bag_dic = {}
 	BagFolder_dic = {}
 	
-	NUM_STATE_ONE_STEPS = 60
+	NUM_STATE_ONE_STEPS = 30
 	ctr = 0
 	t0 = time.time()
 
@@ -355,7 +337,7 @@ if True:
 			if previous_run_name != 'nothing':
 				hdf5_runs_dic[previous_run_name].close()
 			previous_run_name = run_name
-		file_name = opjD('bair_car_data','hdf5','z3_runs_states_1_6_good',run_name + '.hdf5')
+		file_name = opjD('bair_car_data_new','hdf5','runs',run_name + '.hdf5')
 		if run_name not in hdf5_runs_dic:
 			hdf5_runs_dic[run_name] = h5py.File(file_name)
 		solver_inputs = hdf5_runs_dic[run_name]
@@ -382,7 +364,6 @@ if True:
 										grp = solver_inputs.create_group(n)
 										grp['ZED_data_pool2'] = caffe_net.solver.net.blobs['ZED_data_pool2'].data[:,:,:,:].astype('uint8')
 										grp['metadata'] = caffe_net.solver.net.blobs['metadata'].data[:]
-										grp['metadata2'] = caffe_net.solver.net.blobs['metadata2'].data[:]
 										grp['steer_motor_target_data'] = caffe_net.solver.net.blobs['steer_motor_target_data'].data[:]
 
 								if timer.check(): #mod(ctr,30)==0:#

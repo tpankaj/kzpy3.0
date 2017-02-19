@@ -56,7 +56,7 @@ The program will report this and pause during this time.
 Using the TX1 dev. board cleans this up dramatically.
 """
 
-i_variables = ['run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','unsaved_labels']
+i_variables = ['steer','motor','run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','right_images','unsaved_labels']
 
 i_labels = ['play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
 
@@ -181,7 +181,7 @@ def function_list_runs(rng=None):
 			if I[run_labels][r][k] != False:
 				labels_str += d2n(i_label_abbreviations[k],':',I[run_labels][r][k],' ')
 		cprint(d2n(j,'[',n,'] ',r,'\t',labels_str))
-	print('')
+	
 LR = function_list_runs
 LR()
 
@@ -259,6 +259,7 @@ def function_visualize_run(do_load_images=True):
 	#B = load_obj(Bag_Folder_filename)
 	#I[B_] = B
 	B = I[B_]
+	L = B['left_image_bound_to_data']
 	if I[B_] == None:
 		cprint('ERROR, first neet to set run (SR)')
 		return
@@ -316,6 +317,9 @@ def function_visualize_run(do_load_images=True):
 
 	if do_load_images:
 		left_images_ = {}
+		right_images_ = {}
+		steer_ = {}
+		motor_ = {}
 		bag_paths = sgg(opj(I[rgb_1to4_path],r,'*.bag.pkl'))
 		n = len(bag_paths)
 		pb = ProgressBar(n)
@@ -325,12 +329,27 @@ def function_visualize_run(do_load_images=True):
 			pb.animate(j); j+=1
 			bag_img_dic = load_images(b,color_mode="rgb8",include_flip=False)
 			for t in bag_img_dic['left'].keys():
-				left_images_[t] = bag_img_dic['left'][t]
+				#print t
+				if t in L:
+					steer_[t] = L[t]['steer']
+					motor_[t] = L[t]['motor']
+					rt = L[t]['right_image']
+					if rt in bag_img_dic['right']:
+						left_images_[t] = bag_img_dic['left'][t]
+						right_images_[t] = bag_img_dic['right'][rt]
+					else:
+						pass
+						#print "rt not in right"
+				else:
+					pass
+					#print "t not in left"
+
 		pb.animate(n); print('')
 		I[left_images] = left_images_
-
+		I[right_images] = right_images_
+		I[steer] = steer_
+		I[motor] = motor_
 		preview_fig = r+' previews'
-
 
 		figure(preview_fig)
 		clf()
@@ -424,3 +443,72 @@ RL = function_run_loop
 
 if __name__ == '__main__':
 	pass #RL()
+
+
+
+import h5py
+def save_hdf5(run_num=None):
+	if run_num:
+		SR(run_num)
+	VR()
+	min_seg_len = 30
+	seg_lens = []
+	B = I[B_]
+	L = B['left_image_bound_to_data']
+	sos=B['data']['state_one_steps']
+
+	segment_list = []
+
+	in_segment = False
+
+	for i in range(len(sos)):
+		t = B['data']['raw_timestamps'][i]
+		if sos[i] > 0 and t in I[left_images] and t in I[right_images]:
+			if not in_segment:
+				in_segment = True
+				segment_list.append([])
+			segment_list[-1].append(B['data']['raw_timestamps'][i])
+		else:
+			in_segment = False
+
+
+	segment_list_with_min_len = []
+	for s in segment_list:
+		if len(s) >= min_seg_len:
+			segment_list_with_min_len.append(s)
+
+	for s in segment_list_with_min_len:
+		seg_lens.append(len(s))
+
+
+	figure(d2s(I[run_],'segment lengths'))
+	hist(seg_lens)
+
+	if True:
+		F = h5py.File(opjD('temp.hdf5'))
+		seg = opj('segments',I[run_])
+		group = F.create_group(seg) #,str(i)))
+		for l in I[run_labels][I[run_]].keys():
+			if I[run_labels][I[run_]][l]:
+				group[l] = 1
+		for i in range(len(segment_list_with_min_len)):
+			segment = segment_list_with_min_len[i]
+			left_image_list = []
+			right_image_list = []
+			steer_list = []
+			motor_list = []
+			for j in range(len(segment)):
+				t = segment[j]
+				#print t
+				left_image_list.append(I[left_images][t])
+				right_image_list.append(I[right_images][t])
+				steer_list.append(I[steer][t])
+				motor_list.append(I[motor][t])
+			group[opj(str(i),'left_timestamp')] = segment
+			group[opj(str(i),'left')] = np.array(left_image_list)
+			group[opj(str(i),'right')] = np.array(right_image_list)
+			group[opj(str(i),'steer')] = np.array(steer_list)
+			group[opj(str(i),'motor')] = np.array(motor_list)
+
+		#F.close()
+
