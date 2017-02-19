@@ -16,7 +16,7 @@ bag_folders_src_location = opj('/media',username,'rosbags')
 #bag_folders_src_location = opjD('')=-
 bag_folders_src = opj(bag_folders_src_location,'new' )
 bag_folders_dst_rgb1to4_path = opjD('bair_car_data/rgb_1to4')
-bag_folders_dst_meta_path = opjD('bair_car_data/meta_states_1_6_good')
+bag_folders_dst_meta_path = opjD('bair_car_data/meta_states_1_5_6_7_good')
 
 runs = sgg(opj(bag_folders_src,'*'))
 
@@ -50,7 +50,7 @@ bag_folders_save_images(bag_folders_src,bag_folders_dst_rgb1to4_path)
 if False:
 	preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,3,5,6,7])
 if True:
-	preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,6],pkl_name='Bag_Folder_60_state_one_steps.pkl')
+	preprocess_Bag_Folders(bag_folders_dst_meta_path,bag_folders_dst_rgb1to4_path,NUM_STATE_ONE_STEPS=30,graphics=False,accepted_states=[1,3,5,6,7],pkl_name='Bag_Folder_60_state_one_steps.pkl')
 
 """
 for bkp in backup_locations:

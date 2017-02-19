@@ -37,7 +37,7 @@ def preprocess_Bag_Folders(bag_folders_path_meta_path,bag_folders_path_rgb1to4_p
 					opj(bag_folders_path_rgb1to4_path,fname(bfp)),
 					left_image_bound_to_data_name=left_image_bound_to_data_name,
 					NUM_STATE_ONE_STEPS=NUM_STATE_ONE_STEPS,
-					accepted_states=[1,6])
+					accepted_states=accepted_states)
 				if BF != None:
 					save_obj(BF,opj(bfp,'Bag_Folder.pkl'))
 
