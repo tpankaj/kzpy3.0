@@ -89,41 +89,9 @@ build/tools/caffe time --model=models/bvlc_alexnet/deploy.prototxt --gpu=0
 
 
 
-############# data collection shortcuts (smartphone login) #######
-#
-alias rhz='rostopic hz /bair_car/zed/left/image_rect_color'
-alias rls='ls -al /media/ubuntu/rosbags'
-alias rrm='rm catkin_ws/src/bair_car/rosbags/*'
-alias rla='roslaunch bair_car bair_car.launch use_zed:=true record:=true'
-alias rlac='roslaunch bair_car bair_car.launch use_zed:=true record:=true caffe:=true'
-alias rgy='rostopic echo /bair_car/gyro'
-alias rgp='rostopic echo /bair_car/gps'
-alias rac='rostopic echo /bair_car/acc'
-alias rst='rostopic echo /bair_car/steer'
-alias rmo='rostopic echo /bair_car/motor'
-alias ren='rostopic echo /bair_car/encoder'
-alias rcd='cd /media/ubuntu/rosbags'
-alias ssd='sudo shutdown -h now'
-alias rcn='echo $COMPUTER_NAME'
 
-
-######################## for .bashrc from MacBook #################
-#
-#echo "source ~/8August2016_common_aliases"
-#export DISPLAY=:0.0
-alias gacp="git add -u;git commit -m 'gacp';git push origin master"
-alias gckzpy3="git clone https://github.com/karlzipser/kzpy3.0.git"
-alias ipy="ipython --no-banner"
-export PYTHONPATH=~:$PYTHONPATH
-#export PYTHONPATH=~/kzpy3/caf/layers:$PYTHONPATH
-#export PYTHONPATH=~/kzpy3/caf2/layers:$PYTHONPATH
-export PYTHONSTARTUP=~/kzpy3/vis.py
-export PATH=~/kzpy3/scripts:$PATH
-export COMPUTER_NAME="Mr. Desktop"
-#
-######################################################
-
-
+# to .bashrc:
+source ~/kzpy3/teg2/bashrc
 
 
 
@@ -142,13 +110,13 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB0
 
 sudo apt-get update
 
-sudo apt-get install ros-kinetic-desktop-full
+sudo apt-get install -y ros-kinetic-desktop-full
 
 sudo rosdep init
 rosdep update
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
-sudo apt-get install python-rosinstall
+sudo apt-get install -y python-rosinstall
 
 
 http://www.webupd8.org/2011/03/sublime-text-2-ubuntu-ppa.html
@@ -196,3 +164,11 @@ conda install libgcc
 
 
 git clone git://github.com/ros/rospkg.git
+
+
+
+# for laptop amcl:
+http://www.pyimagesearch.com/2016/10/24/ubuntu-16-04-how-to-install-opencv/
+pip install python-opencv
+sudo apt-get install python-tk
+pip install h5py
