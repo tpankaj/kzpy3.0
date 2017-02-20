@@ -58,15 +58,17 @@ Using the TX1 dev. board cleans this up dramatically.
 
 i_variables = ['state','steer','motor','run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','right_images','unsaved_labels']
 
-i_labels = ['play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
+i_labels = ['direct','home','furtive','play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
+not_direct_modes = ['furtive','play','racing','follow']
 
 i_functions = ['function_close_all_windows','function_set_plot_time_range','function_set_label','function_current_run','function_help','function_set_paths','function_list_runs','function_set_run','function_visualize_run','function_animate','function_run_loop']
 for q in i_variables + i_functions + i_labels:
 	exec(d2n(q,' = ',"\'",q,"\'")) # I use leading underscore because this facilitates auto completion in ipython
 
-i_label_abbreviations = {play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
+i_label_abbreviations = {home:'H',furtive:'Fu',play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
 
 I = {}
+
 
 
 
@@ -156,7 +158,7 @@ CR = function_current_run
 
 
 
-def function_list_runs(rng=None):
+def function_list_runs(rng=None,auto_direct_labelling=False):
 	"""
 	function_list_runs()
 		LR
@@ -177,10 +179,27 @@ def function_list_runs(rng=None):
 		n = len(gg(opj(I[rgb_1to4_path],r,'*.bag.pkl')))
 		labels_str = ""
 		ks = sorted(I[run_labels][r])
+		labeled = False
+
+		
+		if auto_direct_labelling:
+			direct = True
+			for k in not_direct_modes:
+				if I[run_labels][r][k] != False:
+					direct = False
+			if direct:
+				I[run_labels][r][direct] = True
+
 		for k in ks:
 			if I[run_labels][r][k] != False:
+				if k != only_states_1_and_6_good:
+					labeled = True
 				labels_str += d2n(i_label_abbreviations[k],':',I[run_labels][r][k],' ')
-		cprint(d2n(j,'[',n,'] ',r,'\t',labels_str))
+		if labeled:
+			c = 'yellow'
+		else:
+			c = 'blue'
+		cprint(d2n(j,'[',n,'] ',r,'  ',j,'\t',labels_str),c)
 	
 LR = function_list_runs
 LR()
@@ -195,7 +214,10 @@ def function_set_label(k,v=True):
 	"""
 	if not I[run_] in I[run_labels]:
 		I[run_labels][I[run_]] = {}
-	I[run_labels][I[run_]][k] = v
+	if type(k) != list:
+		k = [k]
+	for m in k:
+		I[run_labels][I[run_]][m] = v
 	save_obj(I[run_labels],opjD('bair_car_data','run_labels','run_labels_'+time_str()+'.pkl'))
 SL = function_set_label
 
@@ -244,12 +266,15 @@ ST = function_set_plot_time_range
 
 
 
-def function_visualize_run(do_load_images=True):
+def function_visualize_run(j=None,do_load_images=True,do_CA=True):
 	"""
 	function_visualize_run()
 		VR
 	"""
-	
+	if do_CA:
+		CA()
+	if j != None:
+		SR(j)
 	global I
 	r = I[run_]
 	#Bag_Folder_filename = gg(opj(I[meta_path],r,'Bag_Folder*'))[0]
@@ -348,7 +373,7 @@ def function_visualize_run(do_load_images=True):
 		I[right_images] = right_images_
 		I[steer] = steer_
 		I[motor] = motor_
-		I[state] = motor_
+		I[state] = state_
 		preview_fig = r+' previews'
 
 		figure(preview_fig)
@@ -367,6 +392,7 @@ def function_visualize_run(do_load_images=True):
 					mi(left_images_[t],preview_fig,[N,N,ctr],do_clf=False)
 					if ctr == N/2:
 						plt.title(img_title)
+		pause(0.01)
 VR = function_visualize_run
 
 
@@ -446,10 +472,10 @@ if __name__ == '__main__':
 
 
 
-import h5py
-def function_save_hdf5(run_num=None,flip=False):
-	CA()
-	if run_num:
+
+def function_save_hdf5(run_num=None,dst_path=opjD('bair_car_data/hdf5/runs'),flip=False):
+	if run_num != None:
+		CA()
 		SR(run_num)
 		VR()
 	min_seg_len = 30
@@ -481,56 +507,66 @@ def function_save_hdf5(run_num=None,flip=False):
 	for s in segment_list_with_min_len:
 		seg_lens.append(len(s))
 
+	
+	if not flip:
+		rn = opj(I[run_])
+	else:
+		rn = opj('flip_'+I[run_])
 
-	figure(d2s(I[run_],'segment lengths'))
-	hist(seg_lens)
+	unix('mkdir -p '+dst_path)
 
-	if True:
-		F = h5py.File(opjD('temp.hdf5'))
-		if flip:
-			rn = opj('runs',I[run_])
-		else:
-			rn = opj('runs','flip_'+I[run_])
-		group = F.create_group(rn) #,str(i)))
-		for l in i_labels:
-			if l in I[run_labels][I[run_]]:
-				if I[run_labels][I[run_]][l]:
-					group[opj('labels',l)] = np.array([1])
-				else:
-					group[opj('labels',l)] = np.array([0])
+	F = h5py.File(opjD(dst_path,rn+'.hdf5'))
+
+	glabels = F.create_group('labels')
+	gsegments = F.create_group('segments')
+
+	if flip:
+		glabels['flip'] = np.array([1])
+	else:
+		glabels['flip'] = np.array([0])	
+	for l in i_labels:
+		if l in I[run_labels][I[run_]]:
+			if I[run_labels][I[run_]][l]:
+				glabels[l] = np.array([1])
 			else:
-				group[opj('labels',l)] = np.array([0])
-		for i in range(len(segment_list_with_min_len)):
-			segment = segment_list_with_min_len[i]
-			left_image_list = []
-			right_image_list = []
-			steer_list = []
-			motor_list = []
-			state_list = []
-			for j in range(len(segment)):
-				t = segment[j]
-				limg = I[left_images][t]
-				rimg = I[right_images][t]
-				st = I[steer][t]
-				if flip:
-					st -= 49
-					st *= -1.0
-					st += 49
-					left_image_list.append(scipy.fliplr(rimg))
-					right_image_list.append(scipy.fliplr(limg))
-				else:
-					left_image_list.append(limg)
-					right_image_list.append(rimg)
-				steer_list.append(st)
-				motor_list.append(I[motor][t])
-				state_list.append(I[state][t])
-			group[opj('segments',str(i),'left_timestamp')] = segment
-			group[opj('segments',str(i),'left')] = np.array(left_image_list)
-			group[opj('segments',str(i),'right')] = np.array(right_image_list)
-			group[opj('segments',str(i),'steer')] = np.array(steer_list)
-			group[opj('segments',str(i),'motor')] = np.array(motor_list)
-		F.close()
+				glabels[l] = np.array([0])
+		else:
+			glabels[l] = np.array([0])
+	for i in range(len(segment_list_with_min_len)):
+		segment = segment_list_with_min_len[i]
+		left_image_list = []
+		right_image_list = []
+		steer_list = []
+		motor_list = []
+		state_list = []
+		for j in range(len(segment)):
+			t = segment[j]
+			limg = I[left_images][t]
+			rimg = I[right_images][t]
+			st = I[steer][t]
+			if flip:
+				st -= 49
+				st *= -1.0
+				st += 49
+				left_image_list.append(scipy.fliplr(rimg))
+				right_image_list.append(scipy.fliplr(limg))
+			else:
+				left_image_list.append(limg)
+				right_image_list.append(rimg)
+			steer_list.append(st)
+			motor_list.append(I[motor][t])
+			state_list.append(I[state][t])
+		gsegments[opj(str(i),'left_timestamp')] = segment
+		gsegments[opj(str(i),'left')] = np.array(left_image_list)
+		gsegments[opj(str(i),'right')] = np.array(right_image_list)
+		gsegments[opj(str(i),'steer')] = np.array(steer_list)
+		gsegments[opj(str(i),'motor')] = np.array(motor_list)
+		gsegments[opj(str(i),'state')] = np.array(state_list)
+	F.close()
 S5 = function_save_hdf5
+
+
+
 
 
 
@@ -543,28 +579,60 @@ def mi_or_cv2(img,cv=True,delay=30,title='animate'):
 		mi(img,title)
 		pause(0.0001)
 
-def function_load_hdf5(path,r):
+
+
+
+
+def function_load_hdf5(path):
 	F = h5py.File(path)
-	rn = opj(runs,r)
-	print rn
-	R = F[rn]
-	Lb = R['labels']
-	S = R['segments']
+	Lb = F['labels']
+	S = F['segments']
 	return Lb,S
 
-if True:
-	bar_color = [255,0,0]
-	l,s=function_load_hdf5('/home/karlzipser/Desktop/temp.hdf5',u'30Aug2016_Mr_Blue_Tilden_4')
 
+
+
+
+def load_animate_hdf5(path):
+	
+	l,s=function_load_hdf5(path)
+	img = False
 	for h in range(len(s)):
-		#clf()
+		if type(img) != bool:
+			img *= 0
+			img += 128
+			mi_or_cv2(img)
 		pause(0.5)
 		n = str(h)
 		for i in range(2,len(s[n]['left'])):
 			img = s[n]['left'][i]
+			#print s[n][state][i]
+			bar_color = [0,0,0]
+			
+			if s[n][state][i] == 1:
+				bar_color = [0,0,255]
+			elif s[n][state][i] in [3,5,6,7]:
+				bar_color = [255,0,0]
+			else:
+				bar_color = [0,0,0]
+			
 			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
-			print smooth_steer
+			#print smooth_steer
 			apply_rect_to_img(img,smooth_steer,0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 			apply_rect_to_img(img,s[n][motor][i],0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=False)
 			mi_or_cv2(img)
+A5 = load_animate_hdf5
 
+
+
+
+
+if False:
+	for i in range(160):
+		SR(i)
+		SL(only_states_1_and_6_good,True)
+
+if False:
+	for i in range(160):
+		S5(i,flip=False)
+		S5(flip=True)
