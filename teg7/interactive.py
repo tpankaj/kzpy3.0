@@ -317,6 +317,7 @@ def function_visualize_run(do_load_images=True):
 		right_images_ = {}
 		steer_ = {}
 		motor_ = {}
+		state_ = {}
 		bag_paths = sgg(opj(I[rgb_1to4_path],r,'*.bag.pkl'))
 		n = len(bag_paths)
 		pb = ProgressBar(n)
@@ -330,6 +331,7 @@ def function_visualize_run(do_load_images=True):
 				if t in L:
 					steer_[t] = L[t]['steer']
 					motor_[t] = L[t]['motor']
+					state_[t] = L[t]['state']
 					rt = L[t]['right_image']
 					if rt in bag_img_dic['right']:
 						left_images_[t] = bag_img_dic['left'][t]
@@ -346,6 +348,7 @@ def function_visualize_run(do_load_images=True):
 		I[right_images] = right_images_
 		I[steer] = steer_
 		I[motor] = motor_
+		I[state] = motor_
 		preview_fig = r+' previews'
 
 		figure(preview_fig)
@@ -484,8 +487,11 @@ def function_save_hdf5(run_num=None,flip=False):
 
 	if True:
 		F = h5py.File(opjD('temp.hdf5'))
-		seg = opj('runs',I[run_])
-		group = F.create_group(seg) #,str(i)))
+		if flip:
+			rn = opj('runs',I[run_])
+		else:
+			rn = opj('runs','flip_'+I[run_])
+		group = F.create_group(rn) #,str(i)))
 		for l in i_labels:
 			if l in I[run_labels][I[run_]]:
 				if I[run_labels][I[run_]][l]:
@@ -514,7 +520,7 @@ def function_save_hdf5(run_num=None,flip=False):
 					right_image_list.append(scipy.fliplr(limg))
 				else:
 					left_image_list.append(limg)
-					right_image_list.append(rimg
+					right_image_list.append(rimg)
 				steer_list.append(st)
 				motor_list.append(I[motor][t])
 				state_list.append(I[state][t])
@@ -528,21 +534,37 @@ S5 = function_save_hdf5
 
 
 
+def mi_or_cv2(img,cv=True,delay=30,title='animate'):
+	if cv:
+		cv2.imshow(title,cv2.cvtColor(img,cv2.COLOR_RGB2BGR))
+		if cv2.waitKey(delay) & 0xFF == ord('q'):
+			pass
+	else:
+		mi(img,title)
+		pause(0.0001)
 
 def function_load_hdf5(path,r):
 	F = h5py.File(path)
-	R = F[runs][r]
+	rn = opj(runs,r)
+	print rn
+	R = F[rn]
 	Lb = R['labels']
 	S = R['segments']
 	return Lb,S
 
-bar_color = [255,0,0]
-l,s=function_load_hdf5('/home/karlzipser/Desktop/temp.hdf5','racing_Smyth_17Dec16_14h52m15s_Mr_Teal')
-img = s['5']['left'][30]
+if True:
+	bar_color = [255,0,0]
+	l,s=function_load_hdf5('/home/karlzipser/Desktop/temp.hdf5',u'30Aug2016_Mr_Blue_Tilden_4')
 
-apply_rect_to_img(img,s['5']['steer'][5],0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=True)
-apply_rect_to_img(img,63,0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=False)
-
-mi(img,'left')
-
+	for h in range(len(s)):
+		#clf()
+		pause(0.5)
+		n = str(h)
+		for i in range(2,len(s[n]['left'])):
+			img = s[n]['left'][i]
+			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
+			print smooth_steer
+			apply_rect_to_img(img,smooth_steer,0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+			apply_rect_to_img(img,s[n][motor][i],0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+			mi_or_cv2(img)
 
