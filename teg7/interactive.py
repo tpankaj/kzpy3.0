@@ -65,7 +65,7 @@ i_functions = ['function_close_all_windows','function_set_plot_time_range','func
 for q in i_variables + i_functions + i_labels:
 	exec(d2n(q,' = ',"\'",q,"\'")) # I use leading underscore because this facilitates auto completion in ipython
 
-i_label_abbreviations = {home:'H',furtive:'Fu',play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
+i_label_abbreviations = {direct:'D' ,home:'H',furtive:'Fu',play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
 
 I = {}
 
@@ -183,11 +183,13 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
 
 		
 		if auto_direct_labelling:
-			direct = True
+			direct_flag = True
 			for k in not_direct_modes:
-				if I[run_labels][r][k] != False:
-					direct = False
-			if direct:
+				if k in I[run_labels][r]:
+
+					if I[run_labels][r][k] != False:
+						direct_flag = False
+			if direct_flag:
 				I[run_labels][r][direct] = True
 
 		for k in ks:
@@ -200,6 +202,7 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
 		else:
 			c = 'blue'
 		cprint(d2n(j,'[',n,'] ',r,'  ',j,'\t',labels_str),c)
+		print I[run_labels][r][direct]
 	
 LR = function_list_runs
 LR()
