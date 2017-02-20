@@ -56,7 +56,7 @@ The program will report this and pause during this time.
 Using the TX1 dev. board cleans this up dramatically.
 """
 
-i_variables = ['steer','motor','run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','right_images','unsaved_labels']
+i_variables = ['state','steer','motor','run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','right_images','unsaved_labels']
 
 i_labels = ['play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
 
@@ -68,7 +68,7 @@ i_label_abbreviations = {play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',
 
 I = {}
 
-I[unsaved_labels] = False
+
 
 
 
@@ -196,10 +196,7 @@ def function_set_label(k,v=True):
 	if not I[run_] in I[run_labels]:
 		I[run_labels][I[run_]] = {}
 	I[run_labels][I[run_]][k] = v
-	I[unsaved_labels] = True
-	if I[unsaved_labels]:
-		save_obj(I[run_labels],opjD('bair_car_data','run_labels','run_labels_'+time_str()+'.pkl'))
-		I[unsaved_labels] = False
+	save_obj(I[run_labels],opjD('bair_car_data','run_labels','run_labels_'+time_str()+'.pkl'))
 SL = function_set_label
 
 
@@ -447,10 +444,11 @@ if __name__ == '__main__':
 
 
 import h5py
-def save_hdf5(run_num=None):
+def function_save_hdf5(run_num=None,flip=False):
+	CA()
 	if run_num:
 		SR(run_num)
-	VR()
+		VR()
 	min_seg_len = 30
 	seg_lens = []
 	B = I[B_]
@@ -486,29 +484,65 @@ def save_hdf5(run_num=None):
 
 	if True:
 		F = h5py.File(opjD('temp.hdf5'))
-		seg = opj('segments',I[run_])
+		seg = opj('runs',I[run_])
 		group = F.create_group(seg) #,str(i)))
-		for l in I[run_labels][I[run_]].keys():
-			if I[run_labels][I[run_]][l]:
-				group[l] = 1
+		for l in i_labels:
+			if l in I[run_labels][I[run_]]:
+				if I[run_labels][I[run_]][l]:
+					group[opj('labels',l)] = np.array([1])
+				else:
+					group[opj('labels',l)] = np.array([0])
+			else:
+				group[opj('labels',l)] = np.array([0])
 		for i in range(len(segment_list_with_min_len)):
 			segment = segment_list_with_min_len[i]
 			left_image_list = []
 			right_image_list = []
 			steer_list = []
 			motor_list = []
+			state_list = []
 			for j in range(len(segment)):
 				t = segment[j]
-				#print t
-				left_image_list.append(I[left_images][t])
-				right_image_list.append(I[right_images][t])
-				steer_list.append(I[steer][t])
+				limg = I[left_images][t]
+				rimg = I[right_images][t]
+				st = I[steer][t]
+				if flip:
+					st -= 49
+					st *= -1.0
+					st += 49
+					left_image_list.append(scipy.fliplr(rimg))
+					right_image_list.append(scipy.fliplr(limg))
+				else:
+					left_image_list.append(limg)
+					right_image_list.append(rimg
+				steer_list.append(st)
 				motor_list.append(I[motor][t])
-			group[opj(str(i),'left_timestamp')] = segment
-			group[opj(str(i),'left')] = np.array(left_image_list)
-			group[opj(str(i),'right')] = np.array(right_image_list)
-			group[opj(str(i),'steer')] = np.array(steer_list)
-			group[opj(str(i),'motor')] = np.array(motor_list)
+				state_list.append(I[state][t])
+			group[opj('segments',str(i),'left_timestamp')] = segment
+			group[opj('segments',str(i),'left')] = np.array(left_image_list)
+			group[opj('segments',str(i),'right')] = np.array(right_image_list)
+			group[opj('segments',str(i),'steer')] = np.array(steer_list)
+			group[opj('segments',str(i),'motor')] = np.array(motor_list)
+		F.close()
+S5 = function_save_hdf5
 
-		#F.close()
+
+
+
+def function_load_hdf5(path,r):
+	F = h5py.File(path)
+	R = F[runs][r]
+	Lb = R['labels']
+	S = R['segments']
+	return Lb,S
+
+bar_color = [255,0,0]
+l,s=function_load_hdf5('/home/karlzipser/Desktop/temp.hdf5','racing_Smyth_17Dec16_14h52m15s_Mr_Teal')
+img = s['5']['left'][30]
+
+apply_rect_to_img(img,s['5']['steer'][5],0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=True)
+apply_rect_to_img(img,63,0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=False)
+
+mi(img,'left')
+
 
