@@ -58,14 +58,14 @@ Using the TX1 dev. board cleans this up dramatically.
 
 i_variables = ['state','steer','motor','run_','runs','run_labels','meta_path','rgb_1to4_path','B_','left_images','right_images','unsaved_labels']
 
-i_labels = ['direct','home','furtive','play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
-not_direct_modes = ['furtive','play','racing','follow']
+i_labels = ['out1_in2','direct','home','furtive','play','racing','multicar','campus','night','Smyth','left','notes','local','Tilden','reject_run','reject_intervals','snow','follow','only_states_1_and_6_good']
+not_direct_modes = ['out1_in2','left','furtive','play','racing','follow']
 
 i_functions = ['function_close_all_windows','function_set_plot_time_range','function_set_label','function_current_run','function_help','function_set_paths','function_list_runs','function_set_run','function_visualize_run','function_animate','function_run_loop']
 for q in i_variables + i_functions + i_labels:
 	exec(d2n(q,' = ',"\'",q,"\'")) # I use leading underscore because this facilitates auto completion in ipython
 
-i_label_abbreviations = {direct:'D' ,home:'H',furtive:'Fu',play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
+i_label_abbreviations = {out1_in2:'o1i2', direct:'D' ,home:'H',furtive:'Fu',play:'P',racing:'R',multicar:'M',campus:'C',night:'Ni',Smyth:'Smy',left:'Lf',notes:'N',local:'L',Tilden:'T',reject_run:'X',reject_intervals:'Xi',snow:'S',follow:'F',only_states_1_and_6_good:'1_6'}
 
 I = {}
 
@@ -120,7 +120,7 @@ def function_set_paths(p=opjD('bair_car_data')):
 		SP
 	"""
 	global I
-	I[meta_path] = opj(p,'meta_states_1_6_good')
+	I[meta_path] = opj(p,'meta')
 	I[rgb_1to4_path] = opj(p,'rgb_1to4')
 	I[runs] = sgg(opj(I[meta_path],'*'))
 	for j in range(len(I[runs])):
@@ -202,7 +202,7 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
 		else:
 			c = 'blue'
 		cprint(d2n(j,'[',n,'] ',r,'  ',j,'\t',labels_str),c)
-		print I[run_labels][r][direct]
+		#print I[run_labels][r][direct]
 	
 LR = function_list_runs
 LR()
@@ -595,9 +595,13 @@ def function_load_hdf5(path):
 
 
 
+def start_at(t):
+	while time.time() < t:
+		time.sleep(0.1)
+		print t-time.time()
 
-def load_animate_hdf5(path):
-	
+def load_animate_hdf5(path,start_at_time=0):
+	start_at(start_at_time)
 	l,s=function_load_hdf5(path)
 	img = False
 	for h in range(len(s)):
@@ -614,8 +618,12 @@ def load_animate_hdf5(path):
 			
 			if s[n][state][i] == 1:
 				bar_color = [0,0,255]
-			elif s[n][state][i] in [3,5,6,7]:
+			elif s[n][state][i] == 6:
 				bar_color = [255,0,0]
+			elif s[n][state][i] == 5:
+				bar_color = [255,255,0]
+			elif s[n][state][i] == 7:
+				bar_color = [255,0,255]
 			else:
 				bar_color = [0,0,0]
 			
@@ -629,13 +637,70 @@ A5 = load_animate_hdf5
 
 
 
+def load_hdf5_steer_hist(path,dst_path):
+	print path
+	unix('mkdir -p '+dst_path)
+	low_steer = []
+	high_steer = []
+	l,s=function_load_hdf5(path)
+	pb = ProgressBar(len(s))
+	for h in range(len(s)):
+		pb.animate(h)
+		#print h
+		n = str(h)
+		for i in range(2,len(s[n]['left'])):
+			#print i
+			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
+			if smooth_steer < 43 or smooth_steer > 55:
+				high_steer.append((h,i,smooth_steer))
+			else:
+				low_steer.append((h,i,smooth_steer))
+	pb.animate(h)
+	assert(len(high_steer)>0)
+	assert(len(low_steer)>0)
+	if len(high_steer) > len(low_steer):
+		longer = high_steer
+		shorter = low_steer
+	else:
+		longer = low_steer
+		shorter = high_steer
+	random.shuffle(shorter)
+	A = longer + longer + longer
+	B = []
+	while len(B) < len(A):
+		B += shorter
+	B = B[:len(A)]
+	save_obj(A+B,opj(dst_path,fname(path).replace('hdf5','pkl')))
+
+
+
 
 if False:
 	for i in range(160):
 		SR(i)
 		SL(only_states_1_and_6_good,True)
 
+
+
 if False:
-	for i in range(160):
+	for i in range(205):
 		S5(i,flip=False)
 		S5(flip=True)
+
+if False:
+	hdf5s = sgg(opjD('bair_car_data/hdf5/runs/*.hdf5'))
+	ctr = 0
+	for h in hdf5s:
+		ctr += 1
+		print ctr
+		load_hdf5_steer_hist(h,opjD('bair_car_data','hdf5','steer_hist_43_57'))
+
+
+
+
+
+#save_obj(time.time(),opjD('t.pkl'))
+if False:
+	t = load_obj(opjD('t'))
+	t += 30
+	A5('/home/karlzipser/Desktop/bair_car_data/hdf5/runs/caffe_z2_color_direct_Smyth_tape_single_transmitter_11Feb17_13h54m22s_Mr_Orange.hdf5',t )
