@@ -590,7 +590,7 @@ def function_load_hdf5(path):
 	F = h5py.File(path)
 	Lb = F['labels']
 	S = F['segments']
-	return Lb,S
+	return Lb,S,F
 
 
 
@@ -648,13 +648,18 @@ def load_hdf5_steer_hist(path,dst_path):
 		pb.animate(h)
 		#print h
 		n = str(h)
-		for i in range(2,len(s[n]['left'])):
+		for i in range(0,len(s[n][steer])):
 			#print i
-			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
-			if smooth_steer < 43 or smooth_steer > 55:
-				high_steer.append((h,i,smooth_steer))
+			if i > 1:
+				smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
 			else:
-				low_steer.append((h,i,smooth_steer))
+				smooth_steer = s[n][steer][i]
+			dat = [h,i,int(np.round(smooth_steer),len(s[n][steer])]
+				print dat
+			if smooth_steer < 43 or smooth_steer > 55:
+				high_steer.append(dat)
+			else:
+				low_steer.append(dat)
 	pb.animate(h)
 	assert(len(high_steer)>0)
 	assert(len(low_steer)>0)
@@ -697,6 +702,44 @@ if False:
 
 
 
+
+
+ 
+
+
+if False:
+	reject_labels = ['out1_in2','left']
+	steer_hist_43_57 = []
+	file_names = sgg(opjD('bair_car_data/hdf5/steer_hist_43_57/*.pkl'))
+	run_code_dic = {}
+	ctr = 0
+	pb = ProgressBar(len(file_names))
+	for f in file_names:
+		pb.animate(ctr)
+		k = fname(f).replace('.pkl','')
+		Lb,S,F = function_load_hdf5(opjD('bair_car_data/hdf5/runs',k+'.hdf5'))
+		
+		label_dic = {}
+		for lb in Lb:
+			label_dic[lb] = Lb[lb][0]
+		#print label_dic
+		do_continue = False
+		for rl in reject_labels:
+			if rl in Lb.keys():
+				if Lb[rl][0] > 0:
+					do_continue = True
+					print('Rejecting '+fname(f)+' because of '+rl)
+		if do_continue:
+			continue
+		o = load_obj(f)
+		run_code_dic[ctr] = k
+		for d in o:
+			d.append(ctr)
+			steer_hist_43_57.append(d)
+		ctr += 1
+	pb.animate(ctr)
+	time.sleep(0.1)
+	save_obj((steer_hist_43_57,run_code_dic),opjD('bair_car_data/hdf5/steer_hist_43_57_compiled'))
 
 
 #save_obj(time.time(),opjD('t.pkl'))
