@@ -609,3 +609,10 @@ def tab_list_print(l,n=1,color=None,on_color=None):
         for j in range(n):
             s += '\t'
         cprint(s+e,color,on_color)
+
+
+
+def start_at(t):
+    while time.time() < t:
+        time.sleep(0.1)
+        print t-time.time()
