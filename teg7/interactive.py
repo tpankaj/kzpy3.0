@@ -5,7 +5,7 @@ from kzpy3.vis import *
 
 """
 Interactive data viewer for model car project.
-
+ 
 Expects to find ~/Desktop/bair_car_data/ by default.
 
 Change path with SP(), i.e., function_set_paths()
