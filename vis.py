@@ -362,3 +362,23 @@ def apply_rect_to_img(img,value,min_val,max_val,pos_color,neg_color,rel_bar_heig
 def plt_square():
     plt.gca().set_aspect('equal',adjustable='box')
     plt.draw()
+
+
+
+def function_close_all_windows():
+    plt.close('all')
+CA = function_close_all_windows
+
+
+
+
+
+def mi_or_cv2(img,cv=True,delay=30,title='animate'):
+    if cv:
+        cv2.imshow(title,cv2.cvtColor(img,cv2.COLOR_RGB2BGR))
+        if cv2.waitKey(delay) & 0xFF == ord('q'):
+            pass
+    else:
+        mi(img,title)
+        pause(0.0001)
+

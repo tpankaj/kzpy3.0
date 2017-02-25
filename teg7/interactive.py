@@ -128,7 +128,7 @@ def function_set_paths(p=opjD('bair_car_data')):
 	I[run_] = I[runs][0]
 	cprint('meta_path = '+I[meta_path])
 SP = function_set_paths
-SP()
+#SP()
 
 
 
@@ -205,7 +205,7 @@ def function_list_runs(rng=None,auto_direct_labelling=False):
 		#print I[run_labels][r][direct]
 	
 LR = function_list_runs
-LR()
+#LR()
 
 
 
@@ -239,7 +239,7 @@ def function_set_run(j):
 	I[B_] = B
 	CR()
 SR = function_set_run
-SR(0)
+#SR(0)
 
 
 
@@ -611,7 +611,7 @@ def load_animate_hdf5(path,start_at_time=0):
 			mi_or_cv2(img)
 		pause(0.5)
 		n = str(h)
-		for i in range(2,len(s[n]['left'])):
+		for i in range(len(s[n]['left'])):
 			img = s[n]['left'][i]
 			#print s[n][state][i]
 			bar_color = [0,0,0]
@@ -626,8 +626,10 @@ def load_animate_hdf5(path,start_at_time=0):
 				bar_color = [255,0,255]
 			else:
 				bar_color = [0,0,0]
-			
-			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
+			if i < 2:
+				smooth_steer = s[n][steer][i]
+			else:
+				smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
 			#print smooth_steer
 			apply_rect_to_img(img,smooth_steer,0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=True)
 			apply_rect_to_img(img,s[n][motor][i],0,99,bar_color,bar_color,0.9,0.1,center=True,reverse=True,horizontal=False)
@@ -635,7 +637,7 @@ def load_animate_hdf5(path,start_at_time=0):
 A5 = load_animate_hdf5
 
 
-
+# filter out left and out in files
 
 def load_hdf5_steer_hist(path,dst_path):
 	print path
@@ -648,29 +650,23 @@ def load_hdf5_steer_hist(path,dst_path):
 		pb.animate(h)
 		#print h
 		n = str(h)
-		for i in range(2,len(s[n]['left'])):
-			#print i
-			smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
-			if smooth_steer < 43 or smooth_steer > 55:
-				high_steer.append((h,i,smooth_steer))
+		for i in range(len(s[n]['left'])):
+			if i < 2:
+				smooth_steer = s[n][steer][i]
 			else:
-				low_steer.append((h,i,smooth_steer))
+				smooth_steer = (s[n][steer][i] + 0.5*s[n][steer][i-1] + 0.25*s[n][steer][i-2])/1.75
+			if smooth_steer < 43 or smooth_steer > 55:
+				high_steer.append([h,i,int(round(smooth_steer))])
+			else:
+				low_steer.append([h,i,int(round(smooth_steer))])
 	pb.animate(h)
 	assert(len(high_steer)>0)
 	assert(len(low_steer)>0)
-	if len(high_steer) > len(low_steer):
-		longer = high_steer
-		shorter = low_steer
-	else:
-		longer = low_steer
-		shorter = high_steer
-	random.shuffle(shorter)
-	A = longer + longer + longer
-	B = []
-	while len(B) < len(A):
-		B += shorter
-	B = B[:len(A)]
-	save_obj(A+B,opj(dst_path,fname(path).replace('hdf5','pkl')))
+
+	save_obj(high_steer,opj(dst_path,fname(path).replace('hdf5','high_steer.pkl')))
+	save_obj(low_steer,opj(dst_path,fname(path).replace('hdf5','low_steer.pkl')))
+
+
 
 
 
@@ -687,7 +683,7 @@ if False:
 		S5(i,flip=False)
 		S5(flip=True)
 
-if False:
+if True:
 	hdf5s = sgg(opjD('bair_car_data/hdf5/runs/*.hdf5'))
 	ctr = 0
 	for h in hdf5s:
@@ -696,8 +692,21 @@ if False:
 		load_hdf5_steer_hist(h,opjD('bair_car_data','hdf5','steer_hist_43_57'))
 
 
-
-
+if True:
+	run_codes = {}
+	steer_hists = sgg(opjD('bair_car_data/hdf5/steer_hist_43_57/*.pkl'))
+	ctr = 0
+	combined = []
+	for s in steer_hists:
+		o = load_obj(s)
+		run_codes[ctr] = fname(s).replace('.pkl','')
+		print ctr,run_codes[ctr]
+		for j in range(len(o)):
+			o[j][3] = ctr
+			combined.append(o[j])
+		ctr += 1
+	save_obj(combined,opjD('combined'))
+	save_obj(run_codes,opjD('run_codes'))
 
 #save_obj(time.time(),opjD('t.pkl'))
 if False:
