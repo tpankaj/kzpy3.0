@@ -299,12 +299,12 @@ def _array_to_int_list(a):
 	return l
 
 
-solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver.prototxt'))
+solver = setup_solver(opjh('kzpy3/caf7/z3_color/solver.prototxt'))
 #solver.net.copy_from(opjh('kzpy3/caf5/z2_color/z2_color.caffemodel'))
 
 ##############################
 #
-N_FRAMES = 3
+N_FRAMES = 1
 print_timer = Timer(5)
 while True:
 
@@ -337,12 +337,13 @@ while True:
 
 	#####################################
 	#
-	ctr = 0
-	for camera in ('left','right'):
+
+	rgbs = ['r','g','b']
+	for camera in ['left']:#,'right'):
 		for t in range(N_FRAMES):
 			for c in range(3):
-				solver.net.blobs['ZED_data_pool2'].data[0,ctr,:,:] = data[camera][t][:,:,c]
-				ctr += 1
+				solver.net.blobs[d2f('_',camera,t,rgbs[c])].data[0,0,:,:] = 0#data[camera][t][:,:,c]
+				
 	#solver.net.blobs['ZED_data_pool2'].data[:] /= 255.
 	#solver.net.blobs['ZED_data_pool2'].data[:] -= 0.5
 

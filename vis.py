@@ -1,7 +1,10 @@
 from kzpy3.utils import *
 
 import matplotlib
-
+try:
+    import cv2
+except:
+    print("Couldn't import cv")
 
 
 MacOSX = False
@@ -371,7 +374,16 @@ CA = function_close_all_windows
 
 
 
-
+def mi_or_cv2_animate(img_array,cv=True,delay=30,title='animate'):
+    if type(img_array)==np.ndarray:
+        for i in range(len(img_array)):
+             mi_or_cv2(img_array[i],cv,delay,title)        
+    elif type(img_array)==np.ndarray:
+        for i in range(len(img_array[0])):
+             mi_or_cv2(img_array[i],cv,delay,title)
+    else:
+        print('I am confused')
+        assert(False)
 
 def mi_or_cv2(img,cv=True,delay=30,title='animate'):
     if cv:
