@@ -1,5 +1,3 @@
-# /home/karlzipser/kzpy3/caf5/z2_color
-# Tuesday, 31 Jan 2017, 09:34:54 PM
 
 layer {
 	name: "steer_motor_target_data"
@@ -8,11 +6,11 @@ layer {
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 40
+			dim: 20
+			#dim: 1
 		}
 	}
 }
-	
 
 layer {
 	name: "metadata"
@@ -220,7 +218,8 @@ layer {
 		dropout_ratio: 0.0
 	}
 }
-	
+
+
 
 layer {
 	name: "ip2"
@@ -228,20 +227,49 @@ layer {
 	bottom: "ip1"
 	top: "ip2"
 	inner_product_param {
-		num_output: 40
+		num_output: 20
 		weight_filler {
 			type: "xavier" 
 		}
 	}
 }
-	
 
+layer {
+	name: "lstm"
+	type: "LSTM"
+	bottom: "steer_motor_target_data"
+	bottom: "ip2"
+	top: "lstm"
+	recurrent_param {
+		num_output: 20
+		weight_filler {
+			type: "gaussian"
+			std: 0.1
+		}
+		bias_filler {
+			type: "constant"
+			value: 0
+		}
+	}
+}
+
+layer {
+	name: "ip3"
+	type: "InnerProduct"
+	bottom: "lstm"
+	top: "ip3"
+	inner_product_param {
+		num_output: 20
+		weight_filler {
+			type: "xavier" 
+		}
+	}
+}
 layer {
 	name: "euclidean"
 	type: "EuclideanLoss"
 	bottom: "steer_motor_target_data"
-	bottom: "ip2"
+	bottom: "ip3"
 	top: "euclidean"
 	loss_weight: 1
 }
-	

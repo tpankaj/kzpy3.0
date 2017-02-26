@@ -299,12 +299,27 @@ def _array_to_int_list(a):
 	return l
 
 
+
+
+
+def val_to_category(value,cat_min,cat_max,num_bins):
+	s = zeros(num_bins)
+	i = int((value / (1.*cat_max-cat_min)) * num_bins)
+	if i < 0:
+		i = 0
+	if i > num_bins-1:
+		i = num_bins-1
+	return i
+
+
+
 solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver.prototxt'))
 #solver.net.copy_from(opjh('kzpy3/caf5/z2_color/z2_color.caffemodel'))
 
 ##############################
 #
-N_FRAMES = 3
+N_FRAMES = 2
+N_STEPS = 10
 print_timer = Timer(5)
 while True:
 
@@ -330,7 +345,7 @@ while True:
 	seg_num = choice[0]
 	offset = choice[1]
 
-	data = get_data(run_code,seg_num,offset,20,offset+0,N_FRAMES,ignore=[reject_run,left,out1_in2],require_one=[])
+	data = get_data(run_code,seg_num,offset,N_STEPS,offset+0,N_FRAMES,ignore=[reject_run,left,out1_in2],require_one=[])
 
 	if data == None:
 		continue
@@ -370,8 +385,10 @@ while True:
 	solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 	solver.net.blobs['metadata'].data[0,4,:,:] = Play
 	solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-	solver.net.blobs['steer_motor_target_data'].data[0,:20] = data['steer'][-20:]/99.
-	solver.net.blobs['steer_motor_target_data'].data[0,20:] = data['motor'][-20:]/99.
+	solver.net.blobs['steer_motor_target_data'].data[0,:N_STEPS] = data['steer'][-N_STEPS:]/99.
+	solver.net.blobs['steer_motor_target_data'].data[0,N_STEPS:] = data['motor'][-N_STEPS:]/99.
+	solver.net.blobs['steer_target_data_softmax'].data[:] = val_to_category(data['steer'][-1],0,99,11)
+	solver.net.blobs['motor_target_data_softmax'].data[:] = val_to_category(data['motor'][-1],0,99,11))
 	#
 	################################
 
@@ -395,8 +412,3 @@ while True:
 		mi_or_cv2_animate(data['left'])
 		print_timer.reset()
 
-
-
-def val_to_category(value,cat_min,cat_max,num_bins):
-	s = zeros(num_bins)
-	print int((value / (1.*cat_max-cat_min)) * num_bins)
