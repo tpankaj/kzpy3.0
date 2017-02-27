@@ -42,7 +42,10 @@ import re
 import subprocess
 from pprint import pprint
 import serial
-import h5py
+try
+    import h5py
+except:
+    print("don't have h5py")
 try:
     from termcolor import cprint
 except:
