@@ -42,7 +42,7 @@ import re
 import subprocess
 from pprint import pprint
 import serial
-try
+try:
     import h5py
 except:
     print("don't have h5py")
