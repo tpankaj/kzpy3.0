@@ -31,7 +31,7 @@ Location = 'Smyth_tape__to_edge'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
-weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel")
+weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_continue_s_r.caffemodel")
 verbose = False
 
 steer_gain = 1.0
