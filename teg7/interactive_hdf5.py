@@ -319,7 +319,7 @@ def val_to_category(value,cat_min,cat_max,num_bins):
 
 
 solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver.prototxt'))
-weights_file_path = opjh('Desktop/z2_color/z2_color_continue_s_r_iter_14600000.caffemodel')
+weights_file_path = opjh('Desktop/z2_color/z2_color_scratch_iter_27900000.caffemodel')
 solver.net.copy_from(weights_file_path)
 cprint('Loaded weights from '+weights_file_path)
 
@@ -334,7 +334,7 @@ rate_timer_interval = 10.
 rate_timer = Timer(rate_timer_interval)
 rate_ctr = 0
 ignore=[reject_run,left,out1_in2]
-require_one=[Smyth,racing]
+require_one=[]
 while True:
 
 	if ctr_low >= len_low_steer:
