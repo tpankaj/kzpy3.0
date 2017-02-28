@@ -65,8 +65,8 @@ def load_animate_hdf5(path,start_at_time=0):
 
 	e.g.,
 		from kzpy3.teg7.train_with_hdf5_utils import *
-		A5(opjD('bair_car_data/hdf5/runs/racing_Tilden_27Nov16_12h54m34s_Mr_Orange.hdf5'))
-		A5(opjD('bair_car_data/hdf5/runs/direct_caffe2_local_01Feb17_16h18m25s_Mr_Silver.hdf5'))
+		load_animate_hdf5(opjD('bair_car_data/hdf5/runs/racing_Tilden_27Nov16_12h54m34s_Mr_Orange.hdf5'))
+		load_animate_hdf5(opjD('bair_car_data/hdf5/runs/direct_caffe2_local_01Feb17_16h18m25s_Mr_Silver.hdf5'))
 	Here the bars are blue, human control, and the motor is held at the maximum most of the time.
 	"""
 	start_at(start_at_time)
