@@ -19,7 +19,7 @@ def setup_solver():
 
 solver = setup_solver()
 weights_file_path = opjD('z2_color')
-weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color_continue_s_r','caffemodel'])
+weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color_continue_Tilden','caffemodel'])
 solver.net.copy_from(weights_file_path)
 cprint('Loaded weights from '+weights_file_path)
 plt.ion()

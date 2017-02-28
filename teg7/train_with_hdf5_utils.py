@@ -64,7 +64,9 @@ def load_animate_hdf5(path,start_at_time=0):
 	across different command lines. It does not refer to time within the dataset.
 
 	e.g.,
-	A5(opjD('bair_car_data/hdf5/runs/racing_Tilden_27Nov16_12h54m34s_Mr_Orange.hdf5'))
+		from kzpy3.teg7.train_with_hdf5_utils import *
+		A5(opjD('bair_car_data/hdf5/runs/racing_Tilden_27Nov16_12h54m34s_Mr_Orange.hdf5'))
+		A5(opjD('bair_car_data/hdf5/runs/direct_caffe2_local_01Feb17_16h18m25s_Mr_Silver.hdf5'))
 	Here the bars are blue, human control, and the motor is held at the maximum most of the time.
 	"""
 	start_at(start_at_time)
@@ -80,16 +82,24 @@ def load_animate_hdf5(path,start_at_time=0):
 		for i in range(len(s[n]['left'])):
 			img = s[n]['left'][i]
 			bar_color = [0,0,0]
-			if s[n][state][i] == 1:
-				bar_color = [0,0,255]
-			elif s[n][state][i] == 6:
-				bar_color = [255,0,0]
-			elif s[n][state][i] == 5:
-				bar_color = [255,255,0]
-			elif s[n][state][i] == 7:
-				bar_color = [255,0,255]
+			if s[n][state][i] == 1: # Full human control
+				bar_color = [0,0,255] # Blue
+
+			elif s[n][state][i] == 6: # Full Caffe model control
+				bar_color = [255,0,0] # Red
+
+			elif s[n][state][i] == 3: # Human motor, Caffe steer
+				bar_color = [255,128,128] # Pink
+
+			elif s[n][state][i] == 5: # Caffe motor, human steer
+				bar_color = [255,255,0] # Yellow
+
+			elif s[n][state][i] == 7: # Human motor, Human steer
+				bar_color = [255,0,255] # Purple
+				
 			else:
-				bar_color = [0,0,0]
+				print s[n][state][i]
+				bar_color = [0,0,0] # black, show not be seen, indicates state 2 or 4.
 			if i < 2:
 				smooth_steer = s[n][steer][i]
 			else:
