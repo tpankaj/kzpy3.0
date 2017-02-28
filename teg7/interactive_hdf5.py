@@ -188,9 +188,14 @@ def get_data(run_code_num,seg_num,offset,slen,img_offset,img_slen,ignore=[left,o
 	for ig in ignore:
 		if labels[ig]:
 			return None
-	for ro in require_one:
-		if not labels[ro]:
-			return None
+	require_one_okay = True
+	if len(require_one) > 0:
+		require_one_okay = False
+		for ro in require_one:
+			if labels[ro]:
+				require_one_okay = True
+	if not require_one_okay:		
+		return None
 	a = offset
 	b = offset + slen
 	ia = img_offset
@@ -275,7 +280,7 @@ ctr_high = -1
 import caffe
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(0)
+	caffe.set_device(1)
 	caffe.set_mode_gpu()
 
 def print_solver(solver):
@@ -314,13 +319,22 @@ def val_to_category(value,cat_min,cat_max,num_bins):
 
 
 solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver.prototxt'))
-#solver.net.copy_from(opjh('kzpy3/caf5/z2_color/z2_color.caffemodel'))
+weights_file_path = opjh('Desktop/z2_color/z2_color_continue_s_r_iter_14600000.caffemodel')
+solver.net.copy_from(weights_file_path)
+cprint('Loaded weights from '+weights_file_path)
 
 ##############################
 #
 N_FRAMES = 2
 N_STEPS = 10
 print_timer = Timer(5)
+loss10000 = []
+loss = []
+rate_timer_interval = 10.
+rate_timer = Timer(rate_timer_interval)
+rate_ctr = 0
+ignore=[reject_run,left,out1_in2]
+require_one=[Smyth,racing]
 while True:
 
 	if ctr_low >= len_low_steer:
@@ -345,7 +359,7 @@ while True:
 	seg_num = choice[0]
 	offset = choice[1]
 
-	data = get_data(run_code,seg_num,offset,N_STEPS,offset+0,N_FRAMES,ignore=[reject_run,left,out1_in2],require_one=[])
+	data = get_data(run_code,seg_num,offset,N_STEPS,offset+0,N_FRAMES,ignore=ignore,require_one=require_one)
 
 	if data == None:
 		continue
@@ -353,14 +367,11 @@ while True:
 	#####################################
 	#
 	ctr = 0
-	for camera in ('left','right'):
-		for t in range(N_FRAMES):
-			for c in range(3):
+	for c in range(3):
+		for camera in ('left','right'):
+			for t in range(N_FRAMES):
 				solver.net.blobs['ZED_data_pool2'].data[0,ctr,:,:] = data[camera][t][:,:,c]
 				ctr += 1
-	#solver.net.blobs['ZED_data_pool2'].data[:] /= 255.
-	#solver.net.blobs['ZED_data_pool2'].data[:] -= 0.5
-
 	Racing = 0
 	Caf = 0
 	Follow = 0
@@ -387,18 +398,28 @@ while True:
 	solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 	solver.net.blobs['steer_motor_target_data'].data[0,:N_STEPS] = data['steer'][-N_STEPS:]/99.
 	solver.net.blobs['steer_motor_target_data'].data[0,N_STEPS:] = data['motor'][-N_STEPS:]/99.
-	solver.net.blobs['steer_target_data_softmax'].data[:] = val_to_category(data['steer'][-1],0,99,11)
-	solver.net.blobs['motor_target_data_softmax'].data[:] = val_to_category(data['motor'][-1],0,99,11))
 	#
 	################################
 
 	solver.step(1)
 
+	rate_ctr += 1
+	if rate_timer.check():
+		print(d2s('rate =',dp(rate_ctr/rate_timer_interval,2),'Hz'))
+		rate_timer.reset()
+		rate_ctr = 0
 
+	a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
+	loss.append(np.sqrt(a * a).mean())
+	if len(loss) >= 10000:
+		loss10000.append(array(loss[-10000:]).mean())
+		loss = []
+		figure('loss');clf()
+		lm = min(len(loss10000),100)
+		plot(loss10000[-lm:])
+		print(d2s('loss10000 =',loss10000[-1]))
 	if print_timer.check():
-		#print(d2s('self.solver.step(1)',time.time()),self.train_steps, dp(1./((time.time()-self.train_start_time)/(1.*self.train_steps)),2) )
-		#if len(self.loss1000) > 0:
-		#	print(self.train_steps,self.loss1000[-1])
+		
 		print(solver.net.blobs['metadata'].data[0,:,5,5])
 		cprint(_array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 		cprint(_array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
@@ -408,7 +429,7 @@ while True:
 		ylim(-5,105);xlim(0,xlen)
 		t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
 		o = solver.net.blobs['ip2'].data[0,:]*100.
-		plot(zeros(xlen)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
+		plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
 		mi_or_cv2_animate(data['left'])
 		print_timer.reset()
 
