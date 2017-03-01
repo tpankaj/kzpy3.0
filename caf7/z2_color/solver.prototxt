@@ -12,5 +12,5 @@ power: 0.75
 display: 20000
 max_iter: 10000000
 snapshot: 100000
-snapshot_prefix: "/home/karlzipser/Desktop/z2_color/z2_color_scratch_restart"
+snapshot_prefix: "/home/karlzipser/Desktop/z2_color/z2_color"
 	
