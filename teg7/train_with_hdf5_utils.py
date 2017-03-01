@@ -225,7 +225,7 @@ def get_data(run_code_num,seg_num,offset,slen,img_offset,img_slen,ignore=[left,o
 	data['motor']  = motors
 	data['states'] = states
 	data['left'] = left_images
-	data['right'] = left_images
+	data['right'] = right_images
 	data['labels'] = labels
 	return data
 
