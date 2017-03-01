@@ -11,9 +11,10 @@ input_shape {
 
 input: "metadata"
 input_shape {
+    dim: 1
+    dim: 6
     dim: 14
     dim: 26
-    dim: 96
 }
 
 input: "steer_motor_target_data"
@@ -165,14 +166,12 @@ layer {
 }
 	
 
-#layer {
-#	name: "euclidean"
-#	type: "Softmax"
-#	bottom: "steer_motor_target_data"
-#	bottom: "ip2"
-#	top: "euclidean"
-#    softmax_param {
-#       axis: 2
-#    }
-#}
+layer {
+	name: "euclidean"
+	type: "EuclideanLoss"
+	bottom: "steer_motor_target_data"
+	bottom: "ip2"
+	top: "euclidean"
+	loss_weight: 1
+}
 	
