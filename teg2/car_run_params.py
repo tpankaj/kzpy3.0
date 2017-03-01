@@ -27,11 +27,15 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'Smyth_tape'
+Location = 'Smyth_tape__to_edge'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 #weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
-weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel")
+
+#weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_s_r_scratch_iter_30900000.caffemodel")
+weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_continue_iter_33600000.caffemodel")
+#weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_local_scratch_iter_32300000.caffemodel")
+#weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_scratch_restart_iter_3800000.caffemodel")
 verbose = False
 
 steer_gain = 1.0
@@ -43,7 +47,7 @@ steer_gain = 1.0
 ####################### specific car settings ################
 #
 if computer_name == 'Mr_Orange':
-	motor_gain = 0.8#1.25
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Silver':
 	motor_gain = 1.25
