@@ -148,7 +148,7 @@ try:
 	git_pull_timer = Timer(60)
 	reload_timer = Timer(10)
 	#verbose = False
-	model_name_pub.publish(std_msgs.msg.String(weights_file_path))
+	
 	while not rospy.is_shutdown():
 		if state in [3,5,6,7]:
 			if (previous_state not in [3,5,6,7]):
@@ -243,7 +243,7 @@ try:
 			#from run_params import *
 			reload(kzpy3.teg2.car_run_params)
 			from kzpy3.teg2.car_run_params import *
-
+			model_name_pub.publish(std_msgs.msg.String(weights_file_path))
 			reload_timer.reset()
 
 		if git_pull_timer.check():
