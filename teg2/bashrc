@@ -34,12 +34,12 @@ alias mrora='ssh ubuntu@Mr_Orange'
 alias mrtea='ssh ubuntu@Mr_Teal'
 alias mrbla='ssh ubuntu@Mr_Black'
 alias mrwhi='ssh ubuntu@Mr_White'
-<<<<<<< HEAD
+
 alias ssh_date='sudo date --set="$(ssh karlzipser@192.168.1.16 date)"'
 =======
 alias ssh_date='sudo date --set="$(ssh karlzipser@192.168.43.243 date)"'
 alias fixScreen='DISPLAY=:0 xrandr --output HDMI-0 --mode 1024x768'
->>>>>>> 40a970b57121097d97ef2bdf12728ac3a49a7e3a
+
 
 #alias rstat='python ~/kzpy3/teg7/data/rosstatus.py'
 ######################## for .bashrc from MacBook #################
