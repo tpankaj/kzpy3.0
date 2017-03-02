@@ -63,7 +63,7 @@ if computer_name == 'Mr_White':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Black':
-	motor_gain = 1.0
+	motor_gain = 1.5
 	pass
 if computer_name == 'Mr_Teal':
 	motor_gain = 1.0
@@ -78,7 +78,7 @@ if computer_name == 'Mr_LightBlue':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Yellow':
-	motor_gain = 1.3
+	motor_gain = 1.5
 	pass
 
 #
