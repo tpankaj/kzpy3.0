@@ -27,7 +27,7 @@ Play = 0.
 Furtive = 0.
 Caf = 1.0
 Racing = 0.0
-Location = 'Smyth_tape__to_edge'
+Location = 'Smyth_tape'
 
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more.caffemodel")
@@ -57,13 +57,13 @@ if computer_name == 'Mr_Silver':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Blue':
-	motor_gain = 1.0
+	motor_gain = 1.3
 	pass
 if computer_name == 'Mr_White':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Black':
-	motor_gain = 1.5
+	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Teal':
 	motor_gain = 1.0
@@ -78,7 +78,7 @@ if computer_name == 'Mr_LightBlue':
 	motor_gain = 1.0
 	pass
 if computer_name == 'Mr_Yellow':
-	motor_gain = 1.5
+	motor_gain = 1.0
 	pass
 
 #
