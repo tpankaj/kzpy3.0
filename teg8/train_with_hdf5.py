@@ -61,12 +61,13 @@ if True:
 if True:
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_6_no_Smyth_or_racing.prototxt')
-	solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_no_Smyth_or_racing.prototxt')
+	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_no_Smyth_or_racing.prototxt')
+	solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7.prototxt')
 	solver = setup_solver(solver_name)
-	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
-	#solver.net.copy_from(weights_file_path)
-	#cprint('Loaded weights from '+weights_file_path)
+	weights_file_path = '/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
+	solver.net.copy_from(weights_file_path)
+	cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 
@@ -85,6 +86,10 @@ if True:
 	if 'solver_state_1_5_6_7.' in solver_name:
 		ignore = [reject_run,left,out1_in2] # runs with these labels are ignored
 		require_one = [] # at least one of this type of run lable is required
+		use_states = [1,5,6,7]
+	if 'solver_state_1_5_6_7_plus_extra_Smyth_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2] # runs with these labels are ignored
+		require_one = [Smyth,racing] # at least one of this type of run lable is required
 		use_states = [1,5,6,7]
 	print_timer = Timer(5)
 	loss10000 = []
