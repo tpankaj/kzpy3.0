@@ -32,13 +32,13 @@ Location = 'Smyth_tape__to_edge'
 solver_file_path = opjh("kzpy3/caf5/z2_color/solver_live.prototxt")
 
 weights_file_path = opjh("kzpy3/caf5/z2_color/z2_color.caffemodel")
-weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more.caffemodel")
 weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_2.caffemodel")
 weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_3.caffemodel")
 weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_4000000.caffemodel")
 weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_6000000.caffemodel")
 weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_8000000.caffemodel")
 weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_10900000.caffemodel")
+weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more.caffemodel")
 
 verbose = False
 
