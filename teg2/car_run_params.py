@@ -40,6 +40,8 @@ weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_600000
 weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_10900000.caffemodel")
 #weights_file_path = opjh("kzpy3/caf7/z2_color/z2_color_state_1_5_6_7_iter_8000000.caffemodel")
 weights_file_path = opjh("kzpy3/caf6/z2_color_more/z2_color_more_3.caffemodel")
+weights_file_path = opjh("kzpy3/caf7/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_400000.caffemodel")
+
 verbose = False
 
 steer_gain = 1.0
