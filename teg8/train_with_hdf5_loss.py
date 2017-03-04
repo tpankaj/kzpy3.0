@@ -59,7 +59,7 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver_loss.prototxt'))
+	solver_name = opjh('kzpy3/caf7/z2_color/solver_loss.prototxt')
 	solver = setup_solver(solver_name)
 	weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	solver.net.copy_from(weights_file_path)
@@ -67,6 +67,10 @@ if True:
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 
+	if 'solver_loss' in solver_name:
+		ignore = [reject_run] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [1,5,6,7]
 	if 'solver_state_1_no_Smyth_or_racing' in solver_name:
 		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
 		require_one = [] # at least one of this type of run lable is required
