@@ -92,13 +92,13 @@ if True:
 		require_one = [Smyth,racing] # at least one of this type of run lable is required
 		use_states = [1,5,6,7]
 	print_timer = Timer(5)
+	save_timer = Timer(60*10)
 	loss10000 = []
 	loss = []
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	figure('steer',figsize=(3,2))
-	figure('loss',figsize=(3,2))
+
 
 
 	loss_dict = {}
@@ -164,4 +164,7 @@ if True:
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
 			print_timer.reset()
+		if save_timer.check():
+			save_obj(loss_dict,opjD('z2_color_loss_dict'))
+			save_timer.reset()
 	save_obj(loss_dict,opjD('z2_color_loss_dict'))
