@@ -34,10 +34,10 @@ if USE_GPU:
 	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
-if False:
+if True:
 	load_run_codes()
 
-if False:
+if True:
 	pb = ProgressBar(len(Segment_Data['run_codes']))
 	ctr = 0
 	print("doing run_into_Segment_Data...")
@@ -47,7 +47,7 @@ if False:
 		run_into_Segment_Data(n)
 	pb.animate(len(Segment_Data['run_codes']))
 
-if False:
+if True:
 	print('loading low_steer... (takes awhile)')
 	low_steer = load_obj(opjD('bair_car_data/hdf5/segment_metadata/low_steer'))
 	print('\nloading high_steer... (takes awhile)')
