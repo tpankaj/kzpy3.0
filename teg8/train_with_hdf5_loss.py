@@ -1,7 +1,7 @@
-from kzpy3.teg7.train_with_hdf5_utils import *
+from kzpy3.teg8.train_with_hdf5_utils import *
 
 """
-*** kzpy3/teg7/train_with_hdf5.py ***
+*** kzpy3/teg8/train_with_hdf5.py ***
 
 This script trains a model on hdf5 model car data. It expects to find the hdf5 folder here:
 
@@ -20,7 +20,7 @@ for saving weights.
 
 Can run from python or command line:
 
-	$ python kzpy3/teg7/train_with_hdf5.py
+	$ python ~/kzpy3/teg8/train_with_hdf5.py
 
 The script regularly displays left camera data, steer data (red) and
 network steer output (green) [49=straight, 0=right, 99=left], and loss
@@ -31,7 +31,7 @@ averaged over 10000 iterations.
 
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(0)
+	caffe.set_device(1)
 	caffe.set_mode_gpu()
 
 if True:
@@ -48,7 +48,7 @@ if True:
 	pb.animate(len(Segment_Data['run_codes']))
 
 if True:
-	print('loading low_steer... (takes awhile)')
+	print('\nloading low_steer... (takes awhile)')
 	low_steer = load_obj(opjD('bair_car_data/hdf5/segment_metadata/low_steer'))
 	print('\nloading high_steer... (takes awhile)')
 	high_steer = load_obj(opjD('bair_car_data/hdf5/segment_metadata/high_steer'))
@@ -59,45 +59,55 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver.prototxt'))
-	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
-	#solver.net.copy_from(weights_file_path)
-	#cprint('Loaded weights from '+weights_file_path)
+	solver = setup_solver(opjh('kzpy3/caf7/z2_color/solver_loss.prototxt'))
+	solver = setup_solver(solver_name)
+	weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
+	solver.net.copy_from(weights_file_path)
+	cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
-	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
-	require_one=[] # at least one of this type of run lable is required
+
+	if 'solver_state_1_no_Smyth_or_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [1]
+	if 'solver_state_6_no_Smyth_or_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [6]
+	if 'solver_state_1_5_6_7_no_Smyth_or_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [1,5,6,7]
+	if 'solver_state_1_5_6_7.' in solver_name:
+		ignore = [reject_run,left,out1_in2] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [1,5,6,7]
+	if 'solver_state_1_5_6_7_plus_extra_Smyth_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2] # runs with these labels are ignored
+		require_one = [Smyth,racing] # at least one of this type of run lable is required
+		use_states = [1,5,6,7]
 	print_timer = Timer(5)
 	loss10000 = []
 	loss = []
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	if False:
-		figure('steer',figsize=(3,2))
-		figure('loss',figsize=(3,2))
-	while True:
-		if ctr_low >= len_low_steer:
-			ctr_low = -1
-		if ctr_high >= len_high_steer:
-			ctr_high = -1
-		if ctr_low == -1:
-			random.shuffle(low_steer) # shuffle data before using (again)
-			ctr_low = 0
-		if ctr_high == -1:
-			random.shuffle(high_steer)
-			ctr_high = 0
-			
-		if random.random() > 0.5: # with some probability choose a low_steer element
-			choice = low_steer[ctr_low]
-			ctr_low += 1
-		else:
-			choice = high_steer[ctr_high]
-			ctr_high += 1
+	figure('steer',figsize=(3,2))
+	figure('loss',figsize=(3,2))
+
+
+	loss_dict = {}
+
+	for choice in  low_steer + high_steer:
 		run_code = choice[3]
 		seg_num = choice[0]
 		offset = choice[1]
-		data = get_data(run_code,seg_num,offset,N_STEPS,offset+0,N_FRAMES,ignore=ignore,require_one=require_one)
+		if run_code not in loss_dict:
+			loss_dict[run_code] = {}
+		if seg_num not in loss_dict[run_code]:
+			loss_dict[run_code][seg_num] = {}
+		data = get_data(run_code,seg_num,offset,N_STEPS,offset+0,N_FRAMES,ignore=ignore,require_one=require_one,use_states=use_states)
 		if data == None:
 			continue
 		############## load data into solver #####################
@@ -143,26 +153,11 @@ if True:
 			rate_timer.reset()
 			rate_ctr = 0
 		a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
-		loss.append(np.sqrt(a * a).mean())
-		if len(loss) >= 10000:
-			loss10000.append(array(loss[-10000:]).mean())
-			loss = []
-			figure('loss');clf()
-			lm = min(len(loss10000),100)
-			plot(loss10000[-lm:])
-			print(d2s('loss10000 =',loss10000[-1]))
+		loss = np.sqrt(a * a).mean()
+		loss_dict[run_code][seg_num][offset] = loss
 		if print_timer.check():
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
-			if False:
-				figure('steer')
-				clf()
-				xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
-				ylim(-5,105);xlim(0,xlen)
-				t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
-				o = solver.net.blobs['ip2'].data[0,:]*100.
-				plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
-				mi_or_cv2_animate(data['left'])
 			print_timer.reset()
-
+	save_obj(loss_dict,opjD('z2_color_loss_dict'))
