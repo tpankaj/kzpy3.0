@@ -162,7 +162,7 @@ if True:
 		loss = np.sqrt(a * a).mean()
 		loss_dict[run_code][seg_num][offset] = loss
 		if print_timer.check():
-			print(d2s("lctr =",lctr)
+			print(d2s("lctr =",lctr))
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
