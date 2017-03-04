@@ -73,8 +73,9 @@ if True:
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	figure('steer',figsize=(3,2))
-	figure('loss',figsize=(3,2))
+	if False:
+		figure('steer',figsize=(3,2))
+		figure('loss',figsize=(3,2))
 	while True:
 		if ctr_low >= len_low_steer:
 			ctr_low = -1
