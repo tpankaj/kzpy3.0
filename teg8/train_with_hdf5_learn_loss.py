@@ -61,9 +61,9 @@ if True:
 if True:
 	solver_name = opjh('kzpy3/caf7/z2_color/solver_loss.prototxt')
 	solver = setup_solver(solver_name)
-	weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
-	solver.net.copy_from(weights_file_path)
-	cprint('Loaded weights from '+weights_file_path)
+	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
+	#solver.net.copy_from(weights_file_path)
+	#cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 
@@ -171,8 +171,10 @@ if True:
 		if print_timer.check():
 			print(d2s("lctr =",lctr))
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
-			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
+#			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
+#			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
+			cprint(solver.net.blobs['steer_motor_target_data'].data[0,0][:],'green','on_red')
+			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,0][:]),'red','on_green')
 			print_timer.reset()
 		if save_timer.check():
 			save_obj(loss_dict,opjD('z2_color_loss_dict'))
