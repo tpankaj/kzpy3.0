@@ -100,7 +100,7 @@ if True:
 	rate_ctr = 0
 
 
-
+	print "z2_color_loss_dict . . ."
 	loss_dict = load_obj(opjD('z2_color_loss_dict'))
 	choice_list = []
 	for run_code in loss_dict.keys():
@@ -173,8 +173,8 @@ if True:
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 #			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 #			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
-			cprint(solver.net.blobs['steer_motor_target_data'].data[0,0][:],'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,0][:]),'red','on_green')
+			cprint(solver.net.blobs['steer_motor_target_data'].data[0,:][:],'green','on_red')
+			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:],'red','on_green')
 			print_timer.reset()
 		if save_timer.check():
 			save_obj(loss_dict,opjD('z2_color_loss_dict'))
