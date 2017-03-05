@@ -115,7 +115,7 @@ if True:
 		if choice_ctr == -1 or choice_ctr >= len_choice_list:
 			random.shuffle(choice_list)
 			choice_ctr = 0
-		choice = choice_list[choice_ctr]:
+		choice = choice_list[choice_ctr]
 		run_code = choice[0]
 		seg_num = choice[1]
 		offset = choice[2]
