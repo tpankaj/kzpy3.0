@@ -61,7 +61,7 @@ if True:
 if True:
 	solver_name = opjh('kzpy3/caf7/z2_color/solver_loss.prototxt')
 	solver = setup_solver(solver_name)
-	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
+	weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
