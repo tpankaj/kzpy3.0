@@ -34,7 +34,7 @@ for n in range(96):
 		img[-(width+2):-2,2:width+2,c] = solver.net.params['conv1'][0].data[n,1+4*c,:,:]
 		img[-(width+2):-2,-(width+2):-2,c] = solver.net.params['conv1'][0].data[n,3+4*c,:,:]
 
-	mi(z2o(img),'conv1',img_title=d2s('conv1 channel',n)) 
+	#mi(z2o(img),'conv1',img_title=d2s('conv1 channel',n)) 
 	imsave(opjD('temp',d2n(n,'.png')),img)
 	plt.pause(1)
 
