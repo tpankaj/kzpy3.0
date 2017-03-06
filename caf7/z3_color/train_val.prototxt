@@ -1,80 +1,46 @@
+# /Users/karlzipser/kzpy3/caf7/z3_color
+# Monday, 06 Mar 2017, 08:01:45 PM
 
 layer {
-	name: "steer_motor_target_data"
+	name: "left_pool2"
 	type: "DummyData"
-	top: "steer_motor_target_data"
+	top: "left_pool2"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 60
-		}
-	}
-}
-
-layer {
-	name: "metadata"
-	type: "DummyData"
-	top: "metadata"
-	dummy_data_param {
-		shape {
-			dim: 1
-			dim: 6
-			dim: 14
-			dim: 26
+			dim: 12
+			dim: 94
+			dim: 168
 		}
 	}
 }
 	
 
 layer {
-	name: "ZED_data_pool2"
+	name: "right_pool2"
 	type: "DummyData"
-	top: "ZED_data_pool2"
+	top: "right_pool2"
 	dummy_data_param {
 		shape {
 			dim: 1
-			dim: 24
+			dim: 12
 			dim: 94
 			dim: 168
 		}
 	}
 }
-
-
-layer {
-  name: "ZED_data_pool2_scale"
-  type: "Scale"
-  bottom: "ZED_data_pool2"
-  top: "ZED_data_pool2_scale"
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  param {
-    lr_mult: 0
-    decay_mult: 0
-  }
-  scale_param {
-    filler {
-      value: 0.003921    }
-    bias_term: true
-    bias_filler {
-      value: -0.5
-    }
-  }
-}
-
+	
 
 layer {
-	name: "conv1"
+	name: "conv1_left"
 	type: "Convolution"
-	bottom: "ZED_data_pool2_scale"
-	top: "conv1"
+	bottom: "left_pool2"
+	top: "conv1_left"
 	convolution_param {
-		num_output: 96
+		num_output: 48
 		group: 1
-		kernel_size: 11
-		stride: 3
+		kernel_size: 3
+		stride: 2
 		pad_h: 0
 		pad_w: 0
 		weight_filler {
@@ -83,22 +49,21 @@ layer {
 		}
 	}
 }
-
 	
 
 layer {
-	name: "conv1_relu"
+	name: "conv1_left_relu"
 	type: "ReLU"
-	bottom: "conv1"
-	top: "conv1"
+	bottom: "conv1_left"
+	top: "conv1_left"
 }
 	
 
 layer {
-	name: "conv1_pool"
+	name: "conv1_left_pool"
 	type: "Pooling"
-	bottom: "conv1"
-	top: "conv1_pool"
+	bottom: "conv1_left"
+	top: "conv1_left_pool"
 	pooling_param {
 		pool: MAX
 		kernel_size: 3
@@ -110,10 +75,64 @@ layer {
 	
 
 layer {
-	name: "conv1_pool_drop"
+	name: "conv1_left_pool_drop"
 	type: "Dropout"
-	bottom: "conv1_pool"
-	top: "conv1_pool"
+	bottom: "conv1_left_pool"
+	top: "conv1_left_pool"
+	dropout_param {
+		dropout_ratio: 0.0
+	}
+}
+	
+
+layer {
+	name: "conv1_right"
+	type: "Convolution"
+	bottom: "right_pool2"
+	top: "conv1_right"
+	convolution_param {
+		num_output: 48
+		group: 1
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
+		weight_filler {
+			type: "gaussian" 
+			std: 0.00001
+		}
+	}
+}
+	
+
+layer {
+	name: "conv1_right_relu"
+	type: "ReLU"
+	bottom: "conv1_right"
+	top: "conv1_right"
+}
+	
+
+layer {
+	name: "conv1_right_pool"
+	type: "Pooling"
+	bottom: "conv1_right"
+	top: "conv1_right_pool"
+	pooling_param {
+		pool: MAX
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
+	}
+}
+	
+
+layer {
+	name: "conv1_right_pool_drop"
+	type: "Dropout"
+	bottom: "conv1_right_pool"
+	top: "conv1_right_pool"
 	dropout_param {
 		dropout_ratio: 0.0
 	}
@@ -122,10 +141,10 @@ layer {
 
 layer {
 	type: 'Concat'
-	name: 'conv1_metadata_concat'
-	bottom: "conv1_pool"
-	bottom: "metadata"
-	top: 'conv1_metadata_concat'
+	name: 'conv1_concat'
+	bottom: "conv1_left"
+	bottom: "conv1_right"
+	top: 'conv1_concat'
 	concat_param {
 		axis: 1
 	}
@@ -133,38 +152,50 @@ layer {
 		
 
 layer {
-	name: "conv2"
+	type: 'Concat'
+	name: 'conv1_pool_concat'
+	bottom: "conv1_left_pool"
+	bottom: "conv1_right_pool"
+	top: 'conv1_pool_concat'
+	concat_param {
+		axis: 1
+	}
+}
+		
+
+layer {
+	name: "conv2a_bi"
 	type: "Convolution"
-	bottom: "conv1_metadata_concat"
-	top: "conv2"
+	bottom: "conv1_concat"
+	top: "conv2a_bi"
 	convolution_param {
-		num_output: 256
-		group: 2
+		num_output: 48
+		group: 1
 		kernel_size: 3
 		stride: 2
 		pad_h: 0
 		pad_w: 0
 		weight_filler {
 			type: "gaussian" 
-			std: 0.1
+			std: 0.00001
 		}
 	}
 }
 	
 
 layer {
-	name: "conv2_relu"
+	name: "conv2a_bi_relu"
 	type: "ReLU"
-	bottom: "conv2"
-	top: "conv2"
+	bottom: "conv2a_bi"
+	top: "conv2a_bi"
 }
 	
 
 layer {
-	name: "conv2_pool"
+	name: "conv2a_bi_pool"
 	type: "Pooling"
-	bottom: "conv2"
-	top: "conv2_pool"
+	bottom: "conv2a_bi"
+	top: "conv2a_bi_pool"
 	pooling_param {
 		pool: MAX
 		kernel_size: 3
@@ -176,68 +207,29 @@ layer {
 	
 
 layer {
-	name: "conv2_pool_drop"
-	type: "Dropout"
-	bottom: "conv2_pool"
-	top: "conv2_pool"
-	dropout_param {
-		dropout_ratio: 0.0
-	}
-}
-	
-
-layer {
-	name: "ip1"
-	type: "InnerProduct"
-	bottom: "conv2_pool"
-	top: "ip1"
-	inner_product_param {
-		num_output: 512
+	name: "conv2b_bi"
+	type: "Convolution"
+	bottom: "conv1_pool_concat"
+	top: "conv2b_bi"
+	convolution_param {
+		num_output: 48
+		group: 1
+		kernel_size: 3
+		stride: 2
+		pad_h: 0
+		pad_w: 0
 		weight_filler {
-			type: "xavier" 
+			type: "gaussian" 
+			std: 0.00001
 		}
 	}
 }
 	
 
 layer {
-	name: "ip1_relu"
+	name: "conv2b_bi_relu"
 	type: "ReLU"
-	bottom: "ip1"
-	top: "ip1"
+	bottom: "conv2b_bi"
+	top: "conv2b_bi"
 }
 	
-
-layer {
-	name: "ip1_drop"
-	type: "Dropout"
-	bottom: "ip1"
-	top: "ip1"
-	dropout_param {
-		dropout_ratio: 0.0
-	}
-}
-
-
-
-layer {
-	name: "ip2"
-	type: "InnerProduct"
-	bottom: "ip1"
-	top: "ip2"
-	inner_product_param {
-		num_output: 60
-		weight_filler {
-			type: "xavier" 
-		}
-	}
-}
-
-layer {
-	name: "euclidean"
-	type: "EuclideanLoss"
-	bottom: "steer_motor_target_data"
-	bottom: "ip2"
-	top: "euclidean"
-	loss_weight: 1
-}
