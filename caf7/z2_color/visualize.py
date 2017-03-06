@@ -22,8 +22,8 @@ weights_file_path = opjD('z2_color_loss')
 weights_file_path = most_recent_file_in_folder(weights_file_path,['z2_color_loss','caffemodel'])
 solver.net.copy_from(weights_file_path)
 cprint('Loaded weights from '+weights_file_path)
-@plt.ion()
-@figure('conv1',figsize=(1.5,4))
+#plt.ion()
+#figure('conv1',figsize=(1.5,4))
 
 for n in range(96):
 	width = 11
