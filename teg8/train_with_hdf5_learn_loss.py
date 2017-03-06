@@ -68,7 +68,7 @@ if True:
 	N_STEPS = 10 # how many timestamps with non-image data
 
 	if 'solver_loss' in solver_name:
-		ignore = [reject_run] # runs with these labels are ignored
+		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
 		require_one = [] # at least one of this type of run lable is required
 		use_states = [1,5,6,7]
 	if 'solver_state_1_no_Smyth_or_racing' in solver_name:
