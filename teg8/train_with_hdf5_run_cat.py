@@ -65,9 +65,10 @@ if True:
 	solver_name = opjh('kzpy3/caf7/z2_color/solver_run_cat.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7.prototxt')
 	solver = setup_solver(solver_name)
-	#weights_file_path = '/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
-	#solver.net.copy_from(weights_file_path)
-	cprint('Loaded weights from '+weights_file_path)
+	weights_file_path = None #'/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
+	if weights_file_path:
+		solver.net.copy_from(weights_file_path)
+		cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 

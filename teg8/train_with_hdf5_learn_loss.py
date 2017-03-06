@@ -100,7 +100,7 @@ if True:
 	rate_ctr = 0
 
 
-	print "z2_color_loss_dict . . ."
+	print "Loading z2_color_loss_dict . . ."
 	loss_dict = load_obj(opjD('z2_color_loss_dict'))
 	choice_list = []
 	for run_code in loss_dict.keys():
