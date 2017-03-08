@@ -149,7 +149,7 @@ if True:
     solver_name = opjh('kzpy3/caf7/z2_color/solver_run_cat.prototxt')
     solver = setup_solver(solver_name)
 #    weights_file_path = 'kzpy3/caf5/z2_color/z2_color.caffemodel'
-    weights_file_path = opjD('z2_color_run_cat_iter_33400000.caffemodel')
+    weights_file_path = opjD('z2_color_run_cat/z2_color_run_cat_iter_33400000.caffemodel')
     solver.net.copy_from(weights_file_path)
     solver.net.params['data'][0].data[:] = 1
     solver.net.params['data'][1].data[:] = 0
