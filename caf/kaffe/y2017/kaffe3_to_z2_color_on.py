@@ -76,8 +76,8 @@ def make_step(solver, step_size=0.1, end='inception_4c/output',
     
     solver.net.backward(start=end,end='data')
     g = src.diff[0]
-    print shape(g)
-    print((g.max(),g.min()))
+    #print shape(g)
+    #print((g.max(),g.min()))
     # apply normalized ascent step to the input image
     g_abs_mean = np.abs(g).mean()
     if not g_abs_mean == 0:
@@ -110,7 +110,8 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
     for n in range(start,layer_shape[1]):#(num_nodes):
         mask7 = np.zeros(layer_shape)
         #n = np.random.randint(1000)
-        mask7[:,n] = 1.0
+        print shape(mask7)
+        mask7[:,n,5,5] = 1.0
         def objective_kz7(dst):
             dst.diff[:] = mask7#dst.data * mask7
 
@@ -124,15 +125,15 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
             make_step(solver,end=layer,objective=objective_kz7,jitter=1)
             src = solver.net.blobs['data']
             #vis = deprocess(solver, src.data[0])
-            if np.mod(i,100.0)==0:
-                pb.animate(i+100)
+            if np.mod(i,10.0)==0:
+                pb.animate(i+10)
                 #print((solver.net.blobs['data'].data[0,0,:,:].min(),solver.net.blobs['data'].data[0,0,:,:].max()))
                 mi(z2o(solver.net.blobs['data'].data[0,0,:,:]));pause(0.01)
-            #pb.animate(i+1)
+        pb.animate(i+1)
         print((model_folder,layer,n))
         vis = src.data[0]#deprocess(solver, src.data[0])
         img = np.uint8(np.clip(vis, 0, 255))
-        print shape(vis)
+        #print shape(vis)
         img = zeros((94,168,3))
         img[:,:,0] = solver.net.blobs['data'].data[0,0,:,:]
         img[:,:,1] = solver.net.blobs['data'].data[0,4,:,:]
@@ -145,11 +146,9 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
 
 #############################
 if True:
-    #solver_name = opjh('kzpy3/caf7/z2_color/solver_temp.prototxt')
-    solver_name = opjh('kzpy3/caf7/z2_color/solver_run_cat.prototxt')
+    solver_name = opjh('kzpy3/caf7/z2_color/solver_temp.prototxt')
     solver = setup_solver(solver_name)
-#    weights_file_path = 'kzpy3/caf5/z2_color/z2_color.caffemodel'
-    weights_file_path = opjD('z2_color_run_cat/z2_color_run_cat_iter_33400000.caffemodel')
+    weights_file_path = 'kzpy3/caf5/z2_color/z2_color.caffemodel'
     solver.net.copy_from(weights_file_path)
     solver.net.params['data'][0].data[:] = 1
     solver.net.params['data'][1].data[:] = 0
@@ -160,7 +159,7 @@ if True:
 
     print(np.shape(solver.net.blobs['data'].data))
 
-    for l in ['ip2']:
+    for l in ['conv2']:
         do_it4(model_folder,'scratch/'+time_str(),l,solver,300,0)
 
 

@@ -65,7 +65,7 @@ if True:
 	solver_name = opjh('kzpy3/caf7/z2_color/solver_run_cat.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7.prototxt')
 	solver = setup_solver(solver_name)
-	weights_file_path = None #'/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
+	weights_file_path = most_recent_file_in_folder(opjD('z2_color_run_cat',['caffemodel'])) #None #'/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
 	if weights_file_path:
 		solver.net.copy_from(weights_file_path)
 		cprint('Loaded weights from '+weights_file_path)

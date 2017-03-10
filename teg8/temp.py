@@ -84,11 +84,14 @@ train_val_lst = [
 	d2s('#',model_path),
 	d2s('#',time_str('Pretty')),
 
-	dummy('left',(1,12,376,672)),
-	pool("left","AVE",3,2,0),
-	pool("left_pool","AVE",3,2,0),
+	dummy('left_t_0',(1,3,376,672)),
+	pool("left_t0","AVE",1,2,0),
+	pool("left_t0_pool","AVE",1,2,0),
 
-	dummy('right',(1,6,376,672)),
+	dummy('left_t_neg1_pool_pool',(1,3,94,168)),
+	dummy('left_t_neg2_pool_pool',(1,3,94,168)),
+
+	dummy('right',(1,9,376,672)),
 	pool("right","AVE",3,2,0),
 	pool("right_pool","AVE",3,2,0),
 	#dummy('left_pool2',(1,12,94,168)),
