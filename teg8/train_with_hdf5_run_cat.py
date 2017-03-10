@@ -188,7 +188,7 @@ if True:
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
 			figure('A');clf
 			plot(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
-			plot(solver.net.blobs['ip2'].data[0,:][:]))
+			plot(solver.net.blobs['ip2'].data[0,:][:])
 			pause(5)
 			if Graphics:
 				figure('steer')
