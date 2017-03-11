@@ -154,7 +154,7 @@ layer {
 layer {
 	name: "euclidean"
 	type: "EuclideanLoss"
-	bottom: "steer_motor_target_data_flat"
+	bottom: "steer_motor_target_data"
 	bottom: "ip3"
 	top: "euclidean"
 	loss_weight: 1
