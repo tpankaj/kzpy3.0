@@ -12,18 +12,6 @@ layer {
 	}
 }
 
-layer {
-    name: "steer_motor_target_data_flat"
-    type: "Reshape"
-    bottom: "steer_motor_target_data"
-    top: "steer_motor_target_data_flat"
-    reshape_param {
-        shape {
-            dim: -1 # flatten
-        }
-    }
-}
-
 # ignoring this layer for lstm_only testing
 #layer {
 #	name: "metadata"
