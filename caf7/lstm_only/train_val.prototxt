@@ -94,7 +94,7 @@ layer {
     name: "ZED_data_pool2_reshape"
     type: "Reshape"
     bottom: "ZED_data_pool2_scale"
-    top: "ZED_data_pool2_scale"
+    top: "ZED_data_pool2_reshape"
     reshape_param {
         shape {
             dim: 0 # copy number of time samples
