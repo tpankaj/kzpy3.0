@@ -128,7 +128,7 @@ try:
 	rospy.Subscriber('/bair_car/state_transition_time_s', std_msgs.msg.Int32, state_transition_time_s_callback)
 	steer_cmd_pub = rospy.Publisher('cmd/steer', std_msgs.msg.Int32, queue_size=100)
 	motor_cmd_pub = rospy.Publisher('cmd/motor', std_msgs.msg.Int32, queue_size=100)
-
+	model_name_pub = rospy.Publisher('/bair_car/model_name', std_msgs.msg.String, queue_size=10)
 	#rospy.Subscriber('/bair_car/GPS2_lat', std_msgs.msg.Float32, callback=GPS2_lat_callback)
 	#rospy.Subscriber('/bair_car/GPS2_long', std_msgs.msg.Float32, callback=GPS2_long_callback)
 	#rospy.Subscriber('/bair_car/GPS2_lat_orig', std_msgs.msg.Float32, callback=GPS2_lat_callback)
@@ -148,6 +148,7 @@ try:
 	git_pull_timer = Timer(60)
 	reload_timer = Timer(10)
 	#verbose = False
+	
 	while not rospy.is_shutdown():
 		if state in [3,5,6,7]:
 			if (previous_state not in [3,5,6,7]):
@@ -242,7 +243,7 @@ try:
 			#from run_params import *
 			reload(kzpy3.teg2.car_run_params)
 			from kzpy3.teg2.car_run_params import *
-
+			model_name_pub.publish(std_msgs.msg.String(weights_file_path))
 			reload_timer.reset()
 
 		if git_pull_timer.check():
