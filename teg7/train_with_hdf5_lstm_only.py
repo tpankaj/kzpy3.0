@@ -131,6 +131,8 @@ if True:
 		#solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
                 #for i in range(6, 97):
                 #        solver.net.blobs['metadata'].data[0,i,:,:] = 0.0
+                solver.net.blobs['clip'].data[0,0] = 1
+                solver.net.blobs['clip'].data[1,0] = 0
                 for step in range(N_STEPS):
                         solver.net.blobs['steer_motor_target_data'].data[step, 0] = data['steer'][(-step - 1)]/99
                         solver.net.blobs['steer_motor_target_data'].data[step, 1] = data['motor'][(-step - 1)]/99
