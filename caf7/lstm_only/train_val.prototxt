@@ -101,6 +101,7 @@ layer {
       bottom: "clip"
       top: "lstm1"
       recurrent_param {
+        clip_gradients: 1.0
         num_output: 2048
 	weight_filler {
 	  type: "gaussian"
