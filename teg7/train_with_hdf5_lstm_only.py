@@ -103,8 +103,10 @@ if True:
 		#
                 for t in range(N_FRAMES):
                         for c in range(3):
+                                count = 0
                                 for camera in ('left','right'):
-                                        solver.net.blobs['ZED_data_pool2'].data[t,0,camera,c,:,:] = data[camera][t][:,:,c]
+                                        solver.net.blobs['ZED_data_pool2'].data[t,0,count,c,:,:] = data[camera][t][:,:,c]
+                                        count += 1
 		Racing = 0
 		Caf = 0
 		Follow = 0
