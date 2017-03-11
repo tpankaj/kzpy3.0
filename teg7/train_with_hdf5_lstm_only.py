@@ -63,8 +63,8 @@ if True:
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 5 # how many timesteps with images.
-	N_STEPS = 5 # how many timestamps with non-image data
+	N_FRAMES = 2 # how many timesteps with images.
+	N_STEPS = 2 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
 	print_timer = Timer(5)
