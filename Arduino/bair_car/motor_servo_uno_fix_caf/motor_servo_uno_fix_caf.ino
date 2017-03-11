@@ -494,7 +494,7 @@ int safe_percent_range(int p) {
 //
 void loop() {
   check_for_error_conditions();
-  motor_speed_limit_pwm_value = 0.5*(motor_max_pwm_value - motor_null_pwm_value) + motor_null_pwm_value;
+  motor_speed_limit_pwm_value = 0.35*(motor_max_pwm_value - motor_null_pwm_value) + motor_null_pwm_value;
   // Try to read the "caffe_int" sent by the host system (there is a timeout on serial reads, so the Arduino
   // doesn't wait long to get one -- in which case the caffe_int is set to zero.)
   int caffe_int = Serial.parseInt();

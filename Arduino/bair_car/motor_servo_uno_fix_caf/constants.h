@@ -39,11 +39,11 @@
 // The hand-held radio controller has two buttons. Pressing the upper or lower
 // allows for reaching separate PWM levels: ~ 1710, 1200, 1000, and 888
 // These are used for different control states.
-#define BUTTON_A 1988 // Human in full control of driving
+#define BUTTON_A 1900 //1988 // Human in full control of driving 
 #define BUTTON_B 1700 // Lock state
 #define BUTTON_C 1424  // Caffe steering, human on accelerator
 #define BUTTON_D 870  // Calibration of steering and motor control ranges
-#define BUTTON_DELTA 100 // range around button value that is considered in that value
+#define BUTTON_DELTA 50 // range around button value that is considered in that value
 //
 /////////////////////
 

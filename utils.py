@@ -43,6 +43,10 @@ import subprocess
 from pprint import pprint
 import serial
 try:
+    import h5py
+except:
+    print("don't have h5py")
+try:
     from termcolor import cprint
 except:
     print("termcolor not installed")
@@ -562,7 +566,7 @@ def in_range(e,a,b):
             return True
     return False
 
-def nvidia_smi_continuous(t=5):
+def nvidia_smi_continuous(t=0.1):
     while True:                                     
         unix('nvidia-smi')
         time.sleep(t)
@@ -608,3 +612,10 @@ def tab_list_print(l,n=1,color=None,on_color=None):
         for j in range(n):
             s += '\t'
         cprint(s+e,color,on_color)
+
+
+
+def start_at(t):
+    while time.time() < t:
+        time.sleep(0.1)
+        print(t-time.time())
