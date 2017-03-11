@@ -59,12 +59,12 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver = setup_solver(opjh('kzpy3/caf7/z2_color_lstm/solver.prototxt'))
+	solver = setup_solver(opjh('kzpy3/caf7/lstm_only/solver.prototxt'))
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
-	N_STEPS = 10 # how many timestamps with non-image data
+	N_STEPS = 2 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
 	print_timer = Timer(5)
@@ -104,7 +104,7 @@ if True:
                 for t in range(N_FRAMES):
                         for c in range(3):
                                 for camera in ('left','right'):
-                                        solver.net.blobs['ZED_data_pool2'].data[t,c,:,:] = data[camera][t][:,:,c]
+                                        solver.net.blobs['ZED_data_pool2'].data[t,0,camera,c,:,:] = data[camera][t][:,:,c]
 		Racing = 0
 		Caf = 0
 		Follow = 0
@@ -123,14 +123,14 @@ if True:
 			Play = 1.0
 		if data['labels']['furtive']:
 			Furtive = 1.0
-		solver.net.blobs['metadata'].data[0,0,:,:] = Racing
-		solver.net.blobs['metadata'].data[0,1,:,:] = Caf
-		solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-		solver.net.blobs['metadata'].data[0,4,:,:] = Play
-		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-                for i in range(6, 97):
-                        solver.net.blobs['metadata'].data[0,i,:,:] = 0.0
+		#solver.net.blobs['metadata'].data[0,0,:,:] = Racing
+		#solver.net.blobs['metadata'].data[0,1,:,:] = Caf
+		#solver.net.blobs['metadata'].data[0,2,:,:] = Follow
+		#solver.net.blobs['metadata'].data[0,3,:,:] = Direct
+		#solver.net.blobs['metadata'].data[0,4,:,:] = Play
+		#solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
+                #for i in range(6, 97):
+                #        solver.net.blobs['metadata'].data[0,i,:,:] = 0.0
                 for step in range(N_STEPS):
                         solver.net.blobs['steer_motor_target_data'].data[step, 0] = data['steer'][(-step - 1)]/99
                         solver.net.blobs['steer_motor_target_data'].data[step, 1] = data['motor'][(-step - 1)]/99
@@ -152,7 +152,7 @@ if True:
 			plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
 		if print_timer.check():
-			print(solver.net.blobs['metadata'].data[0,:,5,5])
+			#print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
 			figure('steer')
