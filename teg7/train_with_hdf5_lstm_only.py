@@ -134,8 +134,8 @@ if True:
                 solver.net.blobs['clip'].data[0,0] = 1
                 solver.net.blobs['clip'].data[1,0] = 0
                 for step in range(N_STEPS):
-                        solver.net.blobs['steer_motor_target_data'].data[step, 0] = data['steer'][(-step - 1)]/99
-                        solver.net.blobs['steer_motor_target_data'].data[step, 1] = data['motor'][(-step - 1)]/99
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 0] = data['steer'][(-step - 1)]/99
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 1] = data['motor'][(-step - 1)]/99
 		#
 		##########################################################
 		solver.step(1) # The training step. Everything below is for display.
