@@ -155,7 +155,7 @@ if True:
 			lm = min(len(loss10000),100)
 			plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
-		if print_timer.check():
+		if False:
 			#print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip3'].data[0,:][:]),'red','on_green')
