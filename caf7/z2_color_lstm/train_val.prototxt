@@ -86,7 +86,6 @@ layer {
     reshape_param {
         shape {
             dim: 0 # copy number of time samples
-            dim: 0 # copy number of independent channels
             dim: 6 # total number of images per sample
             dim: 94 # height channel
             dim: 168 # width channel
