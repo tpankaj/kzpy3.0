@@ -125,14 +125,14 @@ if True:
 			Play = 1.0
 		if data['labels']['furtive']:
 			Furtive = 1.0
-		solver.net.blobs['metadata'].data[0,0,:,:] = Racing
-		solver.net.blobs['metadata'].data[0,1,:,:] = Caf
-		solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-		solver.net.blobs['metadata'].data[0,4,:,:] = Play
-		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
+		solver.net.blobs['metadata'].data[:,0,:,:] = Racing
+		solver.net.blobs['metadata'].data[:,1,:,:] = Caf
+		solver.net.blobs['metadata'].data[:,2,:,:] = Follow
+		solver.net.blobs['metadata'].data[:,3,:,:] = Direct
+		solver.net.blobs['metadata'].data[:,4,:,:] = Play
+		solver.net.blobs['metadata'].data[:,5,:,:] = Furtive
                 for i in range(6, 97):
-                        solver.net.blobs['metadata'].data[0,i,:,:] = 0.0
+                        solver.net.blobs['metadata'].data[:,i,:,:] = 0.0
                 solver.net.blobs['clip'].data[0,0] = 1
                 for i in range(1, N_STEPS):
                         solver.net.blobs['clip'].data[i,0] = 0

@@ -18,7 +18,7 @@ layer {
 	top: "metadata"
 	dummy_data_param {
 		shape {
-			dim: 2
+			dim: 10
 			dim: 96
 			dim: 14
 			dim: 26
