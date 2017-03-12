@@ -59,7 +59,7 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver = setup_solver(opjh('kzpy3/caf7/z2_color_lstm/solver.prototxt'))
+	solver = setup_solver(opjh('kzpy3/caf7/z2_color_lstm30/solver.prototxt'))
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
