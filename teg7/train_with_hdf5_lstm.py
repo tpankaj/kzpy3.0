@@ -131,7 +131,7 @@ if True:
 		solver.net.blobs['metadata'].data[:,3,:,:] = Direct
 		solver.net.blobs['metadata'].data[:,4,:,:] = Play
 		solver.net.blobs['metadata'].data[:,5,:,:] = Furtive
-                for i in range(6, 97):
+                for i in range(6, 96):
                         solver.net.blobs['metadata'].data[:,i,:,:] = 0.0
                 solver.net.blobs['clip'].data[0,0] = 1
                 for i in range(1, N_STEPS):
@@ -147,7 +147,7 @@ if True:
 			print(d2s('rate =',dp(rate_ctr/rate_timer_interval,2),'Hz'))
 			rate_timer.reset()
 			rate_ctr = 0
-		a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
+		a = solver.net.blobs['steer_motor_target_data'].data.flatten() - solver.net.blobs['ip3'].data.flatten()
 		loss.append(np.sqrt(a * a).mean())
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
@@ -158,14 +158,14 @@ if True:
 			print(d2s('loss10000 =',loss10000[-1]))
 		if print_timer.check():
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
-			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip3'].data[0,:][:]),'red','on_green')
+			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data.flatten()),'green','on_red')
+			cprint(array_to_int_list(solver.net.blobs['ip3'].data.flatten()),'red','on_green')
 			figure('steer')
 			clf()
-			xlen = len(solver.net.blobs['ip3'].data[0,:][:])/2-1
+			xlen = len(solver.net.blobs['ip3'].data.flatten())/2-1
 			ylim(-5,105);xlim(0,xlen)
-			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
-			o = solver.net.blobs['ip3'].data[0,:]*100.
+			t = solver.net.blobs['steer_motor_target_data'].data.flatten()*100.
+			o = solver.net.blobs['ip3'].data.flatten()*100.
 			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
 			mi_or_cv2_animate(data['left'])
 			print_timer.reset()
