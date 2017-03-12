@@ -31,7 +31,7 @@ averaged over 10000 iterations.
 
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(1)
+	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
 if True:
@@ -63,7 +63,7 @@ if True:
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 2 # how many timesteps with images.
+	N_FRAMES = 10 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
@@ -103,8 +103,10 @@ if True:
 		#
                 for t in range(N_FRAMES):
                         for c in range(3):
+                                count = 0
                                 for camera in ('left','right'):
-                                        solver.net.blobs['ZED_data_pool2'].data[t,c,:,:] = data[camera][t][:,:,c]
+                                        solver.net.blobs['ZED_data_pool2'].data[t,0,count,c,:,:] = data[camera][t][:,:,c]
+                                        count += 1
 		Racing = 0
 		Caf = 0
 		Follow = 0
@@ -131,9 +133,12 @@ if True:
 		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
                 for i in range(6, 97):
                         solver.net.blobs['metadata'].data[0,i,:,:] = 0.0
+                solver.net.blobs['clip'].data[0,0] = 1
+                for i in range(1, N_STEPS):
+                        solver.net.blobs['clip'].data[i,0] = 0
                 for step in range(N_STEPS):
-                        solver.net.blobs['steer_motor_target_data'].data[step, 0] = data['steer'][(-step - 1)]/99
-                        solver.net.blobs['steer_motor_target_data'].data[step, 1] = data['motor'][(-step - 1)]/99
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 0] = data['steer'][(-step - 1)]/99
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 1] = data['motor'][(-step - 1)]/99
 		#
 		##########################################################
 		solver.step(1) # The training step. Everything below is for display.
@@ -154,13 +159,13 @@ if True:
 		if print_timer.check():
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
+			cprint(array_to_int_list(solver.net.blobs['ip3'].data[0,:][:]),'red','on_green')
 			figure('steer')
 			clf()
-			xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
+			xlen = len(solver.net.blobs['ip3'].data[0,:][:])/2-1
 			ylim(-5,105);xlim(0,xlen)
 			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
-			o = solver.net.blobs['ip2'].data[0,:]*100.
+			o = solver.net.blobs['ip3'].data[0,:]*100.
 			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
 			mi_or_cv2_animate(data['left'])
 			print_timer.reset()

@@ -5,8 +5,9 @@ layer {
 	top: "steer_motor_target_data"
 	dummy_data_param {
 		shape {
-			dim: 10 # N_STEPS
-			dim: 2
+			dim: 10 # time samples
+            dim: 1 # number of independent channels
+			dim: 2 # steer/motor
 		}
 	}
 }
@@ -25,17 +26,17 @@ layer {
 	}
 }
 	
-#layer {
-#      name: "clip"
-#      type: "DummyData"
-#      top: "clip"
-#      dummy_data_param {
-#      	shape {
-#	  dim: 2
-#	  dim: 20
-#	}
-#      }
-#}
+layer {
+      name: "clip"
+      type: "DummyData"
+      top: "clip"
+      dummy_data_param {
+      	shape {
+	  dim: 10 # time samples
+	  dim: 1 # number of independent channels
+	}
+      }
+}
 
 layer {
 	name: "ZED_data_pool2"
@@ -43,10 +44,12 @@ layer {
 	top: "ZED_data_pool2"
 	dummy_data_param {
 		shape {
-			dim: 2
-			dim: 3
-			dim: 94
-			dim: 168
+			dim: 10 # time samples
+			dim: 1 # number of independent channels
+			dim: 2 # depth channel
+			dim: 3 # color channel
+            dim: 94 # height channel
+            dim: 168 # width channel
 		}
 	}
 }
@@ -243,14 +246,29 @@ layer {
 	}
 }
 
+layer {
+    name: "ip2_reshape"
+    type: "Reshape"
+    bottom: "ip2"
+    top: "ip2_reshape"
+    reshape_param {
+       shape {
+          dim: 0
+          dim: 0
+          dim: -1
+       }
+    }
+}
+
 #####################   LSTM layer ######################
 layer {
       name: "lstm1"
       type: "LSTM"
-      bottom: "ip2"
+      bottom: "ip2_reshape"
+      bottom: "clip"
       top: "lstm1"
       recurrent_param {
-        num_output: 2048
+        num_output: 256
 	weight_filler {
 	  type: "gaussian"
 	  std: 0.1
@@ -276,7 +294,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 1
+    num_output: 2
     weight_filler {
       type: "gaussian"
       std: 0.01
