@@ -5,7 +5,7 @@ layer {
 	top: "steer_motor_target_data"
 	dummy_data_param {
 		shape {
-			dim: 2 # time samples
+			dim: 10 # time samples
             dim: 1 # number of independent channels
 			dim: 2 # steer/motor
 		}
@@ -33,7 +33,7 @@ layer {
       top: "clip"
       dummy_data_param {
       	shape {
-	        dim: 2 # time samples
+	        dim: 10 # time samples
 	        dim: 1 # number of independent channels
 	    }
       }
@@ -45,7 +45,7 @@ layer {
 	top: "ZED_data_pool2"
 	dummy_data_param {
 		shape {
-			dim: 2 # time samples
+			dim: 10 # time samples
             dim: 1 # number of independent channels
             dim: 2 # depth channel
 			dim: 3 # color channel
