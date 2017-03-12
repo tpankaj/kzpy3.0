@@ -6,10 +6,11 @@ test_initialization: false
 base_lr: 0.005  
 momentum: 0.0001
 weight_decay: 0.000005
+clip_gradients: 1.0
 lr_policy: "inv"
 gamma: 0.0001
 power: 0.75
-display: 20000
+display: 10000
 max_iter: 10000000
 snapshot: 100000
 snapshot_prefix: "/home/bdd/Desktop/z2_color_lstm/z2_color_lstm"
