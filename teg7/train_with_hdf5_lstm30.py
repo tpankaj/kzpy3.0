@@ -31,7 +31,7 @@ averaged over 10000 iterations.
 
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(0)
+	caffe.set_device(1)
 	caffe.set_mode_gpu()
 
 if True:
@@ -59,12 +59,12 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver = setup_solver(opjh('kzpy3/caf7/z2_color_lstm/solver.prototxt'))
+	solver = setup_solver(opjh('kzpy3/caf7/z2_color_lstm30/solver.prototxt'))
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 10 # how many timesteps with images.
-	N_STEPS = 10 # how many timestamps with non-image data
+	N_FRAMES = 30 # how many timesteps with images.
+	N_STEPS = 30 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
 	print_timer = Timer(5)
