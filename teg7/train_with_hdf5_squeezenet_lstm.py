@@ -131,8 +131,6 @@ if True:
 		solver.net.blobs['metadata'].data[:,3,:,:] = Direct
 		solver.net.blobs['metadata'].data[:,4,:,:] = Play
 		solver.net.blobs['metadata'].data[:,5,:,:] = Furtive
-                for i in range(6, 96):
-                        solver.net.blobs['metadata'].data[:,i,:,:] = 0.0
                 solver.net.blobs['clip'].data[0,0] = 1
                 for i in range(1, N_STEPS):
                         solver.net.blobs['clip'].data[i,0] = 0
