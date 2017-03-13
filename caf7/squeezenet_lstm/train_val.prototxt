@@ -7,7 +7,7 @@ layer {
 		shape {
             dim: 10 # time samples
 			dim: 1 # number of independent channels
-			dim: 20 # steer/motor
+			dim: 2 # steer/motor
 		}
 	}
 }
