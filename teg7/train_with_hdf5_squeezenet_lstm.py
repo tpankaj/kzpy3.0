@@ -63,7 +63,7 @@ if True:
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 2 # how many timesteps with images.
+	N_FRAMES = 10 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
@@ -101,12 +101,12 @@ if True:
 			continue
 		############## load data into solver #####################
 		#
-		ctr = 0
-		for c in range(3):
-			for camera in ('left','right'):
-				for t in range(N_FRAMES):
-					solver.net.blobs['ZED_data_pool2'].data[0,ctr,:,:] = data[camera][t][:,:,c]
-					ctr += 1
+                for t in range(N_FRAMES):
+                        for c in range(3):
+                                count = 0
+                                for camera in ('left','right'):
+                                        solver.net.blobs['ZED_data_pool2'].data[t,0,count,c,:,:] = data[camera][t][:,:,c]
+                                        count += 1
 		Racing = 0
 		Caf = 0
 		Follow = 0
@@ -125,18 +125,20 @@ if True:
 			Play = 1.0
 		if data['labels']['furtive']:
 			Furtive = 1.0
-		solver.net.blobs['metadata'].data[0,0,:,:] = Racing
-		solver.net.blobs['metadata'].data[0,1,:,:] = Caf
-		solver.net.blobs['metadata'].data[0,2,:,:] = Follow
-		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
-		solver.net.blobs['metadata'].data[0,4,:,:] = Play
-		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-                print "TESTING INFO"
-                print solver.net.blobs['steer_motor_target_data'].data.shape
-                print data['steer'].shape
-                print data['motor'].shape
-		solver.net.blobs['steer_motor_target_data'].data[0,:N_STEPS] = data['steer'][-N_STEPS:]/99.
-		solver.net.blobs['steer_motor_target_data'].data[0,N_STEPS:] = data['motor'][-N_STEPS:]/99.
+		solver.net.blobs['metadata'].data[:,0,:,:] = Racing
+		solver.net.blobs['metadata'].data[:,1,:,:] = Caf
+		solver.net.blobs['metadata'].data[:,2,:,:] = Follow
+		solver.net.blobs['metadata'].data[:,3,:,:] = Direct
+		solver.net.blobs['metadata'].data[:,4,:,:] = Play
+		solver.net.blobs['metadata'].data[:,5,:,:] = Furtive
+                for i in range(6, 96):
+                        solver.net.blobs['metadata'].data[:,i,:,:] = 0.0
+                solver.net.blobs['clip'].data[0,0] = 1
+                for i in range(1, N_STEPS):
+                        solver.net.blobs['clip'].data[i,0] = 0
+                for step in range(N_STEPS):
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 0] = data['steer'][(-step - 1)]/99
+                        solver.net.blobs['steer_motor_target_data'].data[step, 0, 1] = data['motor'][(-step - 1)]/99
 		#
 		##########################################################
 		solver.step(1) # The training step. Everything below is for display.
@@ -145,7 +147,7 @@ if True:
 			print(d2s('rate =',dp(rate_ctr/rate_timer_interval,2),'Hz'))
 			rate_timer.reset()
 			rate_ctr = 0
-		a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
+		a = solver.net.blobs['steer_motor_target_data'].data.flatten() - solver.net.blobs['ip3'].data.flatten()
 		loss.append(np.sqrt(a * a).mean())
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
@@ -155,15 +157,15 @@ if True:
 			plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
 		if print_timer.check():
-			print(solver.net.blobs['metadata'].data[0,:,5,5])
-			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
+			print(solver.net.blobs['metadata'].data[0,:6,0,0])
+			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data.flatten()),'green','on_red')
+			cprint(array_to_int_list(solver.net.blobs['ip3'].data.flatten()),'red','on_green')
 			figure('steer')
 			clf()
-			xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
+			xlen = len(solver.net.blobs['ip3'].data.flatten())/2-1
 			ylim(-5,105);xlim(0,xlen)
-			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
-			o = solver.net.blobs['ip2'].data[0,:]*100.
+			t = solver.net.blobs['steer_motor_target_data'].data.flatten()*100.
+			o = solver.net.blobs['ip3'].data.flatten()*100.
 			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
 			mi_or_cv2_animate(data['left'])
 			print_timer.reset()
