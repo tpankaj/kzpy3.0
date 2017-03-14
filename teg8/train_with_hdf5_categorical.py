@@ -28,7 +28,7 @@ averaged over 10000 iterations.
 
 """
 
-Graphics = False
+
 USE_GPU = True
 if USE_GPU:
 	caffe.set_device(1)
@@ -62,17 +62,21 @@ if True:
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_6_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_no_Smyth_or_racing.prototxt')
-	solver_name = opjh('kzpy3/caf7/z2_color/solver_run_cat.prototxt')
+	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7.prototxt')
+	solver_name = opjh('kzpy3/caf7/z2_color/solver_categorical.prototxt')
 	solver = setup_solver(solver_name)
-	weights_file_path = opjD('z2_color_run_cat/z2_color_run_cat_iter_38000000.caffemodel') #most_recent_file_in_folder(opjD('z2_color_run_cat',['caffemodel'])) #None #'/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
-	if weights_file_path:
-		solver.net.copy_from(weights_file_path)
-		cprint('Loaded weights from '+weights_file_path)
+	#weights_file_path = '/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
+	#solver.net.copy_from(weights_file_path)
+	#cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 
 	if 'solver_state_1_no_Smyth_or_racing' in solver_name:
+		ignore = [reject_run,left,out1_in2,Smyth] # runs with these labels are ignored
+		require_one = [] # at least one of this type of run lable is required
+		use_states = [1]
+	if 'solver_categorical' in solver_name:
 		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
 		require_one = [] # at least one of this type of run lable is required
 		use_states = [1]
@@ -81,10 +85,6 @@ if True:
 		require_one = [] # at least one of this type of run lable is required
 		use_states = [6]
 	if 'solver_state_1_5_6_7_no_Smyth_or_racing' in solver_name:
-		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
-		require_one = [] # at least one of this type of run lable is required
-		use_states = [1,5,6,7]
-	if 'solver_run_cat' in solver_name:
 		ignore = [reject_run,left,out1_in2,Smyth,racing] # runs with these labels are ignored
 		require_one = [] # at least one of this type of run lable is required
 		use_states = [1,5,6,7]
@@ -102,9 +102,8 @@ if True:
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	if Graphics:
-		figure('steer',figsize=(3,2))
-		figure('loss',figsize=(3,2))
+	figure('steer',figsize=(3,2))
+	figure('loss',figsize=(3,2))
 	while True:
 		if ctr_low >= len_low_steer:
 			ctr_low = -1
@@ -161,10 +160,16 @@ if True:
 		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 		solver.net.blobs['metadata'].data[0,4,:,:] = Play
 		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-		#solver.net.blobs['steer_motor_target_data'].data[0,:N_STEPS] = data['steer'][-N_STEPS:]/99.
-		#solver.net.blobs['steer_motor_target_data'].data[0,N_STEPS:] = data['motor'][-N_STEPS:]/99.
-		solver.net.blobs['steer_motor_target_data'].data[0,:] *= 0
-		solver.net.blobs['steer_motor_target_data'].data[0,run_code] = 1.
+
+		steer_last = data['steer'][-1]/10
+		motor_last = data['motor'][-1]/10
+
+		solver.net.blobs['steer_motor_target_data'].data[0,:] = 0
+
+		solver.net.blobs['steer_motor_target_data'].data[0,steer_last] = 1
+		solver.net.blobs['steer_motor_target_data'].data[0,10+motor_last] = 1
+
+
 		#
 		##########################################################
 		solver.step(1) # The training step. Everything below is for display.
@@ -175,7 +180,7 @@ if True:
 			rate_ctr = 0
 		a = solver.net.blobs['steer_motor_target_data'].data[0,:] - solver.net.blobs['ip2'].data[0,:]
 		loss.append(np.sqrt(a * a).mean())
-		if len(loss) >= 10000 and Graphics:
+		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
 			loss = []
 			figure('loss');clf()
@@ -186,18 +191,13 @@ if True:
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
-			figure('A');clf()
-			plot(solver.net.blobs['steer_motor_target_data'].data[0,:][:])
-			plot(solver.net.blobs['ip2'].data[0,:][:])
-			pause(5)
-			if Graphics:
-				figure('steer')
-				clf()
-				xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
-				ylim(-5,105);xlim(0,xlen)
-				t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
-				o = solver.net.blobs['ip2'].data[0,:]*100.
-				plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
-				mi_or_cv2_animate(data['left'],delay=60)
+			figure('steer')
+			clf()
+			xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
+			ylim(-5,105);xlim(0,xlen)
+			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
+			o = solver.net.blobs['ip2'].data[0,:]*100.
+			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
+			mi_or_cv2_animate(data['left'],delay=60)
 			print_timer.reset()
 
