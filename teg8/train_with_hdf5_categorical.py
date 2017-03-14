@@ -173,9 +173,9 @@ if True:
 		if steer_last > 0:
 			solver.net.blobs['steer_motor_target_data'].data[0,steer_last-1] = 0.5
 		if motor_last < 9+10:
-			solver.net.blobs['steer_motor_target_data'].data[0,motor_last+1] = 0.5
+			solver.net.blobs['steer_motor_target_data'].data[0,10+motor_last+1] = 0.5
 		if motor_last > 0+10:
-			solver.net.blobs['steer_motor_target_data'].data[0,motor_last-1] = 0.5
+			solver.net.blobs['steer_motor_target_data'].data[0,10+motor_last-1] = 0.5
 
 		#
 		##########################################################
