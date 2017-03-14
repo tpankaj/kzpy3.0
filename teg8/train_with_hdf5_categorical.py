@@ -161,8 +161,8 @@ if True:
 		solver.net.blobs['metadata'].data[0,4,:,:] = Play
 		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
 
-		steer_last = data['steer'][-1]/10
-		motor_last = data['motor'][-1]/10
+		steer_last = int(data['steer'][-1]/10)
+		motor_last = int(data['motor'][-1]/10)
 
 		solver.net.blobs['steer_motor_target_data'].data[0,:] = 0
 
