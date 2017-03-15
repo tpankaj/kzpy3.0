@@ -103,7 +103,7 @@ if True:
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
 	#figure('steer',figsize=(3,2))
-	#figure('loss',figsize=(3,2))
+	figure('loss',figsize=(3,2))
 	while True:
 		if ctr_low >= len_low_steer:
 			ctr_low = -1
@@ -198,7 +198,7 @@ if True:
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
 			loss = []
-			#figure('loss');clf()
+			figure('loss');clf()
 			lm = min(len(loss10000),100)
 			plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
