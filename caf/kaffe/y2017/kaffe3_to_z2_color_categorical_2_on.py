@@ -111,13 +111,16 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
         mask7 = np.zeros(layer_shape)
         #n = np.random.randint(1000)
         print shape(mask7)
-        mask7[:,n,5,5] = 1.0
+        #mask7[:,n,5,5] = 1.0
+        mask7[:,n] = 1.0
+        #mask7[:,17] = 1.0
         def objective_kz7(dst):
             dst.diff[:] = mask7#dst.data * mask7
 
         for i in range(0,12):
             solver.net.blobs['data'].data[0,i,:,:] = np.random.random(np.shape(solver.net.blobs['data'].data[0,1,:,:]))-0.5
-
+        solver.net.blobs['metadata'].data[0,:,:,:] = 0
+        solver.net.blobs['metadata'].data[0,3,:,:] = 1
         #mi(solver.net.blobs['ZED_data_pool2'].data[0,0,:,:]);pause(0.01)
         pb = ProgressBar(iter_n)
         #print((solver.net.blobs['data'].data[0,0,:,:].min(),solver.net.blobs['data'].data[0,0,:,:].max()))
@@ -148,7 +151,7 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
 if True:
     solver_name = opjh('kzpy3/caf7/z2_color/solver_categorical2_temp.prototxt')
     solver = setup_solver(solver_name)
-    weights_file_path = 'kzpy3/caf5/z2_color/z2_color.caffemodel'
+    weights_file_path = opjD('')
     solver.net.copy_from(weights_file_path)
     solver.net.params['data'][0].data[:] = 1
     solver.net.params['data'][1].data[:] = 0
@@ -159,7 +162,7 @@ if True:
 
     print(np.shape(solver.net.blobs['data'].data))
 
-    for l in ['conv2']:
+    for l in ['conv1']:
         do_it4(model_folder,'scratch/'+time_str(),l,solver,300,0)
 
 
