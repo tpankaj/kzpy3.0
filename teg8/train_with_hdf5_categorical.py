@@ -163,6 +163,11 @@ if True:
 
 		steer_last = int(data['steer'][-1]/10)
 		motor_last = int(data['motor'][-1]/10)
+		if motor_last > 9:
+			motor_last = 9
+		if steer_last > 9:
+			steer_last = 9
+
 
 		solver.net.blobs['steer_motor_target_data'].data[0,:] = 0
 
