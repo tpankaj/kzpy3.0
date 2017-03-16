@@ -1,4 +1,4 @@
-net: "/Users/karlzipser/kzpy3/scratch/y2017/lstm.prototxt"
+net: "/home/karlzipser/kzpy3/scratch/y2017/lstm.prototxt"
 test_iter: 1
 test_interval: 2000000
 base_lr: 0.0001
