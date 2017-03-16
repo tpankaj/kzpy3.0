@@ -151,7 +151,7 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
 if True:
     solver_name = opjh('kzpy3/caf7/z2_color/solver_categorical2_temp.prototxt')
     solver = setup_solver(solver_name)
-    weights_file_path = opjD('')
+    weights_file_path = opjD('z2_color_categorical2_iter_3400000.caffemodel')
     solver.net.copy_from(weights_file_path)
     solver.net.params['data'][0].data[:] = 1
     solver.net.params['data'][1].data[:] = 0
@@ -162,7 +162,7 @@ if True:
 
     print(np.shape(solver.net.blobs['data'].data))
 
-    for l in ['conv1']:
+    for l in ['conv2']:
         do_it4(model_folder,'scratch/'+time_str(),l,solver,300,0)
 
 
