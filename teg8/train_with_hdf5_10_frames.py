@@ -159,8 +159,8 @@ if True:
 		solver.net.blobs['metadata'].data[0,3,:,:] = Direct
 		solver.net.blobs['metadata'].data[0,4,:,:] = Play
 		solver.net.blobs['metadata'].data[0,5,:,:] = Furtive
-		solver.net.blobs['steer_motor_target_data'].data[0,:10] = data['steer'][-N_STEPS:]/99.
-		solver.net.blobs['steer_motor_target_data'].data[0,10:] = data['motor'][-N_STEPS:]/99.
+		solver.net.blobs['steer_motor_target_data'].data[0,:10] = data['steer'][-10:]/99.
+		solver.net.blobs['steer_motor_target_data'].data[0,10:] = data['motor'][-10:]/99.
 		#
 		##########################################################
 		solver.step(1) # The training step. Everything below is for display.
