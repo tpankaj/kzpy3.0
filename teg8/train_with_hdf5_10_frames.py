@@ -31,7 +31,7 @@ averaged over 10000 iterations.
 
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(1)
+	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
 if True:
