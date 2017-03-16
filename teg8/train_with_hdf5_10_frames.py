@@ -189,6 +189,6 @@ if True:
 			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
 			o = solver.net.blobs['ip2'].data[0,:]*100.
 			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
-			mi_or_cv2_animate(data['left'],delay=60)
+			#mi_or_cv2_animate(data['left'],delay=60)
 			print_timer.reset()
 
