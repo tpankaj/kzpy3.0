@@ -65,9 +65,9 @@ if True:
 	solver_name = opjh('kzpy3/caf7/z2_color/solver_10_frames.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7.prototxt')
 	solver = setup_solver(solver_name)
-	#weights_file_path = '/home/karlzipser/Desktop/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing_iter_2600000.caffemodel'
-	#solver.net.copy_from(weights_file_path)
-	#cprint('Loaded weights from '+weights_file_path)
+	weights_file_path = '/home/karlzipser/Desktop/z2_color_10_frames/z2_color_10_frames_iter_1400000.caffemodel'
+	solver.net.copy_from(weights_file_path)
+	cprint('Loaded weights from '+weights_file_path)
 	N_FRAMES = 10 # how many timesteps with images.
 	N_STEPS = 20 # how many timestamps with non-image data
 
@@ -101,8 +101,8 @@ if True:
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	#figure('steer',figsize=(3,2))
-	#figure('loss',figsize=(3,2))
+	figure('steer',figsize=(3,2))
+	figure('loss',figsize=(3,2))
 	while True:
 		if ctr_low >= len_low_steer:
 			ctr_low = -1
@@ -174,7 +174,7 @@ if True:
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
 			loss = []
-			#figure('loss');clf()
+			figure('loss');clf()
 			lm = min(len(loss10000),100)
 			plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
@@ -182,13 +182,13 @@ if True:
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
-			#figure('steer')
+			figure('steer')
 			clf()
 			xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
 			ylim(-5,105);xlim(0,xlen)
 			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
 			o = solver.net.blobs['ip2'].data[0,:]*100.
-			#plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
-			#mi_or_cv2_animate(data['left'],delay=60)
+			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
+			mi_or_cv2_animate(data['left'],delay=60)
 			print_timer.reset()
 
