@@ -148,6 +148,7 @@ try:
 	git_pull_timer = Timer(60)
 	reload_timer = Timer(10)
 	caf_steer_previous = 49
+	caf_motor_previous = 49
 	#verbose = False
 	
 	while not rospy.is_shutdown():
@@ -222,6 +223,10 @@ try:
 
 					caf_steer = int((caf_steer+caf_steer_previous)/2.0)
 					caf_steer_previous = caf_steer
+					caf_motor = int((caf_motor+caf_motor_previous)/2.0)
+					caf_motor_previous = caf_motor
+
+
 					if verbose:
 						print caf_motor,caf_steer,motor_gain,steer_gain,state
 					
