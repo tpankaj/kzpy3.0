@@ -68,7 +68,7 @@ if True:
 	#weights_file_path = '/home/karlzipser/Desktop/z2_color_10_frames/z2_color_10_frames_iter_1400000.caffemodel'
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 3 # how many timesteps with images.
+	N_FRAMES = 10 # how many timesteps with images.
 	N_STEPS = 40 # how many timestamps with non-image data
 
 	if 'solver_state_1_no_Smyth_or_racing' in solver_name:
@@ -132,8 +132,8 @@ if True:
 		ctr = 0
 		for c in range(3):
 			for camera in ('left','right'):
-				for t in range(N_FRAMES):
-					solver.net.blobs['ZED_data_pool2'].data[0,ctr,:,:] = data[camera][t+7][:,:,c]
+				for t in range(7,10):
+					solver.net.blobs['ZED_data_pool2'].data[0,ctr,:,:] = data[camera][t][:,:,c]
 					ctr += 1
 		Racing = 0
 		Caf = 0
