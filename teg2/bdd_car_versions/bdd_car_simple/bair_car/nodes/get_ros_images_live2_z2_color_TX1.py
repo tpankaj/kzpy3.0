@@ -147,6 +147,7 @@ try:
 	folder_display_timer = Timer(30)
 	git_pull_timer = Timer(60)
 	reload_timer = Timer(10)
+	caf_steer_previous = 49
 	#verbose = False
 	
 	while not rospy.is_shutdown():
@@ -219,6 +220,8 @@ try:
 					if caf_steer < 0:
 						caf_steer = 0
 
+					caf_steer = int((caf_steer+caf_steer_previous)/2.0)
+					caf_steer_previous = caf_steer
 					if verbose:
 						print caf_motor,caf_steer,motor_gain,steer_gain,state
 					
