@@ -134,7 +134,7 @@ if True:
                 for i in range(6, 96):
                         solver.net.blobs['metadata'].data[:,i,:,:] = 0.0
                 solver.net.blobs['clip'].data[0,0] = 1
-                for i in range(1, N_STEPS):
+                for i in range(1, N_FRAMES):
                         solver.net.blobs['clip'].data[i,0] = 0
                 for step in range(N_STEPS):
                         solver.net.blobs['steer_motor_target_data'].data[step, 0, 0] = data['steer'][(-step - 1)]/99
