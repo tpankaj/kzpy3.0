@@ -9,8 +9,8 @@ clip_gradients: 1.0
 lr_policy: "inv"
 gamma: 0.0001
 power: 0.75
-display: 13500
+display: 10000
 max_iter: 10000000
-snapshot: 162000
+snapshot: 100000
 snapshot_prefix: "/home/tpankaj/Desktop/z2_color_lstm/z2_color_lstm"
 	
