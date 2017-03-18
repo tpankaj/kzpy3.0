@@ -18,7 +18,7 @@ layer {
 	top: "metadata"
 	dummy_data_param {
 		shape {
-			dim: 10
+			dim: 2
 			dim: 96
 			dim: 14
 			dim: 26
@@ -32,7 +32,7 @@ layer {
       top: "clip"
       dummy_data_param {
       	shape {
-	  dim: 10 # time samples
+	  dim: 2 # time samples
 	  dim: 1 # number of independent channels
 	}
       }
@@ -44,7 +44,7 @@ layer {
 	top: "ZED_data_pool2"
 	dummy_data_param {
 		shape {
-			dim: 10 # time samples
+			dim: 2 # time samples
 			dim: 1 # number of independent channels
 			dim: 2 # depth channel
 			dim: 3 # color channel
@@ -246,26 +246,11 @@ layer {
 	}
 }
 
-
-
 layer {
-	name: "ip2"
-	type: "InnerProduct"
-	bottom: "ip1"
-	top: "ip2"
-	inner_product_param {
-		num_output: 512
-		weight_filler {
-			type: "xavier" 
-		}
-	}
-}
-
-layer {
-    name: "ip2_reshape"
+    name: "ip1_reshape"
     type: "Reshape"
-    bottom: "ip2"
-    top: "ip2_reshape"
+    bottom: "ip1"
+    top: "ip1_reshape"
     reshape_param {
        shape {
           dim: 0
@@ -279,11 +264,11 @@ layer {
 layer {
       name: "lstm1"
       type: "LSTM"
-      bottom: "ip2_reshape"
+      bottom: "ip1_reshape"
       bottom: "clip"
       top: "lstm1"
       recurrent_param {
-        num_output: 256
+        num_output: 32
 	weight_filler {
 	  type: "gaussian"
 	  std: 0.1
@@ -296,10 +281,10 @@ layer {
 
 ############# Final fully connected layer ###############
 layer {
-  name: "ip3"
+  name: "ip2"
   type: "InnerProduct"
   bottom: "lstm1"
-  top: "ip3"
+  top: "ip2"
   param {
     lr_mult: 10
     decay_mult: 1
@@ -309,7 +294,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 2
+    num_output: 10
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -323,10 +308,24 @@ layer {
 }
 
 layer {
+    name: "ip2_reshape"
+    type: "Reshape"
+    bottom: "ip2"
+    top: "ip2_reshape"
+    reshape_param {
+       shape {
+          dim: 10
+          dim: 1
+          dim: 2
+       }
+    }
+}
+
+layer {
 	name: "euclidean"
 	type: "EuclideanLoss"
 	bottom: "steer_motor_target_data"
-	bottom: "ip3"
+	bottom: "ip2_reshape"
 	top: "euclidean"
 	loss_weight: 1
 }

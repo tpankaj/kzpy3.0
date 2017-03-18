@@ -63,7 +63,7 @@ if True:
 	#weights_file_path = opjh('kzpy3/caf5/z2_color/z2_color.caffemodel')
 	#solver.net.copy_from(weights_file_path)
 	#cprint('Loaded weights from '+weights_file_path)
-	N_FRAMES = 10 # how many timesteps with images.
+	N_FRAMES = 2 # how many timesteps with images.
 	N_STEPS = 10 # how many timestamps with non-image data
 	ignore=[reject_run,left,out1_in2] # runs with these labels are ignored
 	require_one=[] # at least one of this type of run lable is required
@@ -147,7 +147,7 @@ if True:
 			print(d2s('rate =',dp(rate_ctr/rate_timer_interval,2),'Hz'))
 			rate_timer.reset()
 			rate_ctr = 0
-		a = solver.net.blobs['steer_motor_target_data'].data.flatten() - solver.net.blobs['ip3'].data.flatten()
+		a = solver.net.blobs['steer_motor_target_data'].data.flatten() - solver.net.blobs['ip2_reshape'].data.flatten()
 		loss.append(np.sqrt(a * a).mean())
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
@@ -159,13 +159,13 @@ if True:
 		if print_timer.check():
 			print(solver.net.blobs['metadata'].data[0,:6,0,0])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data.flatten()),'green','on_red')
-			cprint(array_to_int_list(solver.net.blobs['ip3'].data.flatten()),'red','on_green')
+			cprint(array_to_int_list(solver.net.blobs['ip2_reshape'].data.flatten()),'red','on_green')
 			figure('steer')
 			clf()
-			xlen = len(solver.net.blobs['ip3'].data.flatten())/2-1
+			xlen = len(solver.net.blobs['ip2_reshape'].data.flatten())/2-1
 			ylim(-5,105);xlim(0,xlen)
 			t = solver.net.blobs['steer_motor_target_data'].data.flatten()*100.
-			o = solver.net.blobs['ip3'].data.flatten()*100.
+			o = solver.net.blobs['ip2_reshape'].data.flatten()*100.
 			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
 			mi_or_cv2_animate(data['left'])
 			print_timer.reset()
