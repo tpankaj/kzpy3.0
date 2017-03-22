@@ -130,6 +130,13 @@ try:
 		if np.abs(acc.z) > acc_freeze_threshold:
 			freeze = True
 
+	encoder_list = []
+	def encoder_callback(msg):
+		global encoder_list
+		encoder_list.append(msg.data)
+		if len(encoder_list) > 30:
+			encoder_list = encoder_list[-30:]
+
 	##
 	########################################################
 
@@ -151,7 +158,7 @@ try:
 	#rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=camera_heading_callback)
 	rospy.Subscriber('/bair_car/gyro', geometry_msgs.msg.Vector3, callback=gyro_callback)
 	rospy.Subscriber('/bair_car/acc', geometry_msgs.msg.Vector3, callback=acc_callback)
-
+	rospy.Subscriber('encoder', std_msgs.msg.Float32, callback=encoder_callback)
 
 	ctr = 0
 
@@ -244,6 +251,9 @@ try:
 					caf_steer_previous = caf_steer
 					caf_motor = int((caf_motor+caf_motor_previous)/2.0)
 					caf_motor_previous = caf_motor
+
+					if caf_motor > 53 and np.array(encoder_list[0:3]).mean() > 1 and np.array(encoder_list[-3:]).mean()<0.2:
+						freeze = True
 
 					if freeze:
 						print "######### FREEZE ###########"
