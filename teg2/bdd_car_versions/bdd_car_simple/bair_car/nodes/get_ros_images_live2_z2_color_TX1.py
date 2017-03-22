@@ -165,9 +165,7 @@ try:
 	
 	while not rospy.is_shutdown():
 		if state in [3,5,6,7]:
-			if freeze:
-				print "######### FREEZE ###########"
-				continue
+			
 			if (previous_state not in [3,5,6,7]):
 				previous_state = state
 				caffe_enter_timer.reset()
@@ -241,6 +239,10 @@ try:
 					caf_motor = int((caf_motor+caf_motor_previous)/2.0)
 					caf_motor_previous = caf_motor
 
+					if freeze:
+						print "######### FREEZE ###########"
+						caf_steer = 49
+						caf_motor = 49
 
 					if verbose:
 						print caf_motor,caf_steer,motor_gain,steer_gain,state
