@@ -187,6 +187,7 @@ def get_data(run_code_num,seg_num,offset,slen,img_offset,img_slen,ignore=[left,o
 	labels = Segment_Data['runs'][run_name]['labels']
 	for ig in ignore:
 		if labels[ig]:
+			#print "ignored "+ig
 			return None
 	require_one_okay = True
 	if len(require_one) > 0:

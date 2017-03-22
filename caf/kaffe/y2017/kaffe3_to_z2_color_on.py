@@ -146,7 +146,7 @@ def do_it4(model_folder,dst_path,layer,solver,iter_n,start=0):
 
 #############################
 if True:
-    solver_name = opjh('kzpy3/caf7/z2_color/solver_temp.prototxt')
+    solver_name = opjh('kzpy3/caf7/z2_color/solver_categorical2_temp.prototxt')
     solver = setup_solver(solver_name)
     weights_file_path = 'kzpy3/caf5/z2_color/z2_color.caffemodel'
     solver.net.copy_from(weights_file_path)
