@@ -124,6 +124,11 @@ try:
 		#	freeze = True
 		if np.sqrt(gyro.y**2+gyro.z**2) > gyro_freeze_threshold:
 			freeze = True
+	def acc_callback(msg):
+		global freeze
+		acc = msg
+		if np.abs(acc.z) > acc_freeze_threshold:
+			freeze = True
 
 	##
 	########################################################
@@ -145,6 +150,7 @@ try:
 	#rospy.Subscriber('/bair_car/GPS2_long_orig', std_msgs.msg.Float32, callback=GPS2_long_callback)
 	#rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=camera_heading_callback)
 	rospy.Subscriber('/bair_car/gyro', geometry_msgs.msg.Vector3, callback=gyro_callback)
+	rospy.Subscriber('/bair_car/acc', geometry_msgs.msg.Vector3, callback=acc_callback)
 
 
 	ctr = 0
