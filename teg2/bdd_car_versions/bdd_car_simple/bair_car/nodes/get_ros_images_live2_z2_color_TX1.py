@@ -120,7 +120,7 @@ try:
 	def gyro_callback(msg):
 		global freeze
 		gyro = msg
-		if np.abs(gyro.y) > 100:
+		if np.abs(gyro.y) > 15:
 			freeze = True
 #		if np.sqrt(gyro.x**2+gyro.y**2) > 200:
 #			freeze = True
