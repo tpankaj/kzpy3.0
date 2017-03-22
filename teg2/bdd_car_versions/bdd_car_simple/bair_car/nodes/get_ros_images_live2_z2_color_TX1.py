@@ -121,7 +121,7 @@ try:
 		global freeze
 		gyro = msg
 		if np.abs(gyro.y) > 100:
-			freeze = True:
+			freeze = True
 #		if np.sqrt(gyro.x**2+gyro.y**2) > 200:
 #			freeze = True
 
