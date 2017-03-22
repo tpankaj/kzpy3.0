@@ -46,7 +46,7 @@ verbose = False
 
 steer_gain = 1.0
 
-gyro_freeze_threshold = 100
+gyro_freeze_threshold = 200
 
 
 #
