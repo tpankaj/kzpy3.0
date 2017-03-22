@@ -41,6 +41,7 @@ try:
 	#          ROSPY SETUP SECTION
 	import roslib
 	import std_msgs.msg
+	import geometry_msgs.msg
 	import cv2
 	from cv_bridge import CvBridge,CvBridgeError
 	import rospy
@@ -115,6 +116,13 @@ try:
 		c = 99-c
 		camera_heading = int(c)
 
+	freeze = False
+	def gyro_callback(msg):
+		global freeze
+		gyro = msg
+		if np.sqrt(gyro.x**2+gyro.y**2) > 200:
+			freeze = True
+
 	##
 	########################################################
 
@@ -134,6 +142,7 @@ try:
 	#rospy.Subscriber('/bair_car/GPS2_lat_orig', std_msgs.msg.Float32, callback=GPS2_lat_callback)
 	#rospy.Subscriber('/bair_car/GPS2_long_orig', std_msgs.msg.Float32, callback=GPS2_long_callback)
 	#rospy.Subscriber('/bair_car/camera_heading', std_msgs.msg.Float32, callback=camera_heading_callback)
+	rospy.Subscriber('/bair_car/gyro', geometry_msgs.msg.Vector3, callback=gyro_callback)
 
 
 	ctr = 0
@@ -150,7 +159,7 @@ try:
 	caf_steer_previous = 49
 	caf_motor_previous = 49
 	#verbose = False
-	freeze = False
+	
 	
 	while not rospy.is_shutdown():
 		if state in [3,5,6,7]:
