@@ -4,27 +4,41 @@ import std_msgs.msg
 import geometry_msgs.msg
 import rospy
 
-steer = 0
+N = 200
+steer = []
 def steer_callback(msg):
 	global steer
-	steer = msg.data
+	steer.append(msg.data)
+	if len(steer) > N:
+		steer = steer[-N:]
 
-motor = 0
+motor = []
 def motor_callback(msg):
 	global motor
-	motor = msg.data
+	motor.append(msg.data)
+	if len(motor) > N:
+		motor = motor[-N:]
 
 state = 0
 def state_callback(msg):
 	global state
 	state = msg.data
 
-gyro = (0,0,0)
+gyroX = []
+gyroY = []
+gyroZ = []
 def gyro_callback(msg):
-	global gyro
+	global gyroX,gyroY,gyroZ
 	gyro = msg
+	gyroX.append(gyro.x)
+	gyroY.append(gyro.y)
+	gyroZ.append(gyro.z)
+	if len(gyroX) > N:
+		gyroX = gyroX[-N:]
+		gyroY = gyroY[-N:]
+		gyroZ = gyroZ[-N:]
 
-acc = (0,0,0)
+acc = []
 def acc_callback(msg):
 	global acc
 	acc = msg
@@ -50,6 +64,7 @@ time.sleep(1)
 while not rospy.is_shutdown():
 
 	while(timer.check() == False):
+		"""
 		steer_lst = []
 		for i in range(105/steer_div):
 			steer_lst.append(' ')
@@ -80,9 +95,18 @@ while not rospy.is_shutdown():
 		else:
 			bag_str = ""
 		ctr += 1
+		"""
 
-		print(d2s(steer_str,motor_str,state,'[',gyro.x,gyro.y,gyro.y,']','[',acc.x,acc.y,acc.z,']',motor,steer,bag_str))
-		time.sleep(0.2)
+		#print(d2s(steer_str,motor_str,state,'[',gyro.x,gyro.y,gyro.y,']','[',acc.x,acc.y,acc.z,']',motor,steer,bag_str))
+		plt.clf()
+		plt.xlim(0,N)
+		plt.ylim(-200,200)
+		plot(steer)
+		#plot(gyroX)
+		#plot(gyroY)
+		plot(gyroZ)
+
+		pause(0.001)
 	rosbag_folder = most_recent_file_in_folder('/media/ubuntu/rosbags')
 	bag_files = sgg(opj(rosbag_folder,'*.bag'))
 	if len(bag_files) > 0:
