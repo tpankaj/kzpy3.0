@@ -59,7 +59,7 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver_name = opjh('kzpy3/caf7/z2_color_restricted/train_val.prototxt')
+	solver_name = opjh('kzpy3/caf7/z2_color_restricted/solver.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_6_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing.prototxt')
