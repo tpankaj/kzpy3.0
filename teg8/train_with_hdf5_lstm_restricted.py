@@ -31,7 +31,7 @@ averaged over 10000 iterations.
 
 USE_GPU = True
 if USE_GPU:
-	caffe.set_device(1)
+	caffe.set_device(0)
 	caffe.set_mode_gpu()
 
 if True:
@@ -59,7 +59,7 @@ if True:
 	ctr_high = -1
 
 if True:
-	solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_no_Smyth_or_racing.prototxt')
+	solver_name = opjh('kzpy3/caf7/z2_color_lstm_restricted/train_val.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_6_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_no_Smyth_or_racing.prototxt')
 	#solver_name = opjh('kzpy3/caf7/z2_color/solver_state_1_5_6_7_plus_extra_Smyth_racing.prototxt')
