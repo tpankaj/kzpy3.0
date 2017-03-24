@@ -80,8 +80,8 @@ if True:
 	rate_timer_interval = 10.
 	rate_timer = Timer(rate_timer_interval)
 	rate_ctr = 0
-	figure('steer',figsize=(3,2))
-	figure('loss',figsize=(3,2))
+	#figure('steer',figsize=(3,2))
+	#figure('loss',figsize=(3,2))
 	while True:
 		if ctr_low >= len_low_steer:
 			ctr_low = -1
@@ -153,21 +153,21 @@ if True:
 		if len(loss) >= 10000:
 			loss10000.append(array(loss[-10000:]).mean())
 			loss = []
-			figure('loss');clf()
+			#figure('loss');clf()
 			lm = min(len(loss10000),100)
-			plot(loss10000[-lm:])
+			#plot(loss10000[-lm:])
 			print(d2s('loss10000 =',loss10000[-1]))
 		if print_timer.check():
 			print(solver.net.blobs['metadata'].data[0,:,5,5])
 			cprint(array_to_int_list(solver.net.blobs['steer_motor_target_data'].data[0,:][:]),'green','on_red')
 			cprint(array_to_int_list(solver.net.blobs['ip2'].data[0,:][:]),'red','on_green')
-			figure('steer')
-			clf()
+			#figure('steer')
+			#clf()
 			xlen = len(solver.net.blobs['ip2'].data[0,:][:])/2-1
-			ylim(-5,105);xlim(0,xlen)
+			#ylim(-5,105);xlim(0,xlen)
 			t = solver.net.blobs['steer_motor_target_data'].data[0,:]*100.
 			o = solver.net.blobs['ip2'].data[0,:]*100.
-			plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
-			mi_or_cv2_animate(data['left'],delay=60)
+			#plot(zeros(xlen+1)+49,'k');plot(o,'g'); plot(t,'r'); plt.title(data['name']);pause(0.001)
+			#mi_or_cv2_animate(data['left'],delay=60)
 			print_timer.reset()
 
